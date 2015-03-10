@@ -38,9 +38,9 @@ def getVersion():
 #-- get the requirements from 'requirements.txt' ---------------
 def getRequirements():
     from pip.req import parse_requirements
-    install_requirements = parse_requirements('requirements.txt')
-    requirements = [str(ir.req) for ir in install_requirements]
-    return requirements
+    #install_requirements = parse_requirements('requirements.txt')
+    #requirements = [str(ir.req) for ir in install_requirements]
+    return [] #  requirements
 
 setup(
     name = name,
