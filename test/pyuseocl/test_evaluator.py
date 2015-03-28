@@ -11,7 +11,8 @@ import pyuseocl.evaluator
 import pyuseocl.analyzer
 from test.pyuseocl \
     import getSoilFile, getUseFile, getZipFile, getSoilFileList
-from test.datatesting import DataTestCase, DataTestSuite
+import pyalaocl
+from pytesthelpers.datadriven import DataTestCase, DataTestSuite
 from collections import OrderedDict
 
 # class DataTestCase_UseEvaluationResults(DataTestCase):
