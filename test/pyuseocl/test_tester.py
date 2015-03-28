@@ -14,8 +14,9 @@ from test.pyuseocl \
 import os
 import pyuseocl.tester
 import pyuseocl.analyzer
+import pytesthelpers
 
-from test.datatesting import DataTestCase, DataTestSuite
+from pytesthelpers.datadriven import DataTestCase, DataTestSuite
 
 class Test_UseEvaluationAndAssertionResult(DataTestSuite):
     class DataTest(DataTestCase):
