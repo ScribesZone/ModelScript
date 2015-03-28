@@ -116,7 +116,7 @@ class Test_ZipTestSuite(DataTestSuite):
         #  'nbOfAssertionEvaluations': 16,
         # },
         # { 'id': 'Demo-G007@github',
-        # 'zip': 'https://github.com/megaplanet/PyAlaOCL/raw/master/test/pyalaocl/useocl/testcases/zip/Demo-G007.zip',
+        # 'zip': 'https://github.com/megaplanet/PyUseOCL/raw/master/test/pyuseocl/useocl/testcases/zip/Demo-G007.zip',
         # 'use': 1,
         # 'soil': 4,
         # 'nbOfAssertionValidations': 13,
