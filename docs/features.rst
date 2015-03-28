@@ -1,6 +1,0 @@
-
-
-.. automodule:: pyuseocl
-   :members:
-
-
