@@ -2,7 +2,7 @@
 
 import os
 
-import symbols
+import fragments
 
 class SourceFile(object):
     """
@@ -73,7 +73,7 @@ class AnnotatedSourceFile(SourceFile):
         self.closingMark = closingMark
         self.hereMark = hereMark
 
-        fragmenter = symbols.RegexpFragmenter(
+        fragmenter = fragments.RegexpFragmenter(
             self.sourceLines,
             openingMark, closingMark, hereMark,
             mainValue = self, firstPosition = 1)
