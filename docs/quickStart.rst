@@ -10,7 +10,7 @@ Just like nearly all python packages, PyUseOCL can be installed using pip_::
 
     $ pip install pyuseocl
 
-You can also download the source from the `PyAlaOCL github project`_.
+You can also download the source from the `PyUseOCL github project`_.
 
 
 .. _pip: https://pip.pypa.io/en/latest/

@@ -228,7 +228,7 @@ html_static_path = ['_static']
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'PyAlaOCLdoc'
+htmlhelp_basename = 'PyUseOCLdoc'
 
 
 # -- Options for LaTeX output ---------------------------------------------
@@ -248,7 +248,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'PyAlaOCL.tex', u'PyAlaOCL Documentation',
+  ('index', 'PyUseOCL.tex', u'PyUseOCL Documentation',
    u'megaplanet', 'manual'),
 ]
 
