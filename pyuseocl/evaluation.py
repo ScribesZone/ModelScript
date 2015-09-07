@@ -1,7 +1,43 @@
 # coding=utf-8
 
 """
-Result of the evaluation of a USE OCL state against a USE OCL model.
+Model the result of the evaluation of a USE OCL state against
+a USE OCL model. This module represents the output of the evaluation
+while the module 'evaluator' actually perform the computation from
+a state (a '.soil') and a model (a '.use')) using a ``check`` command.
+Simply put this module represents the information contained in the output of
+this command which might look like::
+
+        checking invariant (NUM) `CLASS::INVARIANT': OK.
+
+        checking invariant (NUM) `CLASS::INVARIANT': FAILED.
+          -> false : Boolean
+        Instances of CLASS violating the invariant:
+          -> Set{@bedroom201,@bedroom202, ...} : Set(Bedroom)
+
+The evaluation is modeled at two levels of granularity.
+
+- At the *model* level there are 3 classes:
+
+    - 'ModelEvaluation' is the top-level result. This is an abstract class.
+    - 'ModelValidation' is a 'ModelEvaluation' representing the fact that *ALL*
+      invariants have been validated.
+    - 'ModelViolation' is a 'ModelEvaluation' representing the fact that at
+      least one invariant has not been validated.
+
+- At the *feature* level (e.g. 'invariant' or a 'cardinality') there are
+  also 3 classes:
+
+    - 'InvariantEvaluation' is an abstract class representing the outcome of
+      the evaluation of an invariant against a state.
+    - 'InvariantValidation' is a 'InvariantEvaluation' representing the fact
+      that the invariant has been validated.
+    - 'InvariantViolation' is a 'InvariantEvaluation' representing the fact
+      that the invariant has been violated.
+    - 'CardinalityViolation' represents the fact that a cardinality has been
+      violated.
+
+All these objects are created by the module 'evaluator'.
 """
 
 from collections import OrderedDict
