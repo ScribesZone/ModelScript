@@ -1,7 +1,8 @@
 # coding=utf-8
 
 """
-Analyze a USE OCL source file using 'info model' as a canonical representation.
+Analyze a USE OCL '.use' source file loading the file with use and then
+using 'info model' as a canonical representation.
 Either find some errors or create a model (see useocl.model.Model)
 """
 
@@ -15,6 +16,7 @@ import pyuseocl.model
 #from pyuseocl.model import Model, Enumeration, Class, Attribute, \
 #    Operation, Invariant, Association, Role, AssociationClass, \
 #    PreCondition, PostCondition, BasicType
+
 
 class UseOCLModel(pyuseocl.utils.sources.SourceFile):
     def __init__(self, useModelSourceFile):

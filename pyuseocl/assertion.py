@@ -1,9 +1,8 @@
 # coding=utf-8
 
-
 """
 Add support for "assertions" in USE OCL.
-Assertions can be added in soil files in the form of comment like the
+Assertions can be added in soil files in the form of comments like the
 following::
 
     -- @assert MyClass::MyInvariant1 OK
@@ -13,8 +12,8 @@ following::
     ... the rest of the soil file ...
 
 The "tester" engine will extract any assertion in the soil file and check
-if the expected results are conform to what USE OCL interpreter return.
-This module is to be used with the tester module.
+if the expected results conform to what USE OCL interpreter return.
+This module is to be used with the 'tester' module.
 """
 
 import re

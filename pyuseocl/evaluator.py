@@ -1,9 +1,10 @@
 # coding=utf-8
 """
 Evaluate a set of USE OCL states against a given USE OCL model and build the
-evaluation result. This evaluation result is basically a map yielding for
-each valid state file the corresponding ModelEvaluation (either a instance of
-ModelValidation or an instance of ModelFailure.
+evaluation result (see the module 'Evaluator'). This evaluation result is
+basically a map yielding for each valid state file the corresponding
+ModelEvaluation (either a instance of ModelValidation or an instance of
+ModelViolation).
 
 Valid state files are state files that are non empty and that do not return
 errors when evaluated with the USE OCL model. That is empty state files and

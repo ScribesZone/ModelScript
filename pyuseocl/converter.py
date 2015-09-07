@@ -1,8 +1,9 @@
 # coding=utf-8
 
 """
-Simple converter from  canonical USE OCL expression to pyalaocl expression.
-This is currenrly mostly a draft. The conversion is fully tested.
+Simple converter from  canonical USE OCL expression (expressions returned by
+USE after parsing) to pyalaocl expression.
+This is currently mostly a draft. The conversion is not fully tested.
 """
 
 import re
