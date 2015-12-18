@@ -31,7 +31,6 @@ def testGenerator_UseOclModel_full():
         'OCL2MM.use',
         'UML13All.use',
         'UML13Core.use',
-        'UML2MM.use',
         'CarRental2.use',
         'Empty.use',
         'Grammar.use',
@@ -45,12 +44,10 @@ def testGenerator_UseOclModel_full():
         'Polygon.use',
         'Project.use',
         'RecursiveOperations.use',
-        'redefines.use',
         'ReflexiveAssociation.use',
         'Student.use',
         'simpleSubset.use',
         'simpleSubsetUnion.use',
-        'subsetsTest.use',
         'twoSubsets.use',
         'Sudoku.use',
         'Test1.use',
@@ -62,9 +59,12 @@ def testGenerator_UseOclModel_full():
         'bart.use',
     ]
 
-    test_dir_2 = TEST_CASES_DIRECTORY + os.sep + 'use'
-    test_files2 = ['use' + os.sep + f
+    use4subdir = os.path.join('use4','test')
+    test_dir_2 = os.path.join(TEST_CASES_DIRECTORY,use4subdir)
+    print test_dir_2
+    test_files2 = [use4subdir + os.sep + f
                    for f in os.listdir(test_dir_2) if f.endswith('.use')]
+    print test_files2
     all_test_files = test_files2 + test_files
 
     for test_file in all_test_files:
@@ -72,7 +72,7 @@ def testGenerator_UseOclModel_full():
 
 
 def check_isValid(testFile):
-    useModel =pyuseocl.analyzer.UseOCLModel(
+    useModel = pyuseocl.analyzer.UseOCLModel(
         TEST_CASES_DIRECTORY + os.sep + testFile)
     if useModel.isValid:
         print useModel.model

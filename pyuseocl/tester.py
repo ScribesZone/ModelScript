@@ -65,6 +65,11 @@ class UseEvaluationAndAssertionResults(
         self.nbOfAssertionEvaluations = \
             sum(map(len, self.assertionEvaluationsByStateFile.values()))
 
+    def __str__(self):
+        return '%s OK / %s KO / %s Failure(s)' % (
+            self.nbOfAssertionValidations,
+            self.nbOfAssertionViolations,
+            self.nbOfAssertionFailures )
 
     def __evaluateAssertionsFromState(self, stateFile):
         """

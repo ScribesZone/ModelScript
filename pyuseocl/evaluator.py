@@ -174,6 +174,8 @@ class UseEvaluationResults(object):
                       'checkingStructureSection':str,
                       'checkingInvariantsSection': str}]
             """
+            #print "$"*80
+            #print output_text
             # Note the use of .*? for non-greedy matches.
             r = '^[^\n]+\.soil> open [^\n]*\.soil$' \
                 '(?P<stateSection>.*?)' \
@@ -262,8 +264,13 @@ class UseEvaluationResults(object):
         for (state_index, state_sections) in enumerate(sections_groups):
             state_file = self.stateFiles[state_index]
             state_text = state_sections['stateSection']
+            # print '#### state '+"#"*80+'\n'+state_text
+
             structure_text = state_sections['checkingStructureSection']
+            # print '#### structure '+"#"*80+'\n'+structure_text
+
             invariant_text = state_sections['checkingInvariantsSection']
+            # print '#### invariant structure'+"#"*80+'\n'+invariant_text
 
             # parse the evaluation part
             structure_violations = \

@@ -96,14 +96,18 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
             r'(?P<message>.+)$'
         m = re.match(p, line)
         if m:
-            # print 'ERROR', line
-            return pyuseocl.utils.errors.LocalizedError(
-                self,
-                m.group('message'),
-                int(m.group('line')),
-                int(m.group('column'),
-                m.group('filename')),
-            )
+            try:
+                # sometimes the regexp fail.
+                # e.g. with "ERROR oct. 11, 2015 3:57:00 PM java.util.pref ..."
+                return pyuseocl.utils.errors.LocalizedError(
+                    self,
+                    m.group('message'),
+                    int(m.group('line')),
+                    int(m.group('column'),
+                    m.group('filename')),   # FIXME if needed
+                )
+            except:
+                return  pyuseocl.utils.errors.SourceError(self, line)
         else:
             return pyuseocl.utils.errors.SourceError(self, line)
 
@@ -127,13 +131,14 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
         #             'Error in parsing. Waiting for a line matching %s'
         #             % regexp)
 
+        current_enumeration = None
         current_class = None
         current_association = None
         current_invariant = None
         current_operation = None
         current_operation_condition = None
 
-        for line in self.canonicalLines:
+        for (canonical_line_index,line) in enumerate(self.canonicalLines):
             # print '==',line
             r = r'^(constraints' \
                 r'|attributes' \
@@ -156,7 +161,7 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
                     code=self.sourceLines)
                 continue
 
-            #---- enumeration --------------------------------------------
+            #----  enumeration on one line (use version 3) ---------------
             r = r'^enum (?P<name>\w+) { (?P<literals>.*) };?$'
             m = re.match(r, line)
             if m:
@@ -166,6 +171,36 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
                     code=line,
                     literals=m.group('literals').split(', '))
                 continue
+
+            #---- enumeration header - line # 1 (use version 4) ------------
+            r = r'^enum (?P<name>\w+) {$'
+            m = re.match(r, line)
+            if m:
+                current_enumeration =\
+                    pyuseocl.model.Enumeration(
+                        name=m.group('name'),
+                        model=self.model,
+                        code=line)
+                continue
+
+            #---- enumeration literals - line #2 (use version 4) ------------
+            if current_enumeration is not None:
+                r = r'^ *(?P<literals>[\w_, ]*) *$'
+                m = re.match(r, line)
+                if m:
+                    literals=m.group('literals').split(', ')
+                    for literal in literals:
+                        current_enumeration.addLiteral(literal)
+                    continue
+
+            #---- enumeration literals - line #3 (use version 4) ------------
+            if current_enumeration is not None:
+                r = r' *};$'
+                m = re.match(r, line)
+                if m:
+                    current_enumeration =  None
+                    continue
+
 
             #---- class --------------------------------------------------
             r = r'^((?P<abstract>abstract) )?class (?P<name>\w+)' \
@@ -189,7 +224,7 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
             #---- associationclass ---------------------------------------
             r = r'^((?P<abstract>abstract) )?associationclass (?P<name>\w+)' \
                 r'( < (?P<superclasses>(\w+|,)+))?' \
-                r' between$'
+                r'( between)?$'
             m = re.match(r, line)
             if m:
                 # parse superclasses series
@@ -275,8 +310,8 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
                 continue
 
             #---- role ---------------------------------------------------
-            r = r'^  (?P<type>\w+)\[(?P<cardinality>[^\]]+)\] ' \
-                r'role (?P<name>\w+)' \
+            r = r'^  (?P<type>\w+)\[(?P<cardinality>[^\]]+)\] *' \
+                r'(role (?P<name>\w+))?' \
                 r'( qualifier \((?P<qualifiers>(\w| |:|,)*)\))?' \
                 r'(?P<subsets>( subsets \w+)*)' \
                 r'( (?P<union>union))?' \
@@ -313,7 +348,7 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
                             [tuple(q.split(' : '))
                              for q in m.group('qualifiers').split(', ')]
                     pyuseocl.model.Role(
-                        name=m.group('name'),
+                        name=m.group('name'), # could be empty, but will get default
                         association=current_association,
                         type=m.group('type'),
                         cardMin=min,
@@ -396,7 +431,9 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
 
             #---- a line has not been processed.
             self.isValid = False
-            self.errors.append('Parser: cannot process line "%s"' % line)
+            error = 'Parser: cannot process cannonical line #%s: "%s"' % (canonical_line_index, line)
+            self.errors.append(error)
+            print error
 
 
     def __resolveModel(self):

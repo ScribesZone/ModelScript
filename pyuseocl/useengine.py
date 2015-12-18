@@ -94,7 +94,7 @@ class USEEngine(object):
             cls.outAndErr = None
 
 
-        commandPattern = '%s -nogui %s %s '+ redirection
+        commandPattern = '%s -nogui -nr %s %s '+ redirection
         cls.command = (commandPattern
                            % (cls.USE_OCL_COMMAND, useFile, soilFile))
 
@@ -131,6 +131,11 @@ class USEEngine(object):
                 for err_line in cls.err.split('\n')[:LINE_COUNT]:
                     if err_line != '':
                         log.debug('         ERROR: %s',err_line)
+            else:
+                log.info(
+                    '        without anything in stderr'
+                )
+
             # log.debug('----- errors -----')
             # log.debug(cls.err)
             # log.debug('----- end of errors ------')
@@ -143,10 +148,10 @@ class USEEngine(object):
         """ Try to get the version of use by executing it
         """
         cls.__execute(
-            cls.__soilHelper('empty.use'),
+            cls.__soilHelper('emptyModel.use'),
             cls.__soilHelper('quit.soil'))
         first_line = cls.out.split('\n')[0]
-        m = re.match( r'use version (?P<version>[0-9\.]+),', first_line)
+        m = re.match( r'(use|USE) version (?P<version>[0-9\.]+),', first_line)
         if m:
             return m.group('version')
         else:

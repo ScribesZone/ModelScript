@@ -3,6 +3,11 @@
 Test the tester
 """
 
+
+ZIP_DIR = '/media/jmfavre/Windows/D/ARCHIVES-ENSEIGNEMENT/14-15/M2R-1415/AEIS1415/CyberResidencesOCL/LIVRABLES'
+
+
+
 import logging
 
 logging.basicConfig(level=logging.DEBUG)
@@ -69,7 +74,7 @@ class Test_UseEvaluationAndAssertionResult(DataTestSuite):
 
 
 class Test_ZipTestSuite(DataTestSuite):
-    root = r'C:\Dropbox\_JFE\ENSEIGNEMENT\M2R-1415\AEIS1415\CyberResidencesOCL\LIVRABLES\CyberResidencesOCL-3.0-'
+    root = ZIP_DIR+os.sep+'CyberResidencesOCL-3.0-'
 
     class DataTest(DataTestCase):
         def caseSetup(self):

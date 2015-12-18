@@ -141,7 +141,10 @@ class Enumeration(TopLevelElement,SimpleType):
     def __init__(self, name, model, code=None, literals=()):
         super(Enumeration, self).__init__(name, model, code)
         self.model.enumerations[name] = self
-        self.literals = literals
+        self.literals = list(literals)
+
+    def addLiteral(self, name):
+        self.literals.append(name)
 
     def __repr__(self):
         return '%s(%s)' % (self.name,repr(self.literals))
@@ -252,6 +255,11 @@ class Role(SourceElement):
                  cardMin=None, cardMax=None, type=None, isOrdered=False,
                  qualifiers=None, subsets=None, isUnion=False,
                  expression=None):
+
+        # unamed role get the name of the class with lowercase for the first letter
+        if name=='' or name is None:
+            if type is not None:
+                name = type[:1].lower() + type[1:]
         super(Role, self).__init__(name, code=code)
         self.association = association
         self.association.roles[name] = self

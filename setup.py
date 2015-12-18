@@ -26,7 +26,7 @@ def getLongDescription():
 #-- get the version ------------------------------------------------
 def getVersion():
     version_file = read('CHANGES.rst')
-    version_match = re.search(r"^:version: *([^ ]+)",
+    version_match = re.search(r"^:version: *([^\s]+)",
                                   version_file, re.M)
 #    version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
 #                              version_file, re.M)
@@ -45,12 +45,11 @@ def getRequirements():
 setup(
     name = name,
     version=getVersion(),
-    author='megaplanet',
-    author_email='megaplanet.github@megaplanet.org',
+    author='escribis',
     license='',
-    description='Python wrappeur and utilitiles for the USE OCL environment.',
+    description='Python wrapper and utilities for the USE OCL environment.',
     long_description=getLongDescription(),
-    url='https://github.com/scribezone/PyUseOCL/',
+    url='https://github.com/PythonZone/PyUseOCL/',
     keywords = ['OCL','constraint','UML','validation','query language'],
 
     platforms='any',

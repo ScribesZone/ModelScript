@@ -77,7 +77,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'PyUseOCL'
-copyright = u'2015, ScribeZone'
+copyright = u'2015, escribis'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -279,7 +279,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'pyuseocl', u'PyUseOCL Documentation',
-     [u'ScribeZone'], 1)
+     [u'escribis'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -293,7 +293,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'pyuseocl', u'PyUseOCL Documentation',
-   u'ScribeZone', 'PyUseOCL', 'One line description of project.',
+   u'escribis', 'PyUseOCL', 'One line description of project.',
    'Miscellaneous'),
 ]
 

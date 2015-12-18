@@ -17,12 +17,13 @@ attributes
   budget : Integer
 end
 
-class Project
+class Project 
 attributes
   name : String
   budget : Integer
 end
 
+-- associations
 
 association WorksIn between
   Employee[*]
@@ -43,23 +44,23 @@ end
 
 constraints
 
-context Department
+context Department 
     -- the number of employees working in a department must
-    -- be greater or equal to the number of projects
+    -- be greater or equal to the number of projects 
     -- controlled by the department
   inv MoreEmployeesThanProjects:
-    self.employee->size >= self.project->size
+    self.employee->size >= self.project->size 
 
-context Employee
+context Employee 
     -- employees get a higher salary when they work on
     -- more projects
   inv MoreProjectsHigherSalary:
-    Employee.allInstances->forAll(e1, e2 |
-      e1.project->size > e2.project->size
+    Employee.allInstances->forAll(e1, e2 | 
+      e1.project->size > e2.project->size 
         implies e1.salary > e2.salary)
 
 context Project
-    -- the budget of a project must not exceed the
+    -- the budget of a project must not exceed the 
     -- budget of the controlling department
   inv BudgetWithinDepartmentBudget:
     self.budget <= self.department.budget

@@ -21,7 +21,7 @@ When creating a pull request, try to:
 Testing
 -------
 
-Please add tests in the `test` directory for your code and ensure existing
+Please add tests in the ``test`` directory for your code and ensure existing
 tests don't break.  To run the tests against your code::
 
     python setup.py nosetests
