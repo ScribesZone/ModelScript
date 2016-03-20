@@ -1,7 +1,7 @@
 # coding=utf-8
 
 """
-Model the result of the evaluation of a USE OCL state against
+Model the result of the evaluation of a USE OCL state (a soil file) against
 a USE OCL model. This module represents the output of the evaluation
 while the module 'evaluator' actually perform the computation from
 a state (a '.soil') and a model (a '.use')) using a ``check`` command.
@@ -72,10 +72,10 @@ class ModelEvaluation(object):
         self.isValidated = None  # abstract attribute. Filled by subclasses.
 
         self.invariantEvaluations = OrderedDict()
-        """ dict(Invariant, InvariantEvaluation) """
+        """ dict[Invariant, InvariantEvaluation] """
 
         self.cardinalityViolations = OrderedDict()
-        """ dict(Role, [CardinalityViolation] ) """
+        """ dict[Role, list[CardinalityViolation] ] """
 
 
     def getInvariantEvaluation(self,
@@ -202,3 +202,4 @@ class CardinalityViolation(object):
         self.cardinalityFound = cardinalityFound
 
 
+del ABCMeta, OrderedDict
