@@ -1,9 +1,13 @@
 # coding=utf-8
 
 """
-Analyze a USE OCL '.use' source file loading the file with use and then
-using 'info model' as a canonical representation.
-Either find some errors or create a model (see useocl.model.Model)
+This module allows to analyze a USE OCL ``.use`` source file:
+
+* the file is load with ``use`` binary,
+* then a ``info model`` command is issue,
+* the canonical representation produced is finally parsed.
+
+Either find some errors or create a model (see :class:`pyuseocl.model.Model`)
 """
 
 import os
@@ -18,25 +22,43 @@ import pyuseocl.model
 #    PreCondition, PostCondition, BasicType
 
 
-class UseOCLModel(pyuseocl.utils.sources.SourceFile):
+class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
+    """
+    Abstraction of ``.use`` source file.
+    This source file can be valid or not. In this later case
+    a reference to the contained model will be available.
+    """
+
     def __init__(self, useModelSourceFile):
         """
-        Analyze the given source file and returns a UseOCLModel.
+        Analyze the given source file and returns a UseOCLModelFile.
         If valid, this object contains a model, otherwise it contains the
         list of errors as well as the USE OCL command exit code.
+
         :param useModelSourceFile: The path of the '.use' source file to analyze
         :type useModelSourceFile: str
 
         Examples:
             see test.pyuseocl.test_analyzer
         """
-        super(UseOCLModel, self).__init__(useModelSourceFile)
+        super(UseOCLModelFile, self).__init__(useModelSourceFile)
+
+        #: (bool) Indicates if the model file is valid, that is
+        #: can be successfully parsed and compiled with use.
         self.isValid = None         # Don't know yet
         self.canonicalLines = None  # Nothing yet
         self.canonicalLength = 0    # Nothing yet
+
+        #: (list[Error]) list of errors if any or empty list.
         self.errors = []            # No errors yet
+
+        #: (int) exit code of use command.
         self.commandExitCode = None # Nothing yet
+
+        #: (Model) Model representing the file in a conceptual way
+        #: or None if self.isValid is false
         self.model = None  # Nothing yet, created by parse/resolve
+
         # Try to validate the model and fill
         #       self.isValid
         #       self.errors,
@@ -54,12 +76,16 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
         """
         Save the model in the canonical form (returned by "info model")
         in a given file.
-        :param fileName: the output file name or None. If no file name is
-            provided then the name of the source is taken but the extension
-            will be '.can.use' instead of '.use'
-        :type fileName: str
-        :return: the filename
-        :rtype: str
+
+        Args:
+            fileName (str|NoneType): The output file name or None.
+                If no file name is provided then the name of the source
+                is taken but the extension will be '.can.use' instead
+                of '.use'
+
+        Returns:
+            str: the name of the file generated.
+
         """
         if fileName is None:
             fileName = os.path.splitext(self.fileName)[0] + '.can.use'
@@ -68,6 +94,22 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
         f.close()
         return fileName
 
+
+
+    def printStatus(self, a, b, c):
+        """
+        Print the status of the file:
+
+        * the list of errors if the file is invalid,
+        * a short summary of entities (classes, attributes, etc.) otherwise
+        """
+
+        if self.isValid:
+            print self.model
+        else:
+            print '%s error(s) in the model'  % len(self.errors)
+            for e in self.errors:
+                print e
 
     #--------------------------------------------------------------------------
     #    Class implementation
@@ -80,7 +122,7 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
             self.isValid = False
             self.errors = []
             for line in engine.err.splitlines():
-                self.errors.append(self.__parseErrorLine(line))
+                self.__addErrorFromLine(line)
         else:
             self.isValid = True
             self.errors = []
@@ -90,7 +132,14 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
             self.canonicalLength = len(self.canonicalLines)
         return self.isValid
 
-    def __parseErrorLine(self, line):
+    def __addErrorFromLine(self, line):
+        # testcases/useerrors/bart.use:line 27:26 no viable alternative at input '='
+        # testcases/useerrors/empty.use:line 1:0 mismatched input '<EOF>' expecting 'model'
+        # testcases/useerrors/model.use:line 1:5 mismatched input '<EOF>' expecting an identifier
+        # testcases/useerrors/model.use:2:10: Undefined class `B'.
+        # testcases/useerrors/card.use:line 4:4 extraneous input 'role' expecting [
+        # testcases/useerrors/card1.use:4:5: Invalid multiplicity range `1..0'.
+        # testcases/useerrors/card1.use:8:6: Class `C' cannot be a superclass of itself.
         p = r'^(?P<filename>.*)' \
             r'(:|:line | line )(?P<line>\d+):(?P<column>\d+)(:)?' \
             r'(?P<message>.+)$'
@@ -99,17 +148,18 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
             try:
                 # sometimes the regexp fail.
                 # e.g. with "ERROR oct. 11, 2015 3:57:00 PM java.util.pref ..."
-                return pyuseocl.utils.errors.LocalizedError(
-                    self,
-                    m.group('message'),
-                    int(m.group('line')),
-                    int(m.group('column'),
-                    m.group('filename')),   # FIXME if needed
+                # print "MATCH",line,m.group('filename'),
+                pyuseocl.utils.errors.LocalizedError(
+                    sourceFile=self,
+                    message=m.group('message'),
+                    line=int(m.group('line')),
+                    column=int(m.group('column')),
+                    fileName=m.group('filename')   # FIXME if needed
                 )
             except:
-                return  pyuseocl.utils.errors.SourceError(self, line)
+                pyuseocl.utils.errors.SourceError(self, line)
         else:
-            return pyuseocl.utils.errors.SourceError(self, line)
+            pyuseocl.utils.errors.SourceError(self, line)
 
 
     def __parseCanonicalLinesAndCreateModel(self):
@@ -251,7 +301,7 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
                     # This could be an association class
                     pyuseocl.model.Attribute(
                         name=m.group('name'),
-                        class_=current_class,
+                        classe_=current_class,
                         code=line,
                         type=m.group('type'))
                     continue
@@ -273,7 +323,7 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
                         pyuseocl.model.Operation(
                             name=m.group('name'),
                             model=self.model,
-                            class_=current_class,
+                            classe_=current_class,
                             code=line,
                             signature=m.group('name')
                                       + m.group('params_and_result'))
@@ -371,7 +421,7 @@ class UseOCLModel(pyuseocl.utils.sources.SourceFile):
                     pyuseocl.model.Invariant(
                         name=m.group('name'),
                         model=self.model,
-                        class_=m.group('class'),
+                        classe_=m.group('class'),
                         variable=variables[0],
                         additionalVariables=variables[1:],
                         isExistential=
