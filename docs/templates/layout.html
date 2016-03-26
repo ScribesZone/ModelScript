@@ -1,0 +1,10 @@
+{% extends "!layout.html" %}
+{% block sidebartitle %}
+    {{ super() }}
+
+{% endblock %}
+{% block menu %}
+    {{ super() }}
+    <li class="toctree-l1"><a class="reference internal" href="{{ pathto('genindex') }}">Index</a></li>
+    <li class="toctree-l1"><a class="reference internal" href="{{ pathto('py-modindex') }}">Modules index</a></li>
+{% endblock %}
