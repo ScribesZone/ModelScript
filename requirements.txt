@@ -4,5 +4,5 @@ Pygments
 Sphinx
 docutils
 nose
-PyAlaOcl>=0.3.5
+
 
