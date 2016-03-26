@@ -1,7 +1,8 @@
 Quick Start Guide
 =================
 
-You should be able to install and try PyUseOCL in minutes (assuming that you have a decent python environment installed and in particular pip_).
+You should be able to install and try PyUseOCL in minutes (assuming
+that you have pip_).
 
 Installation
 ------------
