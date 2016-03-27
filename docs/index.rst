@@ -1,3 +1,5 @@
+.. .. coding=utf-8
+
 PyUseOCL's Documentation
 ========================
 
