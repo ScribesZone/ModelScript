@@ -1,4 +1,3 @@
 #!/usr/bin/env bash
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-echo $THISDIR
 python $THISDIR/pyuse.py $*
