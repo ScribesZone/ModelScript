@@ -301,7 +301,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
                     # This could be an association class
                     pyuseocl.model.Attribute(
                         name=m.group('name'),
-                        classe_=current_class,
+                        class_=current_class,
                         code=line,
                         type=m.group('type'))
                     continue
@@ -323,7 +323,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
                         pyuseocl.model.Operation(
                             name=m.group('name'),
                             model=self.model,
-                            classe_=current_class,
+                            class_=current_class,
                             code=line,
                             signature=m.group('name')
                                       + m.group('params_and_result'))
@@ -421,7 +421,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
                     pyuseocl.model.Invariant(
                         name=m.group('name'),
                         model=self.model,
-                        classe_=m.group('class'),
+                        class_=m.group('class'),
                         variable=variables[0],
                         additionalVariables=variables[1:],
                         isExistential=
