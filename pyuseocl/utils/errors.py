@@ -1,5 +1,9 @@
 # coding=utf-8
 
+"""
+Model errors in source files either localized or not.
+"""
+
 class SourceError(object):
     """
     An error in a given source file. Direct instances of SourceError

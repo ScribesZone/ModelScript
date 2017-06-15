@@ -1,5 +1,9 @@
 # coding=utf-8
 
+"""
+Source files and annotated source files.
+"""
+
 import os
 
 import fragments

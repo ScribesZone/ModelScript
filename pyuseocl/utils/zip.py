@@ -1,5 +1,8 @@
 # coding=utf-8
 
+"""
+Zip files and their content.
+"""
 
 import zipfile
 import os.path
@@ -9,7 +12,7 @@ import shutil
 
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
 class ZipArtefact(object):
@@ -23,8 +26,9 @@ class ZipArtefact(object):
                  targetDirectory=None, filter=None, ignoreMacOsDirectory=True):
         """
         Extract a file structure from a zip, either local or remote zip.
+
         :param zipFileId: A URL to a zip file (in this case it will be
-        downloaded) or a path to a local zip file.
+            downloaded) or a path to a local zip file.
         :type zipFileId: str
         :param targetDirectory: The directory where to extract the zip file.
             If none a directory will be created in a temporary place.

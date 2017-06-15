@@ -1,5 +1,10 @@
 # coding=utf-8
 
+"""
+Text fragments of source files.
+"""
+
+__all__ =  ['Fragment', 'Fragmenter', 'RegexpFragmenter']
 
 class Fragment(object):
     """
@@ -253,3 +258,4 @@ class RegexpFragmenter(Fragmenter):
             return None
 
 
+del ABCMeta, abstractmethod
