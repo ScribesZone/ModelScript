@@ -10,7 +10,7 @@ form of zip files.
 
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
 from collections import OrderedDict
@@ -40,10 +40,10 @@ class UseEvaluationAndAssertionResults(
         )
 
         self.assertionEvaluationsByStateFile = OrderedDict()
-        """ dict(str,[InvariantAssertionEvaluation]) """
+        """ dict[str,list[InvariantAssertionEvaluation]] """
 
         self.assertionEvaluationsByStatus = OrderedDict()
-        """ dict(str,[InvariantAssertionEvaluation]) """
+        """ dict[str,list[InvariantAssertionEvaluation]] """
 
         for status in ['OK', 'KO', 'Failure']:
             self.assertionEvaluationsByStatus[status] = []
@@ -66,10 +66,18 @@ class UseEvaluationAndAssertionResults(
             sum(map(len, self.assertionEvaluationsByStateFile.values()))
 
     def __str__(self):
-        return '%s OK / %s KO / %s Failure(s)' % (
+        summary = '%s OK / %s KO / %s Failure(s)' % (
             self.nbOfAssertionValidations,
             self.nbOfAssertionViolations,
             self.nbOfAssertionFailures )
+        text = summary
+        return text
+
+    def showAssertionEvaluationByStateFile(self):
+        for state_file in self.assertionEvaluationsByStateFile:
+            print '    '+os.path.basename(state_file).ljust(60),
+            print ', '.join(map(repr,self.assertionEvaluationsByStateFile[state_file]))
+
 
     def __evaluateAssertionsFromState(self, stateFile):
         """
@@ -128,7 +136,7 @@ class TestSuite(UseEvaluationAndAssertionResults):
     def __init__(self, useFile, stateFiles, testId=None):
         self.testId = testId
         self.useFile = useFile
-        use_ocl_model = pyuseocl.analyzer.UseOCLModel(useFile)
+        use_ocl_model = pyuseocl.analyzer.UseOCLModelFile(useFile)
         UseEvaluationAndAssertionResults.__init__(self, use_ocl_model,
                                                   stateFiles)
 
@@ -216,3 +224,6 @@ class CrossZipTestSuite(object):
         for (id,zip) in idsAndZips:
             pass
 
+
+
+del OrderedDict
