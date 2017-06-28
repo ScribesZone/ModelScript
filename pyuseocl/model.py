@@ -7,13 +7,16 @@ by the "parser" module.
 
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
-from collections import OrderedDict
+import collections
 import abc
 
 class SourceElement(object):
+    """
+    Element of a source file.
+    """
     __metaclass__ = abc.ABCMeta
     def __init__(self, name, code=None):
         self.name = name
@@ -22,29 +25,41 @@ class SourceElement(object):
 
 
 class Model(SourceElement):
+    """
+    Class model.
+    """
     def __init__(self, name, code=None):
         super(Model,self).__init__(name,code)
         self.isResolved = False
 
-        self.enumerations = OrderedDict() #indexed by name
-        self.classes = OrderedDict()  #indexed by name
-        self.associations = OrderedDict()  #indexed by name
-        self.associationClasses = OrderedDict()  #indexed by name
+        #: Map of enumerations, indexed by name.
+        self.enumerations = collections.OrderedDict()
 
-        # indexed by operation full signatures.
-        # e.g. 'Person::raiseSalary(rate : Real) : Real
-        # This is useful for pre/post condition lookup
-        self.operations = OrderedDict()  #indexed by full signature
+        #: Map of classes, indexed by name.
+        self.classes = collections.OrderedDict()  #indexed by name
 
-        # not indexed due to construction order.
-        # The invariant are properties of classes and this is the normal
-        # way to access them (just like attributes for instance)
+        #: Map of associations, indexed by name.
+        self.associations = collections.OrderedDict()  #indexed by name
+
+        #: Map of association classes, indexed by name.
+        self.associationClasses = collections.OrderedDict()  #indexed by name
+
+        #: Map of operations, indexed by operation full signatures.
+        #: e.g. 'Person::raiseSalary(rate : Real) : Real
+        #: This is useful for pre/post condition lookup
+        self.operations = collections.OrderedDict()  #indexed by full signature
+
+        #: List of invariants.
+        #: Invariants are not indexed due to construction order.
+        #: The invariant are properties of classes and this is the normal
+        #: way to access them (just like attributes for instance)
         self.invariants = []
 
         self.operationConditions = []
 
-        # populated during the resolution phase
-        self.basicTypes = OrderedDict()
+        #: Map of basic types. Indexed by type names/
+        #: populated during the resolution phase
+        self.basicTypes = collections.OrderedDict()
 
 
     def findAssociationOrAssociationClass(self, name):
@@ -92,28 +107,46 @@ class Model(SourceElement):
                             (invariantName, classOrAssociationClassName))
 
     def __str__(self):
-        return \
-            'model '+self.name+'\n' \
-            + 'enumerations        :' \
-            + ','.join(self.enumerations.keys()) + '\n' \
-            + 'classes             :' \
-            + ','.join(self.classes.keys()) + '\n' \
-            + 'associations        :' \
-            + ','.join(self.associations.keys()) + '\n' \
-            + 'association classes :' \
-            + ','.join(self.associationClasses.keys()) + '\n' \
-            + 'operations          :' \
-            + ','.join(self.operations.keys()) + '\n' \
-            + 'invariants          :' \
-            + ','.join([i.name for i in self.invariants]) + '\n' \
-            + 'operation conditions:' \
-            + ','.join([i.name for i in self.operationConditions]) + '\n' \
-            + 'basic types         :' \
-            + ','.join(self.basicTypes.keys()) + '\n'
+
+        def category_line(label,elems):
+            n = len(list(elems))
+            return '% 3d %s: %s' % (
+                n,
+                label.ljust(22),
+                ','.join(elems)
+            )
+        categories = [
+            ('enumerations'         ,self.enumerations.keys()),
+            ('classes'              ,self.classes.keys()),
+            ('associations'         ,self.associations.keys()),
+            ('association classes'  ,self.associationClasses.keys()),
+            ('operations'           ,self.operations.keys()),
+            ('invariants'           ,[i.name for i in self.invariants]),
+            ('operation conditions' ,[i.name for i in self.operationConditions]),
+            ('basic types'          ,self.basicTypes.keys()),
+        ]
+        total = 0
+        lines = [ 'model '+self.name ]
+        for (label, items) in categories:
+            lines.append(category_line(label, items))
+            total += len(list(items))
+        lines.append('% 3d' % total)
+
+        return  '\n'.join(lines)
+
+
+
+            # + 'operation conditions:' \
+            # + ','.join([i.name for i in self.operationConditions]) + '\n' \
+            # + 'basic types         :' \
+            # + ','.join(self.basicTypes.keys()) + '\n'
 
 
 
 class TopLevelElement(SourceElement):
+    """
+    Top level element.
+    """
     __metaclass__ = abc.ABCMeta
     def __init__(self, name, model, code=None):
         super(TopLevelElement,self).__init__(name,code=code)
@@ -122,13 +155,22 @@ class TopLevelElement(SourceElement):
 
 
 class SimpleType(object):
-    # not in the source, but used after symbol resolution
+    """
+    Simple types.
+    """
     __metaclass__ = abc.ABCMeta
 
 
 
 class BasicType(SimpleType):
+    """
+    Basic types such as integer.
+    Basic types are not explicitly defined in the source
+    file, but they are used after after symbol resolution.
+    """
     # not in sources, but used created during symbol resolution
+    type = 'BasicType'
+
     def __init__(self, name):
         self.name = name
 
@@ -136,8 +178,12 @@ class BasicType(SimpleType):
         return self.name
 
 
-
 class Enumeration(TopLevelElement,SimpleType):
+    """
+    Enumerations.
+    """
+    type = 'Enumeration'
+
     def __init__(self, name, model, code=None, literals=()):
         super(Enumeration, self).__init__(name, model, code)
         self.model.enumerations[name] = self
@@ -152,18 +198,24 @@ class Enumeration(TopLevelElement,SimpleType):
 
 
 class Class(TopLevelElement):
+    """
+    Classes.
+    """
     def __init__(self, name, model, isAbstract=False, superclasses=()):
         super(Class, self).__init__(name, model)
         self.model.classes[name] = self
         self.isAbstract = isAbstract
         self.superclasses = superclasses  # strings resolved as classes
-        self.attributes = OrderedDict()
-        self.operations = OrderedDict()
-        self.invariants = OrderedDict()   # after resolution
+        self.attributes = collections.OrderedDict()
+        self.operations = collections.OrderedDict()
+        self.invariants = collections.OrderedDict()   # after resolution
 
 
 
 class Attribute(SourceElement):
+    """
+    Attributes.
+    """
     def __init__(self, name, class_, code=None, type=None):
         super(Attribute, self).__init__(name, code=code)
         self.class_ = class_
@@ -176,24 +228,30 @@ class Attribute(SourceElement):
 
 
 class Operation(TopLevelElement):
+    """
+    Operations.
+    """
     def __init__(self, name, model, class_, signature, code=None,
                  expression=None):
         super(Operation, self).__init__(name, model, code)
         self.class_ = class_
         self.class_.operations[name] = self
         self.signature = signature
-        self.full_signature = '%s::%s' % (class_.name,self.signature)
+        self.full_signature = '%s::%s' % (class_.name, self.signature)
         self.model.operations[self.full_signature] = self
         # self.parameters = parameters
         # self.return_type = return_type
         self.expression = expression
 
-        self.conditions = OrderedDict()
+        self.conditions = collections.OrderedDict()
 
 
 
 
 class OperationCondition(TopLevelElement):
+    """
+    Operation conditions (precondition or postcondition).
+    """
     __metaclass__ = abc.ABCMeta
     def __init__(self, name, model, operation, expression, code=None ):
         super(OperationCondition, self).__init__(name, model, code=code)
@@ -204,6 +262,9 @@ class OperationCondition(TopLevelElement):
 
 
 class PreCondition(OperationCondition):
+    """
+    Preconditions.
+    """
     def __init__(self, name, model, operation, expression, code=None ):
         super(PreCondition, self).__init__(
             name, model, operation, expression, code=code)
@@ -211,6 +272,9 @@ class PreCondition(OperationCondition):
 
 
 class PostCondition(OperationCondition):
+    """
+    Postconditions.
+    """
     def __init__(self, name, model, operation, expression, code=None):
         super(PostCondition, self).__init__(
             name, model, operation, expression, code=code)
@@ -218,6 +282,9 @@ class PostCondition(OperationCondition):
 
 
 class Invariant(TopLevelElement):
+    """
+    Invariants.
+    """
     def __init__(self, name, model, class_=None, code=None,
                  variable='self', expression=None,
                  additionalVariables = (),
@@ -240,17 +307,24 @@ class Invariant(TopLevelElement):
 
 
 class Association(TopLevelElement):
+    """
+    Associations.
+    """
     def __init__(self, name, model, kind=None):
+        # type: (str) -> None
         super(Association, self).__init__(name,model)
         self.model.associations[name] = self
         self.kind = kind
-        self.roles = OrderedDict() # indexed by name
+        self.roles = collections.OrderedDict() # indexed by name
         self.arity = 0   # to be set
         self.isBinary = None # to be set
 
 
 
 class Role(SourceElement):
+    """
+    Roles.
+    """
     def __init__(self, name, association, code=None,
                  cardMin=None, cardMax=None, type=None, isOrdered=False,
                  qualifiers=None, subsets=None, isUnion=False,
@@ -279,6 +353,9 @@ class Role(SourceElement):
         return '%s::%s' % (self.association.name, self.name)
 
 class AssociationClass(Class,Association):
+    """
+    Association classes.
+    """
     def __init__(self, name, model, isAbstract=False, superclasses=()):
         # Use multi-inheritance to initialize the association class
         Class.__init__(self, name, model, isAbstract, superclasses)
@@ -296,6 +373,9 @@ class AssociationClass(Class,Association):
 # model
 
 class ExpressionPath(object):
+    """
+    Expression paths.
+    """
     def __init__(self, startClass, pathString):
         self.pathString = pathString
         self.startClass = startClass
@@ -304,3 +384,5 @@ class ExpressionPath(object):
 
     def _evaluate(self, current, names):
         return NotImplementedError() # TODO
+
+
