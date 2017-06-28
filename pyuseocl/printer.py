@@ -7,9 +7,13 @@ This is currently only a preliminary version.
 
 #TODO: to be continued
 
+__all__ = [
+    'UseOCLPrinter',
+]
+
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
 class UseOCLPrinter(object):
