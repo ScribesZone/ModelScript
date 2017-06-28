@@ -448,7 +448,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
             if m:
                 full_signature = \
                     '%s::%s' % (m.group('class'), m.group('signature'))
-                operation = self.model.operations[full_signature]
+                operation = self.model.operationWithSignature[full_signature]
                 current_operation_condition = {
                     'class': m.group('class'),
                     'full_signature': full_signature,
@@ -494,22 +494,22 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
         def __resolveSimpleType(name):
             """ Search the name in enumeration of basic type or register it.
             """
-            if name in self.model.enumerations:
-                return self.model.enumerations[name]
-            elif name in self.model.basicTypes:
-                return self.model.basicTypes[name]
+            if name in self.model.enumerationNamed:
+                return self.model.enumerationNamed[name]
+            elif name in self.model.basicTypeNamed:
+                return self.model.basicTypeNamed[name]
             else:
-                self.model.basicTypes[name] = \
+                self.model.basicTypeNamed[name] = \
                     pyuseocl.model.BasicType(name)
-                return self.model.basicTypes[name]
+                return self.model.basicTypeNamed[name]
 
         def __resolveClassType(name):
             """ Search in class names or association class names.
             """
-            if name in self.model.classes:
-                return self.model.classes[name]
+            if name in self.model.classNamed:
+                return self.model.classNamed[name]
             else:
-                return self.model.associationClasses[name]
+                return self.model.associationClassNamed[name]
 
         def __resolveAttribute(attribute):
             # Resolve the attribute type
@@ -524,7 +524,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
             class_.superclasses = \
                 [__resolveClassType(name) for name in class_.superclasses]
             # resolve class attributes
-            for a in class_.attributes.values():
+            for a in class_.attributes:
                 __resolveAttribute(a)
             # resolve class operations
             for op in class_.operations:
@@ -547,29 +547,33 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
                 for s in role.subsets:
                     pass  # TODO _resolveSubset(role)
             if role.association.isBinary:
-                rs = role.association.roles.values()
+                rs = role.association.roles
                 role.opposite = rs[1] if role is rs[0] else rs[0]
 
         def __resolveAssociation(association):
             association.arity = len(association.roles)
             association.isBinary = (association.arity == 2)
-            for role in association.roles.values():
+            for role in association.roles:
                 __resolveRole(role)
 
         def __resolveInvariant(invariant):
             c = __resolveClassType(invariant.class_)
             invariant.class_ = c
-            c.invariants[invariant.name] = invariant
+            c.invariantNamed[invariant.name] = invariant
 
         # resolve class (and class part of class associations)
-        cs = self.model.classes.values() \
-             + self.model.associationClasses.values()
+        #print ('=====', self.model.classes)
+        #print ('=====', self.model.classes)
+
+        cs = self.model.classes \
+             + self.model.associationClasses
+        # print ('**************',cs)
         for c in cs:
             __resolveClass(c)
 
         # resolve association (and association part of class association)
-        as_ = self.model.associations.values() \
-              + self.model.associationClasses.values()
+        as_ = self.model.associations \
+              + self.model.associationClasses
         for a in as_:
             __resolveAssociation(a)
 

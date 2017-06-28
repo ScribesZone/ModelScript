@@ -33,21 +33,21 @@ class Model(SourceElement):
         self.isResolved = False
 
         #: Map of enumerations, indexed by name.
-        self.enumerations = collections.OrderedDict()
+        self.enumerationNamed = collections.OrderedDict()
 
         #: Map of classes, indexed by name.
-        self.classes = collections.OrderedDict()  #indexed by name
+        self.classNamed = collections.OrderedDict()  #indexed by name
 
         #: Map of associations, indexed by name.
-        self.associations = collections.OrderedDict()  #indexed by name
+        self.associationNamed = collections.OrderedDict()  #indexed by name
 
         #: Map of association classes, indexed by name.
-        self.associationClasses = collections.OrderedDict()  #indexed by name
+        self.associationClassNamed = collections.OrderedDict()  #indexed by name
 
         #: Map of operations, indexed by operation full signatures.
         #: e.g. 'Person::raiseSalary(rate : Real) : Real
         #: This is useful for pre/post condition lookup
-        self.operations = collections.OrderedDict()  #indexed by full signature
+        self.operationWithSignature = collections.OrderedDict()  #indexed by full signature
 
         #: List of invariants.
         #: Invariants are not indexed due to construction order.
@@ -59,15 +59,30 @@ class Model(SourceElement):
 
         #: Map of basic types. Indexed by type names/
         #: populated during the resolution phase
-        self.basicTypes = collections.OrderedDict()
+        self.basicTypeNamed = collections.OrderedDict()
 
+    @property
+    def enumerations(self):
+        return self.enumerationNamed.values()
+
+    @property
+    def classes(self):
+        return self.classNamed.values()
+
+    @property
+    def associations(self):
+        return self.associationNamed.values()
+
+    @property
+    def associationClasses(self):
+        return self.associationClassNamed.values()
 
     def findAssociationOrAssociationClass(self, name):
         log.debug('findAssociationOrAssociationClass:%s', name)
-        if name in self.associations:
-            return self.associations[name]
-        elif name in self.associationClasses:
-            return self.associationClasses[name]
+        if name in self.associationNamed:
+            return self.associationNamed[name]
+        elif name in self.associationClassNamed:
+            return self.associationClassNamed[name]
         else:
             raise Exception('ERROR - %s : No association or association class'
                             % name )
@@ -81,18 +96,18 @@ class Model(SourceElement):
 
         log.debug('findRole:  %s ',a)
         log.debug('findRole:  %s ',a.roles)
-        if roleName in a.roles:
-            return a.roles[roleName]
+        if roleName in a.roleNamed:
+            return a.roleNamed[roleName]
         else:
             raise Exception('ERROR - No "%s" role on association(class) %s' %
                             (roleName, associationOrAssociationClassName)  )
 
 
     def findClassOrAssociationClass(self, name):
-        if name in self.classes:
-            return self.classes[name]
-        elif name in self.associationClasses:
-            return self.associationClasses[name]
+        if name in self.classNamed:
+            return self.classNamed[name]
+        elif name in self.associationNamed:
+            return self.associationNamed[name]
         else:
             raise Exception('ERROR - %s : No class or association class'
                             % name)
@@ -100,8 +115,8 @@ class Model(SourceElement):
     def findInvariant(self, classOrAssociationClassName, invariantName):
         c = self.findClassOrAssociationClass(
                     classOrAssociationClassName)
-        if invariantName in c.invariants:
-            return c.invariants[invariantName]
+        if invariantName in c.invariantNamed:
+            return c.invariantNamed[invariantName]
         else:
             raise Exception('ERROR - No "%s" invariant on class %s' %
                             (invariantName, classOrAssociationClassName))
@@ -116,14 +131,14 @@ class Model(SourceElement):
                 ','.join(elems)
             )
         categories = [
-            ('enumerations'         ,self.enumerations.keys()),
-            ('classes'              ,self.classes.keys()),
-            ('associations'         ,self.associations.keys()),
-            ('association classes'  ,self.associationClasses.keys()),
-            ('operations'           ,self.operations.keys()),
+            ('enumerations'         ,self.enumerationNamed.keys()),
+            ('classes'              ,self.classNamed.keys()),
+            ('associations'         ,self.associationNamed.keys()),
+            ('association classes'  ,self.associationClassNamed.keys()),
+            ('operations'           ,self.operationWithSignature.keys()),
             ('invariants'           ,[i.name for i in self.invariants]),
             ('operation conditions' ,[i.name for i in self.operationConditions]),
-            ('basic types'          ,self.basicTypes.keys()),
+            ('basic types'          ,self.basicTypeNamed.keys()),
         ]
         total = 0
         lines = [ 'model '+self.name ]
@@ -186,8 +201,9 @@ class Enumeration(TopLevelElement,SimpleType):
 
     def __init__(self, name, model, code=None, literals=()):
         super(Enumeration, self).__init__(name, model, code)
-        self.model.enumerations[name] = self
+        self.model.enumerationNamed[name] = self
         self.literals = list(literals)
+
 
     def addLiteral(self, name):
         self.literals.append(name)
@@ -203,12 +219,24 @@ class Class(TopLevelElement):
     """
     def __init__(self, name, model, isAbstract=False, superclasses=()):
         super(Class, self).__init__(name, model)
-        self.model.classes[name] = self
+        self.model.classNamed[name] = self
         self.isAbstract = isAbstract
         self.superclasses = superclasses  # strings resolved as classes
-        self.attributes = collections.OrderedDict()
-        self.operations = collections.OrderedDict()
-        self.invariants = collections.OrderedDict()   # after resolution
+        self.attributeNamed = collections.OrderedDict()
+        self.operationNamed = collections.OrderedDict()
+        self.invariantNamed = collections.OrderedDict()   # after resolution
+
+    @property
+    def attributes(self):
+        return self.attributeNamed.values()
+
+    @property
+    def operations(self):
+        return self.operationNamed.values()\
+
+    @property
+    def invariants(self):
+        return self.invariantNamed.values()
 
 
 
@@ -219,7 +247,7 @@ class Attribute(SourceElement):
     def __init__(self, name, class_, code=None, type=None):
         super(Attribute, self).__init__(name, code=code)
         self.class_ = class_
-        self.class_.attributes[name] = self
+        self.class_.attributeNamed[name] = self
         self.type = type # string resolved as SimpleType
 
 
@@ -235,16 +263,18 @@ class Operation(TopLevelElement):
                  expression=None):
         super(Operation, self).__init__(name, model, code)
         self.class_ = class_
-        self.class_.operations[name] = self
+        self.class_.operationNamed[name] = self
         self.signature = signature
         self.full_signature = '%s::%s' % (class_.name, self.signature)
-        self.model.operations[self.full_signature] = self
+        self.model.operationWithSignature[self.full_signature] = self
         # self.parameters = parameters
         # self.return_type = return_type
         self.expression = expression
+        self.conditionNamed = collections.OrderedDict()
 
-        self.conditions = collections.OrderedDict()
-
+    @property
+    def conditions(self):
+        return self.conditionNamed.values()
 
 
 
@@ -256,7 +286,7 @@ class OperationCondition(TopLevelElement):
     def __init__(self, name, model, operation, expression, code=None ):
         super(OperationCondition, self).__init__(name, model, code=code)
         self.model.operationConditions.append(self)
-        operation.conditions[name] = self
+        operation.conditionNamed[name] = self
         self.expression = expression
 
 
@@ -313,13 +343,15 @@ class Association(TopLevelElement):
     def __init__(self, name, model, kind=None):
         # type: (str) -> None
         super(Association, self).__init__(name,model)
-        self.model.associations[name] = self
+        self.model.associationNamed[name] = self
         self.kind = kind
-        self.roles = collections.OrderedDict() # indexed by name
+        self.roleNamed = collections.OrderedDict() # indexed by name
         self.arity = 0   # to be set
         self.isBinary = None # to be set
 
-
+    @property
+    def roles(self):
+        return self.roleNamed.values()
 
 class Role(SourceElement):
     """
@@ -336,7 +368,7 @@ class Role(SourceElement):
                 name = type[:1].lower() + type[1:]
         super(Role, self).__init__(name, code=code)
         self.association = association
-        self.association.roles[name] = self
+        self.association.roleNamed[name] = self
         self.cardinalityMin = cardMin
         self.cardinalityMax = cardMax
         self.type = type        # string to be resolved in Class
@@ -362,9 +394,9 @@ class AssociationClass(Class,Association):
         Association.__init__(self, name, model, 'associationclass' )
         # But register the association class apart and only once, to avoid
         # confusion and the duplicate in the associations and classes lists
-        del self.model.classes[name]
-        del self.model.associations[name]
-        self.model.associationClasses[name] = self
+        del self.model.classNamed[name]
+        del self.model.associationNamed[name]
+        self.model.associationClassNamed[name] = self
 
 
 # http://pythex.org

@@ -14,14 +14,20 @@ class SourceElement:
 class Model(SourceElement):
 
     def __init__(self, name, code=None):
-        self.enumerations : Dict[str, Enumeration]      # collections.OrderedDict
-        self.classes      : Dict[str, Class]            # collections.OrderedDict
-        self.associations : Dict[str, Association]      # collections.OrderedDict
-        self.associationsClasses : Dict[str, AssociationClass]  # collections.OrderedDict
-        self.operations   : Dict[str, Operation]        # collections.OrderedDict
+        self.enumerations : List[Enumeration]
+        self.enumerationNamed : Dict[str, Enumeration]      # collections.OrderedDict
+        self.classes      : List[Class]
+        self.classNamed   : Dict[str, Class]            # collections.OrderedDict
+        self.associations : List[Association]
+        self.associationNamed : Dict[str, Association]      # collections.OrderedDict
+        self.associationsClasses : List[AssociationClass]
+        self.associationClassNamed : Dict[str, AssociationClass]  # collections.OrderedDict
+        self.operations   : List[str]
+        self.operationWithSignature   : Dict[str, Operation]        # collections.OrderedDict
         self.invariants   : List[Invariant]
         self.operationConditions : List[OperationCondition]
-        self.basicTypes   : Dict[str, BasicType]        # collections.OrderedDict
+        self.basicTypes   : List[BasicType]
+        self.basicTypeNamed   : Dict[str, BasicType]        # collections.OrderedDict
     def findAssociationOrAssociationClass(self, name:str) -> Association: ...
     def findRole(self, associationOrAssociationClassName, roleName:str) -> Role : ...
     def findClassOrAssociationClass(self, name:str) -> Class: ...
@@ -58,9 +64,12 @@ class Class(TopLevelElement):
     def __init__(self, name, model, isAbstract=False, superclasses=()):
         self.isAbstract : bool
         self.superclasses : List[Class]
-        self.attributes : Dict[str,Attribute] # collections.OrderedDict()
-        self.operations : Dict[str,Operation] # collections.OrderedDict()
-        self.invariants : Dict[str,Invariant] # collections.OrderedDict()
+        self.attributes : List[Attribute]
+        self.attributeNamed : Dict[str,Attribute] # collections.OrderedDict()
+        self.operations : List[Operation]
+        self.operationNamed : Dict[str,Operation] # collections.OrderedDict()
+        self.invariants : List[Invariant]
+        self.invariantNamed : Dict[str,Invariant] # collections.OrderedDict()
 
 
 class Attribute(SourceElement):
@@ -75,6 +84,8 @@ class Operation(SourceElement):
         self.signature : str
         self.full_signature : str
         self.expression : str
+        self.conditions : List[OperationCondition]
+        self.conditionNamed : Dict[str,OperationCondition] # OrderedDict()
 
 
 class OperationCondition(TopLevelElement):
@@ -105,7 +116,8 @@ class Invariant(TopLevelElement):
 class Association(TopLevelElement):
     def __init__(self, name, model, kind=None):
         self.kind : str # type: List[str]
-        self.roles : Dict[str,Role]
+        self.roles : List[Role]
+        self.roleNamed : Dict[str,Role] # collections.OrderedDict()
         self.arity : int
         self.isBinary : bool
 
