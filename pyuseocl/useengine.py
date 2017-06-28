@@ -2,6 +2,8 @@
 
 """
 Wrapper to the USE engine. Call the 'use' command.
+This command should be in the system path.
+Otherwise the value UseEngine.USE_OCL_COMMAND should be set explicitely.
 """
 
 __all__ = [
@@ -10,7 +12,7 @@ __all__ = [
 
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+# logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
 import os
@@ -18,37 +20,45 @@ import tempfile
 import operator
 import re
 
-#_RES_DIRECTORY = os.path.join(os.path.abspath(
-#    os.path.dirname(__file__)),'res')
-#_USE_DIRECTORY = os.path.join(_RES_DIRECTORY,'use-3.0.6')
 
 class USEEngine(object):
+    """
+    Wrapper to the "use" command.
 
-#    USE_OCL_COMMAND = os.path.join(_USE_DIRECTORY,'bin','use')
+    .. note::
+
+        "use" must be available in the system path, otherwize the
+        USE_OCL_COMMAND class attribute should be modified.
+    """
+
+
+    #: Path of to the use command binary.
+    #: If the default value (``"use"``) does not work, for instance if
+    #: the use binary is not in the system path, you can change this
+    #: value either in the source, or programmatically using something
+    #: like ::
+    #:
+    #:     USEEngine.USE_OCL_COMMAND = r'c:\Path\To\UseCommand\bin\use'
+    #:
     USE_OCL_COMMAND = 'use'
 
-    """
-    Name of the use command.
-    If the default value ('use') does not work, for instance if
-    the use binary is not in the system path, you can change this
-    value either in the source, or programmatically using
-    USEEngine.USE_OCL_COMMAND = r'c:\Path\To\UseCommand\bin\use'
-    """
-
+    #: Last command executed by the engine
     command = None
-    """ Last command executed by the engine"""
 
+    #: Directory in which the last command was executed
+    directory = None
+
+    #: Exit code of last execution (or None for before any execution)
     commandExitCode = None
-    """ Exit code of last execution"""
 
+    #: Output of last execution in case of separated out/err
     out = None
-    """ output of last execution (in case of separated out/err)"""
 
+    #: Errors of last execution in case of separated out/err
     err = None
-    """ errors of last execution (in case of separated out/err)"""
 
+    #: Combined output & errors for last execution if merged out/err
     outAndErr = None
-    """ output/errors of last execution if merged out/err """
 
 
     @classmethod
@@ -61,13 +71,17 @@ class USEEngine(object):
     @classmethod
     def __execute(cls, useFile, soilFile, errWithOut=False,
                   executionDirectory=None):
-        """ Execute use command with the given model and given soil file.
+        """
+        Execute use command with the given model and given soil file.
         The soil file MUST terminate by a 'quit' statement so that the process
-        finish. The process is executed in the specified 'executionDirectory'.
-        If not specified the execution directory is set to the directory
-        of the use file given as a parameter. This directory could be
-        important if the soil files contains references to relative path.
-        This is in particular the case of 'open file.soil' statements.
+        finish.
+
+        # it seems that this is not necessary. So remove this.
+        #    The process is executed in the specified 'executionDirectory'.
+        #    If not specified the execution directory is set to the directory
+        #    of the use file given as a parameter. This directory could be
+        #    important if the soil files contains references to relative path.
+        #    This is in particular the case of 'open file.soil' statements.
         """
         def readAndRemove(filename):
             with open(filename, 'r') as f:
@@ -99,7 +113,9 @@ class USEEngine(object):
                            % (cls.USE_OCL_COMMAND, useFile, soilFile))
 
         cls.directory = executionDirectory if executionDirectory is not None \
-                    else os.path.dirname(os.path.abspath(useFile))
+                     else os.getcwd()
+        # cls.directory = executionDirectory if executionDirectory is not None \
+        #             else os.path.dirname(os.path.abspath(useFile))
         previousDirectory = os.getcwd()
 
         # Execute the command
@@ -145,7 +161,11 @@ class USEEngine(object):
 
     @classmethod
     def useVersion(cls):
-        """ Try to get the version of use by executing it
+        """
+        Get the version of use by executing it.
+        Raise an exception if use cannot be executed.
+
+        Returns (str): The version number.
         """
         cls.__execute(
             cls.__soilHelper('emptyModel.use'),
@@ -161,6 +181,10 @@ class USEEngine(object):
 
     @classmethod
     def withUseOCL(cls):
+        """
+        Indicates if use is installed and works properly.
+        Returns (bool): True if use is installed properly, False otherwise.
+        """
         try:
             cls.useVersion()
         except EnvironmentError:
@@ -170,6 +194,15 @@ class USEEngine(object):
 
     @classmethod
     def analyzeUSEModel(cls, useFileName):
+        """
+        Submit a ``.use`` model to use and indicates return the exit code.
+
+        Args:
+            useFileName (str): The path of the ``.use`` file to analyze.
+
+        Returns (int):
+            use command exit code.
+        """
         cls.__execute(
             useFileName,
             cls.__soilHelper('infoModelAndQuit.soil'))
