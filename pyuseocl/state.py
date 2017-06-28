@@ -59,3 +59,5 @@ class LinkObject(StateElement):
     def set(self, name, value):
         self.attributes[name] = value
 
+
+del OrderedDict
