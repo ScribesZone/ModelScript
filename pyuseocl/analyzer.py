@@ -3,9 +3,12 @@
 """
 This module allows to analyze a USE OCL ``.use`` source file:
 
-* the file is load with ``use`` binary,
-* then a ``info model`` command is issue,
-* the canonical representation produced is finally parsed.
+* The file is loaded with ``use`` interpreter.
+* Then the ``info model`` command is issued.
+* The canonical representation produced is finally parsed.
+* An model that conforms to a simple UML metamodel is created
+* and stored in model attribute.
+* If errors are detected then errors contains the list of errors.
 
 Either find some errors or create a model (see :class:`pyuseocl.model.Model`)
 """
@@ -96,7 +99,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
 
 
 
-    def printStatus(self, a, b, c):
+    def printStatus(self):
         """
         Print the status of the file:
 
