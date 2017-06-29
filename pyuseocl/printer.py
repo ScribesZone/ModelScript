@@ -35,16 +35,16 @@ class UseOCLPrinter(object):
     def model(self, model):
         self.out('model %s\n\n' % model.name)
 
-        for e in model.enumerations.values():
+        for e in model.enumerations:
             self.enumeration(e)
 
-        for c in model.classes.values():
+        for c in model.classes:
             self.class_(c)
 
-        for a in model.associations.values():
+        for a in model.associations:
             self.association(a)
 
-        for ac in model.associationClasses.values():
+        for ac in model.associationClasses:
             self.associationClass(ac)
 
 
@@ -62,16 +62,16 @@ class UseOCLPrinter(object):
 
         if class_.attributes:
             self.out('attributes\n')
-            for attribute in class_.attributes.values():
+            for attribute in class_.attributes:
                 self.attribute(attribute)
 
         if class_.operations:
             self.out('operations\n')
-            for operation in class_.operations.values():
+            for operation in class_.operations:
                 self.operation(operation)
 
         if class_.invariants:
-            for invariant in class_.invariants.values():
+            for invariant in class_.invariants:
                 self.invariant(invariant)
 
         self.out('end\n\n')
@@ -79,30 +79,30 @@ class UseOCLPrinter(object):
 
     def association(self, association):
         self.out('%s %s between\n' % (association.kind, association.name))
-        for role in association.roles.values():
+        for role in association.roles:
             self.role(role)
         self.out('end\n\n')
 
 
     def associationClass(self, associationClass):
         if associationClass.superclasses:
-            sc = ' < ' + ','.join(associationClass.superclasses.values())
+            sc = ' < ' + ','.join(associationClass.superclasses)
         else:
             sc = ''
         self.out('associationclass %s%s between\n'
                  % (associationClass.name, sc))
 
-        for role in associationClass.roles.values():
+        for role in associationClass.roles:
             self.role(role)
 
         if associationClass.attributes:
             self.out('attributes\n')
-            for attribute in associationClass.attributes.values():
+            for attribute in associationClass.attributes:
                 self.attribute(attribute)
 
         if associationClass.operations:
             self.out('operations\n')
-            for operation in associationClass.operations.values():
+            for operation in associationClass.operations:
                 self.operation(operation)
 
         self.out('end\n\n')
