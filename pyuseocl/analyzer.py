@@ -546,15 +546,21 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
             if role.subsets is not None:
                 for s in role.subsets:
                     pass  # TODO _resolveSubset(role)
-            if role.association.isBinary:
-                rs = role.association.roles
-                role.opposite = rs[1] if role is rs[0] else rs[0]
+            # if role.association.isBinary:
+            #     rs = role.association.roles
+            #     role.opposite = rs[1] if role is rs[0] else rs[0]
 
         def __resolveAssociation(association):
-            association.arity = len(association.roles)
-            association.isBinary = (association.arity == 2)
             for role in association.roles:
                 __resolveRole(role)
+            # resolve outgoing and incoming roles for class
+            # this must be done after role resolutions
+            for role in association.roles:
+                target_class = role.type
+                target_class.incomingRoles.append(role)
+                for opprole in role.opposites:
+                    target_class.outgoingRoles.append(opprole)
+
 
         def __resolveInvariant(invariant):
             c = __resolveClassType(invariant.class_)
