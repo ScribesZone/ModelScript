@@ -365,6 +365,61 @@ class Association(TopLevelElement):
     def isNAry(self):
         return self.arity >= 3
 
+    @property
+    def sourceRole(self):
+        if not self.isBinary:
+            raise ValueError(
+                '"sourceRole" is not defined on "%s" n-ary association' % (
+                    self.name
+                ))
+        return self.roles[0]
+
+    @property
+    def targetRole(self):
+        if not self.isBinary:
+            raise ValueError(
+                '"targetRole" is not defined on "%s" n-ary association' % (
+                    self.name
+                ))
+        return self.roles[1]
+
+    @property
+    def isManyToMany(self):
+        return (
+            self.isBinary
+            and self.roles[0].isMany
+            and self.roles[1].isMany
+        )
+
+    @property
+    def isOneToOne(self):
+        return (
+            self.isBinary
+            and self.roles[0].isOne
+            and self.roles[1].isOne
+        )
+
+    @property
+    def isForwardOneToMany(self):
+        return (
+            self.isBinary
+            and self.roles[0].isOne
+            and self.roles[1].isMany
+        )
+
+    @property
+    def isBackwardOneToMany(self):
+        return (
+            self.isBinary
+            and self.roles[0].isMany
+            and self.roles[1].isOne
+        )
+
+    @property
+    def isOneToMany(self):
+        return self.isForwardOneToMany or self.isBackwardOneToMany
+
+
 class Role(SourceElement):
     """
     Roles.
@@ -408,6 +463,28 @@ class Role(SourceElement):
         rs = list(self.association.roles)
         rs.remove(self)
         return rs
+
+    @property
+    def isOne(self):
+        return self.cardinalityMax == 1
+
+    @property
+    def isMany(self):
+        return self.cardinalityMax is None or self.cardinalityMax >= 2
+
+    @property
+    def isTarget(self):
+        return (
+            self.association.isBinary
+            and self.association.roles[1] == self
+        )
+
+    @property
+    def isSource(self):
+        return (
+            self.association.isBinary
+            and self.association.roles[0] == self
+        )
 
     def __str__(self):
         return '%s::%s' % (self.association.name, self.name)

@@ -119,9 +119,16 @@ class Association(TopLevelElement):
         self.kind : str # type: List[str]
         self.roles : List[Role] # @property
         self.roleNamed : Dict[str,Role] # collections.OrderedDict()
+        self.sourceRole : Role # @property  valid only for binary association
+        self.targetRole : Role # @property  valid only for binary association
         self.arity : int      # @property
         self.isBinary : bool  # @property
         self.isNAry : bool    # @property
+        self.isManyToMany : bool # @property binary and both roles are many
+        self.isOneToOne : bool # @property binary and both roles are one
+        self.isForwardOneToMany : bool # @property binary and both roles are one
+        self.isBackwardOneToMany : bool # @property binary and both roles are one
+        self.isOneToMany : bool # @property binary and both roles are one
 
 
 class Role(SourceElement):
@@ -132,6 +139,8 @@ class Role(SourceElement):
         self.association : Association
         self.cardinalityMin : int
         self.cardinalityMax : Optional[int]
+        self.isOne : bool # @property   card ?..1
+        self.isMany : bool # @property   card ?..*
         self.type : Class
         self.isOrdered : bool
         self.qualifiers : Dict[str,SimpleType]
@@ -140,6 +149,8 @@ class Role(SourceElement):
         self.expression : bool
         self.opposite : Role # @property valid only for binary associations
         self.opposites : List[Role] # @property always valid
+        self.isTarget : bool # @property true only for target of binary association
+        self.isSource : bool # @property true only for source of binary association
 
 class AssociationClass(Class,Association): ...
 
