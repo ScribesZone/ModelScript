@@ -61,10 +61,10 @@ def testGenerator_UseOclModel_full():
 
     use4subdir = os.path.join('use4','test')
     test_dir_2 = os.path.join(TEST_CASES_DIRECTORY,use4subdir)
-    print test_dir_2
+    # print test_dir_2
     test_files2 = [use4subdir + os.sep + f
                    for f in os.listdir(test_dir_2) if f.endswith('.use')]
-    print test_files2
+    #print test_files2
     all_test_files = test_files2 + test_files
 
     for test_file in all_test_files:
@@ -72,7 +72,7 @@ def testGenerator_UseOclModel_full():
 
 
 def check_isValid(testFile):
-    useModel = pyuseocl.analyzer.UseOCLModel(
+    useModel = pyuseocl.analyzer.UseOCLModelFile(
         TEST_CASES_DIRECTORY + os.sep + testFile)
     if useModel.isValid:
         print useModel.model
