@@ -225,6 +225,8 @@ class Class(TopLevelElement):
         self.attributeNamed = collections.OrderedDict()
         self.operationNamed = collections.OrderedDict()
         self.invariantNamed = collections.OrderedDict()   # after resolution
+        self.outgoingRoles = [] # after resolution
+        self.incomingRoles = [] # after resolution
 
     @property
     def attributes(self):
@@ -346,12 +348,22 @@ class Association(TopLevelElement):
         self.model.associationNamed[name] = self
         self.kind = kind
         self.roleNamed = collections.OrderedDict() # indexed by name
-        self.arity = 0   # to be set
-        self.isBinary = None # to be set
 
     @property
     def roles(self):
         return self.roleNamed.values()
+
+    @property
+    def arity(self):
+        return len(self.roles)
+
+    @property
+    def isBinary(self):
+        return self.arity == 2
+
+    @property
+    def isNAry(self):
+        return self.arity >= 3
 
 class Role(SourceElement):
     """
@@ -379,7 +391,23 @@ class Role(SourceElement):
         self.subsets = subsets
         self.isUnion = isUnion
         self.expression = expression
-        self.opposite = None   # set for binary association only
+
+    @property
+    def opposite(self):
+        if self.association.isNAry:
+            raise ValueError(
+                '%s "opposite" is not available for %s n-ary association. Try "opposites"' % (
+                    self.name,
+                    self.association.name
+                ))
+        rs = self.association.roles
+        return rs[1] if self is rs[0] else rs[0]
+
+    @property
+    def opposites(self):
+        rs = list(self.association.roles)
+        rs.remove(self)
+        return rs
 
     def __str__(self):
         return '%s::%s' % (self.association.name, self.name)
