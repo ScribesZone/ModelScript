@@ -7,27 +7,32 @@ import collections
 class SourceElement:
 
     def __init__(self, name, code=None):
-        self.name : str
+        # name : invariants, preconidtions and postconditions can be anonymous
+        # in this case name is empty
+        self.name : Optional[str]
         self.source : Optional[Any]
+        self.lineNo : int
+        self.docComment = Optional[List[str]]
+        self.eolComment = Optional[str]
 
 
 class Model(SourceElement):
 
-    def __init__(self, name, code=None):
+    def __init__(self, name, code=None, lineNo=None, docComment=None, eolComment=None):
         self.enumerations : List[Enumeration]  # @property
-        self.enumerationNamed : Dict[str, Enumeration]      # collections.OrderedDict
-        self.classes      : List[Class]  # @property
-        self.classNamed   : Dict[str, Class]            # collections.OrderedDict
-        self.associations : List[Association] # # @property
-        self.associationNamed : Dict[str, Association]      # collections.OrderedDict
+        self.enumerationNamed : Dict[str, Enumeration]      # OrderedDict
+        self.classes      : List[Class]  # @property  Do not contains associationclasses
+        self.classNamed   : Dict[str, Class]            # OrderedDict
+        self.associations : List[Association] # # @property  Do not contains associationclasses
+        self.associationNamed : Dict[str, Association]      # OrderedDict Do not contains associationclasses
         self.associationsClasses : List[AssociationClass] # # @property
-        self.associationClassNamed : Dict[str, AssociationClass]  # collections.OrderedDict
+        self.associationClassNamed : Dict[str, AssociationClass]  # OrderedDict
         self.operations   : List[str] # # @property
-        self.operationWithSignature   : Dict[str, Operation]        # collections.OrderedDict
-        self.invariants   : List[Invariant]
+        self.operationWithFullSignature   : Dict[str, Operation] # OrderedDict
         self.operationConditions : List[OperationCondition]
         self.basicTypes   : List[BasicType] # @property
-        self.basicTypeNamed   : Dict[str, BasicType]        # collections.OrderedDict
+        self.basicTypeNamed   : Dict[str, BasicType]        # OrderedDict
+
     def findAssociationOrAssociationClass(self, name:str) -> Association: ...
     def findRole(self, associationOrAssociationClassName, roleName:str) -> Role : ...
     def findClassOrAssociationClass(self, name:str) -> Class: ...
@@ -38,13 +43,13 @@ class Model(SourceElement):
 
 class TopLevelElement(SourceElement):
 
-    def __init__(self, name, model, code=None):
+    def __init__(self, name, model, code=None, lineNo=None, docComment=None, eolComment=None):
         self.model : Model
 
 
 class SimpleType(object):
 
-    def __init__(self, name):
+    def __init__(self, name, lineNo=None, docComment=None, eolComment=None):
         self.name = name
 
 
@@ -55,67 +60,98 @@ class BasicType(SimpleType):
 class Enumeration(TopLevelElement,SimpleType):
     type = 'Enumeration'
 
-    def __init__(self, name:str, model:Model, code:Optional[Any], literals:List[str]):
+    def __init__(
+            self, name:str, model:Model, code:Optional[Any], literals:List[str],
+            lineNo=None, docComment=None, eolComment=None):
         self.literals : List[str]
 
 
 class Class(TopLevelElement):
 
-    def __init__(self, name, model, isAbstract=False, superclasses=()):
+    def __init__(
+            self, name, model, isAbstract=False, superclasses=(),
+            lineNo=None, docComment=None, eolComment=None):
+        self.model : Model
         self.isAbstract : bool
         self.superclasses : List[Class]
         self.attributes : List[Attribute] # @property
-        self.attributeNamed : Dict[str,Attribute] # collections.OrderedDict()
+        self.attributeNamed : Dict[str,Attribute] # OrderedDict()
         self.operations : List[Operation] # @property
-        self.operationNamed : Dict[str,Operation] # collections.OrderedDict()
+        self.operationWithSignature : Dict[str,Operation] # OrderedDict()
         self.invariants : List[Invariant] # @property
         self.invariantNamed : Dict[str,Invariant] # collections.OrderedDict()
         self.outgoingRoles : List[Role] # @computed
         self.incomingRoles : List[Role] # @computed
 
 class Attribute(SourceElement):
-    def __init__(self, name, class_, code=None, type=None):
+    def __init__(
+            self, name, class_, code=None, type=None,
+            isDerived=False, isInit=False, expression=None,
+            lineNo=None, docComment=None, eolComment=None):
         self.class_ : Class
-        self.type : SimpleType
-
+        self.type : SimpleType # Set(String) is allowed. Currently not managed
+        self.isDerived : bool # if "derived =" is used
+        self.isInit : bool # if "init :" is used
+        self.expression : Optional[str] # either for derived or init expression
 
 class Operation(SourceElement):
-    def __init__(self, name, model, class_, signature, code=None,expression=None):
+    def __init__(
+            self, name, model, class_, signature, code=None,expression=None,
+            lineNo=None, docComment=None, eolComment=None):
         self.class_ : Class
         self.signature : str
         self.full_signature : str
-        self.expression : str
+        self.hasImplementation : bool
+        self.expression : Optional[str] # only if hasImplementation
         self.conditions : List[OperationCondition] # @derived
         self.conditionNamed : Dict[str,OperationCondition] # OrderedDict()
 
 
-class OperationCondition(TopLevelElement):
-    def __init__(self, name, model, operation, expression, code=None ):
+class Condition(TopLevelElement):
+    def __init__(
+            self, name, model, class_, expression, code=None,
+            lineNo=None, docComment=None, eolComment=None):
+        # name : invariants, preconidtions and postconditions can be anonymous
+        # in this case name is empty
+        self.class_ : Optional[Class] # could be null as some invariants are toplevel
         self.expression : str
 
 
+class OperationCondition(Condition):
+    def __init__(
+            self, name, model, class_, operation, expression, code=None,
+            lineNo=None, docComment=None, eolComment=None):
+        self.operation : Operation
+
 class PreCondition(OperationCondition):
-    def __init__(self, name, model, operation, expression, code=None ): ...
+    def __init__(
+            self, name, model, class_, operation, expression, code=None,
+            lineNo=None, docComment=None, eolComment=None): ...
 
 
 class PostCondition(OperationCondition):
-    def __init__(self, name, model, operation, expression, code=None ): ...
+    def __init__(
+            self, name, model, class_, operation, expression, code=None,
+            lineNo=None, docComment=None, eolComment=None): ...
 
 
-class Invariant(TopLevelElement):
+class Invariant(Condition):
     def __init__(self, name, model, class_=None, code=None,
                  variable='self', expression=None,
-                 additionalVariables = (),
-                 isExistential=False):
-        self.class_ : Class
-        self.expression : str
+                 additionalVariables = (), toplevelDefined=True,
+                 isExistential=False,
+                 lineNo=None, docComment=None, eolComment=None):
+        self.toplevelDefined : bool     # only for invariant defined globally. False for thos in classes
         self.variable : str
         self.additionalVariables : List[str]
         self.isExistential : bool
+        self.isModelInvariant : bool  # @property
 
 
 class Association(TopLevelElement):
-    def __init__(self, name, model, kind=None):
+    def __init__(
+            self, name, model, kind=None,
+            lineNo=None, docComment=None, eolComment=None):
         self.kind : str # type: List[str]
         self.roles : List[Role] # @property
         self.roleNamed : Dict[str,Role] # collections.OrderedDict()
@@ -132,10 +168,12 @@ class Association(TopLevelElement):
 
 
 class Role(SourceElement):
-    def __init__(self, name, association, code=None,
-                 cardMin=None, cardMax=None, type=None, isOrdered=False,
-                 qualifiers=None, subsets=None, isUnion=False,
-                 expression=None):
+    def __init__(
+            self, name, association, code=None,
+            cardMin=None, cardMax=None, type=None, isOrdered=False,
+            qualifiers=None, subsets=None, isUnion=False,
+            expression=None,
+            lineNo=None, docComment=None, eolComment=None):
         self.association : Association
         self.cardinalityMin : int
         self.cardinalityMax : Optional[int]

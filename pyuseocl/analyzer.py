@@ -20,10 +20,13 @@ import pyuseocl.utils.errors
 import pyuseocl.utils.sources
 import pyuseocl.useengine
 import pyuseocl.model
-#from pyuseocl.model import Model, Enumeration, Class, Attribute, \
+from pyuseocl.model import Invariant, PreCondition, PostCondition
+# , \
 #    Operation, Invariant, Association, Role, AssociationClass, \
 #    PreCondition, PostCondition, BasicType
 
+def removeExtraSpaces(x):
+    return ' '.join(x.split())
 
 class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
     """
@@ -49,8 +52,8 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
         #: (bool) Indicates if the model file is valid, that is
         #: can be successfully parsed and compiled with use.
         self.isValid = None         # Don't know yet
-        self.canonicalLines = None  # Nothing yet
-        self.canonicalLength = 0    # Nothing yet
+        self.lines = None  # Nothing yet
+        self.length = 0    # Nothing yet
 
         #: (list[Error]) list of errors if any or empty list.
         self.errors = []            # No errors yet
@@ -66,13 +69,13 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
         #       self.isValid
         #       self.errors,
         #       self.commandExitCode,
-        #       self.canonicalLines,
-        #       self.canonicalLength
+        #       self.lines,
+        #       self.length
         self.__createCanonicalForm()
         if self.isValid:
             # Create the model by parsing the canonical form
             # fill  self.model,
-            self.__parseCanonicalLinesAndCreateModel()
+            self.__parseLinesAndCreateModel()
             self.__resolveModel()
 
     def saveCanonicalModelFile(self, fileName=None):
@@ -131,8 +134,10 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
             self.errors = []
             # Remove 2 lines at the beginning (use intro + command)
             # and two lines at the end (information + quit command)
-            self.canonicalLines = engine.out.splitlines()[2:-2]
-            self.canonicalLength = len(self.canonicalLines)
+            # tmp = engine.out.splitlines()[2:-2]
+            self.lines = [line.rstrip() for line in open(self.fileName, 'rU')]
+
+            self.length = len(self.lines)
         return self.isValid
 
     def __addErrorFromLine(self, line):
@@ -151,7 +156,6 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
             try:
                 # sometimes the regexp fail.
                 # e.g. with "ERROR oct. 11, 2015 3:57:00 PM java.util.pref ..."
-                # print "MATCH",line,m.group('filename'),
                 pyuseocl.utils.errors.LocalizedError(
                     sourceFile=self,
                     message=m.group('message'),
@@ -165,217 +169,456 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
             pyuseocl.utils.errors.SourceError(self, line)
 
 
-    def __parseCanonicalLinesAndCreateModel(self):
-        # self.__matches = None
-        # self.__i = 0
-        #
-        # def until(regexp, force=True):
-        #     self.__matches = None
-        #     while self.__i < self.canonicalLength:
-        #         print self.__i, ':', self.canonicalLines[self.__i]
-        #         self.__matches = re.match(regexp,
-        #                                   self.canonicalLines[self.__i])
-        #         if self.__matches is not None:
-        #             break
-        #         else:
-        #             self.__i += 1
-        #     if self.__matches is None and force:
-        #         raise Exception(
-        #             'Error in parsing. Waiting for a line matching %s'
-        #             % regexp)
+    def __parseLinesAndCreateModel(self):
 
+        class DocCommentState(object):
+            def __init__(self):
+                self.lines = None
+
+            def add(self, line):
+                if self.lines is None:
+                    self.lines=[]
+                self.lines.append(line)
+
+            def consume(self):
+                if self.lines is None:
+                    return None
+                else:
+                    _ = self.lines
+                    self.lines=None
+                    return _
+
+            def clean(self):
+                self.lines=None
+
+
+
+        in_block_comment = False
+        is_in_doc_comment = False
+        last_doc_comment = DocCommentState()
+        current_eol_comment = None
         current_enumeration = None
         current_class = None
-        current_association = None
-        current_invariant = None
-        current_operation = None
+        current_attribute = None    # could be also in association class
+        current_operation = None    # could be also in association class
+        current_association = None  # could be also association class
+        current_context = None      # Context of an inv|pre|post. None or Dict
+                                    #   'variables' : Optional[List[str]]
+                                    #   'classname': str
+                                    #   'signature': Optional[str]
+        current_condition = None    # invariant, precondition or condition
         current_operation_condition = None
 
-        for (canonical_line_index,line) in enumerate(self.canonicalLines):
-            # print '==',line
-            r = r'^(constraints' \
-                r'|attributes' \
-                r'|operations' \
-                r'|    begin' \
-                r'|    end' \
-                r'|' \
-                r'|( *@(Test|Monitor)\(.*\)))$'
+        for (line_index,line) in enumerate(self.lines):
+
+            original_line = line
+            # replace tabs by spaces
+            line = line.replace('\t',' ')
+            line_no = line_index+1
+
+
+
+
+            #--------------------------------------------------
+            # Annotation lines
+            #--------------------------------------------------
+            r = r' *@(Test|Monitor).*$'
             m = re.match(r, line)
             if m:
                 # these lines can be ignored
+                last_doc_comment.clean()
                 continue
 
-            #---- model --------------------------------------------------
-            r = r'^model (?P<name>\w+)$'
+            #--------------------------------------------------
+            # Single and multi line /* */
+            #--------------------------------------------------
+
+            # replace inline /* */ by spaces
+            line = re.sub(r'(/\*.*?\*/)',' ',line)
+
+            # deal with /* comments
+            r = r'^ */\*.*$'
+            m = re.match(r, line)
+            if m:
+                in_block_comment = True
+                last_doc_comment.clean()
+                continue
+
+            if in_block_comment:
+                r = r'^.*\*/(?P<rest>.*)$'
+                m = re.match(r, line)
+                if m:
+                    in_block_comment = False
+                    last_doc_comment.clean()
+                    line = m.group('rest')
+                    # do not start the loop, the rest could be important
+
+            if in_block_comment:
+                last_doc_comment.clean()
+                continue
+
+            #--------------------------------------------------
+            # Blank lines
+            #--------------------------------------------------
+            # This must go after /* */ comments as such a
+            # comment can create a blank line
+
+            r = r'^\s*$'
+            m = re.match(r, line)
+            if m:
+                last_doc_comment.clean()
+                continue
+
+            #--------------------------------------------------
+            # Line comment --
+            #--------------------------------------------------
+
+
+            # Full line comment
+            r = r'^ *--(?P<comment>.*)$'
+            m = re.match(r, line)
+            if m:
+                last_doc_comment.add(m.group('comment'))
+                continue
+
+            # Everything that follow is not part of a full line comment
+            is_in_doc_comment = False
+
+
+
+            # End of line (EOL comment)
+            r = r'^(?P<content>.*?)--(?P<comment>.*)'
+            m = re.match(r, line)
+            if m:
+                # There is a eol comment on this line
+                # all following cases can use this variable
+                current_eol_comment = m.group('comment')
+                # we go though the next cases without the eol
+                line=m.group('content')
+            else:
+                current_eol_comment = None
+
+            #--------------------------------------------------
+            # Blocks : TODO: check this
+            #--------------------------------------------------
+
+            # # TODO: check if this is safe
+            # r = r'^( '\
+            #     r'| *begin' \
+            #     r'| +end' \
+            #     r'| *between' \
+            #     r')$'
+            # m = re.match(r, line)
+            # if m:
+            #     # these lines can be ignored
+            #     continue
+
+
+            r = r'^ *constraints'
+            m = re.match(r, line)
+            if m:
+                last_doc_comment.clean()
+                current_enumeration = None
+                current_attribute = None
+                current_operation = None
+                current_condition = None
+                current_operation_condition = None
+                continue
+
+            r = r'^ *attributes *$'
+            m = re.match(r, line)
+            if m:
+                last_doc_comment.clean()
+                current_enumeration = None
+                current_attribute = None
+                current_operation = None
+                current_condition = None
+                current_operation_condition = None
+                continue
+
+            r = r'^ *between *$'
+            m = re.match(r, line)
+            if m:
+                last_doc_comment.clean()
+                current_enumeration = None
+                continue
+
+            r = r'^ *operations *$'
+            m = re.match(r, line)
+            if m:
+                last_doc_comment.clean()
+                current_enumeration = None
+                current_attribute = None
+                current_operation = None
+                current_condition = None
+                current_operation_condition = None
+                continue
+
+            #--------------------------------------------------
+            # model --
+            #--------------------------------------------------
+
+            r = r'^ *model (?P<name>\w+)$'
             m = re.match(r, line)
             if m:
                 self.model = pyuseocl.model.Model(
                     name=m.group('name'),
-                    code=self.sourceLines)
+                    code=self.sourceLines,
+                    lineNo = line_no,
+                    docComment = last_doc_comment.consume(),
+                    eolComment = current_eol_comment
+                )
                 continue
 
-            #----  enumeration on one line (use version 3) ---------------
-            r = r'^enum (?P<name>\w+) { (?P<literals>.*) };?$'
+
+            #--------------------------------------------------
+            # enumeration --
+            #--------------------------------------------------
+
+            #---- first line of enumeration (may be one line only) -----------
+            r = r'^ *enum +(?P<name>\w+) *{' \
+                r' *(?P<literals>[\w+, ]*)' \
+                r' *(?P<end>})? *;?' \
+                r' *$'
             m = re.match(r, line)
             if m:
-                pyuseocl.model.Enumeration(
+                current_context = None
+                current_association = None
+                current_class = None
+                current_attribute = None
+                current_operation = None
+                literals=[ l
+                    for l in m.group('literals').replace(' ','').split(',')
+                    if l != ''
+                ]
+                enumeration = pyuseocl.model.Enumeration(
                     name=m.group('name'),
                     model=self.model,
                     code=line,
-                    literals=m.group('literals').split(', '))
+                    literals=literals,
+                    lineNo=line_no,
+                    docComment=last_doc_comment.consume(),
+                    eolComment=current_eol_comment,
+                )
+                self.model.enumerationNamed[m.group('name')] = enumeration
+                if m.group('end'):
+                    current_enumeration = None
+                else:
+                    current_enumeration = enumeration
                 continue
 
-            #---- enumeration header - line # 1 (use version 4) ------------
-            r = r'^enum (?P<name>\w+) {$'
-            m = re.match(r, line)
-            if m:
-                current_enumeration =\
-                    pyuseocl.model.Enumeration(
-                        name=m.group('name'),
-                        model=self.model,
-                        code=line)
-                continue
-
-            #---- enumeration literals - line #2 (use version 4) ------------
+            #---- enumeration literals, may be with end ------------
             if current_enumeration is not None:
-                r = r'^ *(?P<literals>[\w_, ]*) *$'
+                r = r'^ *(?P<literals>[\w, ]*)?' \
+                    r' *(?P<end>})? *;?' \
+                    r' *$'
+                current_context = None
+                current_association = None
+                current_class = None
+                current_attribute = None
+                current_operation = None
                 m = re.match(r, line)
                 if m:
-                    literals=m.group('literals').split(', ')
-                    for literal in literals:
-                        current_enumeration.addLiteral(literal)
+                    if m.group('literals') is not None:
+                        literals = [l
+                                    for l in m.group('literals').replace(' ', '').split(',')
+                                    if l != ''
+                                    ]
+                        for literal in literals:
+                            current_enumeration.addLiteral(literal)
+                    if m.group('end'):
+                        current_enumeration = None
                     continue
-
-            #---- enumeration literals - line #3 (use version 4) ------------
-            if current_enumeration is not None:
-                r = r' *};$'
-                m = re.match(r, line)
-                if m:
-                    current_enumeration =  None
-                    continue
-
 
             #---- class --------------------------------------------------
-            r = r'^((?P<abstract>abstract) )?class (?P<name>\w+)' \
-                r'( < (?P<superclasses>(\w+|,)+))?$'
+            r = r'^ *((?P<abstract>abstract) +)?class +(?P<name>\w+)' \
+                r'( *< *(?P<superclasses>(\w+| *, *)+))? *(?P<end> end)?' \
+                r' *$'
             m = re.match(r, line)
             if m:
+                current_enumeration = None
+                current_association = None
+                current_attribute = None
+                current_operation = None
                 # parse superclasses series
                 if m.group('superclasses') is None:
                     superclasses = ()
                 else:
-                    superclasses = m.group('superclasses').split(',')
+                    superclasses = [c.strip() for c in m.group('superclasses').split(',')]
                 current_class = \
                     pyuseocl.model.Class(
                         name=m.group('name'),
                         model=self.model,
                         isAbstract=m.group('abstract') == 'abstract',
-                        superclasses=superclasses
+                        superclasses=superclasses,
+                        lineNo=line_no,
+                        docComment=last_doc_comment.consume(),
+                        eolComment=current_eol_comment,
                     )
+                if m.group('end') is not None:
+                    current_class = None
+                else:
+                    current_context = {
+                        'variables': None,
+                        'classname': m.group('name'),
+                        'signature': None,
+                    }
                 continue
 
             #---- associationclass ---------------------------------------
-            r = r'^((?P<abstract>abstract) )?associationclass (?P<name>\w+)' \
-                r'( < (?P<superclasses>(\w+|,)+))?' \
-                r'( between)?$'
+            r = r'^ *((?P<abstract>abstract) +)?associationclass +(?P<name>\w+)' \
+                r'( *< *(?P<superclasses>(\w+| *, *)+))?' \
+                r'( +(between)? *)?' \
+                r' *$'
             m = re.match(r, line)
             if m:
+                current_context = None
+                current_enumeration = None
+                current_attribute = None
+                current_operation = None
                 # parse superclasses series
                 if m.group('superclasses') is None:
                     superclasses = ()
                 else:
-                    superclasses = m.group('superclasses').split(',')
+                    superclasses = [c.strip() for c in m.group('superclasses').split(',')]
+                    # print('YYY'+m.group('name'))
+                    # print(superclasses)
                 ac = \
                     pyuseocl.model.AssociationClass(
                         name=m.group('name'),
                         model=self.model,
                         isAbstract=m.group('abstract') == 'abstract',
-                        superclasses=superclasses
+                        superclasses=superclasses,
+                        lineNo=line_no,
+                        docComment=last_doc_comment.consume(),
+                        eolComment=current_eol_comment,
                     )
                 current_class = ac
                 current_association = ac
                 continue
 
             #---- attribute ----------------------------------------------
-            r = r'^  (?P<name>\w+) : (?P<type>\w+)$'
+            # Set(String) is allowed. See test CarRental2
+            # Tuple( x : Tuple(x : Integer), y : Tuple(y : Integer)) : See test 030
+            r = r'^ *(?P<name>\w+)' \
+                r' *: *(?P<type>\w+[(),:\w+ ]*)' \
+                r' *((?P<keyword>derive|init) *[=:](?P<expression>.*))?' \
+                r' *;?' \
+                r' *$'
             m = re.match(r, line)
             if m:
+                current_enumeration = None
+                current_operation = None
                 if current_class is not None:
-                    # This could be an association class
-                    pyuseocl.model.Attribute(
+                    current_enumeration = None
+                    current_operation = None
+                    is_derived = m.group('keyword') == 'derive'
+                    is_init = m.group('keyword') == 'init'
+                    expression = m.group('expression')
+                    # This could be in an association class
+                    attribute = pyuseocl.model.Attribute(
                         name=m.group('name'),
                         class_=current_class,
                         code=line,
-                        type=m.group('type'))
+                        type=m.group('type').replace(' ',''),
+                        isDerived=is_derived,
+                        isInit=is_init,
+                        expression=expression,
+                        lineNo=line_no,
+                        docComment=last_doc_comment.consume(),
+                        eolComment=current_eol_comment,
+                    )
+                    current_attribute = attribute
                     continue
 
             #---- operation ----------------------------------------------
-            r = r'^  (?P<name>\w+)' \
-                r'(?P<params_and_result>[^=]*)' \
-                r'( = )?$'
-            # r = r'^  (?P<name>\w+)' \
-            #    r'\((?P<parameters>.*)\)' \
-            #    r'( : (?P<type>(\w|,|\))+))?' \
-            #    r'( =)?'
+            r = r'^ *(?P<name>\w+)' \
+                r' *\((?P<parameters>[\w ,:\(\)]*)\)' \
+                r'( *: *(?P<type>[\w,\(\) ]+))?' \
+                r'( *=(?P<expr>.*))?' \
+                r' *$'
             m = re.match(r, line)
             if m and '(' in line and ')' in line:
+                current_enumeration = None
+                current_attribute = None
+                current_condition = None
                 if current_class is not None:
-                    # print line
+
                     # This could be an association class
+                    parameters = m.group('parameters').replace(' ','')
+                    result = '' if m.group('type') is None else m.group('type').replace(' ','')
+                    resultstr = '' if result == '' else ':'+result
+                    signature = '%s(%s)%s' % (
+                        # current_class.name,
+                        m.group('name'),
+                        parameters,
+                        resultstr
+                    )
+                    signature = signature.replace(' ','')
+                    # print('XXX add operation "%s"' % signature)
+                    expr=m.group('expr')
                     operation = \
                         pyuseocl.model.Operation(
                             name=m.group('name'),
                             model=self.model,
                             class_=current_class,
                             code=line,
-                            signature=m.group('name')
-                                      + m.group('params_and_result'))
-                    if line.endswith(' = '):
-                        current_operation = operation
-                    else:
-                        current_operation = None
-                    #print '==',line
-                    #print '   ', operation.signature
-                    #print '   "%s"' % operation.full_signature
-                    #print
-
+                            signature=signature,
+                            expression=expr,
+                            lineNo=line_no,
+                            docComment=last_doc_comment.consume(),
+                            eolComment=current_eol_comment,
+                        )
+                    current_operation = operation
+                    current_context = {
+                        'variables': None,
+                        'classname': current_class.name,
+                        'signature': signature,
+                    }
                     continue
 
-            #---- operation expression -----------------------------------
-            r = r'^    (?P<expression>[^ ].*)$'
-            m = re.match(r, line)
-            if m:
-                if current_operation is not None:
-                    # This could be an association class
-                    current_operation.expression = m.group('expression')
-                    continue
+
 
             #---- association --------------------------------------------
-            r = r'^(?P<kind>association|composition|aggregation) ' \
-                r'(?P<name>\w+) between$'
+            r = r'^ *(?P<kind>association|composition|aggregation) *' \
+                r'(?P<name>\w+) *(between)?' \
+                r' *$'
             m = re.match(r, line)
             if m:
+                current_enumeration = None
+                current_class = None
+                current_attribute = None
+                current_operation = None
+                current_context = None
                 current_association = \
                     pyuseocl.model.Association(
                         name=m.group('name'),
                         model=self.model,
-                        kind=m.group('kind'))
+                        kind=m.group('kind'),
+                        lineNo=line_no,
+                        docComment=last_doc_comment.consume(),
+                        eolComment=current_eol_comment,
+                    )
                 continue
 
             #---- role ---------------------------------------------------
-            r = r'^  (?P<type>\w+)\[(?P<cardinality>[^\]]+)\] *' \
-                r'(role (?P<name>\w+))?' \
-                r'( qualifier \((?P<qualifiers>(\w| |:|,)*)\))?' \
-                r'(?P<subsets>( subsets \w+)*)' \
-                r'( (?P<union>union))?' \
-                r'( (?P<ordered>ordered))?' \
-                r'( (derived = (?P<expression>.*)))?$'
+            r = r'^ *(?P<type>\w+) *\[(?P<cardinality>[^\]]+)\]' \
+                r' *(role +(?P<name>\w+))?' \
+                r' *( +qualifier *\( *(?P<qualifiers>(\w| |:|,)*) *\))?' \
+                r' *(?P<subsets>( +subsets +\w+)*)' \
+                r' *( +(?P<union>union))?' \
+                r' *( +(?P<ordered>ordered))?' \
+                r' *( +(derived *= *(?P<expression>.*)))? *;?'\
+                r' *?$'
             m = re.match(r, line)
             if m:
                 if current_association is not None:
+                    current_enumeration = None
+                    current_attribute = None
+                    current_operation = None
                     # This could be an association class
                     # Parse the cardinality string
-                    c = m.group('cardinality').split('..')
+                    c = m.group('cardinality').replace(' ','').split('..')
                     if c[0] == '*':
                         min = 0
                         max = None
@@ -389,17 +632,14 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
                     if m.group('subsets') == '':
                         subsets = None
                     else:
-                        #print '***************', line
-                        #print '**  ',m.group('subsets')
-                        subsets = m.group('subsets').split('subsets ')[1:]
-                        #print s
+                        subsets = removeExtraSpaces(m.group('subsets')).split('subsets ')[1:]
                     # Parse the 'qualifiers' series
                     if m.group('qualifiers') is None:
                         qualifiers = None
                     else:
                         qualifiers = \
-                            [tuple(q.split(' : '))
-                             for q in m.group('qualifiers').split(', ')]
+                            [tuple(q.split(':'))
+                             for q in m.group('qualifiers').replace(' ','').split(',')]
                     pyuseocl.model.Role(
                         name=m.group('name'), # could be empty, but will get default
                         association=current_association,
@@ -410,83 +650,193 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
                         qualifiers=qualifiers,
                         subsets=subsets,
                         isUnion=m.group('union') == 'union',
-                        expression=m.group('expression')
+                        expression=m.group('expression'),
+                        lineNo=line_no,
+                        docComment=last_doc_comment.consume(),
+                        eolComment=current_eol_comment,
                     )
                     continue
 
-            #---- invariant ----------------------------------------------
-            r = r'^context (?P<vars>(\w| |,)+) : (?P<class>\w+)' \
-                r'( (?P<existential>existential))? inv (?P<name>\w+):$'
-            m = re.match(r, line)
-            if m:
-                variables = m.group('vars').split(', ')
-                current_invariant = \
-                    pyuseocl.model.Invariant(
-                        name=m.group('name'),
-                        model=self.model,
-                        class_=m.group('class'),
-                        variable=variables[0],
-                        additionalVariables=variables[1:],
-                        isExistential=
-                        m.group('existential') == 'existential',
-                    )
-                continue
+            # ---- class context and may be invariant name ----------------------------------------------
+            # Could be a model invariant
+            #   context
+            rcontext=(
+                r' *(?P<context>context)'
+                r' +(?P<vars>[\w ,]+ *:)??'
+                r' *(?P<classname>\w+)'
+                r' *(::(?P<signature>\w+\([\w, \(\):]*))?'
+            )
+            rcond=(
+                r' *((?P<existential>existential)?'
+                r' *(?P<cond>pre|post|inv)'
+                r' *(?P<name>\w+)? *:)?'
+            )
+            r='(%s)?(%s)?(?P<expr>.*)?' % (rcontext,rcond)
+            # print rcontext
+            # print rcond
+            # print('++++++ '+r)
 
-            #---- invariant expression -----------------------------------
-            r = r'^  (?P<expression>[^ ].*)$'
+            # print('°°°°°°°°°°'+line)
             m = re.match(r, line)
             if m:
-                if current_invariant is not None:
-                    current_invariant.expression = m.group('expression')
-                    current_invariant = None
+                # print('%'*30)
+                if m.group('context') is not None or m.group('cond') is not None:
+                    # print('==================='+ line)
+
+                    if m.group('context'):
+                        # print(':::           context '+m.group('classname'))
+                        # The context is specified => this is a top level condition
+                        current_enumeration = None
+                        current_class = None
+                        current_association = None
+                        current_attribute = None
+                        current_operation = None
+                        variables = None if m.group('vars') is None \
+                            else m.group('vars').replace(' ','').split(',')
+                        classname = m.group('classname')
+                        signature=None if m.group('signature') is None \
+                            else m.group('signature').replace(' ','')
+                        current_context = {
+                            'variables': variables,
+                            'classname': classname,
+                            'signature': signature,
+                        }
+
+                    if m.group('cond'):
+                        # print(':::        '+m.group('cond')+' '+(m.group('name') if m.group('name') is not None
+                        # else '<noname>'+':'))
+                        condname = '' if m.group('name') is None else m.group('name')
+                        if m.group('cond') == 'inv':
+                            # An invariant can have no context at all. Deal with it.
+                            if current_context is None:
+                                classname = None
+                                variables = None
+                            else:
+                                classname = current_context['classname']
+                                variables = current_context['variables']
+                            # 'classname']
+                            variable = None if variables is None else variables[0]
+                            additionalVariables = \
+                                None if variables is None or len(variables) < 2 \
+                                else variables[1:]
+                            current_condition = pyuseocl.model.Invariant(
+                                name=condname,
+                                model=self.model,
+                                class_=classname,
+                                variable=variable,
+                                additionalVariables=additionalVariables,
+                                isExistential=m.group('existential') == 'existential',
+                                expression=m.group('expr'),
+                                lineNo=line_no,
+                                docComment=last_doc_comment.consume(),
+                                eolComment=current_eol_comment,
+                            )
+                        elif m.group('cond') == 'pre':
+                            classname = current_context['classname']
+                            current_condition = pyuseocl.model.PreCondition(
+                                name=condname,
+                                model=self.model,
+                                class_=classname,
+                                operation=current_context['signature'],
+                                expression=m.group('expr'),
+                                lineNo=line_no,
+                                docComment=last_doc_comment.consume(),
+                                eolComment=current_eol_comment,
+                            )
+                        elif m.group('cond') == 'post':
+                            classname = current_context['classname']
+                            current_condition = pyuseocl.model.PostCondition(
+                                name=condname,
+                                model=self.model,
+                                class_=classname,
+                                operation=current_context['signature'],
+                                expression=m.group('expr'),
+                                lineNo=line_no,
+                                docComment=last_doc_comment.consume(),
+                                eolComment=current_eol_comment,
+                            )
+                    continue
+            # print('//////////'+line)
+
+
+            #===========================================================
+            #  Continuation stuff
+            #===========================================================
+
+            # From here and below only lines that are nested inside
+            # entities, so don't use comments if not used before
+            last_doc_comment.clean()
+
+            # ---- condition body -----
+            # must be before the operation
+            # print('#'*80)
+            if current_condition is not None:
+                # print('00000000'+line)
+                r = r'^(?P<expression>.*)$'
+                m = re.match(r, line)
+                if m:
+                    # print('kkkk')
+                    current_condition.expression += '\n' + m.group('expression')
                     continue
 
-            #---- pre or post condition ----------------------------------
-            r = r'^context (?P<class>\w+)::' \
-                r'(?P<signature>\w+.*)$'
-            m = re.match(r, line)
-            if m:
-                full_signature = \
-                    '%s::%s' % (m.group('class'), m.group('signature'))
-                operation = self.model.operationWithSignature[full_signature]
-                current_operation_condition = {
-                    'class': m.group('class'),
-                    'full_signature': full_signature,
-                    'operation': operation
-                }
-                continue
-
-            #---- body of pre or post condition --------------------------
-            r = r'^  (?P<kind>(pre|post)) (?P<name>\w+): ' \
-                r'(?P<expression>.*)$'
-            m = re.match(r, line)
-            if m:
-                if current_operation_condition is not None:
-                    operation = current_operation_condition['operation']
-                    v = m.groupdict()
-                    if v['kind'] == 'pre':
-                        pyuseocl.model.PreCondition(
-                            v['name'], self.model, operation, v['expression'])
-                    else:
-                        pyuseocl.model.PostCondition(
-                            v['name'], self.model, operation, v['expression'])
-
-                    current_operation_condition = None
+            # ---- attribute expression -----------------------------------
+            if current_attribute is not None:
+                r = r'^( *(?P<keyword>derive|init)? *[=:])?(?P<expression>.*)' \
+                    r' *$'
+                m = re.match(r, line)
+                if m:
+                    is_derived = m.group('keyword') == 'derive'
+                    is_init = m.group('keyword') == 'init'
+                    expression = m.group('expression')
+                    if is_derived:
+                        current_attribute.isDerived = True
+                    elif is_init:
+                        current_attribute.isInit = True
+                    if expression is not None:
+                        if current_attribute.expression is None:
+                            current_attribute.expression = expression
+                        else:
+                            current_attribute.expression += '\n'+expression
                     continue
+
+            # ---- operation expression -----------------------------------
+            if current_operation is not None:
+                r = r'^ *(?P<expression>.*)' \
+                    r' *$'
+                m = re.match(r, line)
+                if m:
+                    expression = m.group('expression')
+                    if expression is not None:
+                        if current_operation.expression is None:
+                            if expression != 'end':
+                                current_operation.expression = expression
+                        else:
+                            if expression != 'end' or 'begin' in current_operation.expression:
+                                current_operation.expression += '\n'+expression
+                    continue
+
+
 
             #---- end of association, class, invariant or operation ------
-            r = r'^(end)$'  # match empty line as well
+            # TODO: check if this is safe. Not sure as this could be
+            # some nested begin end in an operation
+            r = r'^(end *)' \
+                r' *$'  # match empty line as well
             m = re.match(r, line)
             if m:
                 current_class = None
+                current_attribute = None
+                current_operation = None
                 current_association = None
+                current_condition = None
                 continue
 
             #---- a line has not been processed.
             self.isValid = False
-            error = 'Parser: cannot process cannonical line #%s: "%s"' % (canonical_line_index, line)
+            error = 'Parser: cannot process cannonical line #%s: "%s"' % (line_no, line)
             self.errors.append(error)
-            print error
+            # print('****',error)
+
 
 
     def __resolveModel(self):
@@ -516,8 +866,17 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
             attribute.type = __resolveSimpleType(attribute.type)
 
         def __resolveOperation(operation):
-            # TODO: implement parsing of parameters and result type
-            raise NotImplementedError('operation resolution not implemented')
+            if operation.expression is None:
+                return
+            # remove extra space and blank line
+            operation.expression = (
+                '\n'.join([
+                    ' '.join(l.split())
+                    for l in operation.expression.split('\n')
+                    if ' '.join(l.split()) != ''])
+            )
+            if operation.expression == '':
+                operation.expression = None
 
         def __resolveClass(class_):
             # resolve superclasses
@@ -528,7 +887,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
                 __resolveAttribute(a)
             # resolve class operations
             for op in class_.operations:
-                pass  # TODO
+                __resolveOperation(op)
 
         def __resolveSubsets(role):
             # TODO: implement subsets role search
@@ -562,10 +921,58 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
                     target_class.outgoingRoles.append(opprole)
 
 
-        def __resolveInvariant(invariant):
-            c = __resolveClassType(invariant.class_)
-            invariant.class_ = c
-            c.invariantNamed[invariant.name] = invariant
+        def __resolveCondition(condition):
+
+            def nextAnonymousId(ids, prefix):
+                anonymous_ids = [
+                    int(id[len(prefix):]) for id in ids
+                    if re.match('^'+prefix+'[0-9]+$', id)
+                ]
+                if anonymous_ids:
+                    return prefix+str(max(anonymous_ids)+1)
+                else:
+                    return prefix+'1'
+
+            def computeId(name, dict, prefix):
+                # deal with anonymous condition. (inv: pre: or post:)
+                if name == '':
+                    return nextAnonymousId(dict.keys(), prefix)
+                else:
+                    return name
+
+
+            if condition.class_ is None:
+                pass  # TODO: check if we should do something for toplevel invariant
+            else:
+                c = __resolveClassType(condition.class_)
+                condition.expression=condition.expression.strip()
+                if isinstance(condition, Invariant):
+                    # Store the invariant in the class
+                    id = computeId(condition.name, c.invariantNamed, '_inv')
+                    c.invariantNamed[id] = condition
+                elif isinstance(condition, PreCondition):
+                    signature=condition.operation
+                    op=c.operationWithSignature[signature]
+                    id = computeId(condition.name, op.conditionNamed, '_pre')
+                    op.conditionNamed[id]=condition
+                elif isinstance(condition, PostCondition):
+                    signature=condition.operation
+                    op=c.operationWithSignature[signature]
+                    id = computeId(condition.name, op.conditionNamed, '_post')
+                    op.conditionNamed[id]=condition
+
+        # def __resolveOperationCondition(preOrPost):
+        #     if preOrPost.class_ is None:
+        #         pass  # TODO: check if we should do something for toplevel invariant
+        #     else:
+        #         c = __resolveClassType(preOrPost.class_)
+        #         preOrPost.expression = (
+        #             '\n'.join([
+        #                 ' '.join(l.split())
+        #                 for l in preOrPost.expression.split('\n')
+        #                 if ' '.join(l.split()) != ''])
+        #         )
+        #         c.invariantNamed[preOrPost.name] = preOrPost
 
         # resolve class (and class part of class associations)
         #print ('=====', self.model.classes)
@@ -584,6 +991,6 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
             __resolveAssociation(a)
 
         # resolve invariant
-        for i in self.model.invariants:
-            __resolveInvariant(i)
+        for i in self.model._conditions:
+            __resolveCondition(i)
 
