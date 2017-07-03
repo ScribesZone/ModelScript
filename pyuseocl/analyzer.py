@@ -1,7 +1,13 @@
 # coding=utf-8
 
+# TODO: update the module comment as the parser is no longer based on canonical stuff
+# TODO: implement role keyword arbitrary (with sequence of words then consumed iteratively)
+# TODO: implement indentation based parsing for extra saftety
+# TODO: add options to the parser (indentationBased?, use parsing?, etc.)
+
 """
 This module allows to analyze a USE OCL ``.use`` source file:
+
 
 * The file is loaded with ``use`` interpreter.
 * Then the ``info model`` command is issued.
@@ -287,7 +293,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
 
 
             # End of line (EOL comment)
-            r = r'^(?P<content>.*?)--(?P<comment>.*)'
+            r = r'^(?P<content>.*?)--(?P<comment>.*)$'
             m = re.match(r, line)
             if m:
                 # There is a eol comment on this line
@@ -314,7 +320,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
             #     continue
 
 
-            r = r'^ *constraints'
+            r = r'^ *constraints *$'
             m = re.match(r, line)
             if m:
                 last_doc_comment.clean()
@@ -358,7 +364,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
             # model --
             #--------------------------------------------------
 
-            r = r'^ *model (?P<name>\w+)$'
+            r = r'^ *model (?P<name>\w+) *$'
             m = re.match(r, line)
             if m:
                 self.model = pyuseocl.model.Model(
@@ -539,10 +545,11 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
                 r' *$'
             m = re.match(r, line)
             if m and '(' in line and ')' in line:
-                current_enumeration = None
-                current_attribute = None
-                current_condition = None
                 if current_class is not None:
+                    current_enumeration = None
+                    current_attribute = None
+                    current_condition = None
+                    # print('....... ' + str(line_no) + ': ' + line)
 
                     # This could be an association class
                     parameters = m.group('parameters').replace(' ','')
@@ -601,7 +608,6 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
                     )
                 continue
 
-            #---- role ---------------------------------------------------
             r = r'^ *(?P<type>\w+) *\[(?P<cardinality>[^\]]+)\]' \
                 r' *(role +(?P<name>\w+))?' \
                 r' *( +qualifier *\( *(?P<qualifiers>(\w| |:|,)*) *\))?' \
@@ -610,6 +616,21 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
                 r' *( +(?P<ordered>ordered))?' \
                 r' *( +(derived *= *(?P<expression>.*)))? *;?'\
                 r' *?$'
+            #---- role ---------------------------------------------------
+            # rtypcard=r'(?P<type>\w+) *\[(?P<cardinality>[^\]]+)\]'
+            # rname=r'role +(?P<name>\w+)'
+            # rqualifier=r'qualifier *\( *(?P<qualifiers>(\w| |:|,)*) *\)'
+            # r =
+            #     r'(?P<subsets>( +subsets +\w+)*)' \
+            #     r' *( +(?P<union>union))?' \
+            #     r' *( +(?P<ordered>ordered))?' \
+            #     r' *( +(derived *= *(?P<expression>.*)))? *;?'\
+            #     r' *?$'
+            # r=' *%(rtypcard)s *(%(rname)s)?( *(%(rqualifier)s|))*' % {
+            #     'rtypcard': rtypcard,
+            #     'rname': rname,
+            #     'rqualifier':rqualifier,
+
             m = re.match(r, line)
             if m:
                 if current_association is not None:
@@ -660,18 +681,37 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
             # ---- class context and may be invariant name ----------------------------------------------
             # Could be a model invariant
             #   context
+            # rcontext=(
+            #     r' *(?P<context>context)'
+            #     r' +((?P<vars>[\w ,]+) *:)?'
+            #     r' *(?P<classname>\w+)'
+            #     r' *(::(?P<signature>\w+\([\w, \(\):]*\)))?'
+            # )
+            # rcond=(
+            #     r' *(?P<existential>existential)?'
+            #     r' *(?P<cond>pre|post|inv)'
+            #     r' *(?P<name>\w+)?'
+            #     r' *:'
+            #     r'(?P<expr>.*)'
+            # )
+            # z='^(%s)?(%s)? *$' % (rcontext,rcond)
             rcontext=(
                 r' *(?P<context>context)'
-                r' +(?P<vars>[\w ,]+ *:)??'
+                r' +((?P<vars>[\w ,]+) *:)?'
                 r' *(?P<classname>\w+)'
-                r' *(::(?P<signature>\w+\([\w, \(\):]*))?'
+                # r' *(::(?P<signature>\w+\([\w, \(\):]*\)))?'
+                r' *(::(?P<signature>\w+\([\w, \(\):]*\) *(:([\w ,\(\):]+))?))?'
             )
             rcond=(
-                r' *((?P<existential>existential)?'
+                r' *(?P<existential>existential)?'
                 r' *(?P<cond>pre|post|inv)'
-                r' *(?P<name>\w+)? *:)?'
+                r' *(?P<name>\w+)?'
+                r' *:'
+                r'(?P<expr>.*)'
             )
-            r='(%s)?(%s)?(?P<expr>.*)?' % (rcontext,rcond)
+            z='^(%s)?(%s)? *$' % (rcontext,rcond)
+            # print z
+            r=re.compile(z)
             # print rcontext
             # print rcond
             # print('++++++ '+r)
@@ -681,7 +721,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
             if m:
                 # print('%'*30)
                 if m.group('context') is not None or m.group('cond') is not None:
-                    # print('==================='+ line)
+                    # print('cond '+str(line_no)+':'+line)
 
                     if m.group('context'):
                         # print(':::           context '+m.group('classname'))
@@ -704,7 +744,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
 
                     if m.group('cond'):
                         # print(':::        '+m.group('cond')+' '+(m.group('name') if m.group('name') is not None
-                        # else '<noname>'+':'))
+                        # else '<noname>' + ':'))
                         condname = '' if m.group('name') is None else m.group('name')
                         if m.group('cond') == 'inv':
                             # An invariant can have no context at all. Deal with it.
@@ -731,6 +771,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
                                 docComment=last_doc_comment.consume(),
                                 eolComment=current_eol_comment,
                             )
+                            # print('     inv '+condname+' created')
                         elif m.group('cond') == 'pre':
                             classname = current_context['classname']
                             current_condition = pyuseocl.model.PreCondition(
@@ -743,6 +784,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
                                 docComment=last_doc_comment.consume(),
                                 eolComment=current_eol_comment,
                             )
+                            # print('     pre '+condname+' created')
                         elif m.group('cond') == 'post':
                             classname = current_context['classname']
                             current_condition = pyuseocl.model.PostCondition(
@@ -755,6 +797,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
                                 docComment=last_doc_comment.consume(),
                                 eolComment=current_eol_comment,
                             )
+                            # print('     post '+condname+' created')
                     continue
             # print('//////////'+line)
 
@@ -771,12 +814,14 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
             # must be before the operation
             # print('#'*80)
             if current_condition is not None:
-                # print('00000000'+line)
-                r = r'^(?P<expression>.*)$'
+                # print('00000000 '+str(line_no)+':'+line)
+                r = r'^ *(?P<expression>.*) *$'
                 m = re.match(r, line)
                 if m:
-                    # print('kkkk')
-                    current_condition.expression += '\n' + m.group('expression')
+                    # print('match')
+                    expression=m.group('expression')
+                    if expression != 'end' or 'begin' in current_condition.expression:
+                        current_condition.expression += '\n' + expression
                     continue
 
             # ---- attribute expression -----------------------------------
@@ -833,7 +878,7 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
 
             #---- a line has not been processed.
             self.isValid = False
-            error = 'Parser: cannot process cannonical line #%s: "%s"' % (line_no, line)
+            error = 'PyUseOCL parser: cannot process line #%s: "%s"' % (line_no, line)
             self.errors.append(error)
             # print('****',error)
 
@@ -946,16 +991,21 @@ class UseOCLModelFile(pyuseocl.utils.sources.SourceFile):
             else:
                 c = __resolveClassType(condition.class_)
                 condition.expression=condition.expression.strip()
+                # print 'resolve '+condition.name+' from '+c.name
+                # print '        '+str(type(c))
                 if isinstance(condition, Invariant):
                     # Store the invariant in the class
                     id = computeId(condition.name, c.invariantNamed, '_inv')
                     c.invariantNamed[id] = condition
                 elif isinstance(condition, PreCondition):
+                    # print '        ' + str(condition.operation)
                     signature=condition.operation
                     op=c.operationWithSignature[signature]
                     id = computeId(condition.name, op.conditionNamed, '_pre')
                     op.conditionNamed[id]=condition
                 elif isinstance(condition, PostCondition):
+                    # print '        ' + str(condition.operation)
+
                     signature=condition.operation
                     op=c.operationWithSignature[signature]
                     id = computeId(condition.name, op.conditionNamed, '_post')
