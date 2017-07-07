@@ -7,6 +7,19 @@ Source files and annotated source files.
 import os
 
 import fragments
+import abc
+
+class SourceElement(object):
+    """
+    Element of a source file.
+    """
+    __metaclass__ = abc.ABCMeta
+    def __init__(self, name, code=None, lineNo=None, docComment=None, eolComment=None):
+        self.name = name
+        self.source = code
+        self.lineNo = lineNo
+        self.docComment = docComment
+        self.eolComment = eolComment
 
 class SourceFile(object):
     """
