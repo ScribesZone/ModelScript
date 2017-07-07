@@ -1,0 +1,136 @@
+@startuml
+
+enum Category {
+    economy
+    standard
+    premium
+    prestige
+}
+
+enum Gender {
+    male
+    female
+}
+
+package buildings <<Folder>> #EEDDEE {
+
+
+class Residence [[http://something.org/Residence{tooltoip for Residence}]]
+class Residence {
+{field}  name : String
+{field}  floorMin : Integer
+{field}  floorMax : Integer
+{field}  category : Category
+{field}  maxNbOfFreeUnits : Integer
+{field}  avgRate : Real
+--
+{method}    bedrooms():Set(Bedroom) =
+{method}    usefulBedrooms():Set(Bedroom) =
+{method}    bathrooms():Set(Bathroom) =
+--
+inv floorOrder
+}
+
+
+class Room [[http://something.org/Room{tooltoip for Room}]]
+class Room {
+{field}  number : Integer
+{field}  floor : Integer
+{field}  isOutOfOrder : Boolean
+--
+}
+
+
+
+class Bathroom [[http://something.org/Bathroom{tooltoip for Bathroom}]]
+class Bathroom {
+{field}  isOnTheLanding : Boolean
+--
+}
+
+Room <|-- Bathroom
+
+
+class Bedroom [[http://something.org/Bedroom{tooltoip for Bedroom}]]
+class Bedroom {
+{field}  nbOfSingleBeds : Integer
+{field}  nbOfDoubleBeds : Integer
+{field}  rate : Real
+{field}  isNonSmoking : Boolean
+{field}  nbOfUnits : Integer
+--
+}
+
+Room <|-- Bedroom
+
+}
+
+package occupation <<Folder>> #EEDDEE {
+
+class Person [[http://something.org/Person{tooltoip for Person}]]
+class Person {
+{field}  name : String
+{field}  age : Integer
+{field}  gender : Gender
+--
+}
+
+
+
+class Resident [[http://something.org/Resident{tooltoip for Resident}]]
+class Resident {
+{field}  isSmoker : Boolean
+--
+}
+
+Person <|-- Resident
+
+
+class Tenant [[http://something.org/Tenant{tooltoip for Tenant}]]
+class Tenant {
+{field}  paidRate : Real
+--
+}
+
+Resident <|-- Tenant
+
+}
+
+package economy <<Folder>> #EEDDEE {
+
+class Discount [[http://something.org/Discount{tooltoip for Discount}]]
+class Discount {
+{field}  percentage : Integer
+{field}  label : String
+--
+}
+
+
+
+Residence  *--  Room : ContainsRooms[[http://something{"1..1 residence" -- ContainsRooms -- "0..* rooms"}.]]
+
+Bathroom  -  Bedroom : IsInBedroom[[http://something{"0..3 bathrooms" -- IsInBedroom -- "0..1 bedroom"}.]]
+
+Resident  -  Resident : IsTutoredBy[[http://something{"0..* tutored" -- IsTutoredBy -- "0..2 tutors"}.]]
+
+Resident  -  Resident : IsMarriedWith[[http://something{"0..1 resident" -- IsMarriedWith -- "0..1 consort"}.]]
+
+Bedroom  -  Resident : IsOccupiedBy[[http://something{"1..1 occupiedRoom" -- IsOccupiedBy -- "0..* occupants"}.]]
+
+Rent  *--  Discount : HasDiscounts[[http://something{"1..1 rent" -- HasDiscounts -- "0..* discounts"}.]]
+
+Bedroom  -  Tenant : Rent[[http://something{"1..* rentedBedrooms" -- Rent -- "0..1 tenant"}.]]
+
+class Rent [[http://something.org/Rent{tooltoip for Rent}]]
+class Rent {
+{field}  discount : Real
+{field}  rate : Real
+--
+}
+
+
+
+( Bedroom, Tenant) .. Rent
+}
+
+@enduml

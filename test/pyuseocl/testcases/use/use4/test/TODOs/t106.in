@@ -1,0 +1,43 @@
+info model
+*model t106
+*
+*
+*@Test()
+*class Person
+*attributes
+*  @Test(name="asasa")
+*  name : String
+*operations
+*  @Test(test="sadsad", name="asds")
+*  doIt()
+*end
+*
+*constraints
+*context self : Person
+*  @Test()
+*  inv testInv:
+*    true
+*
+*context self : Person
+*    @Test(name="kljsdf")
+*    inv test2:
+*      true
+*
+*context Person::doIt()
+*      @Test()
+*      pre pre1: true
+*
+*context Person::doIt()
+*      @Test()
+*      post post1: true
+*
+*context Person::doIt()
+*      @Test(test="sdas")
+*      pre pre2: true
+*
+*context Person::doIt()
+*      @Test(sdkjf="sdflj")
+*      post post2: true
+*
+*0 objects total in current state.
+quit

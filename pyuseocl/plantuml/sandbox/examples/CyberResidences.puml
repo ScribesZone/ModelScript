@@ -1,0 +1,102 @@
+@startuml
+
+enum Category {
+    standard
+    premium
+    prestige
+}
+
+enum Gender {
+    female
+}
+
+class Residence {
+{field}  name : String
+{field}  floorMin : Integer
+{field}  floorMax : Integer
+{field}  category : Category
+{field}  maxNbOfFreeUnits : Integer
+{field}  avgRate : Real
+{method}    bedrooms():Set(Bedroom) ={method}    usefulBedrooms():Set(Bedroom) ={method}    bathrooms():Set(Bathroom) =}
+
+
+
+class Room {
+{field}  number : Integer
+{field}  floor : Integer
+{field}  isOutOfOrder : Boolean
+}
+
+
+
+class Bathroom {
+{field}  isOnTheLanding : Boolean
+}
+
+Bathroom <|-- Room
+
+
+class Bedroom {
+{field}  nbOfSingleBeds : Integer
+{field}  nbOfDoubleBeds : Integer
+{field}  rate : Real
+{field}  isNonSmoking : Boolean
+{field}  nbOfUnits : Integer
+}
+
+Bedroom <|-- Room
+
+
+class Person {
+{field}  name : String
+{field}  age : Integer
+{field}  gender : Gender
+}
+
+
+
+class Resident {
+{field}  isSmoker : Boolean
+}
+
+Resident <|-- Person
+
+
+class Tenant {
+{field}  paidRate : Real
+}
+
+Tenant <|-- Resident
+
+
+class Discount {
+{field}  percentage : Integer
+{field}  label : String
+}
+
+
+
+Residence "1..1 residence" *-- "0..* rooms" Room : ContainsRooms
+
+Bathroom "0..3 bathrooms" - "0..1 bedroom" Bedroom : IsInBedroom
+
+Resident "0..* tutored" - "0..2 tutors" Resident : IsTutoredBy
+
+Resident "0..1 resident" - "0..1 consort" Resident : IsMarriedWith
+
+Bedroom "1..1 occupiedRoom" - "0..* occupants" Resident : IsOccupiedBy
+
+Rent "1..1 rent" *-- "0..* discounts" Discount : HasDiscounts
+
+Bedroom "1..* rentedBedrooms" - "0..1 tenant" Tenant : Rent
+
+class Rent {
+{field}  discount : Real
+{field}  rate : Real
+}
+
+
+
+( Bedroom, Tenant) .. Rent
+
+@enduml

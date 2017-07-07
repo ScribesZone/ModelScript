@@ -1,0 +1,25 @@
+-- this is the begining of the file. This comment should be
+-- left out.
+
+-- doc comment for the model
+--
+model test
+
+-- enumeration
+enum jour { lundi, mardi, -- jour eol comment
+    mercredi, jeudi } -- ignored ?
+
+-- class A
+class A
+attributes
+    e1 : Integer -- attribute e1
+    -- attribute e2
+    e2 : Integer -- attribute e1
+end
+
+association B between
+    A[0..1] role a  -- role a
+    -- role as
+    -- many
+    A[*] role as
+end

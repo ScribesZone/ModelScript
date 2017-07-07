@@ -1,0 +1,659 @@
+-- This specification describes the CyberResidencesOCL case study using USE OCL
+-- See http://cyberresidencesocl.readthedocs.io
+--
+-- To "compile" this specification use the following command::
+--      use -c CyberResidencesOCL.use
+--
+-- The specification is made of three packages:
+--
+--      * Buildings,
+--      * Rents
+--      * Rates
+--
+-- However there is no support for packages in OCL USE, so classes and associations
+-- are just separated by comments.
+--
+-- NOTE:
+--
+--      Annotations with the form @XXX (e.g. @package, @derived) are NOT interpreted by USE OCL
+--
+--      The annotation -- @derived means that the attribute can be computed (derived in UML).
+--      A constraint derive<A> should be writen.
+
+model CyberResidences
+
+
+------------------------------------------------------------------------------------------
+--   @package Buildings
+------------------------------------------------------------------------------------------
+
+enum Category {
+    economy,
+    standard,
+    premium,
+    prestige
+}
+
+
+class Residence
+    attributes
+        name                : String
+        floorMin            : Integer
+        floorMax            : Integer
+        category            : Category
+        maxNbOfFreeUnits    : Integer   -- @derived
+        avgRate             : Real      -- @derived
+    operations
+        bedrooms()          : Set(Bedroom)
+            = rooms->selectByType(Bedroom)
+        usefulBedrooms()    : Set(Bedroom)
+            = bedrooms()->select(not isOutOfOrder)
+        bathrooms()         : Set(Bathroom)
+            = rooms->selectByType(Bathroom)
+end
+
+
+class Room
+    attributes
+        number          : Integer
+        floor           : Integer       -- @derived
+        isOutOfOrder    : Boolean
+end
+
+
+class Bathroom < Room
+    attributes
+        isOnTheLanding : Boolean         -- @derived
+end
+
+
+class Bedroom < Room
+    attributes
+        nbOfSingleBeds  : Integer
+        nbOfDoubleBeds  : Integer
+        rate            : Real
+        isNonSmoking    : Boolean
+        nbOfUnits       : Integer        -- @derived
+end
+
+
+composition ContainsRooms between
+    Residence[1] role residence
+    Room[*] role rooms
+end
+
+
+association IsInBedroom between
+    Bathroom[0..3] role bathrooms
+    Bedroom[0..1] role bedroom
+end
+
+
+------------------------------------------------------------------------------------------
+--   @package Rents
+------------------------------------------------------------------------------------------
+
+enum Gender {
+    male,
+    female
+}
+
+
+class Person
+    attributes
+        name    : String
+        age     : Integer
+        gender  : Gender
+end
+
+
+class Resident < Person
+    attributes
+        isSmoker : Boolean
+
+end
+
+
+class Tenant < Resident
+    attributes
+        paidRate : Real
+end
+
+association IsTutoredBy between
+    Resident[0..*] role tutored
+    Resident[0..2] role tutors
+end
+
+
+association IsMarriedWith between
+    Resident[0..1]
+    Resident[0..1] role consort
+end
+
+
+association IsOccupiedBy between
+    Bedroom[1] role occupiedRoom
+    Resident[*] role occupants
+end
+
+------------------------------------------------------------------------------------------
+--   @package Rates
+------------------------------------------------------------------------------------------
+
+
+class Discount
+    attributes
+        percentage : Integer
+        label : String
+end
+
+
+associationclass Rent between
+    Bedroom[1..*] role rentedBedrooms
+    Tenant[0..1] role tenant
+    attributes
+        discount : Real                 -- @derived
+        rate     : Real                 -- @derived
+end
+
+composition HasDiscounts between
+    Rent[1] role rent
+    Discount[0..*] role discounts
+end
+
+
+
+
+
+
+
+
+--=============================================================================
+--                                 CONSTRAINTS
+--=============================================================================
+--
+-- Constraints on the specification are listed below in ALPHABETICAL order.
+-- An example of constraint is given: ``floorOrder``.
+--
+-- For each constraint the following elements are given :
+--
+--      * the name of the constraint
+--      * the context
+--      * a textual description of the constrant
+--      * an raw indication about the constraint complexity
+--      * some hints about how to write the constraint
+--
+-- It is highly recommended to NOT use the file order for answering.
+-- A possible order to complete the specification is to use package order
+-- and then complexity order.
+-- Again the constraints are listed here alphabetically...
+
+
+constraints
+
+-------------------------------------------------------------------------------
+--                               aboooConditions
+-------------------------------------------------------------------------------
+-- Conditions for granting a discount "All Bathrooms Out Of Order" (ABOOO).
+-- Note Easy. Use 'one'. Should world with 'xxxPercentage'
+
+-- context Rent inv aboooConditions:
+    -- A discount is given for bedrooms that have all bathrooms out of
+    -- order. The label of this type of discount is 'BROOO50'. This
+    -- rule does not apply in economy residences.
+
+
+-------------------------------------------------------------------------------
+--                               aboooPercentage
+-------------------------------------------------------------------------------
+-- Percentage of "ABOOO" discount according to residence category.
+-- Not Easy. Should work with the corresponding invariant 'xxxConditions'
+
+-- context Discount inv aboooPercentage:
+    -- ABOO discounts are equal to 50%.
+
+
+-------------------------------------------------------------------------------
+--                                 adultMarried
+-------------------------------------------------------------------------------
+-- Only adult married.
+-- Easy. Use 'implies'
+
+-- context Resident inv adultMarried:
+    -- To be registered as married, resident must be adult.
+
+
+-------------------------------------------------------------------------------
+--                                 adultTenant
+-------------------------------------------------------------------------------
+-- Tenants are adults.
+-- Easy
+
+-- context Tenant inv adultTenant:
+    -- The minimal age to rent a bedroom is 18 years old.
+
+
+-------------------------------------------------------------------------------
+--                             allPrestigeBathrooms
+-------------------------------------------------------------------------------
+-- Invariant about all bathrooms for 'prestige' residence.
+-- Medium. use 'implies'.
+
+-- context Residence inv allPrestigeBathrooms:
+    -- Residences of category prestige have in each bedroom at least
+    -- the same number of bathroom that the number of beds.
+
+
+-------------------------------------------------------------------------------
+--                                 atLeastABed
+-------------------------------------------------------------------------------
+-- At least one bed for useful bedrooms.
+-- Easy. Use implies.
+
+-- context Bedroom inv atLeastABed:
+    -- Bedrooms that are not out of order must have at least one bed.
+
+
+-------------------------------------------------------------------------------
+--                               atLeastOneAdult
+-------------------------------------------------------------------------------
+-- At least one adult per bedroom.
+-- Easy. Use 'implies'
+
+-- context Bedroom inv atLeastOneAdult:
+    -- At least one adult must be presented in all occupied bedrooms.
+
+
+-------------------------------------------------------------------------------
+--                               childNonSmoking
+-------------------------------------------------------------------------------
+-- Non smoking child.
+-- Easy
+
+
+-- context Resident inv childNonSmoking:
+    -- Children are always declared as non smoker.
+
+
+-------------------------------------------------------------------------------
+--                                 childTutored
+-------------------------------------------------------------------------------
+-- Child tutored.
+-- Medium
+
+-- context Resident inv childTutored:
+    -- Resident that are less than 18 years old must have at least one
+    -- tutor, apart in prestige residences where this rule does not
+    -- apply.
+
+
+-------------------------------------------------------------------------------
+--                              cumulatedDiscounts
+-------------------------------------------------------------------------------
+-- Limit of cumulated discounts.
+-- Easy. Use 'sum'
+
+-- context Rent inv cumulatedDiscounts:
+    -- No room will have more that 70% of discounts cumulated.
+
+
+-------------------------------------------------------------------------------
+--                                deriveAvgRate
+-------------------------------------------------------------------------------
+-- Derivation of the avgRate attribute.
+-- Medium
+
+-- context Residence inv deriveAvgRate:
+    -- The average rate of a residence is the total revenue of the
+    -- residence divided by the number of occupants. Tutored residents
+    -- do not count in this rule.
+
+
+-------------------------------------------------------------------------------
+--                                deriveDiscount
+-------------------------------------------------------------------------------
+-- Derivation of the attribute discount.
+-- Easy
+
+-- context Rent inv deriveDiscount:
+    -- The discount for a rent, is the rate of the bedroom multiplied
+    -- by the sum of percentages of all discounts.
+
+
+-------------------------------------------------------------------------------
+--                                 deriveFloor
+-------------------------------------------------------------------------------
+-- Derivation of the attribute floor.
+-- Easy
+
+-- context Room inv deriveFloor:
+    -- The floor number correspond to the first digits of the room
+    -- number, where the last two digits are removed. For instance the
+    -- room 634 is at the floor 6.
+
+
+-------------------------------------------------------------------------------
+--                             deriveIsOnTheLanding
+-------------------------------------------------------------------------------
+-- Derivation of isOnTheLanding attribute.
+-- Easy
+
+-- context Bathroom inv deriveIsOnTheLanding:
+    -- A bathroom is said to be on the landing if it is not in a
+    -- bedroom.
+
+
+-------------------------------------------------------------------------------
+--                            deriveMaxNbOfFreeUnits
+-------------------------------------------------------------------------------
+-- Derivation of maxNbOfFreeUnits attribute.
+-- Easy
+
+-- context Residence inv deriveMaxNbOfFreeUnits:
+    -- The maximum number of free units is equal to the maximum number
+    -- of places in beds of all rooms of the residence.
+
+
+-------------------------------------------------------------------------------
+--                               deriveNbOfUnits
+-------------------------------------------------------------------------------
+-- Derivation of nbOfUnits attribute.
+-- Easy
+
+-- context Bedroom inv deriveNbOfUnits:
+    -- The number of units of a bedroom is the maximum number of
+    -- people that can fit within the bedroom assuming that all places
+    -- in all beds are full.
+
+
+-------------------------------------------------------------------------------
+--                                derivePaidRate
+-------------------------------------------------------------------------------
+-- Derivation of the attribute paidRate.
+-- Not Easy. Use 'if ... then ... else ... endif'   and
+-- 'let groupFloors : Set(Integer) = ... in ...'
+
+-- context Tenant inv derivePaidRate:
+    -- The total amount paid by a tenant is the sum of rent rates for
+    -- all bedrooms rented. If the members of his or her group is
+    -- spread over more than one floor, then 20€ of reduction will
+    -- automatically be deduced.
+
+
+-------------------------------------------------------------------------------
+--                                  deriveRate
+-------------------------------------------------------------------------------
+-- Derivation of the attribute rate.
+-- Easy
+
+-- context Rent inv deriveRate:
+    -- The rate of a rent corresponds to the regular rate for the room
+    -- minus the discount.
+
+
+-------------------------------------------------------------------------------
+--                               domainPercentage
+-------------------------------------------------------------------------------
+-- Domain of percentage attribute.
+-- Easy
+
+-- context Discount inv domainPercentage:
+    -- The percentage is a value between 1 and 100.
+
+
+-------------------------------------------------------------------------------
+--                          enoughBathroomsInPrestige
+-------------------------------------------------------------------------------
+-- At least as many bathrooms than beds for prestige residence.
+-- Easy. Use implies.
+
+-- context Bedroom inv enoughBathroomsInPrestige:
+    -- In a prestige residence, the number of private bathrooms is at
+    -- least the same as the number of beds in each bedroom.
+
+
+-------------------------------------------------------------------------------
+--                            floorBetweenMinAndMax
+-------------------------------------------------------------------------------
+-- Floor between minimum and maximum floors.
+-- Easy
+
+-- context Room inv floorBetweenMinAndMax:
+    -- The floor of a room is between the minium and maximum floor of
+    -- the residence.
+
+
+-------------------------------------------------------------------------------
+--                                  floorOrder
+-------------------------------------------------------------------------------
+-- Order between floorMin and floorMax attributes.
+-- Easy
+
+context Residence inv floorOrder:
+    -- The maximum floor is at higher or at the same level that the
+    -- minimum floor of the residence.
+    self.floorMin <= self.floorMax
+
+-------------------------------------------------------------------------------
+--                                 labelUnique
+-------------------------------------------------------------------------------
+-- Uniqueness of labels with respect to rents.
+-- Easy. Use 'unique'
+
+-- context Rent inv labelUnique:
+    -- All discounts associated to a rent have distinct labels.
+
+
+-------------------------------------------------------------------------------
+--                           marriageAntiReflexivity
+-------------------------------------------------------------------------------
+-- Anti-reflexivity of marriage relationship.
+-- Easy
+
+-- context Resident inv marriageAntiReflexivity:
+    -- A resident cannot mary with himself or herself.
+
+
+-------------------------------------------------------------------------------
+--                             marriageInSameGroup
+-------------------------------------------------------------------------------
+-- Consorts in the same group.
+-- Medium
+
+-- context Resident inv marriageInSameGroup:
+    -- A resident and his or her consort occupies a room of the same
+    -- group.
+
+
+-------------------------------------------------------------------------------
+--                               marriageSymmetry
+-------------------------------------------------------------------------------
+-- Symmetry of marriage relationship.
+-- Easy
+
+-- context Resident inv marriageSymmetry:
+    -- If a resident is declared to be the consort of another
+    -- resident, then the opposite is true as well.
+
+
+-------------------------------------------------------------------------------
+--                              noBedroomOverload
+-------------------------------------------------------------------------------
+-- No bedroom overloaded.
+-- Medium
+
+-- context Bedroom inv noBedroomOverload:
+    -- There must be no more people in a bedroom that the number of
+    -- units of this bedroom. Children up to 3 years old are not
+    -- counted in this rule.
+
+
+-------------------------------------------------------------------------------
+--                            noEmptyRentedBedrooms
+-------------------------------------------------------------------------------
+-- Rented bedrooms not empty.
+-- Easy. Use 'implies'
+
+-- context Bedroom inv noEmptyRentedBedrooms:
+    -- All rented bedrooms are occupied by at least one occupant.
+
+
+-------------------------------------------------------------------------------
+--                                  noSquaters
+-------------------------------------------------------------------------------
+-- Nobody in rooms not rented.
+-- Easy. Use 'implies'
+
+-- context Bedroom inv noSquaters:
+    -- Occupants must be exclusively in rooms that are rented by
+    -- somebody.
+
+
+-------------------------------------------------------------------------------
+--                               noTutorForAdults
+-------------------------------------------------------------------------------
+-- No tutor for adults.
+-- Easy
+
+-- context Resident inv noTutorForAdults:
+    -- Adults never have tutor.
+
+
+-------------------------------------------------------------------------------
+--                             oooBedroomsNotRented
+-------------------------------------------------------------------------------
+-- No rental of Out Of Order bedrooms.
+-- Easy
+
+-- context Bedroom inv oooBedroomsNotRented:
+    -- Bedrooms that are out of order cannot be rented.
+
+
+-------------------------------------------------------------------------------
+--                                oooIfPrestige
+-------------------------------------------------------------------------------
+-- Out of order bathroom implications if prestige.
+-- Medium. Use 'implies'
+
+-- context Bathroom inv oooIfPrestige:
+    -- In prestige residences, it is not acceptable to rent bedrooms
+    -- with bathrooms that are out of order. So if a bathrom is marked
+    -- as out of order, the corresponding bedroom is also marked as
+    -- out of order.
+
+
+-------------------------------------------------------------------------------
+--                              rentInOneResidence
+-------------------------------------------------------------------------------
+-- Medium. Should be rather short.
+-- <Enter note text here>
+
+-- context Tenant inv rentInOneResidence:
+    -- For a given tenant, all rented bedrooms are in the same
+    -- residence.
+
+
+-------------------------------------------------------------------------------
+--                             sameNumberIfPrivate
+-------------------------------------------------------------------------------
+-- Same number if private.
+-- Easy. Use 'implies'.
+
+-- context Bathroom inv sameNumberIfPrivate:
+    -- All bathrooms that are not on the landing, that is that are
+    -- private to a bedroom, have the same number of room as this
+    -- bedroom.
+
+
+-------------------------------------------------------------------------------
+--                               sboooConditions
+-------------------------------------------------------------------------------
+-- Conditions for granting a discount "Some Bathrooms Out Of Order" (SBOOO).
+-- Not Easy. Use 'one'. Should world with 'xxxPercentage'
+
+-- context Rent inv sboooConditions:
+    -- A discount if given for a bed room if there are "Some Bathrooms
+    -- Out Of Order", that is for bedroom with at least one bathroom
+    -- out of order, but at least one bathroom still available.  The
+    -- label for this type of discount is SBOO. This type of discount
+    -- does not apply on economy residences.
+
+
+-------------------------------------------------------------------------------
+--                               sboooPercentage
+-------------------------------------------------------------------------------
+-- Percentage of "SBOOO" discount according to residence category.
+-- Not Easy. Should work with the corresponding invariant 'xxxConditions'
+
+-- context Discount inv sboooPercentage:
+    -- In premium residences, SBOO discounts are equal to 25%. For
+    -- standard category the discount is of 10%.
+
+
+-------------------------------------------------------------------------------
+--                             smokingPremiumPolicy
+-------------------------------------------------------------------------------
+-- Smoking policy for premium residences.
+-- Not easy
+
+-- context Bedroom inv smokingPremiumPolicy:
+    -- In a premium residence a resident that specified that he or she
+    -- is non smoker will never ever be place in a smoking room.
+
+
+-------------------------------------------------------------------------------
+--                            smokingPrestigePolicy
+-------------------------------------------------------------------------------
+-- No smoking is prestige.
+-- Easy
+
+-- context Bedroom inv smokingPrestigePolicy:
+    -- There are no smoking rooms at all in residence of prestige.
+
+
+-------------------------------------------------------------------------------
+--                              tenantInRentedRoom
+-------------------------------------------------------------------------------
+-- Room occupied by the tenant.
+-- Medium.
+
+-- context Tenant inv tenantInRentedRoom:
+    -- A tenant occupies one of the bedroom that he or she has rented.
+
+
+-------------------------------------------------------------------------------
+--                                  tutorAdult
+-------------------------------------------------------------------------------
+-- Tutors are adults.
+-- Easy
+
+-- context Resident inv tutorAdult:
+    -- A resident can not be the tutor of another resident if he or
+    -- she is not an adult.
+
+
+-------------------------------------------------------------------------------
+--                               tutorInSameGroup
+-------------------------------------------------------------------------------
+-- Tutors and tutored in one group.
+-- Medium
+
+-- context Resident inv tutorInSameGroup:
+    -- The tutors of a resident are in the same group that this
+    -- resident. In other words they are all in the same group of
+    -- rooms.
+
+
+-------------------------------------------------------------------------------
+--                     uniqueNumberApartForPrivateBathroom
+-------------------------------------------------------------------------------
+-- Invariant on room numbering.
+-- Medium
+
+-- context Residence inv uniqueNumberApartForPrivateBathroom:
+    -- All rooms have a distinct number, except private bathrooms.
+
+
+
+
+

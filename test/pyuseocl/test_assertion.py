@@ -6,8 +6,8 @@ log = logging.getLogger('test.' + __name__)
 
 from test.pyuseocl import getSoilFile, getUseFile
 
-import pyuseocl.assertion
-import pyuseocl.analyzer
+import pyuseocl.use.eval.assertion
+import pyuseocl.use.use.parser
 
 
 
@@ -58,7 +58,7 @@ def testGenerator_extractAssertion():
 def check_extractAssertionStringsFromFile(testCase):
     for state_case in testCase['states']:
         soilFile = getSoilFile(state_case['state'])
-        _ = pyuseocl.assertion._extractAssertionStringsFromFile(soilFile)
+        _ = pyuseocl.use.eval.assertion._extractAssertionStringsFromFile(soilFile)
         # print 'test in ',soilFile
         # print repr(_)
         # print  state_case['parsed']
@@ -67,11 +67,11 @@ def check_extractAssertionStringsFromFile(testCase):
 def check_extractAssertionsFromFile(testCase):
     # get the model parsed
     useFile = getUseFile(testCase['modelFile'])
-    model = pyuseocl.analyzer.UseOCLModel(useFile).model
+    model = pyuseocl.use.use.parser.UseFile(useFile).model
 
     for state_case in testCase['states']:
         soilFile = getSoilFile(state_case['state'])
-        _ = pyuseocl.assertion._extractAssertionsFromFile(model, soilFile)
+        _ = pyuseocl.use.eval.assertion._extractAssertionsFromFile(model, soilFile)
         assert repr(_) == state_case['withInv']
 
 

@@ -1,0 +1,18 @@
+permissions model CyberBibliotheque
+
+actor Etudiant
+    Emprunt : create, read
+
+usecase Prendre
+    Emprunt : create, read
+    Emprunt.date : update
+    Emprunt.dateLimite: read-
+    Prolongation : CRUD
+    EstEmprunteA : create, read, update
+
+class Emprunt
+    Prende : create, read
+    Emprunt.date : update
+    Emprunt.dateLimite: read-
+    Prolongation : CRUD
+    EstEmprunteA : create, read, update

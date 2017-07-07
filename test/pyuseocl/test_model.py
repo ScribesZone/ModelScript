@@ -3,11 +3,11 @@
 from test.pyuseocl import TEST_CASES_DIRECTORY
 
 import os
-import pyuseocl.analyzer
+import pyuseocl.use.use.parser
 
 def test_UseOclModel_Simple():
     testFile = 'Demo.use'
-    use_model_file = pyuseocl.analyzer.UseOCLModelFile(
+    use_model_file = pyuseocl.use.use.parser.UseFile(
         TEST_CASES_DIRECTORY + os.sep + testFile)
     assert use_model_file.isValid
     model = use_model_file.model
@@ -40,6 +40,7 @@ def test_UseOclModel_Simple():
     assert ac.targetRole.isMany
     assert ac.isOneToMany
     assert ac.isForwardOneToMany
+    assert not ac.isBackwardOneToMany
     assert not ac.isManyToMany
     assert not ac.isOneToOne
 

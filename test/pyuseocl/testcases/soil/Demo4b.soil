@@ -10,24 +10,24 @@
 -- checking invariant (3) `Project::BudgetWithinDepartmentBudget': OK.
 -- checking invariant (4) `Project::EmployeesInControllingDepartment': OK.
 
-!create computing : Department
-!computing.name := 'Computing departement'
-!computing.location := 'Los alaambritos'
-!computing.budget := 10000
+    !create computing : Department
+    !computing.name := 'Computing departement'
+    !computing.location := 'Los alaambritos'
+    !computing.budget := 10000
 
-!create djamel : Employee
-!djamel.name := 'Djamel'
-!djamel.salary := 2600
+    !create djamel : Employee
+    !djamel.name := 'Djamel'
+    !djamel.salary := 2600
 
-!create ioannis : Employee
-!ioannis.name := 'Ioannis'
-!ioannis.salary := 1900
+    !create ioannis : Employee
+    !ioannis.name := 'Ioannis'
+    !ioannis.salary := 1900
 
-!insert (djamel, computing) into WorksIn
-!insert (ioannis, computing) into WorksIn
+    !insert (djamel, computing) into WorksIn
+    !insert (ioannis, computing) into WorksIn
 
-!create turbo : Project
-!turbo.name := 'Maxi turbo project'
-!turbo.budget := 5000
+    !create turbo : Project
+    !turbo.name := 'Maxi turbo project'
+    !turbo.budget := 5000
 
-!insert (computing, turbo) into Controls
+    !insert (computing, turbo) into Controls

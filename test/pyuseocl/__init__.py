@@ -4,6 +4,8 @@ import glob
 
 TEST_CASES_DIRECTORY = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'testcases')
+BUILD_DIRECTORY = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), 'build')
 
 # TEST_SOIL_DIRECTORY = os.path.join(TEST_CASES_DIRECTORY, 'soil')
 
@@ -14,7 +16,7 @@ def getFile(name, prefixes):
         return os.path.join(*[TEST_CASES_DIRECTORY] + prefixes + [name])
 
 def getUseFile(name):
-    return getFile(name,[])
+    return getFile(name,['use'])
 
 def getSoilFile(name):
     return getFile(name, ['soil'])
@@ -35,7 +37,8 @@ def getZipFile(name):
     return getFile(name, ['zip'])
 
 def setup():
-    pass
+    if not os.path.isdir(BUILD_DIRECTORY):
+        os.mkdir(BUILD_DIRECTORY)
 
 def teardown():
     pass
