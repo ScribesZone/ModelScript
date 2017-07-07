@@ -17,25 +17,25 @@ assertion. See Tester for that aspect.
 
 import logging
 
-logging.basicConfig(level=logging.DEBUG)
+#logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
 
 import re
 from collections import OrderedDict
 
-import pyuseocl.soil
+import pyuseocl.use.soil
 
-import pyuseocl.analyzer
-from pyuseocl.analyzer import UseOCLModel
+from pyuseocl.use.use.parser import UseFile
 
-import pyuseocl.useengine
-from pyuseocl.useengine import USEEngine
+from pyuseocl.use.engine.engine import USEEngine
 
 
-import pyuseocl.evaluation
-from evaluation \
-    import ModelValidation, ModelViolation, InvariantViolation, \
+import pyuseocl.use.eval.evaluation
+from evaluation import \
+    ModelValidation, \
+    ModelViolation, \
+    InvariantViolation, \
     InvariantValidation, \
     CardinalityViolation
 
@@ -64,13 +64,13 @@ class UseEvaluationResults(object):
         """
         Evaluate a list of stateFiles against a given model and store the
         use_evaluation_result results.
-        :param useOCLModel: a valid UseOCLModel build with the analyzer.
-        :type useOCLModel: analyzer.UseOCLModel
+        :param useOCLModel: a valid model/file ??? build with the parser.
+        :type useOCLModel: parser.UseFile
         :param soilFiles: list of paths to state files (.soil)
         :type soilFiles: [str]
 
         """
-        assert isinstance(useOCLModel, UseOCLModel)
+        assert isinstance(useOCLModel, UseFile)
         log.info('UseEvaluationResults.__init__(%s)', str(len(soilFiles)))
         self.useOCLModel = useOCLModel
 
@@ -135,7 +135,7 @@ class UseEvaluationResults(object):
         Empty soil file should be removed because of a BUG in USE OCL
         """
         for file in self.stateFiles:
-            if pyuseocl.soil.isEmptySoilFile(file):
+            if pyuseocl.use.soil.parser.isEmptySoilFile(file):
                 log.warning('empty soil file: %s' % file)
                 self.emptyStateFiles.append(file)
                 self.stateFiles.remove(file)
@@ -302,3 +302,5 @@ class UseEvaluationResults(object):
             self.modelEvaluationMap[state_file] = model_evaluation
 
 
+del OrderedDict, UseFile, ModelValidation, InvariantViolation
+del InvariantValidation, CardinalityViolation, USEEngine
