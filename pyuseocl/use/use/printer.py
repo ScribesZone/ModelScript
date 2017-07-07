@@ -12,7 +12,7 @@ __all__ = [
 ]
 
 import logging
-from pyuseocl.model import PreCondition, PostCondition
+from pyuseocl.metamodel.model import PreCondition, PostCondition
 
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
