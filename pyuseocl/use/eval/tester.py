@@ -16,18 +16,18 @@ log = logging.getLogger('test.' + __name__)
 from collections import OrderedDict
 import os.path
 
-import pyuseocl.utils.zip
-import pyuseocl.model
-import pyuseocl.analyzer
-import pyuseocl.evaluator
-import pyuseocl.assertion
-import pyuseocl.soil
+import pyuseocl.use.eval.zip
+import pyuseocl.metamodel.model
+import pyuseocl.use.use.parser
+import pyuseocl.use.eval.evaluator
+import pyuseocl.use.eval.assertion
+import pyuseocl.use.soil.parser
 
 
 
 
 class UseEvaluationAndAssertionResults(
-            pyuseocl.evaluator.UseEvaluationResults):
+        pyuseocl.use.eval.evaluator.UseEvaluationResults):
     """
     Extend the UseEvaluationResults by taking into account the potential
     assertions that may exist in each state file.
@@ -35,7 +35,7 @@ class UseEvaluationAndAssertionResults(
 
     def __init__(self, useOCLModel, stateFiles):
         # build the results as usual
-        pyuseocl.evaluator.UseEvaluationResults.__init__(
+        pyuseocl.use.eval.evaluator.UseEvaluationResults.__init__(
             self, useOCLModel, stateFiles
         )
 
@@ -51,7 +51,7 @@ class UseEvaluationAndAssertionResults(
         #--- evaluate all valid state files
         # (empty and erroneous files are skipped)
         if self.isCorrect:
-            for state_file in self.stateFiles:
+            for state_file in self.stateFiles: # pyuseocl.use.eval.zip.
                 self.__evaluateAssertionsFromState(state_file)
 
         self.nbOfAssertionValidations = \
@@ -89,7 +89,7 @@ class UseEvaluationAndAssertionResults(
         """
         log.debug('__evaluateAssertionsForState(%s)' % stateFile)
         self.assertionEvaluationsByStateFile[stateFile] = []
-        for assertion in pyuseocl.assertion._extractAssertionsFromFile(
+        for assertion in pyuseocl.use.eval.assertion._extractAssertionsFromFile(
                 self.useOCLModel.model, stateFile):
             self.__evaluateAssertion(assertion)
 
@@ -121,7 +121,7 @@ class UseEvaluationAndAssertionResults(
         else:
             # the assertion is not correct, so actual_result does not matter
             actual_result = None
-        ae = pyuseocl.assertion.InvariantAssertionEvaluation(
+        ae = pyuseocl.use.eval.assertion.InvariantAssertionEvaluation(
             assertion, actual_result)
         # add the evaluation to the proper lists
         self.assertionEvaluationsByStateFile[assertion.stateFile].append(ae)
@@ -136,14 +136,14 @@ class TestSuite(UseEvaluationAndAssertionResults):
     def __init__(self, useFile, stateFiles, testId=None):
         self.testId = testId
         self.useFile = useFile
-        use_ocl_model = pyuseocl.analyzer.UseOCLModelFile(useFile)
+        use_ocl_model = pyuseocl.use.use.parser.UseFile(useFile)
         UseEvaluationAndAssertionResults.__init__(self, use_ocl_model,
                                                   stateFiles)
 
 
 
 
-class ZipTestSuite(TestSuite, pyuseocl.utils.zip.ZipArtefact):
+class ZipTestSuite(TestSuite, pyuseocl.use.eval.zip.ZipArtefact):
     """
     Test suite represented as a local or remote zip file
     The _compute methods can be overriden if needed to change the behavior
@@ -159,7 +159,7 @@ class ZipTestSuite(TestSuite, pyuseocl.utils.zip.ZipArtefact):
         file from an archive.
         """
         self.useFileShortName = useFileShortName
-        pyuseocl.utils.zip.ZipArtefact.__init__(
+        pyuseocl.use.eval.zip.ZipArtefact.__init__(
             self,
             zipFileId=zipFileId,
             targetDirectory=targetDirectory,
