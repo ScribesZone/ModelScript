@@ -30,4 +30,5 @@
 !turbo.name := 'Maxi turbo project'
 !turbo.budget := 5000
 
-!insert (computing, turbo) into Controls
+! c1 := new Control() between (computing, turbo)
+

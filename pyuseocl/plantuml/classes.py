@@ -1,15 +1,12 @@
 # coding=utf-8
 
 """
-Generate a USE OCL specification from a modeL.
+Generate a USE OCL specification from a class modeL.
 This is currently only a preliminary version.
 """
 
 #TODO: to be continued
 
-__all__ = [
-    'ClassModelPrinter',
-]
 import os
 import logging
 from pyuseocl.metamodel.model import PreCondition, PostCondition
@@ -20,30 +17,19 @@ log = logging.getLogger('test.' + __name__)
 def indent(prefix,s):
     return '\n'.join([ prefix+l for l in s.split('\n') ])
 
-class ClassDiagram(object):
-    def __init__(self, model):
-        self.theModel = model
-        self.output = ''
-
-
-    def do(self):
-        self.output = ''
-        self.model(self.theModel)
-        return self.output
 
 
 
 
-
-class PlantUMLGenerator(object):
-    def __init__(self, model):
-        self.theModel = model
+class Generator(object):
+    def __init__(self, classModel):
+        self.classModel = classModel
         self.output = ''
 
 
     def do(self, outputFile=None):
         self.output = ''
-        self.model(self.theModel)
+        self.model(self.classModel)
         if outputFile:
             with open(outputFile, 'w') as f:
                 f.write(self.output)

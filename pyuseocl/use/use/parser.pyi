@@ -3,7 +3,7 @@ from typing import List, Optional
 import pyuseocl.metamodel.model
 import pyuseocl.source.sources
 
-class parser(pyuseocl.source.sources.SourceFile):
+class UseFile(pyuseocl.source.sources.SourceFile):
 
     def __init__(self, useModelSourceFile : str) -> str :
         self.commandExitCode : int

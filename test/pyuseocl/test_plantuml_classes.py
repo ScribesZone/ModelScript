@@ -13,7 +13,7 @@ from test.pyuseocl import (
 
 import os
 import pyuseocl.use.use.parser
-import pyuseocl.plantuml.diagrams
+import pyuseocl.plantuml.classes
 import pyuseocl.plantuml.engine
 
 
@@ -24,7 +24,7 @@ import pyuseocl.plantuml.engine
 
 @attr('slow')
 def testGenerator_UseOclModel_full():
-    test_files = [
+    test_file_names1 = [
         'civstatAnonymous.use',
         'CyberResidencesOCL.use',
         'AssociationClass.use',
@@ -38,7 +38,7 @@ def testGenerator_UseOclModel_full():
         'OCL2MM.use',
         'UML13All.use',
         'UML13Core.use',
-        'CarRental2.use',
+        # 3-ary assoc 'CarRental2.use',
         'Empty.use',
         'Grammar.use',
         'derived.use',
@@ -47,7 +47,7 @@ def testGenerator_UseOclModel_full():
         'Math.use',
         'MultipleInheritance.use',
         'MultipleInheritance_unrelated.use',
-        'Person.use',
+        # 3-ary assoc 'Person.use',
         'Polygon.use',
         'Project.use',
         'RecursiveOperations.use',
@@ -65,15 +65,15 @@ def testGenerator_UseOclModel_full():
         # 'EmployeeExtended.use',
         # 'bart.use',
     ]
-
-    use4subdir = os.path.join('use4','test')
+    test_files1=[os.path.join('use',f) for f in test_file_names1]
+    use4subdir = os.path.join('use','use4','test')
     test_dir_2 = os.path.join(TEST_CASES_DIRECTORY,use4subdir)
     # print test_dir_2
     test_files2 = [use4subdir + os.sep + f
                    for f in os.listdir(test_dir_2) if f.endswith('.use')]
     test_files2=[]
     # #print test_files2
-    all_test_files = test_files2 + test_files
+    all_test_files = test_files1+test_files2
 
     plantUMLengine = pyuseocl.plantuml.engine.PlantUMLEngine()
     for test_file in all_test_files:
@@ -93,7 +93,7 @@ def check_isValid(testFile, plantUMLengine):
 
     print '\n'*2+'='*80
     print 'Generating '+puml_file_path
-    out = pyuseocl.plantuml.diagrams.PlantUMLGenerator(use_file.model)
+    out = pyuseocl.plantuml.classes.Generator(use_file.model)
     print out.do(outputFile=puml_file_path)
     print '\n'*2+'.'*80
     plantUMLengine.generate(puml_file_path)
