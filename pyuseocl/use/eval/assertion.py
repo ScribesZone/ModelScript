@@ -93,7 +93,7 @@ def _extractAssertionsFromFile(useModel, soilFile):
     """
     Extract assertions objects from a soil file and a given model.
     :param useModel: the  model to which the soil file may reference
-    :type useModel: pyuse.model.Model
+    :type useModel: pyuse.model.ClassModel
     :param soilFile: path to the soil file
     :type soilFile: str
     :return: list of InvariantAssertion

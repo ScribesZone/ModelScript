@@ -1,0 +1,7 @@
+system CyberBibliotheque
+
+actor Employe
+actor Bibliothequaire
+usecase  SortirLivre
+usecase RentrerLivre
+

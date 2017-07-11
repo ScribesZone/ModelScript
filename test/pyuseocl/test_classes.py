@@ -8,7 +8,7 @@ import pyuseocl.use.use.parser
 def test_UseOclModel_Simple():
     testFile = 'Demo.use'
     use_model_file = pyuseocl.use.use.parser.UseFile(
-        TEST_CASES_DIRECTORY + os.sep + testFile)
+        os.path.join(TEST_CASES_DIRECTORY, 'use', testFile))
     assert use_model_file.isValid
     model = use_model_file.model
     print model

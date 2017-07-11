@@ -3,7 +3,7 @@ import collections
 from typing import Union, Optional, Dict, List
 from pyuseocl.source.sources import SourceElement
 from pyuseocl.metamodel.usecases import Actor, System
-from pyuseocl.metamodel.model import Class, Association, AssociationClass, Attribute
+from pyuseocl.metamodel.classes import Class, Association, AssociationClass, Attribute
 
 
 from pyuseocl.metamodel.objects import (

@@ -1,17 +1,21 @@
-permissions model CyberBibliotheque
 
-actor Etudiant
-    Emprunt : create, read
+actor permissions
 
-usecase Prendre
-    Emprunt : create, read
-    Emprunt.date : update
-    Emprunt.dateLimite: read-
-    Prolongation : CRUD
-    EstEmprunteA : create, read, update
+    Etudiant
+        Emprunt : create, read
 
-class Emprunt
-    Prende : create, read
+usecase permissions
+    Prendre
+        Emprunt : create, read
+        Emprunt.date : update
+        Emprunt.dateLimite: read-
+        Prolongation : CRUD
+        EstEmprunteA : create, read, update
+
+entity permissions
+    Emprunt
+        Prendre : create, read
+        Etudiant : CR
     Emprunt.date : update
     Emprunt.dateLimite: read-
     Prolongation : CRUD

@@ -1,3 +1,5 @@
+# coding=utf-8
+
 import os
 
 class PlantUMLEngine(object):
@@ -6,7 +8,7 @@ class PlantUMLEngine(object):
         self.plantumlJar=os.path.join(os.path.dirname(__file__),'res','plantuml.jar')
         if checks:
             if not os.path.isfile(self.plantumlJar):
-                raise EnvironmentError('cannot find '% self.plantumlJar)
+                raise EnvironmentError('cannot find %s'% self.plantumlJar)
             if os.system('java -version') != 0:
                 raise EnvironmentError('java is required but it seems that it is not installed')
         self.defaultFormat=format

@@ -21,4 +21,4 @@ def check_UseOCLPrinter(case):
     useFile = getUseFile(case['use'])
     model = pyuseocl.use.use.parser.UseFile(useFile).model
     printer = pyuseocl.use.use.printer.UseOCLPrinter(model)
-    print printer.do()
+    print(printer.do())

@@ -20,7 +20,8 @@ def test_USEEngine_analyzeUSEModel_KO():
 
 def test_USEEngine_analyzeUSEModel():
     file = os.path.join(TEST_CASES_DIRECTORY,
-                        'use', 'Binary1.use')
+                        'use', 'Demo.use')
+    print(file)
     USEEngine.analyzeUSEModel(file)
     assert USEEngine.commandExitCode == 0
 

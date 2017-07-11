@@ -12,11 +12,11 @@ This module allows to analyze a USE OCL ``.use`` source file:
 * The file is loaded with ``use`` interpreter.
 * Then the ``info model`` command is issued.
 * The canonical representation produced is finally parsed.
-* An model that conforms to a simple UML metamodel is created
-* and stored in model attribute.
+* A class model that conforms to a simple UML class metamodel is created
+* and stored in classModel attribute.
 * If errors are detected then errors contains the list of errors.
 
-Either find some errors or create a model (see :class:`pyuseocl.model.Model`)
+Either find some errors or create a class model
 """
 
 import os
@@ -27,7 +27,7 @@ import pyuseocl.source.sources
 import pyuseocl.use.engine.engine
 import pyuseocl.use.engine.engine
 import pyuseocl.use.use.parser
-import pyuseocl.metamodel.model
+import pyuseocl.metamodel.classes
 
 # , \
 #    Operation, Invariant, Association, Role, AssociationClass, \
@@ -40,24 +40,24 @@ class UseFile(pyuseocl.source.sources.SourceFile):
     """
     Abstraction of ``.use`` source file.
     This source file can be valid or not. In this later case
-    a reference to the contained model will be available.
+    a reference to the contained class model will be available.
     """
 
-    def __init__(self, useModelSourceFile):
+    def __init__(self, classesSourceFile):
         """
         Analyze the given source file and returns a UseFile.
-        If valid, this object contains a model, otherwise it contains the
+        If valid, this object contains a class model, otherwise it contains the
         list of errors as well as the USE OCL command exit code.
 
-        :param useModelSourceFile: The path of the '.use' source file to analyze
+        :param classesSourceFile: The path of the '.use' source file to analyze
         :type useModelSourceFile: str
 
         Examples:
             see test.pyuseocl.test_parser
         """
-        super(UseFile, self).__init__(useModelSourceFile)
+        super(UseFile, self).__init__(classesSourceFile)
 
-        #: (bool) Indicates if the model file is valid, that is
+        #: (bool) Indicates if the class model file is valid, that is
         #: can be successfully parsed and compiled with use.
         self.isValid = None         # Don't know yet
         self.lines = None  # Nothing yet
@@ -69,11 +69,11 @@ class UseFile(pyuseocl.source.sources.SourceFile):
         #: (int) exit code of use command.
         self.commandExitCode = None # Nothing yet
 
-        #: (Model) Model representing the file in a conceptual way
+        #: class model representing the file in a conceptual way
         #: or None if self.isValid is false
         self.model = None  # Nothing yet, created by parse/resolve
 
-        # Try to validate the model and fill
+        # Try to validate the class model and fill
         #       self.isValid
         #       self.errors,
         #       self.commandExitCode,
@@ -81,7 +81,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
         #       self.length
         self.__createCanonicalForm()
         if self.isValid:
-            # Create the model by parsing the canonical form
+            # Create the class model by parsing the canonical form
             # fill  self.model,
             self.__parseLinesAndCreateModel()
             self.__resolveModel()
@@ -119,11 +119,11 @@ class UseFile(pyuseocl.source.sources.SourceFile):
         """
 
         if self.isValid:
-            print self.model
+            print(self.model)
         else:
-            print '%s error(s) in the model'  % len(self.errors)
+            print('%s error(s) in the model'  % len(self.errors))
             for e in self.errors:
-                print e
+                print(e)
 
     #--------------------------------------------------------------------------
     #    Class implementation
@@ -369,7 +369,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
             r = r'^ *model (?P<name>\w+) *$'
             m = re.match(r, line)
             if m:
-                self.model = pyuseocl.metamodel.model.Model(
+                self.model = pyuseocl.metamodel.classes.ClassModel(
                     name=m.group('name'),
                     code=self.sourceLines,
                     lineNo = line_no,
@@ -399,7 +399,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
                     for l in m.group('literals').replace(' ','').split(',')
                     if l != ''
                 ]
-                enumeration = pyuseocl.metamodel.model.Enumeration(
+                enumeration = pyuseocl.metamodel.classes.Enumeration(
                     name=m.group('name'),
                     model=self.model,
                     code=line,
@@ -454,7 +454,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
                 else:
                     superclasses = [c.strip() for c in m.group('superclasses').split(',')]
                 current_class = \
-                    pyuseocl.metamodel.model.Class(
+                    pyuseocl.metamodel.classes.Class(
                         name=m.group('name'),
                         model=self.model,
                         isAbstract=m.group('abstract') == 'abstract',
@@ -492,7 +492,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
                     # print('YYY'+m.group('name'))
                     # print(superclasses)
                 ac = \
-                    pyuseocl.metamodel.model.AssociationClass(
+                    pyuseocl.metamodel.classes.AssociationClass(
                         name=m.group('name'),
                         model=self.model,
                         isAbstract=m.group('abstract') == 'abstract',
@@ -524,7 +524,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
                     is_init = m.group('keyword') == 'init'
                     expression = m.group('expression')
                     # This could be in an association class
-                    attribute = pyuseocl.metamodel.model.Attribute(
+                    attribute = pyuseocl.metamodel.classes.Attribute(
                         name=m.group('name'),
                         class_=current_class,
                         code=line,
@@ -567,7 +567,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
                     # print('XXX add operation "%s"' % signature)
                     expr=m.group('expr')
                     operation = \
-                        pyuseocl.metamodel.model.Operation(
+                        pyuseocl.metamodel.classes.Operation(
                             name=m.group('name'),
                             model=self.model,
                             class_=current_class,
@@ -600,7 +600,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
                 current_operation = None
                 current_context = None
                 current_association = \
-                    pyuseocl.metamodel.model.Association(
+                    pyuseocl.metamodel.classes.Association(
                         name=m.group('name'),
                         model=self.model,
                         kind=m.group('kind'),
@@ -663,7 +663,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
                         qualifiers = \
                             [tuple(q.split(':'))
                              for q in m.group('qualifiers').replace(' ','').split(',')]
-                    pyuseocl.metamodel.model.Role(
+                    pyuseocl.metamodel.classes.Role(
                         name=m.group('name'), # could be empty, but will get default
                         association=current_association,
                         type=m.group('type'),
@@ -761,7 +761,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
                             additionalVariables = \
                                 None if variables is None or len(variables) < 2 \
                                 else variables[1:]
-                            current_condition = pyuseocl.metamodel.model.Invariant(
+                            current_condition = pyuseocl.metamodel.classes.Invariant(
                                 name=condname,
                                 model=self.model,
                                 class_=classname,
@@ -776,7 +776,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
                             # print('     inv '+condname+' created')
                         elif m.group('cond') == 'pre':
                             classname = current_context['classname']
-                            current_condition = pyuseocl.metamodel.model.PreCondition(
+                            current_condition = pyuseocl.metamodel.classes.PreCondition(
                                 name=condname,
                                 model=self.model,
                                 class_=classname,
@@ -789,7 +789,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
                             # print('     pre '+condname+' created')
                         elif m.group('cond') == 'post':
                             classname = current_context['classname']
-                            current_condition = pyuseocl.metamodel.model.PostCondition(
+                            current_condition = pyuseocl.metamodel.classes.PostCondition(
                                 name=condname,
                                 model=self.model,
                                 class_=classname,
@@ -897,7 +897,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
                 return self.model.basicTypeNamed[name]
             else:
                 self.model.basicTypeNamed[name] = \
-                    pyuseocl.metamodel.model.BasicType(name)
+                    pyuseocl.metamodel.classes.BasicType(name)
                 return self.model.basicTypeNamed[name]
 
         def __resolveClassType(name):
@@ -995,17 +995,17 @@ class UseFile(pyuseocl.source.sources.SourceFile):
                 condition.expression=condition.expression.strip()
                 # print 'resolve '+condition.name+' from '+c.name
                 # print '        '+str(type(c))
-                if isinstance(condition, pyuseocl.metamodel.model.Invariant):
+                if isinstance(condition, pyuseocl.metamodel.classes.Invariant):
                     # Store the invariant in the class
                     id = computeId(condition.name, c.invariantNamed, '_inv')
                     c.invariantNamed[id] = condition
-                elif isinstance(condition, pyuseocl.metamodel.model.PreCondition):
+                elif isinstance(condition, pyuseocl.metamodel.classes.PreCondition):
                     # print '        ' + str(condition.operation)
                     signature=condition.operation
                     op=c.operationWithSignature[signature]
                     id = computeId(condition.name, op.conditionNamed, '_pre')
                     op.conditionNamed[id]=condition
-                elif isinstance(condition, pyuseocl.metamodel.model.PostCondition):
+                elif isinstance(condition, pyuseocl.metamodel.classes.PostCondition):
                     # print '        ' + str(condition.operation)
 
                     signature=condition.operation

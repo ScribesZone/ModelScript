@@ -1,0 +1,20 @@
+system CyberBibliotheque
+
+actor Personne
+
+actor Employe
+    usecases
+        SortirLivre
+        SInscrire
+        Redefinir
+        RentrerLivre
+
+
+actor Bibliothequaire
+    usecases
+        RentrerLivre
+
+usecase SortirLivre
+usecase RentrerLivre
+usecase DireAPersonne
+

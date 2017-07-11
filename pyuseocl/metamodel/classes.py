@@ -1,7 +1,7 @@
 # coding=utf-8
 
 """
-Partial AST for USE OCL Model. The elements in this module are generated
+Partial AST for USE OCL ClassModel. The elements in this module are generated
 by the "UseFi" module.
 """
 
@@ -17,12 +17,12 @@ from pyuseocl.source.sources import SourceElement
 
 
 
-class Model(SourceElement):
+class ClassModel(SourceElement):
     """
     Class model.
     """
     def __init__(self, name, code=None, lineNo=None, docComment=None, eolComment=None):
-        super(Model, self).__init__(name, code, lineNo, docComment, eolComment)
+        super(ClassModel, self).__init__(name, code, lineNo, docComment, eolComment)
         self.isResolved = False
 
         #: Map of enumerations, indexed by name.

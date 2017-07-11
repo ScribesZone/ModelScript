@@ -32,8 +32,8 @@ def testGenerator_AllSoilFile():
 def check_IsValid(testFile, classModel):
     use_file = SoilSource(
         classModel=classModel,
-        soilFile=testFile,
+        soilFileName=testFile,
     )
     assert(use_file.isValid)
     state=use_file.scenario.execute()
-    print state.status()
+    print(state.status())

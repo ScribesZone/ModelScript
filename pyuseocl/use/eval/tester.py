@@ -17,7 +17,7 @@ from collections import OrderedDict
 import os.path
 
 import pyuseocl.use.eval.zip
-import pyuseocl.metamodel.model
+import pyuseocl.metamodel.classes
 import pyuseocl.use.use.parser
 import pyuseocl.use.eval.evaluator
 import pyuseocl.use.eval.assertion

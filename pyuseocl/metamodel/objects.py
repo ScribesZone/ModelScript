@@ -13,7 +13,7 @@ Simple metamodel for object states. Contains definitions for:
 # this is necessary to avoid repeating code
 from typing import List, Optional, Dict
 from collections import OrderedDict
-from pyuseocl.metamodel.model import (
+from pyuseocl.metamodel.classes import (
     Class,
     Attribute,
     Association,

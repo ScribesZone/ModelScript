@@ -16,7 +16,7 @@ class SourceElement:
         self.eolComment = Optional[str]
 
 
-class Model(SourceElement):
+class ClassModel(SourceElement):
 
     def __init__(self, name, code=None, lineNo=None, docComment=None, eolComment=None):
         self.enumerations : List[Enumeration]  # @property
@@ -44,7 +44,7 @@ class Model(SourceElement):
 class TopLevelElement(SourceElement):
 
     def __init__(self, name, model, code=None, lineNo=None, docComment=None, eolComment=None):
-        self.model : Model
+        self.model : ClassModel
 
 
 class SimpleType(object):
@@ -61,7 +61,7 @@ class Enumeration(TopLevelElement,SimpleType):
     type = 'Enumeration'
 
     def __init__(
-            self, name:str, model:Model, code:Optional[Any], literals:List[str],
+            self, name:str, model:ClassModel, code:Optional[Any], literals:List[str],
             lineNo=None, docComment=None, eolComment=None):
         self.literals : List[str]
 
@@ -71,7 +71,7 @@ class Class(TopLevelElement):
     def __init__(
             self, name, model, isAbstract=False, superclasses=(),
             lineNo=None, docComment=None, eolComment=None):
-        self.model : Model
+        self.model : ClassModel
         self.isAbstract : bool
         self.superclasses : List[Class]
         self.attributes : List[Attribute] # @property
