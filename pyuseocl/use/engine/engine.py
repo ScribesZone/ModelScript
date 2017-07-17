@@ -10,6 +10,7 @@ __all__ = [
     'USEEngine',
 ]
 
+from typing import Text, List, Optional, Union
 
 import logging
 # logging.basicConfig(level=logging.DEBUG)
@@ -63,18 +64,22 @@ class USEEngine(object):
 
     @classmethod
     def __soilHelper(cls, name):
+        #type: (Text)->Text
         return os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             'res', name)
 
 
     @classmethod
-    def __execute(cls, useFile, soilFile, errWithOut=False,
+    def __execute(cls, useSource, soilFile, errWithOut=False,
                   executionDirectory=None):
+        #type: (Text,Text,bool,Text) -> int
+
         """
         Execute use command with the given model and given soil file.
-        The soil file MUST terminate by a 'quit' statement so that the process
-        finish.
+        The soil file **MUST** terminate by a 'quit' statement so that
+        the process finish. There is therefore always a soilfile, at least
+        to quit and even if the goal is just to compile a model.
 
         # it seems that this is not necessary. So remove this.
         #    The process is executed in the specified 'executionDirectory'.
@@ -88,6 +93,11 @@ class USEEngine(object):
                 _ = f.read()
             # FIXME os.remove(filename)
             return _
+
+        if not os.path.isfile(useSource):
+            raise IOError('Error: File %s not found' % useSource)
+        if not os.path.isfile(soilFile):
+            raise IOError('Error: File %s not found' % soilFile)
 
         if errWithOut:
             #-- one unique output file for output and errors
@@ -110,12 +120,12 @@ class USEEngine(object):
 
         commandPattern = '%s -nogui -nr %s %s '+ redirection
         cls.command = (commandPattern
-                           % (cls.USE_OCL_COMMAND, useFile, soilFile))
+                       % (cls.USE_OCL_COMMAND, useSource, soilFile))
 
         cls.directory = executionDirectory if executionDirectory is not None \
                      else os.getcwd()
         # cls.directory = executionDirectory if executionDirectory is not None \
-        #             else os.path.dirname(os.path.abspath(useFile))
+        #             else os.path.dirname(os.path.abspath(useSource))
         previousDirectory = os.getcwd()
 
         # Execute the command
@@ -210,70 +220,92 @@ class USEEngine(object):
 
 
     @classmethod
-    def checkSoilFileWithUSEModel(cls, modelFile, stateFile):
-        driver_sequence = 'open %s \nquit' % stateFile
+    def executeSoilFile(cls, modelFile, stateFile):
+
+        # create the driver file
+        driver_sequence = "open '%s' \nquit\n" % stateFile
         (f, driver_filename) = tempfile.mkstemp(suffix='.soil', text=True)
         os.close(f)
         with open(driver_filename, 'w') as f:
             f.write(driver_sequence)
 
-        cls.__execute(
-            modelFile,
-            driver_filename,
-            errWithOut=False)
-
-        return cls.commandExitCode
-
-
-    @classmethod
-    def evaluateSoilFilesWithUSEModel(cls, modelFile, stateFiles):
-
-        def __generateSoilValidationDriver(stateFilePaths):
-            """
-            Create a soil sequence with the necessary statements to drive the
-            sequence of state validation. That is, it loads and checks each
-            state one after each other.
-
-            The soil driver sequence generated looks like:
-                    reset
-                    open file1.soil
-                    check
-                    reset
-                    open file2.soil
-                    check
-                    ...
-                    quit
-
-            The output with error messages can be found after the execution
-            in the variable outAndErr.
-            :param stateFilePaths: A list of .soil files corresponding
-            to states.
-            :type stateFilePaths: [str]
-            :return: The soil text
-            :rtype: str
-            """
-            if len(stateFiles) == 0:
-                raise Exception('Error: no state file to evaluate')
-            lines = reduce(operator.add,
-                           map(
-                               lambda file: ['reset', 'open ' + file,
-                                             'check -d'],
-                               stateFilePaths))
-            lines.append('quit')
-            return '\n'.join(lines)
-
-        #-- generate soil driver
-        if len(stateFiles) == 0:
-            raise Exception('Error: no state file to evaluate')
-        driver_sequence = __generateSoilValidationDriver(stateFiles)
-        (f, driver_filename) = tempfile.mkstemp(suffix='.soil', text=True)
-        os.close(f)
-        with open(driver_filename, 'w') as f:
-            f.write(driver_sequence)
-
+        # execute  use
         cls.__execute(
             modelFile,
             driver_filename,
             errWithOut=True)
 
-        return cls.commandExitCode
+        # save the result in a temp file
+        (f, trace_filename) = tempfile.mkstemp(suffix='.stc', text=True)
+        os.close(f)
+        with open(trace_filename, 'w') as f:
+            f.write(cls.outAndErr)
+        return trace_filename
+
+
+
+        # cls.__execute(
+        #     modelFile,
+        #     driver_filename,
+        #     errWithOut=False)
+        #
+        # return cls.commandExitCode
+
+    # Not sure if this is safe.
+    # ------------------------
+    # Tests never really worked for batch processing of many file at once
+    # We can execute file per file for each soil file.
+    # Performance is not really an issue.
+    #
+    # @classmethod
+    # def evaluateSoilFilesWithUSEModel(cls, modelFile, stateFiles):
+    #
+    #     def __generateSoilValidationDriver(stateFilePaths):
+    #         """
+    #         Create a soil sequence with the necessary statements to drive the
+    #         sequence of state validation. That is, it loads and checks each
+    #         state one after each other.
+    #
+    #         The soil driver sequence generated looks like:
+    #                 reset
+    #                 open file1.soil
+    #                 check
+    #                 reset
+    #                 open file2.soil
+    #                 check
+    #                 ...
+    #                 quit
+    #
+    #         The output with error messages can be found after the execution
+    #         in the variable outAndErr.
+    #         :param stateFilePaths: A list of .soil files corresponding
+    #         to states.
+    #         :type stateFilePaths: [str]
+    #         :return: The soil text
+    #         :rtype: str
+    #         """
+    #         if len(stateFiles) == 0:
+    #             raise Exception('Error: no state file to evaluate')
+    #         lines = reduce(operator.add,
+    #                        map(
+    #                            lambda file: ['reset', 'open ' + file,
+    #                                          'check -d'],
+    #                            stateFilePaths))
+    #         lines.append('quit')
+    #         return '\n'.join(lines)
+    #
+    #     #-- generate soil driver
+    #     if len(stateFiles) == 0:
+    #         raise Exception('Error: no state file to evaluate')
+    #     driver_sequence = __generateSoilValidationDriver(stateFiles)
+    #     (f, driver_filename) = tempfile.mkstemp(suffix='.soil', text=True)
+    #     os.close(f)
+    #     with open(driver_filename, 'w') as f:
+    #         f.write(driver_sequence)
+    #
+    #     cls.__execute(
+    #         modelFile,
+    #         driver_filename,
+    #         errWithOut=True)
+    #
+    #     return cls.commandExitCode
