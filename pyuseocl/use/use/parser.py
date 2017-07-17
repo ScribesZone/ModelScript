@@ -36,7 +36,7 @@ import pyuseocl.metamodel.classes
 def removeExtraSpaces(x):
     return ' '.join(x.split())
 
-class UseFile(pyuseocl.source.sources.SourceFile):
+class UseSource(pyuseocl.source.sources.SourceFile):
     """
     Abstraction of ``.use`` source file.
     This source file can be valid or not. In this later case
@@ -45,7 +45,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
 
     def __init__(self, classesSourceFile):
         """
-        Analyze the given source file and returns a UseFile.
+        Analyze the given source file and returns a UseSource.
         If valid, this object contains a class model, otherwise it contains the
         list of errors as well as the USE OCL command exit code.
 
@@ -55,7 +55,7 @@ class UseFile(pyuseocl.source.sources.SourceFile):
         Examples:
             see test.pyuseocl.test_parser
         """
-        super(UseFile, self).__init__(classesSourceFile)
+        super(UseSource, self).__init__(classesSourceFile)
 
         #: (bool) Indicates if the class model file is valid, that is
         #: can be successfully parsed and compiled with use.
