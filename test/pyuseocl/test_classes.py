@@ -7,11 +7,11 @@ import pyuseocl.use.use.parser
 
 def test_UseOclModel_Simple():
     testFile = 'Demo.use'
-    use_model_file = pyuseocl.use.use.parser.UseFile(
+    use_model_file = pyuseocl.use.use.parser.UseSource(
         os.path.join(TEST_CASES_DIRECTORY, 'use', testFile))
     assert use_model_file.isValid
     model = use_model_file.model
-    print model
+    print(model)
     class_names = [c.name for c in model.classes]
     for n in ['Employee', 'Department', 'Project' ]:
         assert n in class_names
