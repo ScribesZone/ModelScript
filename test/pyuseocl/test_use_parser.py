@@ -80,7 +80,7 @@ def testGenerator_UseOclModel_full():
 
 
 def check_isValid(testFile):
-    use_file = pyuseocl.use.use.parser.UseFile(
+    use_file = pyuseocl.use.use.parser.UseSource(
         os.path.join(TEST_CASES_DIRECTORY,testFile))
     if not use_file.isValid:
         use_file.printStatus()

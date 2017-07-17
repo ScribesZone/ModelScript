@@ -67,7 +67,7 @@ def check_extractAssertionStringsFromFile(testCase):
 def check_extractAssertionsFromFile(testCase):
     # get the model parsed
     useFile = getUseFile(testCase['modelFile'])
-    model = pyuseocl.use.use.parser.UseFile(useFile).model
+    model = pyuseocl.use.use.parser.UseSource(useFile).model
 
     for state_case in testCase['states']:
         soilFile = getSoilFile(state_case['state'])

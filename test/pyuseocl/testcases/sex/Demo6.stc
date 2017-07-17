@@ -1,0 +1,65 @@
+USE version 4.2.0, Copyright (C) 1999-2016 University of Bremen
+tmpiWTFrw.soil> open '/home/jmfavre/DEV/ScribesZone/PyUseOCL/test/pyuseocl/testcases/soil/employee/Demo6.soil'
+
+
+
+
+Demo6.soil>
+Demo6.soil>
+
+Demo6.soil> !computing := new Department
+Demo6.soil> !computing.name := 'Computing departement'
+Demo6.soil> !computing.location := 'Los alaambritos'
+Demo6.soil> !computing.budget := 10000
+
+Demo6.soil>
+Demo6.soil> !djamel := new Employee
+Demo6.soil> !djamel.name := 'Djamel'
+Demo6.soil> !djamel.salary := 2600
+Demo6.soil> !insert (djamel, computing) into WorksIn
+Demo6.soil> check -v -d -a
+
+
+
+checking invariant (1) `Department::i1a': OK.
+checking invariant (2) `Department::i2': OK.
+checking invariant (3) `Employee::i1b': OK.
+checking invariant (4) `Employee::i3': OK.
+checking invariant (5) `Project::i1c': OK.
+checking invariant (6) `Project::i4': OK.
+checking invariant (7) `Project::i5': OK.
+checked 7 invariants in 0.003s, 0 failures.
+
+Demo6.soil> !ioannis := new Employee
+Demo6.soil> !ioannis.name := 'Ioannis'
+Demo6.soil> !ioannis.salary := 1900
+Demo6.soil> !insert (ioannis, computing) into WorksIn
+
+Demo6.soil> ??2+3*5=3
+Detailed results of subexpressions:
+  2 : Integer = 2
+  3 : Integer = 3
+  5 : Integer = 5
+  (3 * 5) : Integer = 15
+  (2 + (3 * 5)) : Integer = 17
+  3 : Integer = 3
+  ((2 + (3 * 5)) = 3) : Boolean = false
+-> false : Boolean
+Demo6.soil> !turbo := new Project
+Demo6.soil> !turbo.name := 'Maxi turbo project'
+Demo6.soil> !turbo.budget := 5000
+Demo6.soil> ! c1 := new Control() between (computing, turbo)
+Demo6.soil> ! c1.frequence:=15
+Demo6.soil>
+
+
+Demo6.soil> !sandrine := new Employee
+Demo6.soil> !sandrine.name := 'Sandrine'
+Demo6.soil> !sandrine.salary := 2000
+Demo6.soil> !insert (sandrine, computing) into WorksIn
+
+Demo6.soil> !sandrine.salary := 2600
+
+Demo6.soil>
+Demo6.soil>
+tmpiWTFrw.soil> quit

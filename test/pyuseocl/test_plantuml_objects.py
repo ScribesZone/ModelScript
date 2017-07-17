@@ -15,7 +15,7 @@ import os
 import pyuseocl.use.use.parser
 import pyuseocl.plantuml.objects
 import pyuseocl.plantuml.engine
-import pyuseocl.use.soil.parser
+import pyuseocl.use.sex.parser
 
 # TODO: add this again
 # def test_UseOclModel_Simple():
@@ -30,7 +30,7 @@ def testGenerator_UseOclModel_full():
 
     #--- get the class model ----------------------
     use_file_name=os.path.join(test_dir,'main.use')
-    use_file = pyuseocl.use.use.parser.UseFile(
+    use_file = pyuseocl.use.use.parser.UseSource(
         use_file_name)
     assert(use_file.isValid)
     class_model = use_file.model
@@ -49,7 +49,7 @@ def testGenerator_UseOclModel_full():
 def check_isValid(class_model, soil_file_name, puml_engine):
 
     #--- parser: .soil -> scenario -------------------
-    soil_source = pyuseocl.use.soil.parser.SoilSource(
+    soil_source = pyuseocl.use.sex.parser.SoilSource(
         classModel=class_model,
         soilFileName=soil_file_name,
     )
@@ -69,11 +69,11 @@ def check_isValid(class_model, soil_file_name, puml_engine):
         os.path.splitext(
             os.path.basename(soil_file_name)) [0]+'.odg.puml'
     )
-    print '\n'*2+'='*80
-    print 'Generating '+puml_file_path
+    print('\n'*2+'='*80)
+    print('Generating '+puml_file_path)
     gen = pyuseocl.plantuml.objects.Generator(state)
-    print gen.do(outputFile=puml_file_path)
-    print '\n'*2+'.'*80
+    print( gen.do(outputFile=puml_file_path))
+    print('\n'*2+'.'*80)
 
     #--- plantuml: .puml -> .svg ----------------------
     puml_engine.generate(puml_file_path)

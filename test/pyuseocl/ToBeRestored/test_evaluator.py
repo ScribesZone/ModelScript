@@ -18,7 +18,7 @@ from collections import OrderedDict
 #
 #     def caseSetup(self):
 #         self.modelFile = getUseFile(self._case['model'])
-#         self.useModel = pyuseocl.use.use.parser.UseFile(self.modelFile)
+#         self.useModel = pyuseocl.use.use.parser.UseSource(self.modelFile)
 #         assert self.useModel.isValid  # we assume that this is ok
 #         self.stateFiles = [getSoilFile(file) for file in self._case['states']]
 #         self._ = pyuseocl.use.eval.evaluator.UseEvaluationResults(
@@ -39,7 +39,7 @@ class Test_UseEvaluationResults(DataTestSuite):
     class DataTest(DataTestCase):
         def caseSetup(self):
             self.modelFile = getUseFile(self._case['model'])
-            self.useModel = pyuseocl.use.use.parser.UseFile(
+            self.useModel = pyuseocl.use.use.parser.UseSource(
                 self.modelFile)
             assert self.useModel.isValid  # we assume that this is ok
             self.stateFiles = getSoilFileList(self._case['states'])

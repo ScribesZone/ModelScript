@@ -3,8 +3,9 @@ import os
 import logging
 
 from test.pyuseocl import TEST_CASES_DIRECTORY
-from pyuseocl.use.soil.parser import SoilSource
-from pyuseocl.use.use.parser import UseFile
+from pyuseocl.use.sex.parser import SoilSource
+from pyuseocl.umlscripts.usecases import UsecasesSource
+from pyuseocl.use.use.parser import UseSource
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -20,20 +21,35 @@ test_files = [
     for f in os.listdir(test_cases_dir)
     if f.endswith('.soil')]
 
-def testGenerator_AllSoilFile():
-    usefilename=os.path.join(test_cases_dir,'main.use')
-    uf=UseFile(usefilename)
+def _getClassModelAndUsecaseModels(name):
+    usefilename = os.path.join(test_cases_dir, '%s.use' % name)
+    uf=UseSource(usefilename)
     assert(uf.isValid)
     clm=uf.model
+    ucmfilename=os.path.join(test_cases_dir, '%s.ucm' % name)
+    ucs=UsecasesSource(ucmfilename)
+    assert(ucs.isValid)
+    sys=ucs.system
+    assert(sys is not None)
+    return (clm,sys)
 
+def testGenerator_AllSoilFileWithNoUsecases():
+    (clm,sys)=_getClassModelAndUsecaseModels('main')
     for test in test_files:
-        yield check_IsValid, test, clm
+        yield check_IsValid, test, clm, sys
 
-def check_IsValid(testFile, classModel):
+def testGenerator_WithUseCaseModel():
+    (clm,sys)=_getClassModelAndUsecaseModels('main')
+    for test in test_files:
+        yield check_IsValid, test, clm, sys
+
+def check_IsValid(testFile, classModel, sys=None):
     use_file = SoilSource(
         classModel=classModel,
         soilFileName=testFile,
+        system=sys,
     )
     assert(use_file.isValid)
     state=use_file.scenario.execute()
-    print(state.status())
+    state=use_file.scenario.executeAfterContext()
+    # print(state.status())

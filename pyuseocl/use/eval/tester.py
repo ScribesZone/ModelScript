@@ -21,7 +21,7 @@ import pyuseocl.metamodel.classes
 import pyuseocl.use.use.parser
 import pyuseocl.use.eval.evaluator
 import pyuseocl.use.eval.assertion
-import pyuseocl.use.soil.parser
+import pyuseocl.use.sex.parser
 
 
 
@@ -136,7 +136,7 @@ class TestSuite(UseEvaluationAndAssertionResults):
     def __init__(self, useFile, stateFiles, testId=None):
         self.testId = testId
         self.useFile = useFile
-        use_ocl_model = pyuseocl.use.use.parser.UseFile(useFile)
+        use_ocl_model = pyuseocl.use.use.parser.UseSource(UseSource)
         UseEvaluationAndAssertionResults.__init__(self, use_ocl_model,
                                                   stateFiles)
 

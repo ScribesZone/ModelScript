@@ -19,6 +19,6 @@ def testGenerator_UseOCLPrinter():
 
 def check_UseOCLPrinter(case):
     useFile = getUseFile(case['use'])
-    model = pyuseocl.use.use.parser.UseFile(useFile).model
+    model = pyuseocl.use.use.parser.UseSource(useFile).model
     printer = pyuseocl.use.use.printer.UseOCLPrinter(model)
     print(printer.do())

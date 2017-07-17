@@ -1,0 +1,15 @@
+system Main
+
+actor CEO
+    usecases
+        OpenNewDepartment
+        CloseDeparment
+
+actor Secretary
+    usecases
+        RegisterNewEmployee
+        IncreaseSalary
+
+actor Manager
+    usecases
+        CreateNewProject

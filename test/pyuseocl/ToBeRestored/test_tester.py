@@ -27,7 +27,7 @@ class Test_UseEvaluationAndAssertionResult(DataTestSuite):
     class DataTest(DataTestCase):
         def caseSetup(self):
             self.modelFile = getUseFile(self._case['model'])
-            self.useModel = pyuseocl.use.use.parser.UseFile(
+            self.useModel = pyuseocl.use.use.parser.UseSource(
                 self.modelFile)
             assert self.useModel.isValid  # we assume that this is ok
             self.stateFiles = getSoilFileList(self._case['states'])

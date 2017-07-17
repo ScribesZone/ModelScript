@@ -1,4 +1,6 @@
 # coding=utf-8
+# TODO: split this module so that parsing soil trace output go in soil parser
+
 """
 Evaluate a set of USE OCL states against a given USE OCL model and build the
 evaluation result (see the module 'Evaluator'). This evaluation result is
@@ -24,21 +26,19 @@ log = logging.getLogger('test.' + __name__)
 import re
 from collections import OrderedDict
 
-import pyuseocl.use.soil
+import pyuseocl.use.sex
 
-from pyuseocl.use.use.parser import UseFile
+from pyuseocl.use.use.parser import UseSource
 
 from pyuseocl.use.engine.engine import USEEngine
 
-
-import pyuseocl.use.eval.evaluation
-from evaluation import \
-    ModelValidation, \
-    ModelViolation, \
-    InvariantViolation, \
-    InvariantValidation, \
+from pyuseocl.metamodel.evaluation import (
+    ModelValidation,
+    ModelViolation,
+    InvariantViolation,
+    InvariantValidation,
     CardinalityViolation
-
+)
 
 class UseEvaluationResults(object):
     """
@@ -65,12 +65,12 @@ class UseEvaluationResults(object):
         Evaluate a list of stateFiles against a given model and store the
         use_evaluation_result results.
         :param useOCLModel: a valid model/file ??? build with the parser.
-        :type useOCLModel: parser.UseFile
+        :type useOCLModel: parser.UseSource
         :param soilFiles: list of paths to state files (.soil)
         :type soilFiles: [str]
 
         """
-        assert isinstance(useOCLModel, UseFile)
+        assert isinstance(useOCLModel, UseSource)
         log.info('UseEvaluationResults.__init__(%s)', str(len(soilFiles)))
         self.useOCLModel = useOCLModel
 
@@ -135,7 +135,7 @@ class UseEvaluationResults(object):
         Empty soil file should be removed because of a BUG in USE OCL
         """
         for file in self.stateFiles:
-            if pyuseocl.use.soil.parser.isEmptySoilFile(file):
+            if pyuseocl.use.sex.parser.isEmptySoilFile(file):
                 log.warning('empty soil file: %s' % file)
                 self.emptyStateFiles.append(file)
                 self.stateFiles.remove(file)
@@ -302,5 +302,5 @@ class UseEvaluationResults(object):
             self.modelEvaluationMap[state_file] = model_evaluation
 
 
-del OrderedDict, UseFile, ModelValidation, InvariantViolation
+del OrderedDict, UseSource, ModelValidation, InvariantViolation
 del InvariantValidation, CardinalityViolation, USEEngine

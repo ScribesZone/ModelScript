@@ -1,0 +1,51 @@
+USE version 4.2.0, Copyright (C) 1999-2016 University of Bremen
+tmpuV0djt.soil> open '/home/jmfavre/DEV/ScribesZone/PyUseOCL/test/pyuseocl/testcases/soil/employee/_negative/Demo666.5.soil'
+Demo666.5.soil> ! x := new Employee('sophie')
+Demo666.5.soil> check -v -d -a
+
+Multiplicity constraint violation in association `WorksIn':
+  Object `sophie' of class `Employee' is connected to 0 objects of class `Department'
+  at association end `department' but the multiplicity is specified as `1..*'.
+
+
+checking invariant (1) `Department::i1a': OK.
+checking invariant (2) `Department::i2': OK.
+checking invariant (3) `Employee::i1b': FAILED.
+  -> false : Boolean
+Results of subexpressions:
+  Employee.allInstances : Set(Employee) = Set{sophie}
+  self : Employee = sophie
+  self.salary : OclVoid = Undefined
+  (self.salary >= 0) : OclVoid = Undefined
+  Employee.allInstances->forAll(self : Employee | (self.salary >= 0)) : Boolean = false
+Instances of Employee violating the invariant:
+  -> Set{sophie} : Set(Employee)
+checking invariant (4) `Employee::i3': OK.
+checking invariant (5) `Project::i1c': OK.
+checking invariant (6) `Project::i4': OK.
+checking invariant (7) `Project::i5': OK.
+checked 7 invariants in 0.004s, 1 failure.
+Demo666.5.soil> ! x := new Employee('mario')
+Demo666.5.soil> check -d -a
+
+Multiplicity constraint violation in association `WorksIn':
+  Object `mario' of class `Employee' is connected to 0 objects of class `Department'
+  at association end `department' but the multiplicity is specified as `1..*'.
+Multiplicity constraint violation in association `WorksIn':
+  Object `sophie' of class `Employee' is connected to 0 objects of class `Department'
+  at association end `department' but the multiplicity is specified as `1..*'.
+
+
+checking invariant (1) `Department::i1a': OK.
+checking invariant (2) `Department::i2': OK.
+checking invariant (3) `Employee::i1b': FAILED.
+  -> false : Boolean
+Instances of Employee violating the invariant:
+  -> Set{mario,sophie} : Set(Employee)
+checking invariant (4) `Employee::i3': OK.
+checking invariant (5) `Project::i1c': OK.
+checking invariant (6) `Project::i4': OK.
+checking invariant (7) `Project::i5': OK.
+checked 7 invariants in 0.002s, 1 failure.
+Demo666.5.soil>
+tmpuV0djt.soil> quit
