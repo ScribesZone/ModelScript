@@ -1,39 +1,39 @@
 # coding=utf-8
 
-from typing import Any, Optional, Dict, List
+from typing import Any, Text, Optional, Dict, List
 import collections
 
 
 class SourceElement:
 
-    def __init__(self, name, code=None):
+    def __init__(self, name:Text, code:Optional[Text]=None) -> None:
         # name : invariants, preconidtions and postconditions can be anonymous
         # in this case name is empty
-        self.name : Optional[str]
+        self.name : Optional[Text]
         self.source : Optional[Any]
         self.lineNo : int
-        self.docComment = Optional[List[str]]
-        self.eolComment = Optional[str]
+        self.docComment = Optional[List[Text]]
+        self.eolComment = Optional[Text]
 
 
 class ClassModel(SourceElement):
 
     def __init__(self, name, code=None, lineNo=None, docComment=None, eolComment=None):
         self.enumerations : List[Enumeration]  # @property
-        self.enumerationNamed : Dict[str, Enumeration]      # OrderedDict
+        self.enumerationNamed : Dict[Text, Enumeration]      # OrderedDict
         self.classes      : List[Class]  # @property  Do not contains associationclasses
-        self.classNamed   : Dict[str, Class]            # OrderedDict
+        self.classNamed   : Dict[Text, Class]            # OrderedDict
         self.associations : List[Association] # # @property  Do not contains associationclasses
-        self.associationNamed : Dict[str, Association]      # OrderedDict Do not contains associationclasses
+        self.associationNamed : Dict[Text, Association]      # OrderedDict Do not contains associationclasses
         self.associationsClasses : List[AssociationClass] # # @property
-        self.associationClassNamed : Dict[str, AssociationClass]  # OrderedDict
-        self.operations   : List[str] # # @property
-        self.operationWithFullSignature   : Dict[str, Operation] # OrderedDict
+        self.associationClassNamed : Dict[Text, AssociationClass]  # OrderedDict
+        self.operations   : List[Text] # # @property
+        self.operationWithFullSignature   : Dict[Text, Operation] # OrderedDict
         self.operationConditions : List[OperationCondition]
         self.basicTypes   : List[BasicType] # @property
-        self.basicTypeNamed   : Dict[str, BasicType]        # OrderedDict
+        self.basicTypeNamed   : Dict[Text, BasicType]        # OrderedDict
 
-    def findAssociationOrAssociationClass(self, name:str) -> Association: ...
+    def findAssociationOrAssociationClass(self, name:Text) -> Association: ...
     def findRole(self, associationOrAssociationClassName, roleName:str) -> Role : ...
     def findClassOrAssociationClass(self, name:str) -> Class: ...
     def findInvariant(self, classOrAssociationClassName, invariantName): Invariant: ...

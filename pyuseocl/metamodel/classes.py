@@ -4,7 +4,7 @@
 Partial AST for USE OCL ClassModel. The elements in this module are generated
 by the "UseFi" module.
 """
-
+from typing import Text,Optional
 import logging
 
 # logging.basicConfig(level=logging.DEBUG)
@@ -13,8 +13,6 @@ log = logging.getLogger('test.' + __name__)
 import collections
 import abc
 from pyuseocl.source.sources import SourceElement
-
-
 
 
 class ClassModel(SourceElement):
@@ -302,7 +300,7 @@ class Condition(TopLevelElement):
         super(Condition, self).__init__(
             name, model, code=code,
             lineNo=lineNo, docComment=docComment, eolComment=eolComment)
-        self.class_ = class_  # str resolved in Class  # could be null as some invariants are toplevel
+        self.class_ = class_  # Text resolved in Class  # could be null as some invariants are toplevel
         self.expression = expression
         # add it so that it can be resolved later
         self.model._conditions.append(self)
@@ -395,7 +393,7 @@ class Association(TopLevelElement):
     def __init__(self,
                  name, model, kind=None,
                  lineNo=None, docComment=None, eolComment=None):
-        # type: (str) -> None
+        # type: (Text,ClassModel,Optional[Text],Optional[int],Optional[Text],Optional[Text]) -> None
         super(Association, self).__init__(
             name, model,
             lineNo=lineNo, docComment=docComment, eolComment=eolComment)
