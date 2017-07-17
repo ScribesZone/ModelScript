@@ -81,7 +81,7 @@ def testGenerator_UseOclModel_full():
 
 
 def check_isValid(testFile, plantUMLengine):
-    use_file = pyuseocl.use.use.parser.UseFile(
+    use_file = pyuseocl.use.use.parser.UseSource(
         TEST_CASES_DIRECTORY + os.sep + testFile)
     puml_file_path = os.path.join(
         BUILD_DIRECTORY,
@@ -91,11 +91,11 @@ def check_isValid(testFile, plantUMLengine):
         use_file.printStatus()
     assert use_file.isValid
 
-    print '\n'*2+'='*80
-    print 'Generating '+puml_file_path
+    print('\n'*2+'='*80)
+    print('Generating '+puml_file_path)
     out = pyuseocl.plantuml.classes.Generator(use_file.model)
-    print out.do(outputFile=puml_file_path)
-    print '\n'*2+'.'*80
+    print(out.do(outputFile=puml_file_path))
+    print('\n'*2+'.'*80)
     plantUMLengine.generate(puml_file_path)
 
     # if useModel.isValid:
