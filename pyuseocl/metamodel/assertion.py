@@ -1,5 +1,7 @@
 # coding=utf-8
 
+# Separate this abstract model between metamodel and parsing stuff
+
 """
 Add support for "assertions" in USE OCL.
 Assertions can be added in soil files in the form of comments like the
@@ -88,7 +90,8 @@ class InvariantAssertion(object):
                 % (self.className, self.invariantName, self.expectedResult))
 
 
-
+# TODO: this part should be moved to soil parser
+#
 def _extractAssertionsFromFile(useModel, soilFile):
     """
     Extract assertions objects from a soil file and a given model.

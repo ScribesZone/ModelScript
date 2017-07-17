@@ -1,5 +1,8 @@
 # coding=utf-8
 
+# TODO: this module was designed for USE OCL. Remove reference to it.
+#       This should lead to a general metamodel (conformance ?)
+
 """
 Model the result of the evaluation of a USE OCL state (a soil file) against
 a USE OCL model. This module represents the output of the evaluation
