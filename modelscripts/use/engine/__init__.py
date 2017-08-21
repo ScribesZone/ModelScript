@@ -21,6 +21,7 @@ import tempfile
 import operator
 import re
 
+DEBUG=4
 
 class USEEngine(object):
     """
@@ -88,6 +89,7 @@ class USEEngine(object):
         #    important if the soil files contains references to relative path.
         #    This is in particular the case of 'open file.soil' statements.
         """
+
         def readAndRemove(filename):
             with open(filename, 'r') as f:
                 _ = f.read()
@@ -121,7 +123,8 @@ class USEEngine(object):
         commandPattern = '%s -nogui -nr %s %s '+ redirection
         cls.command = (commandPattern
                        % (cls.USE_OCL_COMMAND, useSource, soilFile))
-
+        if DEBUG>=3:
+            print('**** EXECUTE %s' % cls.command)
         cls.directory = executionDirectory if executionDirectory is not None \
                      else os.getcwd()
         # cls.directory = executionDirectory if executionDirectory is not None \
@@ -220,10 +223,15 @@ class USEEngine(object):
 
 
     @classmethod
-    def executeSoilFile(cls, modelFile, stateFile):
-
+    def executeSoilFileAsTrace(cls, useFile, soilFile):
+        """
+        Standard execution of a .soil file with a .use file.
+        The result is saved in a temp .stc file whose name is returned
+        """
+        abs_use_file=os.path.realpath(useFile)
+        abs_soil_file=os.path.realpath(soilFile)
         # create the driver file
-        driver_sequence = "open '%s' \nquit\n" % stateFile
+        driver_sequence = "open '%s' \nquit\n" % abs_soil_file
         (f, driver_filename) = tempfile.mkstemp(suffix='.soil', text=True)
         os.close(f)
         with open(driver_filename, 'w') as f:
@@ -231,7 +239,7 @@ class USEEngine(object):
 
         # execute  use
         cls.__execute(
-            modelFile,
+            abs_use_file,
             driver_filename,
             errWithOut=True)
 
@@ -243,13 +251,45 @@ class USEEngine(object):
         return trace_filename
 
 
+    @classmethod
+    def executeSoilFileAsSex(cls, useFile, soilFile, sexFile=None):
+        #type: (Text, Text, Optional[Text]) -> Text
+        """
+        Execute a .soil file with a .use file and get the result
+        as a .sex file, that is, the file with the evaluation result
+        embedded. Change outAndErr just like if the engine returned
+        the text.
 
-        # cls.__execute(
-        #     modelFile,
-        #     driver_filename,
-        #     errWithOut=False)
-        #
-        # return cls.commandExitCode
+        The implementation is:
+        1. first create the trace (.stc) with executeSoilFileAsTrace
+        2. merge the soil file and trace file with merge
+        """
+        from modelscripts.use.engine.merger import merge
+        abs_use_file=os.path.realpath(useFile)
+        abs_soil_file=os.path.realpath(soilFile)
+        trace_filename = cls.executeSoilFileAsTrace(
+            abs_use_file,
+            abs_soil_file)
+        print('******* TRACE RESULT %s ' % trace_filename)
+        sex_filename=merge(abs_soil_file, trace_filename, sexFileName=sexFile)
+        with open(sex_filename, 'rU') as f:
+            cls.outAndErr=f.read()
+        return sex_filename
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # Not sure if this is safe.
     # ------------------------
@@ -258,7 +298,7 @@ class USEEngine(object):
     # Performance is not really an issue.
     #
     # @classmethod
-    # def evaluateSoilFilesWithUSEModel(cls, modelFile, stateFiles):
+    # def evaluateSoilFilesWithUSEModel(cls, useFile, stateFiles):
     #
     #     def __generateSoilValidationDriver(stateFilePaths):
     #         """
@@ -304,7 +344,7 @@ class USEEngine(object):
     #         f.write(driver_sequence)
     #
     #     cls.__execute(
-    #         modelFile,
+    #         useFile,
     #         driver_filename,
     #         errWithOut=True)
     #
