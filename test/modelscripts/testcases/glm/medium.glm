@@ -1,0 +1,22 @@
+glossary model
+
+domain nombre
+
+    un uno une one:
+        ceci est la description de `un` élément
+        dans `un` contexte `uno` et `deux`
+        `un` `test`
+        trois
+
+    deux two:
+        `un` autre exemple de `one` et voici une
+        `référence` `pendante`
+
+
+
+domain glossaire
+
+    référence:
+        `une` `référence` est un peu plus que
+        `deux` mot. Attention à l'`indentation`
+        qui doit être toujours de `huit` espaces.
