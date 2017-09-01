@@ -2,15 +2,10 @@
 from __future__ import unicode_literals, print_function, absolute_import, division
 from typing import Text, Union, Optional, Dict, List
 
-from modelscripts.source.printer import (
+from modelscripts.sources.printers import (
     AbstractPrinter
 )
-from modelscripts.metamodels.accesses import (
-    AccessModel,
-    Access,
-    AccessSet
-)
-
+from modelscripts.metamodels.permissions import AccessModel, AccessSet, Access
 
 from modelscripts.scripts.permissions.printer import (
     opString,

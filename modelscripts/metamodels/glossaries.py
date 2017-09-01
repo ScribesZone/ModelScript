@@ -8,15 +8,19 @@ Glossary metamodel.
           <>--* Entry
 """
 from __future__ import print_function
-from typing import Union, Dict, Text, Optional, List
+
 import collections
-from modelscripts.utils import Model
-from modelscripts.source.sources import SourceElement
+
+from typing import Dict, Text, Optional, List
+
 from modelscripts.metamodels.texts import (
     TextBlock,
     Reference,
 
 )
+from modelscripts.sources.models import Model
+from modelscripts.sources.sources import SourceElement
+
 
 class GlossaryModel(Model):
 

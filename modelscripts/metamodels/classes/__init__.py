@@ -33,18 +33,19 @@ The structure of this package is::
 
 """
 from __future__ import print_function
-from typing import Text, Optional, Union, Any, List, Dict
-import collections
+
 import abc
+import collections
 import logging
 
-from modelscripts.utils import Model
+from typing import Text, Optional, Union, Any, List, Dict
 
-from modelscripts.source.sources import (
+from modelscripts.metamodels.permissions import Resource
+from modelscripts.sources.models import Model
+from modelscripts.sources.sources import (
     SourceElement,
     SourceFile
 )
-
 
 #TODO: make associationclass class and assoc + property
 # currently the implem is based on separated list for assocclass
@@ -67,44 +68,52 @@ class ClassModel(Model):
     Class model.
     """
     def __init__(self,
-                 name,
+                 name=None,
                  source=None,
                  code=None,
                  lineNo=None,
                  docComment=None,
                  eolComment=None):
-        #type: (Text, Optional[SourceFile], Any, int, Text, Text) -> None
+        #type: (Optional[Text], Optional[SourceFile], Any, int, Text, Text) -> None
         super(ClassModel, self).__init__(
             source=source, name=name, code=code,
             lineNo=lineNo, docComment=docComment, eolComment=eolComment)
 
-        self.isResolved = False
+        self._isResolved = False
 
+        self.enumerationNamed = collections.OrderedDict() #type: Dict[Text, Enumeration]
         #: Map of enumerations, indexed by name.
-        self.enumerationNamed = collections.OrderedDict()
 
-        #: Map of classes, indexed by name.
-        self.classNamed = collections.OrderedDict()  #indexed by name
+        #: Map of basic types. Indexed by type names/
+        #: populated during the resolution phase
+        self.basicTypeNamed = collections.OrderedDict()  #type: Dict[Text, BasicType]
 
-        #: Map of associations, indexed by name.
-        self.associationNamed = collections.OrderedDict()  #indexed by name
+        self.classNamed = collections.OrderedDict()  #type: Dict[Text, Class]
+        #: Map of classes (including association classes), indexed by name.
+        #: Use regularClassNamed to get only classes
+
+        self.associationNamed = collections.OrderedDict() #type: Dict[Text, Association]
+        #: Map of associations (including association classes), indexed by name.
+        #: Use regularClassNamed to get only classes
 
         #: Map of association classes, indexed by name.
-        self.associationClassNamed = collections.OrderedDict()  #indexed by name
+        self.associationClassNamed = collections.OrderedDict()  #type: Dict[Text, Association]
 
         # #: Map of operations, indexed by operation full signatures.
         # #: e.g. 'Person::raiseSalary(rate : Real) : Real
-        self.operationWithFullSignature = collections.OrderedDict()  #indexed by full signature
+        self.operationWithFullSignature = collections.OrderedDict()  #type: Dict[Text, Operation]
 
         #: List of all conditions (inv/pre/post).
         #  Both those that are declared within a class
         #  or those declared with a context at top level.
         #  Used for resolution.
-        self._conditions = []
+        self._conditions = [] #type: List['Condition']
 
-        #: Map of basic types. Indexed by type names/
-        #: populated during the resolution phase
-        self.basicTypeNamed = collections.OrderedDict()
+
+
+    @property
+    def label(self):
+        return self.name
 
     @property
     def enumerations(self):
@@ -166,6 +175,21 @@ class ClassModel(Model):
     def associationClassNames(self):
         return self.associationClassNamed.keys()
 
+    @property
+    def simpleTypeNamed(self):
+        _ = self.basicTypeNamed.copy()
+        _.update(self.enumerationNamed)
+        return _
+
+    @property
+    def simpleTypes(self):
+        return self.simpleTypeNamed.values()
+
+    @property
+    def simpleTypeNames(self):
+        return self.simpleTypeNamed.keys()
+
+
 
     @property
     def basicTypes(self):
@@ -174,6 +198,8 @@ class ClassModel(Model):
     @property
     def basicTypeNames(self):
         return self.basicTypeNamed.keys()
+
+
 
 
     def findAssociationOrAssociationClass(self, name):
@@ -267,13 +293,26 @@ class TopLevelElement(SourceElement):
         super(TopLevelElement,self).__init__(name, code=code, lineNo=lineNo, docComment=docComment, eolComment=eolComment)
         self.model = model
 
+    @property
+    def label(self):
+        return self.name
 
+
+class Entity(Resource):
+    __metaclass__ = abc.ABCMeta
+
+class Member(Resource):
+    __metaclass__ = abc.ABCMeta
 
 class SimpleType(object):
     """
     Simple types.
     """
     __metaclass__ = abc.ABCMeta
+
+    @property
+    def label(self):
+        return self.name
 
 
 
@@ -294,7 +333,7 @@ class BasicType(SimpleType):
 
 
 
-class Enumeration(TopLevelElement,SimpleType):
+class Enumeration(TopLevelElement, SimpleType):
     """
     Enumerations.
     """
@@ -315,7 +354,7 @@ class Enumeration(TopLevelElement,SimpleType):
         return '%s(%s)' % (self.name, repr(self.literals))
 
 
-class Class(TopLevelElement):
+class Class(TopLevelElement, Entity):
     """
     Classes.
     """
@@ -327,6 +366,7 @@ class Class(TopLevelElement):
         self.model.classNamed[name] = self
         self.isAbstract = isAbstract
         self.superclasses = superclasses  # strings resolved as classes
+        #FIXME: add support for inheritance
         self.attributeNamed = collections.OrderedDict()
         # Signature looks like op(p1:X):Z
         self.operationWithSignature = collections.OrderedDict()
@@ -358,15 +398,15 @@ class Class(TopLevelElement):
         return self.invariantNamed.keys()
 
 
-
-class Attribute(SourceElement):
+class Attribute(SourceElement, Member):
     """
     Attributes.
     """
     def __init__(self, name, class_, code=None, type=None,
                  isDerived=False, isInit=False, expression=None,
                  lineNo=None, docComment=None, eolComment=None):
-        super(Attribute, self).__init__(
+        SourceElement.__init__(
+            self,
             name, code=code,
             lineNo=lineNo, docComment=docComment, eolComment=eolComment)
         self.class_ = class_
@@ -376,32 +416,39 @@ class Attribute(SourceElement):
         self.isInit = isInit
         self.expression = expression
 
-
+    @property
+    def label(self):
+        return '%s.%s' % (self.class_.label, self.name)
 
 # class Parameter
 
-class Operation(TopLevelElement):
+class Operation(SourceElement, Member):
     """
     Operations.
     """
-    def __init__(self, name, model, class_, signature, code=None,
+    def __init__(self, name,  class_, signature, code=None,
                  expression=None,
                  lineNo=None, docComment=None, eolComment=None):
-        super(Operation, self).__init__(
-            name, model, code,
+        SourceElement.__init__(
+            self,
+            name, code,
             lineNo=lineNo, docComment=docComment, eolComment=eolComment)
         self.class_ = class_
         self.signature = signature
         self.class_.operationWithSignature[signature] = self
         self.full_signature = '%s::%s' % (class_.name, self.signature)
-        self.model.operationWithFullSignature[self.full_signature] = self
+        self.class_.model.operationWithFullSignature[self.full_signature] = self
         # self.parameters = parameters
         # self.return_type = return_type
         self.expression = expression
         # Anonymous pre/post are indexed with id like _pre2/_post6
         # but their name (in PreCondition/PostCondition) is always ''
         # This id is just used internaly
-        self.conditionNamed = collections.OrderedDict()
+        self.conditionNamed = collections.OrderedDict() #type: Dict[Text, 'Condition']
+
+    @property
+    def label(self):
+        return '%s.%s' % (self.class_.label, self.name)
 
     @property
     def conditions(self):
@@ -418,7 +465,7 @@ class Operation(TopLevelElement):
 
 
 
-class Association(TopLevelElement):
+class Association(TopLevelElement, Entity):
     """
     Associations.
     """
@@ -510,7 +557,7 @@ class Association(TopLevelElement):
 
 
 
-class Role(SourceElement):
+class Role(SourceElement, Member):
     """
     Roles.
     """
@@ -524,7 +571,8 @@ class Role(SourceElement):
         if name=='' or name is None:
             if type is not None:
                 name = type[:1].lower() + type[1:]
-        super(Role, self).__init__(
+        SourceElement.__init__(
+            self,
             name, code=code,
             lineNo=lineNo, docComment=docComment, eolComment=eolComment)
         self.association = association
@@ -541,12 +589,16 @@ class Role(SourceElement):
         self.expression = expression
 
     @property
+    def label(self):
+        return '%s.%s' % (self.association.label, self.name)
+
+    @property
     def cardinalityLabel(self):
         if self.cardinalityMin is None and self.cardinalityMax is None:
             return None
         if self.cardinalityMin == self.cardinalityMax:
             return str(self.cardinalityMin)
-        if self.cardinalityMin==1 and self.cardinalityMax is None:
+        if self.cardinalityMin==0 and self.cardinalityMax is None:
             return '*'
         return ('%s..%s' %(
             str(self.cardinalityMin),
@@ -599,7 +651,7 @@ class Role(SourceElement):
 
 
 
-class AssociationClass(Class,Association):
+class AssociationClass(Class, Association):
     """
     Association classes.
     """

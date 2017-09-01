@@ -1,0 +1,3 @@
+!create djamel : Employee
+!djamel.name := 'Djamel'
+!djamel.salary := 2600

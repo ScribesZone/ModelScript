@@ -9,62 +9,80 @@ The structure of this module is::
     <>--* ContextBlock
     <>--* MainBlock
     <>--* Operation
-
+    --->0..1 ScenarioEvaluation
 """
 
 # TODO: add support for  'include <x.obm>
 
 import collections
-from typing import Union, Optional, Dict, List, Text
 
-from modelscripts.source.sources import (
-    SourceFile,
-    SourceElement
-)
-from modelscripts.utils import Model
+from typing import Optional, Dict, List, Text
 
 from modelscripts.metamodels.classes import (
     ClassModel,
+)
+from modelscripts.metamodels.permissions import (
+    PermissionModel,
+    UCPermissionModel,
+    Subject)
+from modelscripts.metamodels.scenarios.blocks import (
+    Block,
+    MainBlock,
+    ContextBlock
+)
+from modelscripts.metamodels.scenarios.operations import (
+    Operation
 )
 from modelscripts.metamodels.usecases import (
     Actor,
     UsecaseModel,
 )
-from modelscripts.metamodels.objects import (
-    ObjectModel,
+from modelscripts.sources.models import Model
+from modelscripts.sources.sources import (
+    SourceFile,
+    SourceElement
 )
 
-from modelscripts.metamodels.scenarios.operations import (
-    Operation
-)
-
-from modelscripts.metamodels.scenarios.blocks import (
-    MainBlock,
-    ContextBlock
-)
+# from modelscripts.metamodels.scenarios.evaluations import (
+#     ScenarioEvaluation
+# )
 
 DEBUG=3
 
-class ScenarioModel(Model):
+class ScenarioModel(Model, Subject):
     def __init__(self,
-                 classModel, source=None, name=None, usecaseModel=None, file=None, lineNo=None):
-        #type: (ClassModel, Optional[SourceFile], Optional[Text], Optional[UsecaseModel], Text) -> None
+                 classModel,
+                 source=None,
+                 name=None,
+                 usecaseModel=None,
+                 permissionModel=None,
+                 file=None, lineNo=None):
+        #type: (ClassModel, Optional[SourceFile], Optional[Text], Optional[UsecaseModel], PermissionModel, Text, int) -> None
         super(ScenarioModel, self).__init__(
             source=source,
             name=name,
             lineNo=lineNo,
         )
-        # self.name = name #type: Optional[Text]
         self.file = file #type: Text
         self.usecaseModel=usecaseModel #type: Optional[UsecaseModel]
-        self.classModel=classModel #type: ScenarioModel
+        self.classModel=classModel #type: ClassModel
+        self.permissionModel=permissionModel #type: UCPermissionModel
 
         self.actorInstanceNamed = collections.OrderedDict()
-        #type: Dict[Text,ActorInstance]
+        #type: Dict[Text, ActorInstance]
 
         self.contextBlocks=[] #type: List[ContextBlock]
         self.mainBlocks=[] #type: List[MainBlock]
-        self.originalOrderOperations=[] #type: List[Operation]
+        self.originalOrderBlocks=[] #type:List[Block]
+
+        #--- evaluation
+        self.scenarioEvaluation=None  # filled if evaluation exist
+        #type: Optional['ScenarioEvaluation']
+
+    @property
+    def logicalOrderBlocks(self):
+        #type: () -> List[Block]
+        return self.contextBlocks+self.mainBlocks
 
     @property
     def actorInstances(self):
@@ -74,29 +92,11 @@ class ScenarioModel(Model):
     def actorInstanceNames(self):
         return self.actorInstanceNamed.keys()
 
-    def executeAfterContext(self):
-        state = ObjectModel()
-        env = collections.OrderedDict()
-        # execute context
-        for cb in self.contextBlocks:
-            for op in cb.operations:
-                op.execute(env, state)
-        # execute main blocks
-        for mb in self.mainBlocks:
-            for op in mb.operations:
-                op.execute(env, state)
-
-
-    def execute(self):
-        state = ObjectModel()
-        env = collections.OrderedDict()
-        for op in self.originalOrderOperations:
-            op.execute(env, state)
-        return state
 
 
 
-class ActorInstance(SourceElement):
+
+class ActorInstance(SourceElement, Subject):
     def __init__(self, scenario, name, actor,
                  code=None, lineNo=None, docComment=None, eolComment=None):
 
@@ -109,5 +109,9 @@ class ActorInstance(SourceElement):
         self.actor=actor
         # type: Actor
         self.scenario.actorInstanceNamed[self.name]=self
+
+    @property
+    def superSubjects(self):
+        return [self.actor]
 
 

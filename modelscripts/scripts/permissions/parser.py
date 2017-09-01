@@ -5,69 +5,79 @@
 # TODO: implement error management
 
 from __future__ import absolute_import, division, print_function, unicode_literals
-from future.utils import python_2_unicode_compatible
-from typing import Text, List, Set, Dict, Optional, Union
+# from future.utils import python_2_unicode_compatible
+from typing import Text, List, Optional, Union #Set, Dict,
 import os
 import re
 
-from modelscripts.source.sources import SourceFile
+from modelscripts.sources.sources import (
+    ModelSourceFile,
+)
+from modelscripts.sources.issues import (
+    Issue,
+    Level,
+)
 
 from modelscripts.scripts.permissions.printer import (
     Printer
 )
 
+from modelscripts.metamodels.permissions import (
+    UCPermissionModel,
+    FactorizedPermissionRule,
+    Subject,
+    Resource,
+    Action
+)
+
 from modelscripts.metamodels.classes import (
+    Entity,
     ClassModel,
     Class,
     Association,
     AssociationClass,
-    Attribute,
-    Role,
+    # Attribute,
+    # Role,
 )
 
 from modelscripts.metamodels.usecases import (
     UsecaseModel,
-    Actor,
-    Usecase,
-)
-
-from modelscripts.metamodels.permissions import (
-    PermissionModel,
-    PermissionStatement,
-    Player,
-    Resource,
-    Entity
+    # Actor,
+    # Usecase,
 )
 
 
+DEBUG=4
 
-DEBUG=0
+class PermissionModelSource(ModelSourceFile):
 
-class PermissionModelSource(SourceFile):
-    def __init__(self, usecaseModel, classModel, filename):
-        #type: (UsecaseModel, ClassModel, str)->None
-        super(PermissionModelSource, self).__init__()
+    def __init__(self, permissionFileName, usecaseModel, classModel):
+        #type: (Text, UsecaseModel, ClassModel)->None
+        super(PermissionModelSource, self).__init__(
+            fileName=permissionFileName)
 
-        if not os.path.isfile(filename):
-            raise Exception('File "%s" not found' % filename)
-        self.fileName = filename  #type: str
-        self.sourceLines = (   #type: List[str]
-            line.rstrip()
-            for line in open(self.fileName, 'rU'))
-        self.directory = os.path.dirname(self.fileName) #type: str
-        self.isValid = None #type: bool
-        self.errors = [] # Todo, check errors, etc.
-        self.lines = None # Todo, check errors, etc.
-        self.ignoredLines = []
         self.usecaseModel = usecaseModel
         self.classModel = classModel
-        self.permissionModel = PermissionModel(
+        self.permissionModel = UCPermissionModel(
             usecaseModel=usecaseModel,
             classModel=classModel,
         )
-        self._parse()
-        self.isValid=True # Todo, check errors, etc.
 
+        self._parse()
+        # Todo, check errors, etc.
+
+    @property
+    def model(self):
+        return self.permissionModel
+
+    @property
+    def usedModelByKind(self):
+        _={}
+        if self.classModel is not None:
+            _['cl'] = self.classModel
+        if self.usecaseModel is not None:
+            _['uc'] = self.usecaseModel
+        return _
 
     def printStatus(self):
         """
@@ -84,8 +94,8 @@ class PermissionModelSource(SourceFile):
             )
             print(p.do())
         else:
-            print('%s error(s) in the model'  % len(self.errors))
-            for e in self.errors:
+            print('%s error(s) in the model' % len(self.issues))
+            for e in self.issues:
                 print(e)
 
 
@@ -96,12 +106,16 @@ class PermissionModelSource(SourceFile):
 
         if DEBUG>=1:
             print('\nParsing %s\n' % self.fileName)
+        # print('************* %s lines' % len(list(self.sourceLines)) )
+        #print('************* %s lines' % len(list(self.sourceLines)) )
 
         for (line_index, line) in enumerate(self.sourceLines):
             original_line = line
             # replace tabs by spaces
             line = line.replace('\t',' ')
             line_no = line_index+1
+
+            print(original_line)
 
             if DEBUG>=2:
                 print ('#%i : %s' % (line_no, original_line))
@@ -121,24 +135,28 @@ class PermissionModelSource(SourceFile):
 
             #--- permission statement ------------------------
             r = (begin(0)
-                 +r' *(?P<players>[\w,]+)'
-                 +r' +(?P<ops>C?R?U?D?)'
-                 +r' +(?P<resources>[\w,\.]+)')
+                 +r' *(?P<subjects>[\w,]+)'
+                 +r' +(?P<actions>C?R?U?D?X?)'
+                 +r' +(?P<resources>[\w,\.]+)$')
             m = re.match(r, line)
             if m:
-                #---- players
-                player_strs=m.group('players').split(',')
-                players=_resolve_players(self.usecaseModel, player_strs)
-                if not isinstance(players, list):
+                #---- subjects
+                subject_strs=m.group('subjects').split(',')
+                subjects=_resolve_subjects(self.usecaseModel, subject_strs)
+                if not isinstance(subjects, list):
                     raise ValueError(
-                        'Error at line %i. Player "%s" does not exist' % (
-                            line_no, players))
+                        'Error at line %i. Subject "%s" does not exist' % (
+                            line_no, subjects))
 
                 #---- ops
-                ops=set(m.group('ops'))
-                if len(ops)==0 :
+                actions=[]
+                for action_name in m.group('actions'):
+                    action=Action.named(action_name)
+                    if action not in actions:
+                        actions.append(action)
+                if len(actions)==0 :
                     raise SyntaxError(
-                        'Syntax error at line %i. No (CRUD) operation specified'
+                        'Syntax error at line %i. No action specified'
                         % line_no
                     )
 
@@ -149,16 +167,25 @@ class PermissionModelSource(SourceFile):
                     raise ValueError(
                         'Error at line %i. Resource "%s" does not exist' % (
                             line_no, resources))
-                pstmt=PermissionStatement(
+                rule=FactorizedPermissionRule(
                     model=self.permissionModel,
-                    players=players,
-                    ops=ops,
+                    subjects=subjects,
+                    actions=actions,
                     resources=resources
                 )
-                self.permissionModel.statements.append(pstmt)
+                self.permissionModel.rules.append(rule)
+                # print ('******************',rule)
+                # print (len(self.permissionModel.rules))
+
                 continue
 
+            raise SyntaxError(
+                'Error: cannot parse line #%s: %s' % (
+                    line_no,
+                    original_line
+                ))
 
+        # TODO: is this a copy paste ?
         if self.usecaseModel.system is None:
             raise SyntaxError(
                 'Error: no system defined'
@@ -174,22 +201,22 @@ class PermissionModelSource(SourceFile):
 # it is about naming, namespaces, etc. so more general
 
 
-def _resolve_players(usecaseModel, playersStrs):
-    #type: (UsecaseModel, List[Text])->Union[List[Player], Text]
+def _resolve_subjects(usecaseModel, subjectStrs):
+    #type: (UsecaseModel, List[Text])->Union[List[Subject], Text]
     """
-    Resolve all list of players.
+    Resolve all list of subjects.
     Return the faulty string in case of error.
     This could serve to build an error message.
     """
 
     _ = []
-    for ps in playersStrs:
-        if ps is not '':
-            p=_resolve_player(usecaseModel, ps)
+    for ss in subjectStrs:
+        if ss is not '':
+            p=_resolve_subject(usecaseModel, ss)
             if p is not None:
                 _.append(p)
             else:
-                return ps
+                return ss
     return _
 
 def _resolve_resources(classModel, resourcesStrs):
@@ -211,8 +238,8 @@ def _resolve_resources(classModel, resourcesStrs):
     return _
 
 
-def _resolve_player(usecaseModel, name):
-    #type: (usecaseModel,Text)->Optional[Player]
+def _resolve_subject(usecaseModel, name):
+    #type: (usecaseModel,Text)->Optional[Subject]
     """ Search the name in usecases or actors
     """
     if DEBUG>=2:
@@ -224,6 +251,7 @@ def _resolve_player(usecaseModel, name):
     else:
         return None
 
+# TODO: move this to metamodels.classes ?
 def _resolve_entity(classModel, name):
     #type: (ClassModel,Text)->Optional[Entity]
     """ Search the name in class/association/associationclass
@@ -239,6 +267,7 @@ def _resolve_entity(classModel, name):
     else:
         return None
 
+# TODO: move this to metamodels.classes ?
 def _resolve_resource(classModel, expr):
     #type: (ClassModel,Text)->Optional[Resource]
     """ Search the expr in class/association/associationclass/attribute/role

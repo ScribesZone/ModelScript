@@ -17,15 +17,15 @@ Simple metamodel for object states. Contains definitions for:
 """
 
 
-from typing import List, Optional, Dict
 from collections import OrderedDict
-from modelscripts.utils import Model
+
+from typing import List, Optional, Dict
+
 from modelscripts.metamodels.classes import (
-    Class,
     Attribute,
-    Association,
-    AssociationClass,
 )
+from modelscripts.sources.models import Model
+
 
 class ObjectModel(Model):
     def __init__(self, source=None, name=None):

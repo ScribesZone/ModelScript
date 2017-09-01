@@ -152,11 +152,8 @@ class MegaModelCLI(object):
                 return None
 
             self.permissionModelSource=(
-                PermissionModelSource(
-                    filename=fs[0],
-                    classModel=self.classModelSource.classModel,
-                    usecaseModel=self.usecaseModelSource.usecaseModel,
-                )
+                PermissionModelSource(permissionFileName=fs[0], usecaseModel=self.usecaseModelSource.usecaseModel,
+                                      classModel=self.classModelSource.classModel)
             )
             # Is this test useful???  if self.permissionModelSource is not None:
             self.permissionModelSource.printStatus()
@@ -191,13 +188,10 @@ class MegaModelCLI(object):
                     )
                     return None
             for snfile in fs:
-                scnsource=ScenarioEvaluationModelSource(
-                        filename=snfile,
-                        classModel=self.classModelSource.classModel,
-                        usecaseModel=(
-                            None if self.usecaseModelSource is None
-                            else self.usecaseModelSource.usecaseModel)
-                    )
+                scnsource= ScenarioEvaluationModelSource(soilFileName=self.classModelSource.classModel,
+                                                         classModel=self.classModelSource.classModel, usecaseModel=(
+                        None if self.usecaseModelSource is None
+                        else self.usecaseModelSource.usecaseModel))
                 # Is this test useful???  if scnsource is None:
                 #    print('Error: %s is invalid. Ignored.' % snfile)
                 # else:
@@ -223,10 +217,8 @@ class MegaModelCLI(object):
                 )
                 return None
             for obfile in fs:
-                obsource=ObjectModelSource(
-                        filename=obfile,
-                        classModel=self.classModelSource.classModel,
-                    )
+                obsource= ObjectModelSource(soilFileName=self.classModelSource.classModel,
+                                            classModel=self.classModelSource.classModel)
                 # Is this test useful???   if obsource is None:
                 #    print('Error: %s is invalid. Ignored.' % obfile)
                 # else:

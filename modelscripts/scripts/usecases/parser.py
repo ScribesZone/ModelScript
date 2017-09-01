@@ -4,9 +4,13 @@ from typing import Text
 import os
 import re
 
-
-
-from modelscripts.source.sources import SourceFile
+from modelscripts.sources.sources import (
+    ModelSourceFile,
+)
+from modelscripts.sources.issues import (
+    Issue,
+    Level,
+)
 from modelscripts.scripts.usecases.printer import (
     Printer
 )
@@ -19,24 +23,24 @@ from modelscripts.metamodels.usecases import (
 )
 DEBUG=0
 
-class UsecaseModelSource(SourceFile):
+class UsecaseModelSource(ModelSourceFile):
     def __init__(self, usecaseFileName):
         #type: (Text) -> None
-        super(UsecaseModelSource, self).__init__()
-        if not os.path.isfile(usecaseFileName):
-            raise Exception('File "%s" not found' % usecaseFileName)
-        self.fileName = usecaseFileName
-        self.sourceLines = (
-            line.rstrip()
-            for line in open(self.fileName, 'rU'))
-        self.directory = os.path.dirname(usecaseFileName)
-        self.isValid = None
-        self.errors = []
-        self.lines = None
-        self.ignoredLines = []
+        super(UsecaseModelSource, self).__init__(
+            fileName=usecaseFileName
+        )
         self.usecaseModel = UsecaseModel(source=self)
         self._parse()
-        self.isValid=True # Todo, check errors, etc.
+        # Todo, check errors, etc.
+
+    @property
+    def model(self):
+        return self.usecaseModel
+
+    @property
+    def usedModelByKind(self):
+        _={}
+        return _
 
     def _parse(self):
 
@@ -173,6 +177,6 @@ class UsecaseModelSource(SourceFile):
             p=Printer(self.usecaseModel, displayLineNos=True)
             print(p.do())
         else:
-            print('%s error(s) in the usecase model'  % len(self.errors))
-            for e in self.errors:
+            print('%s error(s) in the usecase model' % len(self.issues))
+            for e in self.issues:
                 print(e)

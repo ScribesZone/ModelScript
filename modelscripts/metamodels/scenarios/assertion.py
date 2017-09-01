@@ -68,7 +68,7 @@ class InvariantAssertionEvaluation(object):
             )
         else:
             return 'Assert(%s=%s,%s)' % (
-                self.assertion.invariant,
+                self.assertion._invariant,
                 self.assertion.expectedResult,
                 self.status
             )

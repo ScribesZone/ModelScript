@@ -40,7 +40,8 @@ __all__=(
     'merge'
 )
 
-DEBUG=3
+# DEBUG=3
+DEBUG=0
 
 class _NumberedFile(object):
 

@@ -24,7 +24,7 @@ log = logging.getLogger('test.' + __name__)
 from modelscripts.metamodels.classes import (
     TopLevelElement
 )
-from modelscripts.source.sources import SourceElement
+from modelscripts.sources.sources import SourceElement
 from modelscripts.metamodels.classes import (
     ClassModel,
     Class,

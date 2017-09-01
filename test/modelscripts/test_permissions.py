@@ -34,7 +34,7 @@ def testGenerator_UseOclModel_full():
     assert(use_file.isValid)
     class_model = use_file.classModel
 
-    #--- get the class model ----------------------
+    #--- get the usecase model ----------------------
     usecase_file_name=os.path.join(test_dir,'a.ucm')
     usecase_source = modelscripts.scripts.usecases.parser.UsecaseModelSource(
         usecase_file_name)
@@ -51,15 +51,17 @@ def testGenerator_UseOclModel_full():
 def check_isValid(class_model, usecaseModel, permission_file):
 
     #--- parser: .soil -> scenario -------------------
-    pms = modelscripts.scripts.permissions.parser.PermissionModelSource(
-        usecaseModel=usecaseModel,
-        classModel=class_model,
-        filename=permission_file,
-    )
-    if not pms.isValid:
-        pms.printStatus() # TODO: to be implemented
-    assert pms.isValid
-    print(len(pms.permissionModel.statements))
-    permission_set=pms.permissionModel.interpret()
+    pmsource = modelscripts.scripts.permissions.parser.PermissionModelSource(permissionFileName=permission_file,
+                                                                             usecaseModel=usecaseModel,
+                                                                             classModel=class_model)
+    if not pmsource.isValid:
+        pmsource.printStatus() # TODO: to be implemented
+    assert pmsource.isValid
+    pmmodel=pmsource.permissionModel
+    permission_set=pmmodel.permissionSet
+    # print('***********',permission_set)
+    # print('%i rules -> %i permissions' % (
+    #     len(pmmodel.rules),
+    #     len(permission_set.permissions)))
     for p in permission_set.permissions:
         print(p)

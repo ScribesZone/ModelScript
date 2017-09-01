@@ -13,8 +13,13 @@ __all__ = [
 
 import logging
 
-from modelscripts.source.printer import (
-    AbstractPrinter
+from modelscripts.sources.printers import (
+    ModelPrinter,
+    SourcePrinter,
+    indent
+)
+from modelscripts.metamodels.classes import (
+    ClassModel
 )
 from modelscripts.metamodels.classes.expressions import (
     PreCondition,
@@ -24,71 +29,74 @@ from modelscripts.metamodels.classes.expressions import (
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
-def indent(prefix,s):
-    return '\n'.join([ prefix+l for l in s.split('\n') ])
+
+
 
 
 # TODO: refactor with outLine, etc. from AbstractPrinter
-class UsePrinter(AbstractPrinter):
-    def __init__(self, model, displayLineNos=True):
-        super(UsePrinter, self).__init__(
+class UseModelPrinter(ModelPrinter):
+    def __init__(self,
+                 theModel,
+                 summary=False,
+                 displayLineNos=True):
+        #type: (ClassModel, bool, bool) -> None
+        assert theModel is not None
+        assert isinstance(theModel, ClassModel)
+        super(UseModelPrinter, self).__init__(
+            theModel=theModel,
+            summary=summary,
             displayLineNos=displayLineNos
         )
-        self.theModel = model
-        self.output = ''
-
 
     def do(self):
-        self.output = ''
-        self.model(self.theModel)
+        self.output=''
+        self._issues()
+        self._model()
         return self.output
 
 
-    def out(self, s):
-        self.output += s
-
-    def docComment(self, source_element, indent):
+    def _docComment(self, source_element, indent):
         c = source_element.docComment   # multiple lines
         if c is not None:
             for line in c:
                 self.out(indent+'--'+line+'\n')
 
-    def eolComment(self, source_element):
+    def _eolComment(self, source_element):
         c = source_element.eolComment
         if c is not None:
             self.out(' --'+c)
         self.out('\n')
 
 
-    def model(self, model):
+    def _model(self):
 
-        if model.basicTypes is not None:
-            for t in model.basicTypes:
+        if self.theModel.basicTypes is not None:
+            for t in self.theModel.basicTypes:
                 self.out('-- basic type : %s \n' % t.name)
 
-        self.docComment(model, '')
-        self.out('model %s' % model.name)
-        self.eolComment(model)
+        self._docComment(self.theModel, '')
+        self.out('model %s' % self.theModel.name)
+        self._eolComment(self.theModel)
         self.out('\n')
 
-        for e in model.enumerations:
-            self.enumeration(e)
+        for e in self.theModel.enumerations:
+            self._enumeration(e)
 
-        for c in model.classes:
-            self.class_(c)
+        for c in self.theModel.classes:
+            self._class(c)
 
-        for a in model.associations:
-            self.association(a)
+        for a in self.theModel.associations:
+            self._association(a)
 
-        for ac in model.associationClasses:
-            self.associationClass(ac)
+        for ac in self.theModel.associationClasses:
+            self._associationClass(ac)
 
         # TODO: invariants, operationConditions, basicTypes
 
-    def enumeration(self, enumeration):
-        self.docComment(enumeration, '')
+    def _enumeration(self, enumeration):
+        self._docComment(enumeration, '')
         self.out('enum %s {' % enumeration.name)
-        self.eolComment(enumeration)
+        self._eolComment(enumeration)
         self.out(
             ',\n'.join(
                 ['    %s' % l
@@ -97,43 +105,43 @@ class UsePrinter(AbstractPrinter):
         )
         self.out('\n}\n\n')
 
-    def class_(self, class_):
-        self.docComment(class_,'')
+    def _class(self, class_):
+        self._docComment(class_, '')
         if class_.superclasses:
             sc = '< '+','.join(map(lambda s:s.name, class_.superclasses))
         else:
             sc = ''
         self.out("class %s %s" % (class_.name, sc))
-        self.eolComment(class_)
+        self._eolComment(class_)
 
         if class_.attributes:
             self.out('attributes\n')
             for attribute in class_.attributes:
-                self.attribute(attribute)
+                self._attribute(attribute)
 
         if class_.operations:
             self.out('operations\n')
             for operation in class_.operations:
-                self.operation(operation)
+                self._operation(operation)
 
         if class_.invariants:
             for invariant in class_.invariants:
-                self.invariant(invariant)
+                self._invariant(invariant)
 
         self.out('end\n\n')
 
 
-    def association(self, association):
-        self.docComment(association, '')
+    def _association(self, association):
+        self._docComment(association, '')
         self.out('%s %s between' % (association.kind, association.name))
-        self.eolComment(association)
+        self._eolComment(association)
         for role in association.roles:
-            self.role(role)
+            self._role(role)
         self.out('end\n\n')
 
 
-    def associationClass(self, associationClass):
-        self.docComment(associationClass, '')
+    def _associationClass(self, associationClass):
+        self._docComment(associationClass, '')
         if associationClass.superclasses:
             superclass_names = [c.name for c in associationClass.superclasses]
             sc = ' < ' + ','.join(superclass_names)
@@ -141,48 +149,48 @@ class UsePrinter(AbstractPrinter):
             sc = ''
         self.out('associationclass %s%s between'
                  % (associationClass.name, sc))
-        self.eolComment(associationClass)
+        self._eolComment(associationClass)
 
 
         for role in associationClass.roles:
-            self.role(role)
+            self._role(role)
 
         if associationClass.attributes:
             self.out('attributes\n')
             for attribute in associationClass.attributes:
-                self.attribute(attribute)
+                self._attribute(attribute)
 
         if associationClass.operations:
             self.out('operations\n')
             for operation in associationClass.operations:
-                self.operation(operation)
+                self._operation(operation)
 
         self.out('end\n\n')
 
 
-    def attribute(self, attribute):
-        self.docComment(attribute, '    ')
+    def _attribute(self, attribute):
+        self._docComment(attribute, '    ')
         self.out('    %s : %s' % (attribute.name, attribute.type.name))
-        self.eolComment(attribute)
+        self._eolComment(attribute)
         if attribute.isDerived:
             self.out('        derive =')
             self.out(attribute.expression)
 
 
-    def operation(self, operation):
-        self.docComment(operation, '    ')
+    def _operation(self, operation):
+        self._docComment(operation, '    ')
         self.out('    %s%s' % (
             operation.signature,
             ' =' if operation.hasImplementation else ''
         ))
-        self.eolComment(operation)
+        self._eolComment(operation)
         if operation.hasImplementation:
             self.out(indent('        ',operation.expression)+'\n')
         for condition in operation.conditions:
-            self.operationCondition(condition)
+            self._operationCondition(condition)
 
 
-    def invariant(self, invariant):
+    def _invariant(self, invariant):
         if invariant.class_ is None:
             prefix_comment = ''
             prefix_first = 'context '
@@ -191,17 +199,17 @@ class UsePrinter(AbstractPrinter):
             prefix_comment = '    '
             prefix_first = '    '
             prefix_rest  = '        '
-        self.docComment(invariant, '    ')
+        self._docComment(invariant, '    ')
         self.out('%s%sinv %s:' % (
             prefix_first,
             'existential ' if invariant.isExistential else '',
             invariant.name,
         ))
-        self.eolComment(invariant)
-        self.out(indent(prefix_rest,invariant.expression)+'\n')
+        self._eolComment(invariant)
+        self.out(indent(prefix_rest, invariant.expression)+'\n')
 
-    def role(self, role):
-        self.docComment(role, '    ')
+    def _role(self, role):
+        self._docComment(role, '    ')
         if role.name:
             rn = 'role '+role.name
         else:
@@ -209,9 +217,9 @@ class UsePrinter(AbstractPrinter):
         max = '*' if role.cardinalityMax is None else role.cardinalityMax
         self.out('    %s[%s..%s] %s'
                  % (role.type.name, role.cardinalityMin, max, rn ))
-        self.eolComment(role)
+        self._eolComment(role)
 
-    def operationCondition(self, condition):
+    def _operationCondition(self, condition):
         # if invariant.class_ is None:
         #     prefix_comment = ''
         #     prefix_first = 'context '
@@ -221,13 +229,40 @@ class UsePrinter(AbstractPrinter):
         prefix_first = '        '
         prefix_rest  = '            '
         keyword='pre' if isinstance(condition,PreCondition) else 'post'
-        self.docComment(condition, '    ')
+        self._docComment(condition, '    ')
         self.out('%s%s %s:' % (
             prefix_first,
             keyword,
             condition.name,
         ))
-        self.eolComment(condition)
+        self._eolComment(condition)
         self.out(indent(prefix_rest,condition.expression)+'\n')
+
+
+class UseSourcePrinter(SourcePrinter):
+
+    def __init__(self,
+                 theSource,
+                 summary=False,
+                 displayLineNos=True):
+        super(UseSourcePrinter, self).__init__(
+            theSource=theSource,
+            summary=False,
+            displayLineNos=True)
+
+    def do(self):
+        self.output=''
+        if self.theSource.model is not None:
+            p=UseModelPrinter(
+                theModel=self.theSource.model,
+                summary=self.summary,
+                displayLineNos=self.displayLineNos
+            ).do()
+            self.out(p)
+        else:
+            self._issues()
+        return self.output
+
+
 
 

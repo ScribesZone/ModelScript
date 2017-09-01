@@ -1,9 +1,11 @@
 # coding=utf-8
 
+# TODO: improve error generation
 # TODO: update the module comment as the parser is no longer based on canonical stuff
 # TODO: implement role keyword arbitrary (with sequence of words then consumed iteratively)
 # TODO: implement indentation based parsing for extra safety
 # TODO: add options to the parser (indentationBased?, use parsing?, etc.)
+
 
 """
 This module allows to analyze a USE OCL ``.use`` source file:
@@ -19,17 +21,39 @@ This module allows to analyze a USE OCL ``.use`` source file:
 Either find some errors or create a class model
 """
 
-import os
+#import os
 import re
-from typing import Text
+from typing import Text, Optional
 
-from modelscripts.use.use.printer import UsePrinter
-import modelscripts.source.errors
-from modelscripts.source.sources import SourceFile
+from modelscripts.sources.sources import (
+    ModelSourceFile,
+    DocCommentLines,
+)
+from modelscripts.sources.issues import (
+    Issue,
+    LocalizedIssue,
+    Levels,
+    FatalError,
+)
 import modelscripts.use.engine
-import modelscripts.use.use.parser
-import modelscripts.metamodels.classes
-import modelscripts.metamodels.classes.expressions
+from modelscripts.metamodels.classes import (
+    ClassModel,
+    SimpleType,
+    BasicType,
+    Enumeration,
+    Class,
+    Attribute,
+    Operation,
+    Association,
+    Role,
+    AssociationClass,
+)
+
+from modelscripts.metamodels.classes.expressions import (
+    PreCondition,
+    PostCondition,
+    Invariant
+)
 
 __all__ = (
     'UseSource'
@@ -43,14 +67,14 @@ __all__ = (
 def removeExtraSpaces(x):
     return ' '.join(x.split())
 
-class UseSource(SourceFile):
+class UseSource(ModelSourceFile):
     """
     Abstraction of ``.use`` source file.
     This source file can be valid or not. In this later case
     a reference to the contained class model will be available.
     """
 
-    def __init__(self, classesSourceFile):
+    def __init__(self, useFileName):
         """
         Execute the given .use file with use interpreter, then
         parse the result (possiblity with errors) and finally
@@ -60,75 +84,61 @@ class UseSource(SourceFile):
         class model, otherwise it contains the list of errors
         as well as the USE OCL command exit code.
 
-        :param classesSourceFile: The path of the '.use' source file to analyze
-        :type useModelSourceFile: str
-
+        :param useFileName: The path of the '.use' source file to analyze
         Examples:
             see test.modelscript.test_parser
         """
         #type: (Text) -> None
 
-        super(UseSource, self).__init__()
-
-        self.fileName=classesSourceFile
-        f = open(self.fileName, 'rU')
-        self.sourceLines = tuple(f.read().splitlines())
-        """ The list of lines of the source file"""
-        f.close()
-
-        #: (bool) Indicates if the class model file is valid, that is
-        #: can be successfully parsed and compiled with use.
-        self.isValid = None         # Don't know yet
-        self.lines = None  # Nothing yet
-        self.length = 0    # Nothing yet
-
-        #: (list[Error]) list of errors if any or empty list.
-        self.errors = []            # No errors yet
-
-        #: (int) exit code of use command.
-        self.commandExitCode = None # Nothing yet
-
         #: class model representing the file in a conceptual way
-        #: or None if self.isValid is false
-        self.classModel = None  # Nothing yet, created by parse/resolve
+        #: start with an empty class model but will be set to None
+        #: in case of Errors
 
-        # Try to validate the class model and fill
-        #       self.isValid
-        #       self.errors,
-        #       self.commandExitCode,
-        #       self.lines,
-        #       self.length
+        self.classModel = ClassModel(source=self)
 
-        # Execute first USE just to check if they are some errors
-        self.__executeUSE()
-        if self.isValid:
-            # No errors. Parse the regular .use source file.
-            # (There is no comment in the output of use)
-            self.__parseLinesAndCreateModel()
-            self.__resolveModel()
+        try:
+
+            # noinspection PySuperArguments
+            super(UseSource, self).__init__(
+                fileName=useFileName)
+
+            self.commandExitCode = None #type: Optional[int]
+            """Exit code of use command"""
+            # Filled by _ex
 
 
-    def printStatus(self):
-        """
-        Print the status of the file:
 
-        * the list of errors if the file is invalid,
-        * a short summary of entities (classes, attributes, etc.) otherwise
-        """
+            # Try to validate the class model and fill
+            #       self.errors,
+            #       self.commandExitCode,
+            self.__executeUSEToExtractErrors()
+            if self.isValid:
+                # No errors. Parse the regular .use source file.
+                # (There is no comment in the output of use)
+                self.__parseLinesAndCreateModel()
+                self.__resolveModel()
+            if not self.isValid:
+                self.classModel=None
+        except  FatalError:
+            self.classModel=None
+            # Error has already been already registered
+            # so nothing else to do here.
+            pass
 
-        if self.isValid:
-            p=UsePrinter(self.classModel)
-            print(p.do())
-        else:
-            print('%s error(s) in the model'  % len(self.errors))
-            for e in self.errors:
-                print(e)
+    @property
+    def model(self):
+        return self.classModel
+
+    @property
+    def usedModelByKind(self):
+        return {}
+
 
     #--------------------------------------------------------------------------
     #    Class implementation
     #--------------------------------------------------------------------------
 
-    def __executeUSE(self):
+    def __executeUSEToExtractErrors(self):
         """
         Execute USE to first check if there are syntax errors.
         If they are such errors then fill the .errors[]
@@ -138,79 +148,73 @@ class UseSource(SourceFile):
         comments are removed.
         """
         engine = modelscripts.use.engine.USEEngine
-        self.commandExitCode = engine.analyzeUSEModel(self.fileName)
+        try:
+            self.commandExitCode = engine.analyzeUSEModel(self.fileName)
+        except Exception as e:
+            Issue(
+                origin=self,
+                level=Levels.Fatal,
+                message=('Cannot execute "use" tool. %s' % str(e))
+            )
         if self.commandExitCode != 0:
-            self.isValid = False
-            self.errors = []
             for line in engine.err.splitlines():
                 self.__addErrorFromLine(line)
-        else:
-            self.isValid = True
-            self.errors = []
             # Remove 2 lines at the beginning (use intro + command)
             # and two lines at the end (information + quit command)
             # tmp = engine.out.splitlines()[2:-2]
-            self.lines = [line.rstrip() for line in open(self.fileName, 'rU')]
+            # self.sourceLines = [line.rstrip() for line in open(self.fileName, 'rU')]
 
-            self.length = len(self.lines)
         return self.isValid
 
     def __addErrorFromLine(self, line):
-        # testcases/useerrors/bart.use:line 27:26 no viable alternative at input '='
-        # testcases/useerrors/empty.use:line 1:0 mismatched input '<EOF>' expecting 'model'
-        # testcases/useerrors/model.use:line 1:5 mismatched input '<EOF>' expecting an identifier
-        # testcases/useerrors/model.use:2:10: Undefined class `B'.
-        # testcases/useerrors/card.use:line 4:4 extraneous input 'role' expecting [
-        # testcases/useerrors/card1.use:4:5: Invalid multiplicity range `1..0'.
-        # testcases/useerrors/card1.use:8:6: Class `C' cannot be a superclass of itself.
+        #type: (Text) -> None
+        """
+        Convert a use error line into an LocalizedIssue.
+
+        USE generate errors like:
+            testcases/useerrors/bart.use:line 27:26 no viable alternative at input '='
+            testcases/useerrors/empty.use:line 1:0 mismatched input '<EOF>' expecting 'model'
+            testcases/useerrors/model.use:line 1:5 mismatched input '<EOF>' expecting an identifier
+            testcases/useerrors/model.use:2:10: Undefined class `B'.
+            testcases/useerrors/card.use:line 4:4 extraneous input 'role' expecting [
+            testcases/useerrors/card1.use:4:5: Invalid multiplicity range `1..0'.
+            testcases/useerrors/card1.use:8:6: Class `C' cannot be a superclass of itself.
+        """
         p = r'^(?P<filename>.*)' \
             r'(:|:line | line )(?P<line>\d+):(?P<column>\d+)(:)?' \
             r'(?P<message>.+)$'
-        m = re.match(p, line)
-        if m:
-            try:
+        try:
+            m = re.match(p, line)
+            if m:
                 # sometimes the regexp fail.
                 # e.g. with "ERROR oct. 11, 2015 3:57:00 PM java.util.pref ..."
-                modelscripts.source.errors.LocalizedError(
+                LocalizedIssue(
                     sourceFile=self,
+                    level=Levels.Error,
                     message=m.group('message'),
                     line=int(m.group('line')),
                     column=int(m.group('column')),
-                    fileName=m.group('filename')   # FIXME if needed
-                )
-            except:
-                modelscripts.source.errors.SourceError(self, line)
-        else:
-            modelscripts.source.errors.SourceError(self, line)
+                    fileName=m.group('filename') # FIXME if needed (note ???)
+                    )
+                return
+        except:
+            pass
+        Issue(
+            origin=self,
+            level=Levels.Error,
+            message='USE: %s' % line)
+
 
 
     def __parseLinesAndCreateModel(self):
 
-        class DocCommentState(object):
-            def __init__(self):
-                self.lines = None
 
-            def add(self, line):
-                if self.lines is None:
-                    self.lines=[]
-                self.lines.append(line)
-
-            def consume(self):
-                if self.lines is None:
-                    return None
-                else:
-                    _ = self.lines
-                    self.lines=None
-                    return _
-
-            def clean(self):
-                self.lines=None
 
 
 
         in_block_comment = False
         is_in_doc_comment = False
-        last_doc_comment = DocCommentState()
+        last_doc_comment = DocCommentLines()
         current_eol_comment = None
         current_enumeration = None
         current_class = None
@@ -224,7 +228,7 @@ class UseSource(SourceFile):
         current_condition = None    # invariant, precondition or condition
         current_operation_condition = None
 
-        for (line_index,line) in enumerate(self.lines):
+        for (line_index,line) in enumerate(self.sourceLines):
 
             original_line = line
             # replace tabs by spaces
@@ -293,7 +297,8 @@ class UseSource(SourceFile):
             r = r'^ *--(?P<comment>.*)$'
             m = re.match(r, line)
             if m:
-                last_doc_comment.add(m.group('comment'))
+                c=m.group('comment')
+                last_doc_comment.add(c)
                 continue
 
             # Everything that follow is not part of a full line comment
@@ -376,14 +381,12 @@ class UseSource(SourceFile):
             r = r'^ *model (?P<name>\w+) *$'
             m = re.match(r, line)
             if m:
-                self.classModel = modelscripts.metamodels.classes.ClassModel(
-                    source=self,
-                    name=m.group('name'),
-                    code=self.sourceLines,
-                    lineNo = line_no,
-                    docComment = last_doc_comment.consume(),
-                    eolComment = current_eol_comment
-                )
+                c=self.classModel
+                c.name=m.group('name')
+                c.code=self.sourceLines
+                c.lineNo = line_no
+                c.docComment = last_doc_comment.consume()
+                c.eolComment = current_eol_comment
                 continue
 
 
@@ -407,7 +410,7 @@ class UseSource(SourceFile):
                     for l in m.group('literals').replace(' ','').split(',')
                     if l != ''
                 ]
-                enumeration = modelscripts.metamodels.classes.Enumeration(
+                enumeration = Enumeration(
                     name=m.group('name'),
                     model=self.classModel,
                     code=line,
@@ -461,8 +464,7 @@ class UseSource(SourceFile):
                     superclasses = ()
                 else:
                     superclasses = [c.strip() for c in m.group('superclasses').split(',')]
-                current_class = \
-                    modelscripts.metamodels.classes.Class(
+                current_class = Class(
                         name=m.group('name'),
                         model=self.classModel,
                         isAbstract=m.group('abstract') == 'abstract',
@@ -499,8 +501,7 @@ class UseSource(SourceFile):
                     superclasses = [c.strip() for c in m.group('superclasses').split(',')]
                     # print('YYY'+m.group('name'))
                     # print(superclasses)
-                ac = \
-                    modelscripts.metamodels.classes.AssociationClass(
+                ac = AssociationClass(
                         name=m.group('name'),
                         model=self.classModel,
                         isAbstract=m.group('abstract') == 'abstract',
@@ -532,7 +533,7 @@ class UseSource(SourceFile):
                     is_init = m.group('keyword') == 'init'
                     expression = m.group('expression')
                     # This could be in an association class
-                    attribute = modelscripts.metamodels.classes.Attribute(
+                    attribute = Attribute(
                         name=m.group('name'),
                         class_=current_class,
                         code=line,
@@ -559,7 +560,6 @@ class UseSource(SourceFile):
                     current_enumeration = None
                     current_attribute = None
                     current_condition = None
-                    # print('....... ' + str(line_no) + ': ' + line)
 
                     # This could be an association class
                     parameters = m.group('parameters').replace(' ','')
@@ -572,12 +572,9 @@ class UseSource(SourceFile):
                         resultstr
                     )
                     signature = signature.replace(' ','')
-                    # print('XXX add operation "%s"' % signature)
                     expr=m.group('expr')
-                    operation = \
-                        modelscripts.metamodels.classes.Operation(
+                    operation = Operation(
                             name=m.group('name'),
-                            model=self.classModel,
                             class_=current_class,
                             code=line,
                             signature=signature,
@@ -607,8 +604,7 @@ class UseSource(SourceFile):
                 current_attribute = None
                 current_operation = None
                 current_context = None
-                current_association = \
-                    modelscripts.metamodels.classes.Association(
+                current_association = Association(
                         name=m.group('name'),
                         model=self.classModel,
                         kind=m.group('kind'),
@@ -671,7 +667,7 @@ class UseSource(SourceFile):
                         qualifiers = \
                             [tuple(q.split(':'))
                              for q in m.group('qualifiers').replace(' ','').split(',')]
-                    modelscripts.metamodels.classes.Role(
+                    Role(
                         name=m.group('name'), # could be empty, but will get default
                         association=current_association,
                         type=m.group('type'),
@@ -720,21 +716,12 @@ class UseSource(SourceFile):
                 r'(?P<expr>.*)'
             )
             z='^(%s)?(%s)? *$' % (rcontext,rcond)
-            # print z
             r=re.compile(z)
-            # print rcontext
-            # print rcond
-            # print('++++++ '+r)
-
-            # print('°°°°°°°°°°'+line)
             m = re.match(r, line)
             if m:
-                # print('%'*30)
                 if m.group('context') is not None or m.group('cond') is not None:
-                    # print('cond '+str(line_no)+':'+line)
 
                     if m.group('context'):
-                        # print(':::           context '+m.group('classname'))
                         # The context is specified => this is a top level condition
                         current_enumeration = None
                         current_class = None
@@ -753,8 +740,7 @@ class UseSource(SourceFile):
                         }
 
                     if m.group('cond'):
-                        # print(':::        '+m.group('cond')+' '+(m.group('name') if m.group('name') is not None
-                        # else '<noname>' + ':'))
+
                         condname = '' if m.group('name') is None else m.group('name')
                         if m.group('cond') == 'inv':
                             # An invariant can have no context at all. Deal with it.
@@ -764,12 +750,11 @@ class UseSource(SourceFile):
                             else:
                                 classname = current_context['classname']
                                 variables = current_context['variables']
-                            # 'classname']
                             variable = None if variables is None else variables[0]
                             additionalVariables = \
                                 None if variables is None or len(variables) < 2 \
                                 else variables[1:]
-                            current_condition = modelscripts.metamodels.classes.expressions.Invariant(
+                            current_condition = Invariant(
                                 name=condname,
                                 model=self.classModel,
                                 class_=classname,
@@ -781,10 +766,9 @@ class UseSource(SourceFile):
                                 docComment=last_doc_comment.consume(),
                                 eolComment=current_eol_comment,
                             )
-                            # print('     inv '+condname+' created')
                         elif m.group('cond') == 'pre':
                             classname = current_context['classname']
-                            current_condition = modelscripts.metamodels.classes.expressions.PreCondition(
+                            current_condition = PreCondition(
                                 name=condname,
                                 model=self.classModel,
                                 class_=classname,
@@ -794,10 +778,9 @@ class UseSource(SourceFile):
                                 docComment=last_doc_comment.consume(),
                                 eolComment=current_eol_comment,
                             )
-                            # print('     pre '+condname+' created')
                         elif m.group('cond') == 'post':
                             classname = current_context['classname']
-                            current_condition = modelscripts.metamodels.classes.expressions.PostCondition(
+                            current_condition = PostCondition(
                                 name=condname,
                                 model=self.classModel,
                                 class_=classname,
@@ -807,9 +790,7 @@ class UseSource(SourceFile):
                                 docComment=last_doc_comment.consume(),
                                 eolComment=current_eol_comment,
                             )
-                            # print('     post '+condname+' created')
                     continue
-            # print('//////////'+line)
 
 
             #===========================================================
@@ -822,13 +803,10 @@ class UseSource(SourceFile):
 
             # ---- condition body -----
             # must be before the operation
-            # print('#'*80)
             if current_condition is not None:
-                # print('00000000 '+str(line_no)+':'+line)
                 r = r'^ *(?P<expression>.*) *$'
                 m = re.match(r, line)
                 if m:
-                    # print('match')
                     expression=m.group('expression')
                     if expression != 'end' or 'begin' in current_condition.expression:
                         current_condition.expression += '\n' + expression
@@ -871,7 +849,6 @@ class UseSource(SourceFile):
                     continue
 
 
-
             #---- end of association, class, invariant or operation ------
             # TODO: check if this is safe. Not sure as this could be
             # some nested begin end in an operation
@@ -887,36 +864,43 @@ class UseSource(SourceFile):
                 continue
 
             #---- a line has not been processed.
-            self.isValid = False
-            error = 'modelscript parser: cannot process line #%s: "%s"' % (line_no, line)
-            self.errors.append(error)
-            # print('****',error)
+            LocalizedIssue(
+                sourceFile=self,
+                level=Levels.Fatal,
+                message=('Cannot process "%s"' % line),
+                line=line_no
+            )
 
 
 
     def __resolveModel(self):
 
         def __resolveSimpleType(name):
-            """ Search the name in enumeration of basic type or register it.
+            #type: (Text)-> SimpleType
             """
-            if name in self.classModel.enumerationNamed:
-                return self.classModel.enumerationNamed[name]
-            elif name in self.classModel.basicTypeNamed:
-                return self.classModel.basicTypeNamed[name]
+            Search the name in enumeration of basic type
+            or create a new BasicType.
+            """
+            if name in self.classModel.simpleTypeNamed:
+                return self.classModel.simpleTypeNamed[name]
             else:
                 self.classModel.basicTypeNamed[name] = \
-                    modelscripts.metamodels.classes.BasicType(name)
+                    BasicType(name)
                 return self.classModel.basicTypeNamed[name]
 
         def __resolveClassType(name):
-            """ Search in class names or association class names.
+            """
+            Search in class names or association class names.
+            The name must exist (no problem because of USE execution)
             """
             if name in self.classModel.classNamed:
                 return self.classModel.classNamed[name]
             else:
                 return self.classModel.associationClassNamed[name]
 
+
         def __resolveAttribute(attribute):
+            #type: (Attribute) -> None
             # Resolve the attribute type
             attribute.type = __resolveSimpleType(attribute.type)
 
@@ -1004,17 +988,17 @@ class UseSource(SourceFile):
                 condition.expression=condition.expression.strip()
                 # print 'resolve '+condition.name+' from '+c.name
                 # print '        '+str(type(c))
-                if isinstance(condition, modelscripts.metamodels.classes.expressions.Invariant):
+                if isinstance(condition, Invariant):
                     # Store the invariant in the class
                     id = computeId(condition.name, c.invariantNamed, '_inv')
                     c.invariantNamed[id] = condition
-                elif isinstance(condition, modelscripts.metamodels.classes.expressions.PreCondition):
+                elif isinstance(condition, PreCondition):
                     # print '        ' + str(condition.operation)
                     signature=condition.operation
                     op=c.operationWithSignature[signature]
                     id = computeId(condition.name, op.conditionNamed, '_pre')
                     op.conditionNamed[id]=condition
-                elif isinstance(condition, modelscripts.metamodels.classes.expressions.PostCondition):
+                elif isinstance(condition, PostCondition):
                     # print '        ' + str(condition.operation)
 
                     signature=condition.operation
@@ -1036,12 +1020,10 @@ class UseSource(SourceFile):
         #         c.invariantNamed[preOrPost.name] = preOrPost
 
         # resolve class (and class part of class associations)
-        #print ('=====', self.model.classes)
-        #print ('=====', self.model.classes)
+
 
         cs = self.classModel.classes \
              + self.classModel.associationClasses
-        # print ('**************',cs)
         for c in cs:
             __resolveClass(c)
 

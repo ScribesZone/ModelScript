@@ -6,9 +6,7 @@ This command should be in the system path.
 Otherwise the value UseEngine.USE_OCL_COMMAND should be set explicitely.
 """
 
-__all__ = [
-    'USEEngine',
-]
+
 
 from typing import Text, List, Optional, Union
 
@@ -21,7 +19,23 @@ import tempfile
 import operator
 import re
 
-DEBUG=4
+__all__ = [
+    'USEEngine',
+]
+
+# DEBUG=4
+DEBUG=0
+
+#: Path of to the use command binary.
+#: If the default value (``"use"``) does not work, for instance if
+#: the use binary is not in the system path, you can change this
+#: value either in the source, or programmatically using something
+#: like ::
+#:
+#:     USEEngine.USE_OCL_COMMAND = r'c:\Path\To\UseCommand\bin\use'
+#:
+USE_OCL_COMMAND = 'use'
+
 
 class USEEngine(object):
     """
@@ -32,17 +46,6 @@ class USEEngine(object):
         "use" must be available in the system path, otherwize the
         USE_OCL_COMMAND class attribute should be modified.
     """
-
-
-    #: Path of to the use command binary.
-    #: If the default value (``"use"``) does not work, for instance if
-    #: the use binary is not in the system path, you can change this
-    #: value either in the source, or programmatically using something
-    #: like ::
-    #:
-    #:     USEEngine.USE_OCL_COMMAND = r'c:\Path\To\UseCommand\bin\use'
-    #:
-    USE_OCL_COMMAND = 'use'
 
     #: Last command executed by the engine
     command = None
@@ -64,7 +67,7 @@ class USEEngine(object):
 
 
     @classmethod
-    def __soilHelper(cls, name):
+    def _soilHelper(cls, name):
         #type: (Text)->Text
         return os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
@@ -72,7 +75,7 @@ class USEEngine(object):
 
 
     @classmethod
-    def __execute(cls, useSource, soilFile, errWithOut=False,
+    def _execute(cls, useSource, soilFile, errWithOut=False,
                   executionDirectory=None):
         #type: (Text,Text,bool,Text) -> int
 
@@ -87,7 +90,7 @@ class USEEngine(object):
         #    If not specified the execution directory is set to the directory
         #    of the use file given as a parameter. This directory could be
         #    important if the soil files contains references to relative path.
-        #    This is in particular the case of 'open file.soil' statements.
+        #    This is in particular the case of 'open file.soil' rules.
         """
 
         def readAndRemove(filename):
@@ -97,14 +100,17 @@ class USEEngine(object):
             return _
 
         if not os.path.isfile(useSource):
-            raise IOError('Error: File %s not found' % useSource)
+            raise IOError('File %s not found' % useSource)
         if not os.path.isfile(soilFile):
-            raise IOError('Error: File %s not found' % soilFile)
+            raise IOError('File %s not found' % soilFile)
 
         if errWithOut:
             #-- one unique output file for output and errors
-            (f, output_filename) = tempfile.mkstemp(suffix='.txt', text=True)
-            os.close(f)
+            try:
+                (f, output_filename) = tempfile.mkstemp(suffix='.txt', text=True)
+                os.close(f)
+            except Exception:
+                raise IOError('Cannot create temporary file')
             errors_filename = None
             redirection = '>%s 2>&1' % output_filename
             cls.out = None
@@ -122,9 +128,9 @@ class USEEngine(object):
 
         commandPattern = '%s -nogui -nr %s %s '+ redirection
         cls.command = (commandPattern
-                       % (cls.USE_OCL_COMMAND, useSource, soilFile))
+                       % (USE_OCL_COMMAND, useSource, soilFile))
         if DEBUG>=3:
-            print('**** EXECUTE %s' % cls.command)
+            print('**** USE EXECUTION %s' % cls.command)
         cls.directory = executionDirectory if executionDirectory is not None \
                      else os.getcwd()
         # cls.directory = executionDirectory if executionDirectory is not None \
@@ -180,9 +186,9 @@ class USEEngine(object):
 
         Returns (str): The version number.
         """
-        cls.__execute(
-            cls.__soilHelper('emptyModel.use'),
-            cls.__soilHelper('quit.soil'))
+        cls._execute(
+            cls._soilHelper('emptyModel.use'),
+            cls._soilHelper('quit.soil'))
         first_line = cls.out.split('\n')[0]
         m = re.match( r'(use|USE) version (?P<version>[0-9\.]+),', first_line)
         if m:
@@ -190,7 +196,7 @@ class USEEngine(object):
         else:
             msg = "Cannot execute USE OCL or get its version.\n" \
 
-            raise EnvironmentError('Cannot execute USE OCL or get its version. Is this program installed?')
+            raise EnvironmentError('Cannot execute "use" command. Is this program installed?')
 
     @classmethod
     def withUseOCL(cls):
@@ -216,9 +222,9 @@ class USEEngine(object):
         Returns (int):
             use command exit code.
         """
-        cls.__execute(
+        cls._execute(
             useFileName,
-            cls.__soilHelper('infoModelAndQuit.soil'))
+            cls._soilHelper('infoModelAndQuit.soil'))
         return cls.commandExitCode
 
 
@@ -238,7 +244,7 @@ class USEEngine(object):
             f.write(driver_sequence)
 
         # execute  use
-        cls.__execute(
+        cls._execute(
             abs_use_file,
             driver_filename,
             errWithOut=True)
@@ -270,7 +276,8 @@ class USEEngine(object):
         trace_filename = cls.executeSoilFileAsTrace(
             abs_use_file,
             abs_soil_file)
-        print('******* TRACE RESULT %s ' % trace_filename)
+        if DEBUG>=3:
+            print('**** executeSoilFileAsSex: TRACE RESULT %s saved in ' % trace_filename)
         sex_filename=merge(abs_soil_file, trace_filename, sexFileName=sexFile)
         with open(sex_filename, 'rU') as f:
             cls.outAndErr=f.read()

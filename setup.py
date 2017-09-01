@@ -9,7 +9,7 @@ import os
 import sys
 import re
 
-name = 'pyuseocl'
+name = 'modelscript'
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -49,7 +49,7 @@ setup(
     license='',
     description='Python wrapper and utilities for the USE OCL environment.',
     long_description=getLongDescription(),
-    url='https://github.com/PythonZone/PyUseOCL/',
+    url='https://github.com/PythonZone/modelscript/',
     keywords = ['OCL','constraint','UML','validation','query language'],
 
     platforms='any',
@@ -69,7 +69,7 @@ setup(
     #------ packages-----------------------------------------------------------
     #
     packages=[
-        'pyuseocl',
+        'modelscript',
         ],
 
     install_requires=getRequirements(),

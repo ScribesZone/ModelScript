@@ -1,10 +1,14 @@
 # coding=utf-8
 from __future__ import print_function
-from typing import Union, Dict, Text, Optional
+
 import collections
 
-from modelscripts.source.sources import SourceElement
-from modelscripts.utils import Model
+from typing import Dict, Text
+
+from modelscripts.metamodels.permissions import Subject
+from modelscripts.sources.models import Model
+from modelscripts.sources.sources import SourceElement
+
 
 class UsecaseModel(Model):
     def __init__(self, source=None):
@@ -40,7 +44,7 @@ class System(SourceElement):
         return self.usecaseNamed.values()
 
 
-class Actor(SourceElement):
+class Actor(SourceElement, Subject):
     def __init__(self,
                  ucModel, name, kind='human',
                  code=None, lineNo=None,
@@ -69,7 +73,7 @@ class Actor(SourceElement):
             self.superActors.append(actor)
 
 
-class Usecase(SourceElement):
+class Usecase(SourceElement, Subject):
     def __init__(self,
                  system, name,
         code=None, lineNo=None, docComment=None, eolComment=None):
@@ -80,6 +84,10 @@ class Usecase(SourceElement):
         self.system = system
         self.system.usecaseNamed[name]=self
         self.actors=[]
+
+    @property
+    def superSubjects(self):
+        return self.actors
 
     def addActor(self, actor):
         if actor in self.actors:

@@ -9,9 +9,8 @@ from modelscripts.use.sex.parser import (
 
 class ObjectModelSource(SoilSource):
 
-    def __init__(self, filename, classModel):
+    def __init__(self, soilFileName, classModel):
         super(ObjectModelSource, self).__init__(
+            soilFileName=soilFileName,
             classModel=classModel,
-            soilFilename=filename,
-            usecaseModel=None,
-        )
+            usecaseModel=None)

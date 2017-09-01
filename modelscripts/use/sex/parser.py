@@ -40,21 +40,30 @@ http://useocl.sourceforge.net/wiki/index.php/SOIL
 # TODO: check if a USE OCL run before parsin is necessary/better
 
 from __future__ import unicode_literals, print_function, absolute_import, division
-from typing import Text, Optional, Union, List, Dict
+
 import os
 import re
 
-DEBUG=3
+from typing import Text, Optional, Union, List
+
+# DEBUG=3
+DEBUG=0
+
+from abc import ABCMeta, abstractproperty, abstractmethod
 
 from modelscripts.use.engine import USEEngine
 
-from modelscripts.source.sources import SourceFile
-
-from modelscripts.use.sex.printer import (
-    SoilPrinter,
-    SexPrinter
+from modelscripts.sources.sources import (
+    ModelSourceFile,
 )
+# from modelscripts.sources.errors import (
+#     Issue,
+#     Level,
+# )
 
+from modelscripts.scripts.scenarios.printer import (
+    ScenarioPrinter,
+)
 
 from modelscripts.metamodels.classes import (
     ClassModel,
@@ -64,7 +73,6 @@ from modelscripts.metamodels.usecases import (
     UsecaseModel,
     Actor,
     Usecase,
-    System,
 )
 from modelscripts.metamodels.scenarios import (
     ScenarioModel,
@@ -79,7 +87,7 @@ from modelscripts.metamodels.scenarios.operations import (
     ObjectCreation,
     ObjectDestruction,
     LinkCreation,
-    LinkDestruction,   #TODO: implement link destruction
+    #TODO: implement link destruction
     LinkObjectCreation,
     AttributeAssignment,
     Check,
@@ -88,12 +96,18 @@ from modelscripts.metamodels.scenarios.operations import (
 
 from modelscripts.metamodels.scenarios.evaluations import (
     ScenarioEvaluation,
-    CheckEvaluation,
-    InvariantValidation,
+)
+from modelscripts.metamodels.scenarios.evaluations.operations import (
+    _USEImplementedQueryEvaluation,
+    _USEImplementedCheckEvaluation,
+    InvariantValidation, \
     InvariantViolation,
     CardinalityViolation,
     CardinalityViolationObject,
-    QueryEvaluation,
+)
+
+from modelscripts.metamodels.permissions import (
+    PermissionModel
 )
 
 __all__ = (
@@ -112,68 +126,96 @@ def isEmptySoilFile(file):
 #TODO: add support for use interpreter errors !!!
 
 
-class _PolymorphicSource(SourceFile):
+class _PolymorphicSource(ModelSourceFile):
+    __metaclass__ = ABCMeta
+
     def __init__(self,
-                 classModel, soilFileName, parseExecution=True, usecaseModel=None):
-        #type: (ClassModel, Text, bool, Optional[UsecaseModel]) -> None
+                 evaluateScenario,
+                 soilFileName,
+                 sexFileName,
+                 classModel,
+                 usecaseModel=None,
+                 permissionModel=None,
+                 parsePrefix='^',
+                 preErrorMessages=()):
+        #type: (bool,Text, Optional[Text], ClassModel, Optional[UsecaseModel], Optional[PermissionModel], Text, List[Text]) -> None
         """
         Create a soil/sex source from the given file.
-        In order to do this a class model is necessary to resolve
-        class names and operation names in operation.
-        A use case model is also necessary, but only if
-        there are directives for actor instance and usecase instance.
+        See subclasses
+
+        Args:
+            evaluateScenario:
+                If true, the scenario is executed with USE
+                and it will have an scenarioEvaluation associated.
+            soilFileName:
+                The name of the soil file. If evaluateScenario the
+                sex file generated (generated previously) will
+                be parsed.
+            sexFileName:
+                The name of the sex file to be parsed actually instead
+                of the soilFile. Set only if evaluateScenario. Otherwise
+                sexFileName will be none
+            classModel:
+                The class model used to resolve Classes, Associations, etc.
+                This model is required as it makes not sense to parse the
+                soil file without the use file.
+            usecaseModel:
+                A use case model is necessary only if
+                there are directives for actor instance
+                and usecase instance.
+                Can be used without evaluateScenario.
+            permissionModel:
+                In case of evaluateScenario used to check accesses.
+            parsePrefix:
+                See subclasses. Prefix is necessary for parsing sex file.
+                Only used if evaluateScenario.
+            preErrorMessages:
+                If not [] these errors with be added to the list of
+                error and nothing else will happen (no file reading)
+
         """
-        super(_PolymorphicSource, self).__init__()
+        self.evaluateScenario=evaluateScenario #type: bool
+        self.soilFileName=soilFileName #type: Text
+        self.sexFileName=sexFileName #type: Optional[Text]
+        self.classModel=classModel #type:ClassModel
+        self.usecaseModel=usecaseModel #type:Optional[UsecaseModel]
+        self.permissionModel=permissionModel #type:Optional[PermissionModel]
+        self._parsePrefix=parsePrefix
 
-        self.fileKind='sex' if parseExecution else 'soil'
-        self.parseExecution=parseExecution
-        self.hasExecutionResult=parseExecution
-        self.soilFileName=soilFileName
-        self.classModel = classModel #type:ClassModel
-        self.usecaseModel = usecaseModel #type:Optional[System]
-        self.useFileName=self.classModel.source.fileName
-        if not os.path.isfile(soilFileName):
-            raise Exception('File "%s" not found' % soilFileName)
+        super(_PolymorphicSource, self).__init__(
+            fileName=soilFileName,
+            realFileName=sexFileName,
+            preErrorMessages=preErrorMessages)  #realFileName is ignore if None
 
-        self.scenario = ScenarioModel(    #type:ScenarioModel
+        #--- create a scenario to contain the result -----------
+        self.scenario = ScenarioModel( #type:ScenarioModel   # TODO -> model
             source=self,
             classModel=classModel,
             name=None,
             usecaseModel=usecaseModel,
+            permissionModel=permissionModel,
             file=self.soilFileName)
 
-        self.fileToParse=self.getFileToParse()
-        self.sourceLines = (
-            line.rstrip()
-            for line in open(self.fileToParse, 'rU'))
-        self.isValid = None #type:Optional[bool]
-        self.errors = []
-        self.lines = None #type:List[Text]
-        self.ignoredLines = []
+        if self.isValid:
+            self._parse(self._parsePrefix)
 
-        if self.hasExecutionResult:
-            self.scenarioEvaluation=ScenarioEvaluation(self.scenario)
-        else:
-            self.scenarioEvaluation=None
+            if self.evaluateScenario:
+                ScenarioEvaluation.evaluate(self.scenario)
 
-        if self.fileKind=='soil':
-            prefix='^'
-        else:
-            prefix='^(\d{5}|\|{5}):'
-        self._parse(prefix)
-        self.isValid=True # Todo, check errors, etc.
+    @property
+    def model(self):
+        return self.scenario
 
-    def getFileToParse(self):
-        if self.parseExecution:
-            filename=USEEngine.executeSoilFileAsSex(
-                useFile=self.useFileName,
-                soilFile=self.soilFileName)
-        else:
-            filename=self.soilFileName
-            # Get directly the .soil file
-        print('XXXXXXXXXXX %s' % filename)
-        return filename
-
+    @property
+    def usedModelByKind(self):
+        _={}
+        if self.classModel is not None:
+            _['cl'] = self.classModel
+        if self.usecaseModel is not None:
+            _['uc'] = self.usecaseModel
+        if self.permissionModel is not None:
+            _['pm'] = self.permissionModel
+        return _
 
     def printStatus(self):
         """
@@ -182,26 +224,17 @@ class _PolymorphicSource(SourceFile):
         * the list of errors if the file is invalid,
         * a short summary of entities (classes, attributes, etc.) otherwise
         """
-        print('****************************************')
-
         if self.isValid:
-            p=None
-            if self.hasExecutionResult:
-                p=SoilPrinter(
-                    scenario=self.scenarioEvaluation,
-                    displayLineNos=True)
-            else:
-                p=SexPrinter(
-                    scenario=self.scenario,
-                    displayLineNos=True)
-
+            p=ScenarioPrinter(
+                scenario=self.scenario,
+                displayLineNos=True,
+                displayBlockSeparators=True,
+                displayEvaluation=True,
+                originalOrder=True)
             print(p.do())
-            print('****************qqqq*******************')
         else:
-            print('***************sdf*********************')
-
-            print('%s error(s) in the model' % len(self.errors))
-            for e in self.errors:
+            print('%s error(s) in the model' % len(self.issues))
+            for e in self.issues:
                 print(e)
 
     def _parse(self, prefix):
@@ -268,7 +301,7 @@ class _PolymorphicSource(SourceFile):
 
 
             # Compute the line number
-            if self.parseExecution:  #'sex':
+            if self.evaluateScenario:  #'sex':
                 _S.sex_line_no = line_index + 1
                 _m=re.match(r'^(?P<lineno>\d{5}):', line)
                 if _m:
@@ -282,7 +315,7 @@ class _PolymorphicSource(SourceFile):
                 _S.line_no = line_index + 1
 
             if DEBUG>=2:
-                if self.parseExecution: #'sex':
+                if self.evaluateScenario: #'sex':
                     print ('#%05i <- %05i : %s' % (
                         _S.line_no,
                         _S.sex_line_no,
@@ -312,10 +345,10 @@ class _PolymorphicSource(SourceFile):
                     verbose=m.group('kind')=='??',
                     lineNo=_S.line_no,
                 )
-                if self.hasExecutionResult:
-                    current_query_evaluation = QueryEvaluation(
-                        scenarioEvaluation=self.scenarioEvaluation,
-                        query=query)
+                if self.evaluateScenario:
+                    current_query_evaluation = _USEImplementedQueryEvaluation(
+                        blockEvaluation=None,
+                        op=query)
                 continue
 
 
@@ -376,6 +409,12 @@ class _PolymorphicSource(SourceFile):
                 r = prefix+'-- *@context'+end
                 m = re.match(r, line)
                 if m:
+                    if _S.main_block is not None:
+                        # TODO: this limitation might be removed
+                            raise ValueError(
+                            'Error at line %i: context cannot be nested in other block' % (
+                                _S.line_no,
+                            ))
                     if _S.context_block is None:
                         _S.context_block=ContextBlock(
                             self.scenario,
@@ -690,7 +729,7 @@ class _PolymorphicSource(SourceFile):
             #  results of evaluation
             #==========================================================
 
-            if self.parseExecution and line.startswith('|||||:'): # sex
+            if self.evaluateScenario and line.startswith('|||||:'): # sex
 
 
 
@@ -889,6 +928,7 @@ class _PolymorphicSource(SourceFile):
                          + end)
                     m = re.match(r, line)
                     if m:
+                        current_query_evaluation.subexpressions=[]
                         continue
 
                     r=(begin
@@ -923,10 +963,10 @@ class _PolymorphicSource(SourceFile):
                     all='a' in m.group('params'),
                     lineNo=_S.line_no,
                 )
-                if self.hasExecutionResult:
-                    last_check_evaluation = CheckEvaluation(
-                        scenarioEvaluation=self.scenarioEvaluation,
-                        check=check)
+                if self.evaluateScenario:
+                    last_check_evaluation = _USEImplementedCheckEvaluation(
+                        blockEvaluation=None,
+                        op=check)
                 continue
 
 
@@ -941,34 +981,86 @@ class _PolymorphicSource(SourceFile):
 class SoilSource(_PolymorphicSource):
     """
     Source corresponding directly to the raw .soil source given
-    as the parameter. USE is *NOT* executed so some errors may
+    as the parameter.
+    WARNING: USE is *NOT* executed so some errors may
     be left undiscovered. Moreover, there is no cardinality check,
     no invariant checking, etc.
-    From this one can get an object model.
+    From this soil source, one can get an object model.
     """
-
-    def __init__(self, classModel, soilFileName, usecaseModel=None):
-        #type: (ClassModel, Text, Optional[UsecaseModel]) -> None
+    def __init__(
+            self,
+            soilFileName,
+            classModel,
+            usecaseModel=None):
+        #type: (Text, ClassModel) -> None
         super(SoilSource, self).__init__(
-            parseExecution=False,
-            classModel=classModel,
+            evaluateScenario=False,
             soilFileName=soilFileName,
+            sexFileName=None,
+            classModel=classModel,
             usecaseModel=usecaseModel,
-        )
+            parsePrefix='^',
+            preErrorMessages=[])
 
 
 class SexSource(_PolymorphicSource):
     """
-    Source corresponding to a scenario execution.
-    The the .soil file merged with the trace of
-    the execution of USE .soil file.
+    Source corresponding to a scenario execution with execution results.
+    The .soil file merged with the trace of the execution of USE .soil file.
     """
-    def __init__(self, classModel, soilFileName, usecaseModel=None):
-        #type: (ClassModel, Text, Optional[UsecaseModel]) -> None
-        super(SexSource, self).__init__(
-            parseExecution=True,
-            classModel=classModel,
-            soilFileName=soilFileName,
-            usecaseModel=usecaseModel,
-        )
+    def __init__(
+            self,
+            soilFileName,
+            classModel,
+            usecaseModel=None,
+            permissionModel=None):
+        #type: (Text, ClassModel, Optional[UsecaseModel], Optional[PermissionModel]) -> None
+        """
+        The process is the following:
 
+        1. The regular soilFileName is executed by USE OCL.
+           After some merging this lead to a sex file with
+           results of queries and checks computed by USE OCL.
+
+        2. Then the scenario is abstractly executed
+           (see ScenarioEvaluation).
+           This allows to get the evaluation of operations
+           that are not computed by USE OCL (update operations).
+
+        All this results with a scenario which
+        has an associated scenarioEvaluation.
+        """
+        assert classModel is not None
+        assert classModel.source is not None  # TODO: it woudl be possible to parse/evaluate the scenario without .use
+
+        # first execute USE with both the model and the scenario
+        self.useFileName=classModel.source.fileName
+        self.sexFileName=None #type: Optional[Text]
+        e=self.__generateSex(soilFileName, classModel)
+        # filled (or not) by __generateSex
+        errors=[] if e is None else [e]
+
+
+        super(SexSource, self).__init__(
+            evaluateScenario=True,
+            soilFileName=soilFileName,
+            sexFileName=self.sexFileName,
+            classModel=classModel,
+            usecaseModel=usecaseModel,
+            permissionModel=permissionModel,
+            parsePrefix='^(\d{5}|\|{5}):',
+            preErrorMessages=errors)
+
+    def __generateSex(self, soilFileName, classModel):
+        if not classModel.isValid:
+            return '.use file is invalid'
+        if not os.path.isfile(soilFileName):
+            return 'File not found: %s' % self.soilFileName
+
+        try:
+            self.sexFileName = USEEngine.executeSoilFileAsSex(
+                useFile=self.useFileName,
+                soilFile=soilFileName)
+        except IOError as e:   # TODO: add exception if required
+            return 'Error during USE execution: %s' % str(e)
+        return None

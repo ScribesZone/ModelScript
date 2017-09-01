@@ -5,7 +5,14 @@ import os
 import io
 import re
 
-from modelscripts.source.sources import SourceFile
+from modelscripts.sources.sources import (
+    ModelSourceFile,
+)
+from modelscripts.sources.issues import (
+    Issue,
+    Level,
+)
+
 from modelscripts.metamodels.glossaries import (
     GlossaryModel,
     Domain,
@@ -20,29 +27,13 @@ from modelscripts.scripts.texts.parser import TextSourceFragment
 
 DEBUG=0
 
-
-
-class GlossaryModelSource(SourceFile):
+class GlossaryModelSource(ModelSourceFile):
     def __init__(self, glossaryFileName):
-        super(GlossaryModelSource, self).__init__()
         #type: (Text) -> None
 
-        if not os.path.isfile(glossaryFileName):
-            raise Exception('File "%s" not found' % glossaryFileName)
-        self.fileName = glossaryFileName
-        with io.open(self.fileName, 'rU', encoding='utf8') as f:
-            self.sourceLines = (
-                line.rstrip() for line in f.readlines())
-        # self.sourceLines = (
-        #     line.rstrip()
-        #     for line in open(self.fileName, 'rU'))
+        super(GlossaryModelSource, self).__init__(
+            fileName=glossaryFileName)
 
-            text = f.read().split('\n')
-        self.directory = os.path.dirname(glossaryFileName)
-        self.isValid = True
-        self.errors = []
-        self.lines = None
-        self.ignoredLines = []
         self.glossaryModel = None
 
         self.__descriptionLinesPerEntry={}
@@ -56,7 +47,15 @@ class GlossaryModelSource(SourceFile):
         #type: Optional[Dict[Entry, List[Text]]]
 
         self._parse()
-        self.isValid=True # Todo, check errors, etc.
+
+    @property
+    def model(self):
+        return self.glossaryModel
+
+    @property
+    def usedModelByKind(self):
+        _={}
+        return _
 
     def _parse(self):
         self._parse_main_body()
@@ -207,6 +206,6 @@ class GlossaryModelSource(SourceFile):
                 displayLineNos=True)
             print(p.do())
         else:
-            print('%s error(s) in the glossary model'  % len(self.errors))
-            for e in self.errors:
+            print('%s error(s) in the glossary model' % len(self.issues))
+            for e in self.issues:
                 print(e)

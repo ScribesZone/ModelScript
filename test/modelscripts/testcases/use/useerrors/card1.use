@@ -1,9 +1,0 @@
-model M
-class A end
-association R between
-  A [1..0] role  a
-  A [2..0] role b
-end
-
-class C < C
-end

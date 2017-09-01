@@ -1,19 +1,76 @@
 # coding=utf-8
 import os
 import glob
+from typing import Text, Union, List
 
 TEST_CASES_DIRECTORY = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'testcases')
 BUILD_DIRECTORY = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'build')
 
-# TEST_SOIL_DIRECTORY = os.path.join(TEST_CASES_DIRECTORY, 'soil')
 
 def getFile(name, prefixes):
     if os.path.isabs(name):
         return name
     else:
         return os.path.join(*[TEST_CASES_DIRECTORY] + prefixes + [name])
+
+def getTestFiles(relativeDirectory, relative=True, extension=''):
+    #type: (Text, bool, Union[Text, List[Text]]) -> List[Text]
+    def accept(filename):
+        (core, ext)=os.path.splitext(filename)
+        if isinstance(extension, Text):
+            return ext==extension
+        elif isinstance(extension, list):
+            return ext in extension
+        else:
+            raise NotImplementedError()
+
+    absolute_test_dir=os.path.join(
+        TEST_CASES_DIRECTORY,
+        relativeDirectory)
+    if not os.path.isdir(absolute_test_dir):
+        raise ValueError('Not a test directory : %s' % relativeDirectory)
+
+    rel_files=[
+        (os.path.join(
+            relativeDirectory if relative else absolute_test_dir,
+            simplename))
+        for simplename in os.listdir(absolute_test_dir)
+        if accept(simplename) ]
+    return rel_files
+
+def getTestFile(relativeFileName, exist=True):
+    f=os.path.join(
+        TEST_CASES_DIRECTORY,
+        relativeFileName
+    )
+    if exist:
+        if not os.path.isfile(f):
+            raise IOError('Test file %s not found' % relativeFileName)
+    return f
+
+def getTestDir(relativeDir, exist=True):
+    d=os.path.join(
+        TEST_CASES_DIRECTORY,
+        relativeDir
+    )
+    if exist:
+        if not os.path.isdir(d):
+            raise IOError('Test directory %s not found' % relativeDir)
+    return d
+
+
+
+
+
+
+
+
+
+
+
+
 
 def getUseFile(name):
     return getFile(name,['use'])
