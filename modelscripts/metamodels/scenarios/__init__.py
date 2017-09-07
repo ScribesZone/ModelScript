@@ -37,8 +37,8 @@ from modelscripts.metamodels.usecases import (
     Actor,
     UsecaseModel,
 )
-from modelscripts.sources.models import Model
-from modelscripts.sources.sources import (
+from modelscripts.base.models import Model
+from modelscripts.base.sources import (
     SourceFile,
     SourceElement
 )
@@ -56,12 +56,14 @@ class ScenarioModel(Model, Subject):
                  name=None,
                  usecaseModel=None,
                  permissionModel=None,
-                 file=None, lineNo=None):
+                 file=None, lineNo=None,
+                 docComment=None,
+                 eolComment=None):
         #type: (ClassModel, Optional[SourceFile], Optional[Text], Optional[UsecaseModel], PermissionModel, Text, int) -> None
         super(ScenarioModel, self).__init__(
             source=source,
             name=name,
-            lineNo=lineNo,
+            lineNo=lineNo, docComment=docComment, eolComment=eolComment
         )
         self.file = file #type: Text
         self.usecaseModel=usecaseModel #type: Optional[UsecaseModel]

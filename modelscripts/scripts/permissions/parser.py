@@ -10,10 +10,10 @@ from typing import Text, List, Optional, Union #Set, Dict,
 import os
 import re
 
-from modelscripts.sources.sources import (
+from modelscripts.base.sources import (
     ModelSourceFile,
 )
-from modelscripts.sources.issues import (
+from modelscripts.base.issues import (
     Issue,
     Level,
 )
@@ -94,8 +94,8 @@ class PermissionModelSource(ModelSourceFile):
             )
             print(p.do())
         else:
-            print('%s error(s) in the model' % len(self.issues))
-            for e in self.issues:
+            print('%s error(s) in the model' % len(self.issueBox))
+            for e in self.issueBox:
                 print(e)
 
 

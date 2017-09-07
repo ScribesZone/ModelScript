@@ -5,6 +5,7 @@ model Company
 
 -- classes
 
+
 class Employee
 attributes
   name : String

@@ -9,6 +9,10 @@ log = logging.getLogger('test.'+__name__)
 from test.modelscripts import getUseFile
 
 import os
+
+from modelscripts.base.printers import (
+    AnnotatedSourcePrinter
+)
 from modelscripts.use.use.parser import (
     UseSource
 )
@@ -87,6 +91,8 @@ def testGenerator_use4Dir():
 
 def check_isValid(reltestfile):
     use_source = UseSource(getTestFile(reltestfile))
-    assert use_source.isValid
+    AnnotatedSourcePrinter(use_source).display()
+    print('====='*20)
     UseSourcePrinter(use_source).display()
+    assert use_source.isValid
 

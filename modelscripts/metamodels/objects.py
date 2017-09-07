@@ -24,7 +24,7 @@ from typing import List, Optional, Dict
 from modelscripts.metamodels.classes import (
     Attribute,
 )
-from modelscripts.sources.models import Model
+from modelscripts.base.models import Model
 
 
 class ObjectModel(Model):

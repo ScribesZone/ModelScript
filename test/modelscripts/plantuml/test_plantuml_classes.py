@@ -14,6 +14,9 @@ from test.modelscripts import (
 
 import os
 import modelscripts.use.use.parser
+from modelscripts.use.use.printer import (
+    UseSourcePrinter
+)
 import modelscripts.scripts.classes.plantuml
 import modelscripts.diagrams.plantuml.engine
 
@@ -88,10 +91,8 @@ def check_isValid(testFile, plantUMLengine):
         BUILD_DIRECTORY,
         os.path.splitext(os.path.basename(testFile))[0]+'.puml'
     )
-    if not use_file.isValid:
-        use_file.printStatus()
+    UseSourcePrinter(use_file).display()
     assert use_file.isValid
-
     print('\n'*2+'='*80)
     print('Generating '+puml_file_path)
     out = modelscripts.scripts.classes.plantuml.Generator(use_file.classModel)

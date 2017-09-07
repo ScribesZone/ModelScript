@@ -5,10 +5,10 @@ from abc import (
     ABCMeta
 )
 from typing import Optional, Text
-from modelscripts.sources.sources import (
+from modelscripts.base.sources import (
     SourceElement,
     SourceFile,
-    IssueList,
+    IssueBox,
     WithIssueList
 )
 
@@ -26,8 +26,12 @@ class Model(SourceElement, WithIssueList):
         SourceElement.__init__(self,
             name=name, code=code, lineNo=lineNo,
             docComment=docComment, eolComment=eolComment)
+        self.source=source  #type: Optional[SourceFile]
         WithIssueList.__init__(
             self,
-            parent=(None if source is None else source))
-        self.source=source  #type: Optional[SourceFile]
-        self.issues=IssueList() #type: IssueList
+            parent=(None if source is None else source.issueBox))
+        # if self.source is not None:
+        #     parentBox=self.source.issueBox
+        # else:
+        #     parentBox=None
+        # self.issueBox=IssueBox(parent=parentBox) #type: IssueBox

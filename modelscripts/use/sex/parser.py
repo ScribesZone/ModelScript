@@ -53,16 +53,21 @@ from abc import ABCMeta, abstractproperty, abstractmethod
 
 from modelscripts.use.engine import USEEngine
 
-from modelscripts.sources.sources import (
+from modelscripts.base.sources import (
     ModelSourceFile,
+    DocCommentLines,
 )
-# from modelscripts.sources.errors import (
-#     Issue,
-#     Level,
-# )
+
+
+from modelscripts.base.issues import (
+    Issue,
+    LocalizedIssue,
+    Levels,
+    FatalError,
+)
 
 from modelscripts.scripts.scenarios.printer import (
-    ScenarioPrinter,
+    ScenarioModelPrinter,
 )
 
 from modelscripts.metamodels.classes import (
@@ -123,9 +128,6 @@ def isEmptySoilFile(file):
     return match is None
 
 
-#TODO: add support for use interpreter errors !!!
-
-
 class _PolymorphicSource(ModelSourceFile):
     __metaclass__ = ABCMeta
 
@@ -137,7 +139,7 @@ class _PolymorphicSource(ModelSourceFile):
                  usecaseModel=None,
                  permissionModel=None,
                  parsePrefix='^',
-                 preErrorMessages=()):
+                 preIssueMessages=()):
         #type: (bool,Text, Optional[Text], ClassModel, Optional[UsecaseModel], Optional[PermissionModel], Text, List[Text]) -> None
         """
         Create a soil/sex source from the given file.
@@ -169,7 +171,7 @@ class _PolymorphicSource(ModelSourceFile):
             parsePrefix:
                 See subclasses. Prefix is necessary for parsing sex file.
                 Only used if evaluateScenario.
-            preErrorMessages:
+            preIssueMessages:
                 If not [] these errors with be added to the list of
                 error and nothing else will happen (no file reading)
 
@@ -182,25 +184,32 @@ class _PolymorphicSource(ModelSourceFile):
         self.permissionModel=permissionModel #type:Optional[PermissionModel]
         self._parsePrefix=parsePrefix
 
-        super(_PolymorphicSource, self).__init__(
-            fileName=soilFileName,
-            realFileName=sexFileName,
-            preErrorMessages=preErrorMessages)  #realFileName is ignore if None
+        try:
+            super(_PolymorphicSource, self).__init__(
+                fileName=soilFileName,
+                realFileName=sexFileName,
+                preErrorMessages=preIssueMessages)  #realFileName is ignore if None
 
-        #--- create a scenario to contain the result -----------
-        self.scenario = ScenarioModel( #type:ScenarioModel   # TODO -> model
-            source=self,
-            classModel=classModel,
-            name=None,
-            usecaseModel=usecaseModel,
-            permissionModel=permissionModel,
-            file=self.soilFileName)
+            #--- create a scenario to contain the result -----------
+            self.scenario = ScenarioModel( #type:ScenarioModel
+                source=self,
+                classModel=classModel,
+                name=None,
+                usecaseModel=usecaseModel,
+                permissionModel=permissionModel,
+                file=self.soilFileName)
 
-        if self.isValid:
-            self._parse(self._parsePrefix)
-
-            if self.evaluateScenario:
-                ScenarioEvaluation.evaluate(self.scenario)
+            if self.isValid:
+                self._parse(self._parsePrefix)
+                if self.evaluateScenario:
+                    ScenarioEvaluation.evaluate(self.scenario)
+            else:
+                self.scenario=None
+        except FatalError:
+            self.scenario = None
+            # Error has already been already registered
+            # so nothing else to do here.
+            pass
 
     @property
     def model(self):
@@ -217,25 +226,7 @@ class _PolymorphicSource(ModelSourceFile):
             _['pm'] = self.permissionModel
         return _
 
-    def printStatus(self):
-        """
-        Print the status of the file:
 
-        * the list of errors if the file is invalid,
-        * a short summary of entities (classes, attributes, etc.) otherwise
-        """
-        if self.isValid:
-            p=ScenarioPrinter(
-                scenario=self.scenario,
-                displayLineNos=True,
-                displayBlockSeparators=True,
-                displayEvaluation=True,
-                originalOrder=True)
-            print(p.do())
-        else:
-            print('%s error(s) in the model' % len(self.issues))
-            for e in self.issues:
-                print(e)
 
     def _parse(self, prefix):
 
@@ -244,7 +235,7 @@ class _PolymorphicSource(ModelSourceFile):
             Current state of the parser.
             Required for _getBlock
             """
-            original_line=""
+            original_line=''
 
             # Always the line number in the soil file, the only file seen be the user
             line_no=0
@@ -293,6 +284,9 @@ class _PolymorphicSource(ModelSourceFile):
         current_cardinality_info=None
         current_invariant_violation=None
         current_query_evaluation=None
+        last_doc_comment = DocCommentLines()
+        in_block_comment = False
+        current_eol_comment=None
 
         for (line_index, line) in enumerate(self.sourceLines):
 
@@ -327,15 +321,79 @@ class _PolymorphicSource(ModelSourceFile):
                         _S.original_line,
                     ))
 
-            #---- blank lines ---------------------------------------------
+            # --------------------------------------------------
+            # Single and multi line /* */
+            # --------------------------------------------------
+
+            # replace inline /* */ by spaces
+            line = re.sub(r'(/\*.*?\*/)', ' ', line)
+
+            # deal with /* comments
+            r = begin+' */\*.*'+end
+            m = re.match(r, line)
+            if m:
+                in_block_comment = True
+                last_doc_comment.clean()
+                continue
+
+            if in_block_comment:
+                r = begin+'^.*\*/(?P<rest>.*)'+end
+                m = re.match(r, line)
+                if m:
+                    in_block_comment = False
+                    last_doc_comment.clean()
+                    line = m.group('rest')
+                    # do not start the loop, the rest could be important
+
+            if in_block_comment:
+                last_doc_comment.clean()
+                continue
+
+            #--------------------------------------------------
+            # Blank lines
+            #--------------------------------------------------
+            # This must go after /* */ comments as such a
+            # comment can create a blank line
             r = prefix+''+end
             m = re.match(r, line)
             if m:
+                last_doc_comment.clean()
                 continue
 
 
+            #--------------------------------------------------
+            # Line comment --
+            #--------------------------------------------------
 
-            #---- query
+            # Full line comment
+            r = prefix+' *--(?P<comment> *([^@].*)?)'+end
+            m = re.match(r, line)
+            if m:
+                c=m.group('comment')
+                last_doc_comment.add(c)
+                continue
+
+            # Everything that follow is not part of a full line comment
+            last_doc_comment.clean()
+
+            # End of line (EOL comment)
+            r = r'^(?P<content>.*?)--(?P<comment> *([^@].*)?)$'
+            m = re.match(r, line)
+            if m:
+                # There is a eol comment on this line
+                # all following cases can use this variable
+                current_eol_comment = m.group('comment')
+                # we go though the next cases without the eol
+                line=m.group('content')
+            else:
+                current_eol_comment = None
+
+
+
+
+            #--------------------------------------------------
+            # query
+            #--------------------------------------------------
             r = begin+'(?P<kind>\?\??) *(?P<expr>.*)'+end
             m = re.match(r, line)
             if m:
@@ -356,45 +414,72 @@ class _PolymorphicSource(ModelSourceFile):
             # directives
             #-------------------------------------------------
 
-            if re.match(begin+r'--', line):
-                #---- -- @scenario XXX
+            if re.match(begin+r'-- *@', line):
+
+                # -------------------------------------------------
+                # @scenario model? <name>
+                # -------------------------------------------------
                 r = begin+'-- *@scenario( +model?) +(?P<name>\w+)'+end
                 m = re.match(r, line)
                 if m:
                     if self.scenario.name is not None:
-                        raise ValueError(
-                            'Error at line #%i: '
-                            'scenario named again' % _S.line_no)
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Warning,
+                            message='redefinition of scenario name',
+                            line=_S.line_no
+                        )
+                        continue
+
                     self.scenario.name=m.group('name')
                     self.scenario.lineNo=_S.line_no,
 
-                    # TODO: raise an effor if some block has already there
+
+                    # TODO: raise an warning if block already there
+                    # check the exisitng list pf block
                     continue
 
-                #---- -- @actorinstance XXX : YYY
-                r = prefix+'-- *@actori +(?P<name>\w+) *: *(?P<actor>\w+)'+end
+                # -------------------------------------------------
+                # @actorinstance <actor> : <instance>
+                # -------------------------------------------------
+
+                r = (prefix
+                     +'-- *@actori +(?P<name>\w+) *'
+                     +': *(?P<actor>\w+)'
+                     +end)
                 m = re.match(r, line)
                 if m:
                     if self.usecaseModel is None:
-                        print('Warning at line %i: no use case model provided. Directive ignored' % (
-                            _S.line_no,
-                        ) )
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Warning,
+                            message='no use case model provided. Directive ignored',
+                            line=_S.line_no
+                        )
                         continue
-                    #--- instance
+
+                    #--- instance --------
                     iname=m.group('name')
                     if iname in self.scenario.actorInstanceNamed:
-                        raise ValueError(
-                            'Error at line %i: actor instance "%s" already exist' % (
-                            _S.line_no,
-                            iname,
-                        ))
-                    #--- actor
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Warning,
+                            message='Actor instance "%s" already exist. Directive ignored' % iname,
+                            line=_S.line_no
+                        )
+                        continue
+
+                    #--- actor ----------
                     aname=m.group('actor')
                     if aname not in self.scenario.usecaseModel.actorNamed:
-                        raise ValueError('Error at line %i: actor "%s" does not exist' % (
-                            _S.line_no,
-                            aname,
-                        ))
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Error,
+                            message='actor "%s" does not exist' % aname,
+                            line=_S.line_no
+                        )
+                        continue
+
                     a=self.scenario.usecaseModel.actorNamed[aname]
                     ai = ActorInstance(
                         scenario=self.scenario,
@@ -405,16 +490,23 @@ class _PolymorphicSource(ModelSourceFile):
                     self.scenario.actorInstanceNamed[iname]=ai
                     continue
 
-                #---- -- @context
+                # -------------------------------------------------
+                # @context
+                # -------------------------------------------------
+
                 r = prefix+'-- *@context'+end
                 m = re.match(r, line)
                 if m:
                     if _S.main_block is not None:
-                        # TODO: this limitation might be removed
-                            raise ValueError(
-                            'Error at line %i: context cannot be nested in other block' % (
-                                _S.line_no,
-                            ))
+
+                        # TODO: this limitation could be removed
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Fatal,
+                            message='Context cannot be nested',
+                            line=_S.line_no
+                        )
+                        continue
                     if _S.context_block is None:
                         _S.context_block=ContextBlock(
                             self.scenario,
@@ -422,15 +514,21 @@ class _PolymorphicSource(ModelSourceFile):
                         )
                     continue
 
-                #---- -- @endcontext
+                # -------------------------------------------------
+                # @endcontext
+                # -------------------------------------------------
+
                 r = prefix+'-- *@endcontext'+end
                 m = re.match(r, line)
                 if m:
                     if _S.context_block is None:
-                        raise ValueError(
-                            'Error at line %i: context is not open' % (
-                                _S.line_no,
-                            ))
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Fatal,
+                            message='No context opened',
+                            line=_S.line_no
+                        )
+                        continue
                     _S.context_block=None
                     continue
 
@@ -969,13 +1067,31 @@ class _PolymorphicSource(ModelSourceFile):
                         op=check)
                 continue
 
+            # ---- error type1
+            # WARNING: this rule MUST go after the rules thats starts
+            # with 'check' something as this one will take precedence!
+            r = begin + '<input>(?P<msg>.*)' + end
+            m = re.match(r, line)
+            if m:
+                print('**** ERROR: "%s"' % m.group('msg'))
+                continue
+
+            # ---- error type1
+            # WARNING: this rule MUST go after the rules thats starts
+            # with 'check' something as this one will take precedence!
+            r = begin + 'Error:(?P<msg>.*)' + end
+            m = re.match(r, line)
+            if m:
+                print('**** ERROR: "%s"' % m.group('msg'))
+                continue
 
             #---- unknown or unimplemented commands ---------------------------
 
-            raise NotImplementedError(
-                'Error at line #%i: cannot parse this line\n'
-                   '"%s"' % (_S.line_no,_S.original_line)
+            print('++++'
+                'Error at line #%i: cannot parse this line:\n'
+                   '--> "%s"' % (_S.line_no,_S.original_line)
             )
+            continue
 
 
 class SoilSource(_PolymorphicSource):
@@ -1000,7 +1116,7 @@ class SoilSource(_PolymorphicSource):
             classModel=classModel,
             usecaseModel=usecaseModel,
             parsePrefix='^',
-            preErrorMessages=[])
+            preIssueMessages=[])
 
 
 class SexSource(_PolymorphicSource):
@@ -1018,8 +1134,8 @@ class SexSource(_PolymorphicSource):
         """
         The process is the following:
 
-        1. The regular soilFileName is executed by USE OCL.
-           After some merging this lead to a sex file with
+        1. The regular soilFileName is executed below by USE OCL.
+           After some merging this leads to a sex file with
            results of queries and checks computed by USE OCL.
 
         2. Then the scenario is abstractly executed
@@ -1030,16 +1146,25 @@ class SexSource(_PolymorphicSource):
         All this results with a scenario which
         has an associated scenarioEvaluation.
         """
+        # The classModel must exist ...
         assert classModel is not None
-        assert classModel.source is not None  # TODO: it woudl be possible to parse/evaluate the scenario without .use
+        # and it must have to source to be parsed by USE
+        assert classModel.source is not None
 
-        # first execute USE with both the model and the scenario
+        # TODO: it would be possible to parse/evaluate
+        # the scn without .use or to generate a source from
+        # the model. Low priority for now.
+
+        # First execute USE with both the model and the scenario
         self.useFileName=classModel.source.fileName
         self.sexFileName=None #type: Optional[Text]
-        e=self.__generateSex(soilFileName, classModel)
         # filled (or not) by __generateSex
+        try:
+            e=self.__generateSex(soilFileName, classModel)
+        except FatalError:
+            print('#############################')
+        e=None ########################################"
         errors=[] if e is None else [e]
-
 
         super(SexSource, self).__init__(
             evaluateScenario=True,
@@ -1049,18 +1174,34 @@ class SexSource(_PolymorphicSource):
             usecaseModel=usecaseModel,
             permissionModel=permissionModel,
             parsePrefix='^(\d{5}|\|{5}):',
-            preErrorMessages=errors)
+            preIssueMessages=errors)
 
     def __generateSex(self, soilFileName, classModel):
-        if not classModel.isValid:
-            return '.use file is invalid'
-        if not os.path.isfile(soilFileName):
-            return 'File not found: %s' % self.soilFileName
+        """
+        Execute the UseOCL tool with .use and .soil
+        Can raise FataError. In that case the issue
 
+        """
+        if not classModel.isValid:
+            raise FatalError(
+                Issue(
+                    origin=self,
+                    level=Levels.Fatal,
+                    message='Class model is invalid' % self.fileName))
+        if not os.path.isfile(soilFileName):
+            raise FatalError(
+                Issue(
+                    origin=self,
+                    level=Levels.Fatal,
+                    message='File not found: %s' % soilFileName))
         try:
             self.sexFileName = USEEngine.executeSoilFileAsSex(
                 useFile=self.useFileName,
                 soilFile=soilFileName)
-        except IOError as e:   # TODO: add exception if required
-            return 'Error during USE execution: %s' % str(e)
-        return None
+        except Exception as e:
+            m='Error during USE execution: %s' % str(e)
+            raise FatalError(
+                Issue(
+                    origin=self,
+                    level=Levels.Fatal,
+                    message=m))

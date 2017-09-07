@@ -6,7 +6,7 @@ Part of the Scenario metamodel.
 
 from typing import Union, Optional, Dict, List, Text
 from abc import ABCMeta, abstractmethod
-from modelscripts.sources.sources import SourceElement
+from modelscripts.base.sources import SourceElement
 
 from modelscripts.metamodels.scenarios.operations import (
     Operation,

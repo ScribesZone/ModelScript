@@ -5,10 +5,10 @@ import os
 import io
 import re
 
-from modelscripts.sources.sources import (
+from modelscripts.base.sources import (
     ModelSourceFile,
 )
-from modelscripts.sources.issues import (
+from modelscripts.base.issues import (
     Issue,
     Level,
 )
@@ -206,6 +206,6 @@ class GlossaryModelSource(ModelSourceFile):
                 displayLineNos=True)
             print(p.do())
         else:
-            print('%s error(s) in the glossary model' % len(self.issues))
-            for e in self.issues:
+            print('%s error(s) in the glossary model' % len(self.issueBox))
+            for e in self.issueBox:
                 print(e)

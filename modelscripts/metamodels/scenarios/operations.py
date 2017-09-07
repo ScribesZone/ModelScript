@@ -30,7 +30,7 @@ from modelscripts.metamodels.classes import (
     Attribute,
 )
 from modelscripts.metamodels.permissions import Subject
-from modelscripts.sources.sources import SourceElement
+from modelscripts.base.sources import SourceElement
 
 
 #--------------------------------------------------------------

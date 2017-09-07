@@ -13,7 +13,7 @@ __all__ = [
 
 import logging
 
-from modelscripts.sources.printers import (
+from modelscripts.base.printers import (
     ModelPrinter,
     SourcePrinter,
     indent
@@ -33,7 +33,6 @@ log = logging.getLogger('test.' + __name__)
 
 
 
-# TODO: refactor with outLine, etc. from AbstractPrinter
 class UseModelPrinter(ModelPrinter):
     def __init__(self,
                  theModel,
@@ -220,12 +219,6 @@ class UseModelPrinter(ModelPrinter):
         self._eolComment(role)
 
     def _operationCondition(self, condition):
-        # if invariant.class_ is None:
-        #     prefix_comment = ''
-        #     prefix_first = 'context '
-        #     prefix_rest = '    '
-        # else:
-        prefix_comment = '        '
         prefix_first = '        '
         prefix_rest  = '            '
         keyword='pre' if isinstance(condition,PreCondition) else 'post'
@@ -247,8 +240,8 @@ class UseSourcePrinter(SourcePrinter):
                  displayLineNos=True):
         super(UseSourcePrinter, self).__init__(
             theSource=theSource,
-            summary=False,
-            displayLineNos=True)
+            summary=summary,
+            displayLineNos=displayLineNos)
 
     def do(self):
         self.output=''

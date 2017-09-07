@@ -4,7 +4,8 @@
 Model errors in source files either localized or not.
 """
 import os
-from typing import Optional, List, Text, Union, Callable
+from collections import OrderedDict
+from typing import Optional, List, Text, Union, Callable, Dict
 
 class FatalError(Exception):
     def __init__(self, SourceError):
@@ -50,6 +51,8 @@ class Levels(object):
     Error=Level('Error', 40)
     Fatal=Level('Fatal error', 50)
 
+    Levels=[Fatal, Error, Warning, Info, Hint]
+
 
 class Issue(object):
     """
@@ -64,10 +67,9 @@ class Issue(object):
         Raise FatalError if the error is fatal and processing could not
         continue.
         """
-
         assert message is not None and message!=''
 
-        self.origin = origin
+        self.origin = origin  #type: WithIssueList
         """ The source file. An instance of SourceFile. """
 
         self.message = message
@@ -75,7 +77,7 @@ class Issue(object):
 
         self.level=level  #type:Level
 
-        self.origin.issues._add(self)
+        self.origin.issueBox._add(self)
         if level==Levels.Fatal:
             raise FatalError(self)
 
@@ -118,17 +120,22 @@ class LocalizedIssue(Issue):
         value will be taken from the source file.
 
         """
+        self.sourceFile = sourceFile
+        """ The source file. An instance of SourceFile. """
+
+        self.fileName = (
+            fileName if fileName is not None
+            else self.sourceFile.fileName )
+
+        self.line = line
+        self.column = column #type: Optional[int]
+
         super(LocalizedIssue, self).__init__(
             origin=sourceFile,
             level=level,
             message=message)
 
-        self.sourceFile = sourceFile
-        """ The source file. An instance of SourceFile. """
 
-        self.fileName = fileName
-        self.line = line
-        self.column = column #type: Optional[int]
 
 
     def str(self,
@@ -145,12 +152,16 @@ class LocalizedIssue(Issue):
             return [p+s for s in l]
 
         _ = []
-        if filetransfo is None:
-            fileexpr=self.fileName
-        elif filetransfo=='basename':
-            fileexpr=os.path.basename(self.fileName)
+        if self.fileName is not None:
+            if filetransfo is None:
+                fileexpr=self.fileName
+            elif filetransfo=='basename':
+                fileexpr=os.path.basename(self.fileName)
+            else:
+                fileexpr=filetransfo(self.fileName)
         else:
-            fileexpr=filetransfo(self.fileName)
+            fileexpr=''
+
         issueline= prefixIssue+pattern.format(
             level=self.level,
             file=fileexpr,
@@ -163,22 +174,17 @@ class LocalizedIssue(Issue):
                 begin = max(0, self.line - linesBefore)
                 end = self.line
                 _.extend(prefix(prefixStd,self.sourceFile.sourceLines[begin:end]))
-
-            cursor_line = \
-                prefixStd \
-                + ' '*(self.column - 1) \
-                + '^'
-                # + ' '*(len(self.sourceFile.sourceLines[
-                #                 max(0,self.line-1)])-self.column)
-            _.append(cursor_line)
+            if self.column is not None:
+                cursor_line = \
+                    prefixStd \
+                    + ' '*(self.column - 1) \
+                    + '^'
+                _.append(cursor_line)
 
             if linesAfter:
                 begin = self.line - 1
                 end = max(len(self.sourceFile.sourceLines)-1,self.line+linesAfter-1)
                 _.extend(prefix(prefixStd,self.sourceFile.sourceLines[begin:end]))
-
-
-
 
         return '\n'.join(_)
 
@@ -196,19 +202,65 @@ class LocalizedIssue(Issue):
         return self.__str__()
 
 
-class IssueList(object):
+class IssueBox(object):
 
     def __init__(self, parent=None):
-        #type: (IssueList) -> None
+        #type: (IssueBox) -> None
         self._issueList=[] #type: List[Issue]
-        self.parent=None #type:Optional[IssueList]
+        self.parent=parent #type:Optional[IssueBox]
+
+        self._issuesAtLine=OrderedDict() #type: Dict[Optional[int], List[Issue]]
+        """ 
+        Store for a given line the issues at this line.
+       There is no  entry for lines without issues.
+        _issuesAtLine[0] are are not localized issues.
+        """
 
     def _add(self, issue):
         # called by the issue constructor
+        # Issue -> None
         self._issueList.append(issue)
+        if isinstance(issue, LocalizedIssue):
+            index=issue.line
+        else:
+            index=None
+        if index not in self._issuesAtLine:
+            self._issuesAtLine[index]=[]
+        self._issuesAtLine[index].append(issue)
+        # for i in self._issuesAtLine.keys():
+        #     print('     ******* %s : %s' % (
+        #         i,
+        #         self._issuesAtLine[i]
+        #     ))
+        #
+        # print('**** search %s :%s' % (
+        #     index,
+        #     self.at(index),
+        # ))
+
+
+    def at(self, lineNo):
+        """
+        Return the list of issues at the specified line.
+        If the line is 0 then return non localized issues.
+        Return both local and parents issues.
+        """
+        # int -> List[Issue]
+        parent_issues=(
+            [] if self.parent is None
+            else self.parent.at(lineNo))
+        self_issues=(
+            [] if lineNo not in self._issuesAtLine
+            else self._issuesAtLine[lineNo]
+        )
+        all=parent_issues+self_issues
+        return all
 
     @property
     def all(self):
+        """
+        Return both local and parents issues
+        """
         return (
             ([] if self.parent is None else self.parent.all)
             + self._issueList
@@ -218,22 +270,56 @@ class IssueList(object):
     def nb(self):
         return len(self.all)
 
-    def select(self, level=None, op='='):
-        #type: (Level, Text) -> List[Issue]
-        if level is None:
-            return self.all
+    def select(self,
+               level=None, op='=',
+               line=None ):
+        #type: (Optional[Level], str, Optional[bool], Optional[int]) -> List[Issue]
+        if level is None and line is None:
+            return list(self.all)
+        issues_at=(
+            self.all if line is None
+            else self.at(line))
         return [
-            i for i in self.all
+            i for i in issues_at
             if i.level.cmp(level, op) ]
+
+    @property
+    def bigIssues(self, level=Levels.Error):
+        return self.select(level=level,op='>=')
+
+    @property
+    def smallIssues(self, level=Levels.Warning):
+        return self.select(level=level,op='<=')
 
     @property
     def isValid(self):
         # () -> bool
-        return len(self.select(Levels.Error, '<='))==0
+        return len(self.bigIssues)==0
 
     @property
     def hasIssues(self):
-        return len(self.all) == 0
+        return len(self.all) != 0
+
+    def summary(self):
+        if self.nb==0:
+            return ''
+        level_msgs=[]
+        for l in Levels.Levels:
+            n=len(self.select(level=l))
+            if n>0:
+                level_msgs.append('%i %s%s' % (
+                    n,
+                    l.label,
+                    's' if n>=2 else ''))
+        return (
+            '**** %i issue%s (%s)' % (
+                self.nb,
+                's' if self.nb>=2 else '',
+                ','.join(level_msgs)
+            )
+        )
+
+
 
     def str(self, level=None, op='=', showSource=True):
         return '\n'.join([
@@ -246,16 +332,16 @@ class IssueList(object):
 
 class WithIssueList(object):
     def __init__(self, parent=None):
-        self.issues=IssueList(parent=parent)
+        self.issueBox=IssueBox(parent=parent)
 
     @property
     def isValid(self):
         # () -> bool
-        return self.issues.isValid
+        return self.issueBox.isValid
 
     @property
     def hasIssues(self):
-        return self.issues.hasIssues
+        return self.issueBox.hasIssues
 
     def addIssue(self, sourceError):
-        self.issues._add(sourceError)
+        self.issueBox._add(sourceError)

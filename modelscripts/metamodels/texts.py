@@ -4,7 +4,7 @@ from typing import (
     Union, Dict, Text, Optional, List, Any,
 )
 
-from modelscripts.sources.sources import SourceElement
+from modelscripts.base.sources import SourceElement
 
 class TextBlock(SourceElement):
 

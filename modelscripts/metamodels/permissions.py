@@ -11,8 +11,8 @@ from abc import ABCMeta
 
 from typing import List, Dict, Text, Optional
 
-from modelscripts.sources.models import Model
-from modelscripts.sources.sources import (
+from modelscripts.base.models import Model
+from modelscripts.base.sources import (
     SourceElement
 )
 

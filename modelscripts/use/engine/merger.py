@@ -261,6 +261,12 @@ def merge(soilFile, traceFile, sexFileName=None):
             merged.out('trace')
             continue
 
+        if re.match('^(Error|<input>)(?P<error>.*)$', line):
+            if DEBUG>=2:
+                print(' ' * 10 + 'ERROR')
+            merged.out('trace')
+            continue
+
         if re.match('^.*\.soil> *quit *$', line):
             if DEBUG>=2:
                 print('')

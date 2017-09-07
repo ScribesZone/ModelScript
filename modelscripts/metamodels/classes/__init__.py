@@ -41,8 +41,8 @@ import logging
 from typing import Text, Optional, Union, Any, List, Dict
 
 from modelscripts.metamodels.permissions import Resource
-from modelscripts.sources.models import Model
-from modelscripts.sources.sources import (
+from modelscripts.base.models import Model
+from modelscripts.base.sources import (
     SourceElement,
     SourceFile
 )

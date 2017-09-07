@@ -6,6 +6,12 @@ import logging
 
 from typing import Union, Text
 
+from modelscripts.base.printers import (
+    ModelPrinter,
+    SourcePrinter,
+    indent
+)
+
 from modelscripts.metamodels.scenarios import (
     ScenarioModel,
     operations,
@@ -15,30 +21,53 @@ from modelscripts.metamodels.scenarios.evaluations import (
     ScenarioEvaluation,
 )
 from modelscripts.metamodels.scenarios.evaluations.operations import InvariantValidation, CardinalityViolation
-from modelscripts.sources.printers import (
-    AbstractPrinter,
-)
 
-__all__ = ['ScenarioPrinter']
+
+__all__ = ['ScenarioModelPrinter']
 
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
 
-class ScenarioPrinter(AbstractPrinter):
+# def printStatus(self):
+#     """
+#     Print the status of the file:
+#
+#     * the list of errors if the file is invalid,
+#     * a short summary of entities (classes, attributes, etc.) otherwise
+#     """
+#     if self.isValid:
+#         p = ScenarioModelPrinter(
+#             scenario=self.scenario,
+#             displayLineNos=True,
+#             displayBlockSeparators=True,
+#             displayEvaluation=True,
+#             originalOrder=True)
+#         print(p.do())
+#     else:
+#         print('%s error(s) in the model' % len(self.issues))
+#         for e in self.issues:
+#             print(e)
+
+class ScenarioModelPrinter(ModelPrinter):
 
     def __init__(self,
-                 scenario,
+                 theModel,
+                 summary=False,
                  modelHeader='scenario model',
                  displayLineNos=True,
                  displayBlockSeparators=True,
                  displayEvaluation=True,
                  originalOrder=True):
-        #type: (Union[ScenarioModel, ScenarioEvaluation], Text, bool, bool) -> None
-        super(ScenarioPrinter, self).__init__(
+        #type: (Union[ScenarioModel, ScenarioEvaluation], bool, Text, bool, bool, bool, bool) -> None
+        # Check if it make sense for ScenarioEvaluation
+        assert isinstance(theModel, ScenarioModel)
+        super(ScenarioModelPrinter, self).__init__(
+            theModel=theModel,
+            summary=summary,
             displayLineNos=displayLineNos
         )
-        self.scenario=scenario
+        self.scenario=theModel
         self.scenarioEvaluation=self.scenario.scenarioEvaluation
         self.modelHeader=modelHeader
         self.displayBlockSeparators=displayBlockSeparators
@@ -49,8 +78,9 @@ class ScenarioPrinter(AbstractPrinter):
         self.output = ''
 
     def do(self):
-        super(ScenarioPrinter, self).do()
-        self._scenario(self.scenario)
+        self.output = ''
+        self._issues()
+        self._model()
         return self.output
 
     # def docComment(self, source_element, indent):
@@ -66,22 +96,18 @@ class ScenarioPrinter(AbstractPrinter):
     #     self.out('\n')
 
 
-    def _scenario(self, scenario):
+    def _model(self):
 
-        if scenario.name is not None:
+        if self.scenario.name is not None:
             self.outLine(
-                '-- @%s %s' % (self.modelHeader, scenario.name),
-                scenario.lineNo)
-            # if self.displayBlockSeparators:
-            #     self.outLine('')
-        # self.outLine('XXXX %i'%len(scenario.actorInstanceNamed))
-        # if self.displayBlockSeparators:
-        #     self.outLine('')
-        for ai in scenario.actorInstanceNamed.values():
+                '-- @%s %s' % (self.modelHeader, self.scenario.name),
+                self.scenario.lineNo)
+
+        for ai in self.scenario.actorInstanceNamed.values():
             self._actorInstance(ai)
 
-        if self.doDisplayEvaluation and scenario.scenarioEvaluation is not None:
-            self._accessSet(scenario.scenarioEvaluation.accessSet)
+        if self.doDisplayEvaluation and self.scenario.scenarioEvaluation is not None:
+            self._accessSet(self.scenario.scenarioEvaluation.accessSet)
 
         if self.originalOrder:
             blocks = self.scenario.originalOrderBlocks
@@ -363,16 +389,37 @@ class ScenarioPrinter(AbstractPrinter):
             access.action,
             access.resource.label ))
 
-    # def cardinalityViolation(self, cv):
-    #     _=('Multiplicity constraint violation'
-    #        'in association '
-    #        '`%s\':\n')
-    #     self.out(_ % cv.)
 
+class ScenarioSourcePrinter(SourcePrinter):
 
+    def __init__(self,
+                 theSource,
+                 summary=False,
+                 displayLineNos=True,
+                 modelHeader='scenario model',
+                 displayBlockSeparators=True,
+                 displayEvaluation=True,
+                 originalOrder=True,
+                 ):
+        super(ScenarioSourcePrinter, self).__init__(
+            theSource=theSource,
+            summary=False,
+            displayLineNos=True)
 
+    def do(self):
+        self.output=''
+        if self.theSource.model is not None:
+            p=ScenarioModelPrinter(
+                theModel=self.theSource.model,
+                summary=self.summary,
+                modelHeader='scenario model',
+                displayLineNos=self.displayLineNos,
+                displayBlockSeparators=True,
+                displayEvaluation=True,
+                originalOrder=True,
+            ).do()
+            self.out(p)
+        else:
+            self._issues()
+        return self.output
 
-# +r'  Object `%s' of class '
-# +r'`(?P<sourceClass>\w+)\' is connected to '
-# +r'(?P<numberOfObjects>\d+) objects of class '
-# +r'`(?P<targetClass>\w+)\''

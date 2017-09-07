@@ -19,7 +19,7 @@ def getTestFiles(relativeDirectory, relative=True, extension=''):
     #type: (Text, bool, Union[Text, List[Text]]) -> List[Text]
     def accept(filename):
         (core, ext)=os.path.splitext(filename)
-        if isinstance(extension, Text):
+        if isinstance(extension, (str, unicode)):
             return ext==extension
         elif isinstance(extension, list):
             return ext in extension
@@ -79,7 +79,7 @@ def getSoilFile(name):
     return getFile(name, ['soil'])
 
 def getSoilFileList(nameOrList):
-    if isinstance(nameOrList, basestring):
+    if isinstance(nameOrList, (str, unicode)):
         # add the prefix if necessary
         with_prefix = getFile(nameOrList, ['soil'])
         return glob.glob(with_prefix)

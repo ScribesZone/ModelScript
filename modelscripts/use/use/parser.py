@@ -25,12 +25,17 @@ Either find some errors or create a class model
 import re
 from typing import Text, Optional
 
-from modelscripts.sources.sources import (
+from modelscripts.base.symbols import (
+    Symbol
+)
+
+from modelscripts.base.sources import (
     ModelSourceFile,
     DocCommentLines,
 )
-from modelscripts.sources.issues import (
+from modelscripts.base.issues import (
     Issue,
+    IssueBox,
     LocalizedIssue,
     Levels,
     FatalError,
@@ -94,13 +99,12 @@ class UseSource(ModelSourceFile):
         #: start with an empty class model but will be set to None
         #: in case of Errors
 
-        self.classModel = ClassModel(source=self)
-
         try:
 
             # noinspection PySuperArguments
             super(UseSource, self).__init__(
                 fileName=useFileName)
+            self.classModel = ClassModel(source=self)
 
             self.commandExitCode = None #type: Optional[int]
             """Exit code of use command"""
@@ -231,7 +235,6 @@ class UseSource(ModelSourceFile):
         for (line_index,line) in enumerate(self.sourceLines):
 
             original_line = line
-            # replace tabs by spaces
             line = line.replace('\t',' ')
             line_no = line_index+1
 
@@ -294,7 +297,7 @@ class UseSource(ModelSourceFile):
 
 
             # Full line comment
-            r = r'^ *--(?P<comment>.*)$'
+            r = r'^ *--(?P<comment> *([^@].*)?)$'
             m = re.match(r, line)
             if m:
                 c=m.group('comment')
@@ -307,7 +310,7 @@ class UseSource(ModelSourceFile):
 
 
             # End of line (EOL comment)
-            r = r'^(?P<content>.*?)--(?P<comment>.*)$'
+            r = r'^(?P<content>.*?)--(?P<comment> *([^@].*)?)$'
             m = re.match(r, line)
             if m:
                 # There is a eol comment on this line
@@ -394,7 +397,7 @@ class UseSource(ModelSourceFile):
             # enumeration --
             #--------------------------------------------------
 
-            #---- first line of enumeration (may be one line only) -----------
+            #---- first line of enumeration (may be one line only) ---
             r = r'^ *enum +(?P<name>\w+) *{' \
                 r' *(?P<literals>[\w+, ]*)' \
                 r' *(?P<end>})? *;?' \
@@ -410,6 +413,25 @@ class UseSource(ModelSourceFile):
                     for l in m.group('literals').replace(' ','').split(',')
                     if l != ''
                 ]
+                for literal in literals:
+                    if not Symbol.is_camlCase(literal):
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Warning,
+                            message=(
+                                '"%s" should start with an lowercase.'
+                                % literal),
+                            line=line_no
+                        )  # TODO: add column
+                if not Symbol.is_CamlCase(m.group('name')):
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Warning,
+                        message=(
+                            '"%s" should start with an uppercase.'
+                            % m.group('name')),
+                        line=line_no
+                    ) # TODO: add column
                 enumeration = Enumeration(
                     name=m.group('name'),
                     model=self.classModel,
@@ -420,6 +442,7 @@ class UseSource(ModelSourceFile):
                     eolComment=current_eol_comment,
                 )
                 self.classModel.enumerationNamed[m.group('name')] = enumeration
+
                 if m.group('end'):
                     current_enumeration = None
                 else:
@@ -444,6 +467,15 @@ class UseSource(ModelSourceFile):
                                     if l != ''
                                     ]
                         for literal in literals:
+                            if not Symbol.is_camlCase(literal):
+                                LocalizedIssue(
+                                    sourceFile=self,
+                                    level=Levels.Warning,
+                                    message=(
+                                        '"%s" should start with an lowercase.'
+                                        % literal),
+                                    line=line_no
+                                )  # TODO: add column
                             current_enumeration.addLiteral(literal)
                     if m.group('end'):
                         current_enumeration = None
@@ -464,6 +496,15 @@ class UseSource(ModelSourceFile):
                     superclasses = ()
                 else:
                     superclasses = [c.strip() for c in m.group('superclasses').split(',')]
+                if True: #not Symbol.is_CamlCase(m.group('name')):
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Warning,
+                        message=(
+                            '"%s" should start with an uppercase.'
+                            % m.group('name')),
+                        line=line_no
+                    ) # TODO: add column
                 current_class = Class(
                         name=m.group('name'),
                         model=self.classModel,
@@ -501,6 +542,15 @@ class UseSource(ModelSourceFile):
                     superclasses = [c.strip() for c in m.group('superclasses').split(',')]
                     # print('YYY'+m.group('name'))
                     # print(superclasses)
+                if not Symbol.is_CamlCase(m.group('name')):
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Warning,
+                        message=(
+                            '"%s" should start with an uppercase.'
+                            % m.group('name')),
+                        line=line_no
+                    ) # TODO: add column
                 ac = AssociationClass(
                         name=m.group('name'),
                         model=self.classModel,
@@ -532,6 +582,15 @@ class UseSource(ModelSourceFile):
                     is_derived = m.group('keyword') == 'derive'
                     is_init = m.group('keyword') == 'init'
                     expression = m.group('expression')
+                    if not Symbol.is_camlCase(m.group('name')):
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Warning,
+                            message=(
+                                '"%s" should start with an lowercase.'
+                                % m.group('name')),
+                            line=line_no
+                        )  # TODO: add column
                     # This could be in an association class
                     attribute = Attribute(
                         name=m.group('name'),
@@ -573,6 +632,15 @@ class UseSource(ModelSourceFile):
                     )
                     signature = signature.replace(' ','')
                     expr=m.group('expr')
+                    if not Symbol.is_camlCase(m.group('name')):
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Warning,
+                            message=(
+                                '"%s" should start with an lowercase.'
+                                % m.group('name')),
+                            line=line_no
+                        )  # TODO: add column
                     operation = Operation(
                             name=m.group('name'),
                             class_=current_class,
@@ -604,6 +672,15 @@ class UseSource(ModelSourceFile):
                 current_attribute = None
                 current_operation = None
                 current_context = None
+                if not Symbol.is_CamlCase(m.group('name')):
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Warning,
+                        message=(
+                            '"%s" should start with an uppercase.'
+                            % m.group('name')),
+                        line=line_no
+                    )  # TODO: add column
                 current_association = Association(
                         name=m.group('name'),
                         model=self.classModel,
@@ -667,8 +744,29 @@ class UseSource(ModelSourceFile):
                         qualifiers = \
                             [tuple(q.split(':'))
                              for q in m.group('qualifiers').replace(' ','').split(',')]
+                    role_name=m.group('name')
+                    if role_name is None or role_name=='':
+                        # Create an issue although the parser
+                        # will use the name of the class by default
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Warning,
+                            message=(
+                                'The name of the role is not defined.'),
+                            line=line_no
+                        )  # TODO: add column
+                    elif not Symbol.is_camlCase(role_name):
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Warning,
+                            message=(
+                                '"%s" should start with a lowercase.'
+                                % role_name),
+                            line=line_no
+                        )  # TODO: add column
+
                     Role(
-                        name=m.group('name'), # could be empty, but will get default
+                        name=m.group('name'), # could be None, but will get default
                         association=current_association,
                         type=m.group('type'),
                         cardMin=min,
@@ -684,28 +782,10 @@ class UseSource(ModelSourceFile):
                     )
                     continue
 
-            # ---- class context and may be invariant name ----------------------------------------------
-            # Could be a model invariant
-            #   context
-            # rcontext=(
-            #     r' *(?P<context>context)'
-            #     r' +((?P<vars>[\w ,]+) *:)?'
-            #     r' *(?P<classname>\w+)'
-            #     r' *(::(?P<signature>\w+\([\w, \(\):]*\)))?'
-            # )
-            # rcond=(
-            #     r' *(?P<existential>existential)?'
-            #     r' *(?P<cond>pre|post|inv)'
-            #     r' *(?P<name>\w+)?'
-            #     r' *:'
-            #     r'(?P<expr>.*)'
-            # )
-            # z='^(%s)?(%s)? *$' % (rcontext,rcond)
             rcontext=(
                 r' *(?P<context>context)'
                 r' +((?P<vars>[\w ,]+) *:)?'
                 r' *(?P<classname>\w+)'
-                # r' *(::(?P<signature>\w+\([\w, \(\):]*\)))?'
                 r' *(::(?P<signature>\w+\([\w, \(\):]*\) *(:([\w ,\(\):]+))?))?'
             )
             rcond=(

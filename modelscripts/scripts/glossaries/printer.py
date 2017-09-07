@@ -2,7 +2,7 @@
 from __future__ import unicode_literals, print_function, absolute_import, division
 from typing import Text, Union, Optional, Dict, List
 
-from modelscripts.sources.printers import (
+from modelscripts.base.printers import (
     AbstractPrinter
 )
 

@@ -6,8 +6,8 @@ import collections
 from typing import Dict, Text
 
 from modelscripts.metamodels.permissions import Subject
-from modelscripts.sources.models import Model
-from modelscripts.sources.sources import SourceElement
+from modelscripts.base.models import Model
+from modelscripts.base.sources import SourceElement
 
 
 class UsecaseModel(Model):

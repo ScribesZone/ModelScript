@@ -89,7 +89,7 @@ class ModelPrinter(AbstractPrinter):
         self.theModel=theModel
 
     def _issues(self):
-        self.out(str(self.theModel.issues))
+        self.out(str(self.theModel.issueBox))
 
 # Not used
 class SourcePrinter(AbstractPrinter):
@@ -106,12 +106,55 @@ class SourcePrinter(AbstractPrinter):
         )
         self.theSource=theSource
 
-    # def _do(self):
-    #     self.output=''
-    #     Model
-    #
     def _issues(self):
-        self.out(str(self.theSource.allIssues))
+        self.out(str(self.theSource.fullIssueBox))
 
 
 
+class AnnotatedSourcePrinter(SourcePrinter):
+
+    def __init__(self,
+                 theSource):
+        #type: ('Source') -> None
+
+        assert theSource is not None
+        super(AnnotatedSourcePrinter, self).__init__(
+            theSource=theSource,
+            summary=False,
+            displayLineNos=False,
+        )
+
+    def do(self):
+        self.output=''
+        self._issuesSummary(self.theSource.fullIssueBox)
+        unlocalized_issues=self.theSource.fullIssueBox.at(0)
+        self._unlocalizedIssues(unlocalized_issues)
+
+        for (index, line) in enumerate(self.theSource.sourceLines):
+            line_no=index+1
+            self._line(line_no, line)
+            # x=localized_issues=self.theSource.fullIssueBox
+            localized_issues=self.theSource.fullIssueBox.at(line_no)
+            # print('****=== %i %s' % (line_no, str(localized_issues)))
+            if localized_issues:
+                self._localizedIssues(localized_issues)
+        return self.output
+
+    def _line(self, line_no, line):
+        self.outLine(line)
+
+    def _issuesSummary(self, issueBox):
+        self.outLine(issueBox.summary())
+
+
+    def _unlocalizedIssues(self, issues, pattern='{level}: {message}'):
+        for i in issues:
+            self.outLine(
+                i.str(pattern=pattern,
+                    linesBefore=0))
+
+    def _localizedIssues(self, issues, pattern='{level}: {message}'):
+        for i in issues:
+            self.outLine(
+                i.str(pattern=pattern,
+                    linesBefore=0))

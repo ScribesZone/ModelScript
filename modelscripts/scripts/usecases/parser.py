@@ -4,10 +4,10 @@ from typing import Text
 import os
 import re
 
-from modelscripts.sources.sources import (
+from modelscripts.base.sources import (
     ModelSourceFile,
 )
-from modelscripts.sources.issues import (
+from modelscripts.base.issues import (
     Issue,
     Level,
 )
@@ -177,6 +177,6 @@ class UsecaseModelSource(ModelSourceFile):
             p=Printer(self.usecaseModel, displayLineNos=True)
             print(p.do())
         else:
-            print('%s error(s) in the usecase model' % len(self.issues))
-            for e in self.issues:
+            print('%s error(s) in the usecase model' % len(self.issueBox))
+            for e in self.issueBox:
                 print(e)

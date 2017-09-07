@@ -10,8 +10,8 @@ from abc import ABCMeta, abstractproperty
 from typing import Text, List, Optional
 import fragments
 import abc
-from modelscripts.sources.issues import (
-    IssueList,
+from modelscripts.base.issues import (
+    IssueBox,
     Issue,
     Levels,
     WithIssueList,
@@ -30,26 +30,7 @@ class SourceElement(object):
         self.docComment = docComment
         self.eolComment = eolComment
 
-class DocCommentLines(object):
-    def __init__(self):
-        self.lines = []
 
-    def add(self, line):
-        #type: (Text) -> None
-        assert line is not None
-        self.lines.append(line)
-
-    def consume(self):
-        #type: () -> Optional[List[Text]]
-        if len(self.lines)==[]:
-            return None
-        else:
-            _ = self.lines
-            self.lines=[]
-            return _
-
-    def clean(self):
-        self.lines=[]
 
 class SourceFile(WithIssueList):
     """
@@ -61,7 +42,18 @@ class SourceFile(WithIssueList):
     def __init__(self,
                  fileName,
                  realFileName=None,
-                 preErrorMessages=()):
+                 preErrorMessages=(),
+                 doReadFileLines=True):
+        """
+        Create a source.
+        Args:
+            fileName:
+            realFileName:
+            preErrorMessages:
+            doReadFileLines:
+                If True the file is read directly.
+                Otherwise the method doReadFile must be called!
+        """
         #type: (Text, Optional[Text]) -> None
 
         assert fileName is not None
@@ -90,30 +82,45 @@ class SourceFile(WithIssueList):
                 )
             return
 
-        # print('******************',self.realFileName)
         if not os.path.isfile(self.realFileName):
             Issue(
                 origin=self,
                 level=Levels.Fatal,
                 message='File not found: %s' % self.fileName)
-        self.sourceLines=self._doReadFileLines()
-        #type: List[Text]
+
+        self.sourceLines = None  #type: Optional[List[Text]]
+        # Filled by doReadFileLines
+        # The caller must call doReadFileLines explictely
+        # if not doReadFileLines
+        if doReadFileLines:
+            self.doReadFileLines()
 
 
 
-    #
-    # def getFileToParse(self):
-    #     return self.fileName
-
-    def _doReadFileLines(self):
+    def doReadFileLines(self):
         #type: (Text)->List(Text)
         """
-        Read a file as a list of line.  """
-        with io.open(self.realFileName, 'rU', encoding='utf8') as f:
-            lines = list(
-                line.rstrip() for line in f.readlines())
-        f.close()
-        return lines
+        Read a file as a list of line and file self.sourceLines
+        """
+        if not os.path.isfile(self.realFileName):
+            Issue(
+                origin=self,
+                level=Levels.Fatal,
+                message=('Cannot find file "%s"' %
+                         self.realFileName)
+            )
+        try:
+            with io.open(self.realFileName, 'rU', encoding='utf8') as f:
+                lines = list(
+                    line.rstrip() for line in f.readlines())
+            self.sourceLines = lines
+        except IOError:
+            Issue(
+                origin=self,
+                level=Levels.Fatal,
+                message=('Cannot read file "%s"' %
+                         self.realFileName)
+            )
 
     @property
     def name(self):
@@ -199,15 +206,18 @@ class ModelSourceFile(SourceFile):
         )
 
     @property
-    def allIssues(self):
-        #type: () -> IssueList
+    def fullIssueBox(self):
+        #type: () -> IssueBox
         """
         All issues including model issues if present
         """
         if self.model is not None:
-            return self.model.issues
+            # the sources issues are already in the model isses
+            # print('********** fullIssueBox for model -> %s ' % self.model.issueBox.parent)
+            return self.model.issueBox
         else:
-            return self.issues
+            # print('********** fullIssueBox no model ' )
+            return self.issueBox
 
     @abstractproperty
     def model(self):
@@ -223,3 +233,28 @@ class ModelSourceFile(SourceFile):
     def usedModels(self):
         return self.usedModelByKind.values()
 
+#=============================================================================
+#   Parsing
+#=============================================================================
+
+
+class DocCommentLines(object):
+    def __init__(self):
+        self.lines = []
+
+    def add(self, line):
+        #type: (Text) -> None
+        assert line is not None
+        self.lines.append(line)
+
+    def consume(self):
+        #type: () -> Optional[List[Text]]
+        if len(self.lines)==[]:
+            return None
+        else:
+            _ = self.lines
+            self.lines=[]
+            return _
+
+    def clean(self):
+        self.lines=[]
