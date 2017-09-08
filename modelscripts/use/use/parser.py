@@ -496,7 +496,7 @@ class UseSource(ModelSourceFile):
                     superclasses = ()
                 else:
                     superclasses = [c.strip() for c in m.group('superclasses').split(',')]
-                if True: #not Symbol.is_CamlCase(m.group('name')):
+                if not Symbol.is_CamlCase(m.group('name')):
                     LocalizedIssue(
                         sourceFile=self,
                         level=Levels.Warning,

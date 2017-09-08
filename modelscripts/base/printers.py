@@ -64,8 +64,11 @@ class AbstractPrinter(object):
     def do(self):
         pass
 
-    def display(self):
-        print(self.do())
+    def display(self, withLastEOL=True):
+        text=self.do()
+        if not withLastEOL and text.endswith('\n'):
+            text=text[:-1]
+        print(text, end='')
 
 # class ErrorsPrinter(object):
 #     __metaclass__ = ABCMeta
@@ -80,7 +83,7 @@ class ModelPrinter(AbstractPrinter):
     def __init__(self,
                  theModel,
                  summary=False,
-                 displayLineNos=True):
+                 displayLineNos=False):
         assert theModel is not None
         super(ModelPrinter, self).__init__(
             summary=summary,
@@ -98,7 +101,7 @@ class SourcePrinter(AbstractPrinter):
     def __init__(self,
                  theSource,
                  summary=False,
-                 displayLineNos=True):
+                 displayLineNos=False):
         assert theSource is not None
         super(SourcePrinter, self).__init__(
             summary=summary,
@@ -132,10 +135,9 @@ class AnnotatedSourcePrinter(SourcePrinter):
 
         for (index, line) in enumerate(self.theSource.sourceLines):
             line_no=index+1
+            # self.out(str(line_no))
             self._line(line_no, line)
-            # x=localized_issues=self.theSource.fullIssueBox
             localized_issues=self.theSource.fullIssueBox.at(line_no)
-            # print('****=== %i %s' % (line_no, str(localized_issues)))
             if localized_issues:
                 self._localizedIssues(localized_issues)
         return self.output
@@ -144,8 +146,9 @@ class AnnotatedSourcePrinter(SourcePrinter):
         self.outLine(line)
 
     def _issuesSummary(self, issueBox):
-        self.outLine(issueBox.summary())
-
+        s=issueBox.summaryLine
+        if s!='':
+            self.outLine(issueBox.summaryLine)
 
     def _unlocalizedIssues(self, issues, pattern='{level}: {message}'):
         for i in issues:

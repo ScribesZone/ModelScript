@@ -200,8 +200,8 @@ class GlossaryModelSource(ModelSourceFile):
         """
 
         if self.isValid:
-            from  modelscripts.scripts.glossaries.printer import Printer
-            p=Printer(
+            from  modelscripts.scripts.glossaries.printer import GlossaryPrinter
+            p=GlossaryPrinter(
                 glossaryModel=self.glossaryModel,
                 displayLineNos=True)
             print(p.do())

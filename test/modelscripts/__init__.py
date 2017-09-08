@@ -1,7 +1,7 @@
 # coding=utf-8
 import os
 import glob
-from typing import Text, Union, List
+from typing import Text, Union, List, Dict
 
 TEST_CASES_DIRECTORY = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'testcases')
@@ -61,8 +61,33 @@ def getTestDir(relativeDir, exist=True):
     return d
 
 
+#----------- testing issues ------------------------------
 
 
+from modelscripts.base.issues import (
+    IssueBox,
+    Level,
+    Levels,
+)
+
+F=Levels.Fatal
+E=Levels.Error
+W=Levels.Warning
+I=Levels.Info
+H=Levels.Hint
+
+def assertIssueBox(issueBox, expected=None):
+    #type: (IssueBox, Dict[Level, int]) -> None
+    if expected is not None:
+        actual=issueBox.summaryMap
+        for level in expected:
+            assert actual[level] == expected[level], (
+                '%i %s found. %i expected' % (
+                    actual[level],
+                    level.label,
+                    expected[level]
+                )
+            )
 
 
 

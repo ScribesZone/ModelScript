@@ -1,0 +1,5 @@
+model M
+class A end
+association R1 between
+  A [1..0]
+end

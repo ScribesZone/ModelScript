@@ -20,16 +20,16 @@ from modelscripts.metamodels.texts import (
 
 
 
-class Printer(AbstractPrinter):
+class GlossaryPrinter(AbstractPrinter):
 
     def __init__(self, glossaryModel, displayLineNos=True):
         #type: (GlossaryModel, bool) -> None
-        super(Printer,self).__init__(
+        super(GlossaryPrinter, self).__init__(
             displayLineNos=displayLineNos)
         self.glossaryModel=glossaryModel
 
     def do(self):
-        super(Printer,self).do()
+        super(GlossaryPrinter, self).do()
         self.doGlossaryModel(self.glossaryModel)
         return self.output
 

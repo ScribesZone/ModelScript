@@ -24,9 +24,15 @@ import modelscripts.use.engine
 from modelscripts.scripts.glossaries.parser import (
     GlossaryModelSource
 )
+from modelscripts.scripts.glossaries.printer import (
+    GlossaryPrinter
+)
+
 from modelscripts.scripts.classes.parser import (
     ClassModelSource
 )
+import modelscripts.scripts.classes.printer
+
 from modelscripts.scripts.usecases.parser import (
     UsecaseModelSource
 )
@@ -85,9 +91,8 @@ class MegaModelCLI(object):
             GlossaryModelSource(fs[0])
         )
         # Is this test useful??? if self.glossaryModelSource is not None:
-        self.glossaryModelSource.printStatus()
-        if not self.glossaryModelSource.isValid:
-            print('ERROR: model file is invalid')
+        GlossaryPrinter(self.glossaryModelSource).display()
+
 
     def processClassModelSource(self):
         fs=withExtension(self.filenames,'.use')
@@ -102,10 +107,13 @@ class MegaModelCLI(object):
             self.classModelSource=(
                 ClassModelSource(fs[0])
             )
-            # Is this test useful???   if self.classModelSource is not None:
-            self.classModelSource.printStatus()
-            if not self.classModelSource.isValid:
-                print('ERROR: model file is invalid')
+            modelscripts.scripts.classes.printer.SourcePrinter(
+                theSource=self.classModelSource
+            ).display()
+            # # Is this test useful???   if self.classModelSource is not None:
+            #
+            # if not self.classModelSource.isValid:
+            #     print('ERROR: model file is invalid')
 
     def processUsecaseModelSource(self):
         fs=withExtension(self.filenames,'.ucm')

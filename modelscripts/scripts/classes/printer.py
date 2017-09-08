@@ -3,11 +3,28 @@ from __future__ import unicode_literals, print_function, absolute_import, divisi
 from typing import Text, Union, Optional, Dict, List
 
 from modelscripts.use.use.printer import (
-    UsePrinter
+    UseSourcePrinter,
+    UseModelPrinter
 )
 
 
 
-class Printer(UsePrinter):
-    def __init__(self, classModel):
-        super(Printer, self).__init__(model=classModel)
+class ModelPrinter(UseModelPrinter):
+    def __init__(self,
+                 theModel,
+                 summary=False,
+                 displayLineNos=True):
+        super(ModelPrinter, self).__init__(
+            theModel=theModel,
+            summary=summary,
+            displayLineNos=displayLineNos)
+
+class SourcePrinter(UseSourcePrinter):
+    def __init__(self,
+                 theSource,
+                 summary=False,
+                 displayLineNos=True):
+        super(UseSourcePrinter, self).__init__(
+            theSource=theSource,
+            summary=summary,
+            displayLineNos=displayLineNos)

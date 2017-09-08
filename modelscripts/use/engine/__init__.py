@@ -99,10 +99,12 @@ class USEEngine(object):
             # FIXME os.remove(filename)
             return _
 
-        if not os.path.isfile(useSource):
-            raise IOError('File %s not found' % useSource)
-        if not os.path.isfile(soilFile):
-            raise IOError('File %s not found' % soilFile)
+        # The tool will produce some errors if files
+        # do not exist.
+        # if not os.path.isfile(useSource):
+        #     raise IOError('File %s not found' % useSource)
+        # if not os.path.isfile(soilFile):
+        #     raise IOError('File %s not found' % soilFile)
 
         if errWithOut:
             #-- one unique output file for output and errors

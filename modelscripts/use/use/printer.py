@@ -8,7 +8,8 @@ This is currently only a preliminary version.
 #TODO: to be continued
 
 __all__ = [
-    'UsePrinter'
+    'UseModelPrinter',
+    'UseSourcePrinter',
 ]
 
 import logging

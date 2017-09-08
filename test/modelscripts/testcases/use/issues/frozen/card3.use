@@ -1,0 +1,6 @@
+model M
+class A end
+association R1 between
+  A [*] role x
+  A [*]
+end

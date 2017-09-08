@@ -1,0 +1,2 @@
+model M
+enum x {a, a}

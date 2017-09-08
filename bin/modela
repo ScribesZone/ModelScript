@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+from __future__ import print_function
+
+"""
+This script can be called either 
+- from a shell, with the filename to annotate as a parameter
+- from gedit external tool interface, with the file name as env variables.
+It first remove the annotations from the file given, then process
+the file.
+"""
+# use sys.prefix to check which python is used
+import os
+import sys
+thisDir = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(thisDir,'..'))
+virtual_env=os.path.expanduser('~/DEV/ScribesVirtualEnvs/WebAppScribes')
+activate_file=os.path.join(
+    virtual_env, "bin/activate_this.py")
+execfile(activate_file, dict(__file__=activate_file))
+
+class Environment(object):
+
+    def __init__(self):
+        self.who=None
+
+    def _getGEditFileName(self):
+        name=(os.environ['GEDIT_CURRENT_DOCUMENT_NAME'])
+        dir=(os.environ['GEDIT_CURRENT_DOCUMENT_DIR'])
+        return os.path.join(dir, name)
+
+    def _getParameterFileName(self):
+        if len(sys.argv)==2:
+            return sys.argv[1]
+        else:
+            raise ValueError('No argument')
+
+    def getFileName(self):
+        try:
+            self.who='gedit'
+            return self._getGEditFileName()
+        except:
+            try:
+                self.who='shell'
+                return self._getParameterFileName()
+            except:
+                raise ValueError('No file given as parameter')
+
+from modelscripts.base.printers import (
+    AnnotatedSourcePrinter
+)
+from modelscripts.use.use.parser import (
+    UseSource
+)
+
+from modelscripts.base.annotations import (
+    Annotations
+)
+env=Environment()
+filename=env.getFileName()
+filtered_filename=Annotations.filterFile(filename)
+file_to_parse=(
+    filtered_filename if filtered_filename is not None
+    else  filename)
+use_source=UseSource(file_to_parse)
+AnnotatedSourcePrinter(use_source).display(
+    withLastEOL=False if env.who=='gedit' else True
+)
+sys.stderr.write(use_source.fullIssueBox.str())
+
