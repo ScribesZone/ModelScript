@@ -43,15 +43,27 @@ class SourceFile(WithIssueList):
                  fileName,
                  realFileName=None,
                  preErrorMessages=(),
-                 doReadFileLines=True):
+                 postponeFileRead=False):
         """
-        Create a source.
+        Create a source by parsing a given file. It is possible
+        to have a 'logical' file that is what the user see, and
+        actually parse a 'real' file that is what the parser see.
+        This could be useful for instance if one want to parse
+        a annotated source generated from the source.
+
         Args:
             fileName:
+                The logical name of the file.
+                This is not necessarily the file parsed.
             realFileName:
+                The real file to be read. If the reading
+                has to be postponed, then the parameter
+                should be set to None. The doRealFileRead()
+                will set this parameter
             preErrorMessages:
-            doReadFileLines:
-                If True the file is read directly.
+                The errors in this list will be added.
+            postponeFileRead:
+                If False the file is read directly.
                 Otherwise the method doReadFile must be called!
         """
         #type: (Text, Optional[Text]) -> None
@@ -65,8 +77,10 @@ class SourceFile(WithIssueList):
         """ The filename as given when creating the source file"""
 
         self.realFileName=(
-            fileName if realFileName is None
-            else realFileName)
+            None if postponeFileRead  # filled later
+            else (
+                fileName if realFileName is None
+                else realFileName))
         """ 
         The name of the actual file name that is parsed.
         This is almost never used so don't use it unless
@@ -82,45 +96,77 @@ class SourceFile(WithIssueList):
                 )
             return
 
-        if not os.path.isfile(self.realFileName):
-            Issue(
-                origin=self,
-                level=Levels.Fatal,
-                message='File not found: %s' % self.fileName)
+        self.sourceLines=None  #type: Optional[List[Text]]
+        """
+        The source lines of the 'logical' file.
+        It will be the same as realSourceLines 
+        if not isBasedInHiddenFile. 
+        Filled by doReadFile
+        The caller must call doReadFile explictely
+        if postponeFileRead.
+        """
 
-        self.sourceLines = None  #type: Optional[List[Text]]
-        # Filled by doReadFileLines
-        # The caller must call doReadFileLines explictely
-        # if not doReadFileLines
-        if doReadFileLines:
-            self.doReadFileLines()
+        self.realSourceLines=None  #type: Optional[List[Text]]
+        """
+        The source lines of the 'real' file.
+        It will be the same as sourceLines 
+        if not isBasedInHiddenFile.  
+        Filled by doReadFile
+        The caller must call doReadFile explictely
+        if postponeFileRead.
+        """
+
+        if not postponeFileRead:
+            self.doReadFile(self.realFileName)
 
 
+    @property
+    def isBasedInHiddenFile(self):
+        #type: () -> Optional[bool]
+        """
+        None before doReadFile if postponed.
+        Otherwise indicated if the real file is the same
+        is different from the logical one.
+        """
+        return (
+            None if self.realFileName is None  #if before
+            else self.realFileName != self.fileName
+        )
 
-    def doReadFileLines(self):
+    def doReadFile(self, realFileToRead):
         #type: (Text)->List(Text)
         """
         Read a file as a list of line and file self.sourceLines
         """
-        if not os.path.isfile(self.realFileName):
-            Issue(
-                origin=self,
-                level=Levels.Fatal,
-                message=('Cannot find file "%s"' %
-                         self.realFileName)
-            )
-        try:
-            with io.open(self.realFileName, 'rU', encoding='utf8') as f:
-                lines = list(
-                    line.rstrip() for line in f.readlines())
-            self.sourceLines = lines
-        except IOError:
-            Issue(
-                origin=self,
-                level=Levels.Fatal,
-                message=('Cannot read file "%s"' %
-                         self.realFileName)
-            )
+        def _read_lines(file):
+            try:
+                with io.open(file,
+                             'rU',
+                             encoding='utf8') as f:
+                    lines = list(
+                        line.rstrip() for line in f.readlines())
+                return lines
+            except:
+                Issue(
+                    origin=self,
+                    level=Levels.Fatal,
+                    message=('Cannot read file "%s"' %
+                             file)
+                )
+
+
+        self.realFileName=realFileToRead
+
+        # read the actual file
+        self.realSourceLines= _read_lines(self.realFileName)
+
+        if self.fileName==self.realFileName:
+            self.sourceLines=self.realSourceLines
+        else:
+            # read the 'logical' source file
+            self.sourceLines=_read_lines(self.fileName)
+        return
+
 
     @property
     def name(self):
@@ -197,12 +243,14 @@ class ModelSourceFile(SourceFile):
     def __init__(self,
                  fileName,
                  realFileName=None,
-                 preErrorMessages=()):
+                 preErrorMessages=(),
+                 postponeFileRead=False):
         #type: (Text, Optional[Text]) -> None
         super(ModelSourceFile, self).__init__(
             fileName=fileName,
             realFileName=realFileName,
-            preErrorMessages=preErrorMessages
+            preErrorMessages=preErrorMessages,
+            postponeFileRead=postponeFileRead
         )
 
     @property

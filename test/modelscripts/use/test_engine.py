@@ -41,8 +41,9 @@ def test_USEEngine_analyzeUSEModel():
 def test_USEEngine_executeSoilFile():
     usefile = os.path.join(TEST_CASES_DIRECTORY,
                         'soil', 'employee','main.use')
-    for sf in ['Demo0.soil','Demo01.soil', 'Demo1.soil', 'Demo2.soil', 'Demo3.soil',
-               'Demo6.soil', 'Demo7.soil']:
+    for sf in [
+        'Demo0.soil','Demo01.soil', 'Demo1.soil',
+        'Demo2.soil', 'Demo3.soil', 'Demo6.soil']:
         soilfile = os.path.join(TEST_CASES_DIRECTORY,
                             'soil', 'employee',sf)
 

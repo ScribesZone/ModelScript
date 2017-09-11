@@ -14,6 +14,9 @@ from test.modelscripts import (
 
 import os
 import modelscripts.use.use.parser
+from modelscripts.scripts.scenarios.printer import (
+    ScenarioSourcePrinter
+)
 import modelscripts.scripts.objects.plantuml
 import modelscripts.diagrams.plantuml.engine
 import modelscripts.use.sex.parser
@@ -53,7 +56,7 @@ def check_isValid(class_model, soil_file_name, puml_engine):
     #--- parser: .soil -> scenario -------------------
     soil_source = modelscripts.use.sex.parser.SoilSource(soilFileName=soil_file_name, classModel=class_model)
     if not soil_source.isValid:
-        soil_source.printStatus()
+        ScenarioSourcePrinter(soil_source).display()
     assert soil_source.isValid
     scn = soil_source.scenario
 

@@ -49,7 +49,7 @@ from typing import Text, Optional, Union, List
 # DEBUG=3
 DEBUG=0
 
-from abc import ABCMeta, abstractproperty, abstractmethod
+from abc import ABCMeta
 
 from modelscripts.use.engine import USEEngine
 
@@ -63,12 +63,10 @@ from modelscripts.base.issues import (
     Issue,
     LocalizedIssue,
     Levels,
+    Level,
     FatalError,
 )
 
-from modelscripts.scripts.scenarios.printer import (
-    ScenarioModelPrinter,
-)
 
 from modelscripts.metamodels.classes import (
     ClassModel,
@@ -134,29 +132,36 @@ class _PolymorphicSource(ModelSourceFile):
     def __init__(self,
                  evaluateScenario,
                  soilFileName,
-                 sexFileName,
                  classModel,
                  usecaseModel=None,
                  permissionModel=None,
+                 allowedFeatures=(
+                         'delete',
+                         'query',
+                         'usecase',
+                         'context',
+                         'createSyntax',
+                         'topLevelBlock'),
+                 modelHeader='detailed scenario model',
                  parsePrefix='^',
                  preIssueMessages=()):
-        #type: (bool,Text, Optional[Text], ClassModel, Optional[UsecaseModel], Optional[PermissionModel], Text, List[Text]) -> None
+        #type: (bool,Text, ClassModel, Optional[UsecaseModel], Optional[PermissionModel], Text, List[Text]) -> None
         """
-        Create a soil/sex source from the given file.
+        Initialize the soil/sex sources attributes
+        but DO NOT parse the file for now. The doParse() method
+        is called explictely in the concrete subclasses.
         See subclasses
 
         Args:
             evaluateScenario:
-                If true, the scenario is executed with USE
-                and it will have an scenarioEvaluation associated.
+                If true, the scenario has been executed
+                WITH USE
+            and it will have an scenarioEvaluation associated.
             soilFileName:
-                The name of the soil file. If evaluateScenario the
-                sex file generated (generated previously) will
-                be parsed.
-            sexFileName:
-                The name of the sex file to be parsed actually instead
-                of the soilFile. Set only if evaluateScenario. Otherwise
-                sexFileName will be none
+                The name of the soil file.
+                If evaluateScenario the sex file generated
+                (generated previously) will be parsed instead of
+                soilFileName.
             classModel:
                 The class model used to resolve Classes, Associations, etc.
                 This model is required as it makes not sense to parse the
@@ -168,48 +173,49 @@ class _PolymorphicSource(ModelSourceFile):
                 Can be used without evaluateScenario.
             permissionModel:
                 In case of evaluateScenario used to check accesses.
+            allowedFeatures:
+                'delete'
+                'query'
+                'usecase'
+                'context'
+                'createSyntax'
             parsePrefix:
                 See subclasses. Prefix is necessary for parsing sex file.
                 Only used if evaluateScenario.
             preIssueMessages:
                 If not [] these errors with be added to the list of
-                error and nothing else will happen (no file reading)
+                error and nothing else will happen.
 
         """
-        self.evaluateScenario=evaluateScenario #type: bool
-        self.soilFileName=soilFileName #type: Text
-        self.sexFileName=sexFileName #type: Optional[Text]
-        self.classModel=classModel #type:ClassModel
-        self.usecaseModel=usecaseModel #type:Optional[UsecaseModel]
-        self.permissionModel=permissionModel #type:Optional[PermissionModel]
+        # call the super class but without reading file
+        # for the moment. The method doReadFileLines()
+        # will be called explicitely
+        super(_PolymorphicSource, self).__init__(
+            fileName=soilFileName,
+            realFileName=None,  # will be set later
+            # realFileName is ignored if None
+            preErrorMessages=preIssueMessages,
+            postponeFileRead=True)
+
+        self.evaluateScenario=evaluateScenario  #type: bool
+
+        self.soilFileName=soilFileName  #type: Text
+        self.classModel=classModel  #type:ClassModel
+        self.usecaseModel=usecaseModel  #type:Optional[UsecaseModel]
+        self.permissionModel=permissionModel  #type:Optional[PermissionModel]
         self._parsePrefix=parsePrefix
+        self.modelHeader=modelHeader
+        self.allowedFeatures=allowedFeatures
 
-        try:
-            super(_PolymorphicSource, self).__init__(
-                fileName=soilFileName,
-                realFileName=sexFileName,
-                preErrorMessages=preIssueMessages)  #realFileName is ignore if None
+        # create an empty scenario populated by _parse
+        self.scenario = ScenarioModel(  # type:ScenarioModel
+            source=self,
+            classModel=self.classModel,
+            name=None,
+            usecaseModel=self.usecaseModel,
+            permissionModel=self.permissionModel,
+            file=self.soilFileName)
 
-            #--- create a scenario to contain the result -----------
-            self.scenario = ScenarioModel( #type:ScenarioModel
-                source=self,
-                classModel=classModel,
-                name=None,
-                usecaseModel=usecaseModel,
-                permissionModel=permissionModel,
-                file=self.soilFileName)
-
-            if self.isValid:
-                self._parse(self._parsePrefix)
-                if self.evaluateScenario:
-                    ScenarioEvaluation.evaluate(self.scenario)
-            else:
-                self.scenario=None
-        except FatalError:
-            self.scenario = None
-            # Error has already been already registered
-            # so nothing else to do here.
-            pass
 
     @property
     def model(self):
@@ -226,9 +232,33 @@ class _PolymorphicSource(ModelSourceFile):
             _['pm'] = self.permissionModel
         return _
 
+    def doParse(self, realFileName):
+        """
+        This method is called after the constructor because
+        the reading of the file must be deferred in the case
+        of sex file
+
+        """
+        try:
+            self.doReadFile(realFileName)
+            self._parse(self._parsePrefix)
+
+            if self.isValid:
+                self._parse(self._parsePrefix)
+                if self.evaluateScenario:
+                    ScenarioEvaluation.evaluate(self.scenario)
+            else:
+                self.scenario=None
+        except FatalError:
+            self.scenario = None
+            # The fatal error has already been already registered
+            # so nothing else to do here.
+            pass
+
 
 
     def _parse(self, prefix):
+        #type: (Text) -> None
 
         class _S(object):
             """
@@ -249,9 +279,32 @@ class _PolymorphicSource(ModelSourceFile):
 
             context_block = None
             # type: Optional[ContextBlock]
-            #: can be nested in other blocks
+            #: can be nested in other blocks (in practice in should not as one cannot find the order of execution based on blocks)
 
-        def _getBlock():
+        def _check_allowed(
+                feature,
+                entitiesMsg=None,
+                level=Levels.Error,
+                extra='', instead=None):
+            # type: (Text, Text, Level, Text, Text) -> bool
+            is_allowed = feature in self.allowedFeatures
+            if not is_allowed:
+                if instead is not None:
+                    m = instead
+                else:
+                    m = '%s are not allowed in %ss. %s.' % (
+                        entitiesMsg,
+                        self.modelHeader,
+                        extra)
+                LocalizedIssue(
+                    sourceFile=self,
+                    level=level,
+                    message=m,
+                    line=_S.line_no
+                )
+            return is_allowed
+
+        def _get_block():
             """
             Create a toplevel block if necessary (None)
             otherwise reuse the existing one.
@@ -268,6 +321,20 @@ class _PolymorphicSource(ModelSourceFile):
                     )
                 return _S.main_block
 
+        def _has_error_next():
+            if not self.evaluateScenario:
+                return False
+            if _S.sex_line_no >= len(self.realSourceLines):
+                return False
+            else:
+                nextline=self.realSourceLines[_S.sex_line_no]
+                return _is_error_line(nextline)
+
+        def _is_error_line(line):
+            # print(line)
+            m1=re.match('^\|\|\|\|\| *<[^>]>.*', line)
+            m2=re.match('^\|\|\|\|\| *:?(Error|ERROR|Warning|WARNING)',line)
+            return m1 is not None or m2 is not None
 
         begin = prefix + r' *'
         end = ' *$'
@@ -288,7 +355,7 @@ class _PolymorphicSource(ModelSourceFile):
         in_block_comment = False
         current_eol_comment=None
 
-        for (line_index, line) in enumerate(self.sourceLines):
+        for (line_index, line) in enumerate(self.realSourceLines):
 
             _S.original_line = line
             line = line.replace('\t',' ')
@@ -307,6 +374,13 @@ class _PolymorphicSource(ModelSourceFile):
                     pass
             else:
                 _S.line_no = line_index + 1
+
+            # skip the line if there is a (USE) error on the next
+            # line. This avoid reporting error twice. One time for
+            # this parser (first) and then another while discovering
+            # the USE error on the next line.
+            if _has_error_next():
+                continue
 
             if DEBUG>=2:
                 if self.evaluateScenario: #'sex':
@@ -365,6 +439,7 @@ class _PolymorphicSource(ModelSourceFile):
             # Line comment --
             #--------------------------------------------------
 
+            # TODO: check comment processing appiled in use parser
             # Full line comment
             r = prefix+' *--(?P<comment> *([^@].*)?)'+end
             m = re.match(r, line)
@@ -375,6 +450,10 @@ class _PolymorphicSource(ModelSourceFile):
 
             # Everything that follow is not part of a full line comment
             last_doc_comment.clean()
+
+            #--------------------------------------------------
+            # Line comment --
+            #--------------------------------------------------
 
             # End of line (EOL comment)
             r = r'^(?P<content>.*?)--(?P<comment> *([^@].*)?)$'
@@ -387,8 +466,8 @@ class _PolymorphicSource(ModelSourceFile):
                 line=m.group('content')
             else:
                 current_eol_comment = None
-
-
+            # Don't stop the loop, the rest of the line has to
+            # be processed.
 
 
             #--------------------------------------------------
@@ -397,16 +476,21 @@ class _PolymorphicSource(ModelSourceFile):
             r = begin+'(?P<kind>\?\??) *(?P<expr>.*)'+end
             m = re.match(r, line)
             if m:
+                _check_allowed(
+                        feature='query',
+                        entitiesMsg='Queries',
+                        level=Levels.Fatal)
                 query=Query(
-                    block=_getBlock(),
+                    block=_get_block(),
                     expression=m.group('expr'),
                     verbose=m.group('kind')=='??',
                     lineNo=_S.line_no,
                 )
                 if self.evaluateScenario:
-                    current_query_evaluation = _USEImplementedQueryEvaluation(
-                        blockEvaluation=None,
-                        op=query)
+                    current_query_evaluation = (
+                        _USEImplementedQueryEvaluation(
+                            blockEvaluation=None,
+                            op=query))
                 continue
 
 
@@ -422,22 +506,29 @@ class _PolymorphicSource(ModelSourceFile):
                 r = begin+'-- *@scenario( +model?) +(?P<name>\w+)'+end
                 m = re.match(r, line)
                 if m:
+                    if (len(self.scenario.originalOrderBlocks)>=1
+                        or len(self.scenario.actorInstanceNamed)>=1):
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Warning,
+                            message='Scenario declaration must be at the top of the file.',
+                            line=_S.line_no
+                        )
                     if self.scenario.name is not None:
                         LocalizedIssue(
                             sourceFile=self,
                             level=Levels.Warning,
-                            message='redefinition of scenario name',
+                            message=(
+                                'The scenario has been already named "%s".' %
+                                self.scenario.name),
                             line=_S.line_no
                         )
-                        continue
 
                     self.scenario.name=m.group('name')
-                    self.scenario.lineNo=_S.line_no,
-
-
-                    # TODO: raise an warning if block already there
-                    # check the exisitng list pf block
+                    self.scenario.lineNo=_S.line_no
                     continue
+
+                #TODO: add here the possibility to have object model
 
                 # -------------------------------------------------
                 # @actorinstance <actor> : <instance>
@@ -449,11 +540,18 @@ class _PolymorphicSource(ModelSourceFile):
                      +end)
                 m = re.match(r, line)
                 if m:
+                    if not _check_allowed(
+                        feature='usecase',
+                        entitiesMsg='Actor instance definitions',
+                        level=Levels.Error,
+                        extra='Ignored'):
+                        continue
+
                     if self.usecaseModel is None:
                         LocalizedIssue(
                             sourceFile=self,
                             level=Levels.Warning,
-                            message='no use case model provided. Directive ignored',
+                            message='No usecase model provided. Directive ignored',
                             line=_S.line_no
                         )
                         continue
@@ -475,7 +573,7 @@ class _PolymorphicSource(ModelSourceFile):
                         LocalizedIssue(
                             sourceFile=self,
                             level=Levels.Error,
-                            message='actor "%s" does not exist' % aname,
+                            message='Actor "%s" does not exist. Directive ignored.' % aname,
                             line=_S.line_no
                         )
                         continue
@@ -497,9 +595,20 @@ class _PolymorphicSource(ModelSourceFile):
                 r = prefix+'-- *@context'+end
                 m = re.match(r, line)
                 if m:
+
+                    if not _check_allowed(
+                        feature='context',
+                        entitiesMsg='Context blocks',
+                        level=Levels.Error,
+                        extra='Ignored'):
+                        continue
+
                     if _S.main_block is not None:
 
-                        # TODO: this limitation could be removed
+                        # TODO: this limitation could be removed. But this
+                        # requires some analysis.The problem seems to be
+                        # that the order of block could is not enough to
+                        # know the order of statement.
                         LocalizedIssue(
                             sourceFile=self,
                             level=Levels.Fatal,
@@ -521,60 +630,90 @@ class _PolymorphicSource(ModelSourceFile):
                 r = prefix+'-- *@endcontext'+end
                 m = re.match(r, line)
                 if m:
+                    if not _check_allowed(
+                        feature='context',
+                        entitiesMsg='Context blocks',
+                        level=Levels.Error,
+                        extra='Ignored'):
+                        continue
                     if _S.context_block is None:
                         LocalizedIssue(
                             sourceFile=self,
-                            level=Levels.Fatal,
-                            message='No context opened',
+                            level=Levels.Error,
+                            message='No context opened. Directive ignored.',
                             line=_S.line_no
                         )
                         continue
                     _S.context_block=None
                     continue
 
-                #---- -- @uci
+                #--------------------------------------------------
+                # @uci <actori> <usecase>
+                #--------------------------------------------------
                 r = (prefix
                      +r'-- *@uci'
                      +r' +(?P<name>\w+)'
-                     # +r' *(: *(?P<actor>\w+))?'  # TODO: add online definition
+                     # TODO: add online definition of actor instance
+                     # +r' *(: *(?P<actor>\w+))?'
                      +r' *(?P<usecase>\w+)'
                      +end)
                 m = re.match(r, line)
                 if m:
+                    if not _check_allowed(
+                        feature='usecase',
+                        entitiesMsg='Actor instance definitions',
+                        level=Levels.Error,
+                        extra='Ignored'):
+                        continue
                     if self.usecaseModel is None:
-                        print('Warning at line %i: no use case model provided. Directive ignored' % (
-                            _S.line_no,
-                        ) )
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Warning,
+                            message=
+                                'No use case model provided. Directive ignored.',
+                            line=_S.line_no
+                        )
                         continue
                     if _S.context_block is not None:
-                        raise ValueError(
-                            'Error at line %i: context is open' % (
-                                _S.line_no,
-                            ))
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Error,
+                            message='Context block is not closed. Assume it is',
+                            line=_S.line_no
+                        )
+                        _S.context_block = None
                     ainame=m.group('name')
                     if ainame not in self.scenario.actorInstanceNamed:
-                        raise ValueError(
-                            'Error at line %i: actori "%s" is not defined' % (
-                                _S.line_no,
-                                ainame,
-                            ))
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Fatal,
+                            message=( 'Actor instance "%s" is not defined.'
+                                      % ainame ),
+                            line=_S.line_no
+                        )
                     ai=self.scenario.actorInstanceNamed[ainame] #type: ActorInstance
                     a=ai.actor #type: Actor
                     ucname=m.group('usecase')
                     if ucname not in self.scenario.usecaseModel.system.usecaseNamed:
-                        raise ValueError(
-                            'Error at line %i: usecase "%s" is not defined' % (
-                                _S.line_no,
-                                ucname,
-                            ))
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Fatal,
+                            message=( 'Usecase "%s" is not defined.'
+                                      % ucname ),
+                            line=_S.line_no
+                        )
                     uc=self.scenario.usecaseModel.system.usecaseNamed[ucname] #type: Usecase
                     if uc not in a.usecases:
-                        raise ValueError(
-                            'Error at line %i: actor %s cannot perform usecase %s' % (
-                                _S.line_no,
-                                a.name,
-                                uc.name,
-                            ))
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Error,
+                            message=(
+                                'Actor %s cannot "%s"' % (
+                                    a.name,
+                                    uc.name,
+                                )),
+                            line=_S.line_no
+                        )
                     _S.main_block=UsecaseInstanceBlock(
                         scenario=self.scenario,
                         actorInstance=ai,
@@ -583,38 +722,65 @@ class _PolymorphicSource(ModelSourceFile):
                     )
                     continue
 
-                #---- -- @enduci
+                #--------------------------------------------------
+                #-- @enduci
+                #--------------------------------------------------
+
                 r = (prefix
                      +r'-- *@enduci'
                      +end)
                 m = re.match(r, line)
                 if m:
+                    if not _check_allowed(
+                        feature='usecase',
+                        entitiesMsg='Usecase instances',
+                        level=Levels.Error,
+                        extra='Ignored'):
+                        continue
                     if self.usecaseModel is None:
-                        print('Warning at line %i: no use case model provided. Directive ignored' % (
-                            _S.line_no,
-                        ) )
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Warning,
+                            message=
+                                'No use case model provided. Directive ignored.',
+                            line=_S.line_no
+                        )
                         continue
                     if not isinstance(_S.main_block, UsecaseInstanceBlock):
-                        raise ValueError(
-                            'Error at line %i: no opened usecase instance' % (
-                                _S.line_no,
-                            ))
+                        LocalizedIssue(
+                            sourceFile=self,
+                            level=Levels.Error,
+                            message='No opened usecase instance. Directive ignored.',
+                            line=_S.line_no
+                        )
                     _S.main_block=None
                     continue
 
 
+                #--------------------------------------------------
+                #-- @something ...
+                #--------------------------------------------------
 
-                #--- unrecognized directive ----------------------------------------
-                r = (begin+'-- *@.*'+end)
+                r = (begin+'-- *@(?P<name>[\w]*).*'+end)
                 m = re.match(r, line)
                 if m:
-                    print('Warning at line %i: directive not recognized: %s' % (
-                        _S.line_no,
-                        _S.original_line
-                    ))
+                    directive=(
+                        '' if m.group('name') is None
+                        else m.group('name'))
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Warning,
+                        message=(
+                            'Directive "%s" not recognized. Ignored.'
+                            % directive),
+                        line=_S.line_no
+                    )
                     continue
 
-                #---- comments -------------------------------------------------
+                #--------------------------------------------------
+                #---- comments ------------------------------------
+                #--------------------------------------------------
+
                 r = prefix+'--.*'+end
                 m = re.match(r, line)
                 if m:
@@ -622,24 +788,41 @@ class _PolymorphicSource(ModelSourceFile):
 
 
 
-            # -------------------------------------------------
+            #==================================================
             # ! operations
-            # -------------------------------------------------
+            #==================================================
 
             if re.match(begin + r'!', line):
 
-                #--- object creation (create x : C) ---------------------
-                r = begin+r'! *create +(?P<name>\w+) *: *(?P<className>\w+)'+end
+                #--------------------------------------------------
+                #--- object creation (old syntax)
+                #--- create x : C)
+                #--------------------------------------------------
+
+                r = (
+                    begin+r'! *'
+                    +r'create +(?P<name>\w+)'
+                    +r' *: *(?P<className>\w+)'
+                    +end)
                 m = re.match(r, line)
                 if m:
                     variable=m.group('name')
                     classname=m.group('className')
+                    _check_allowed(
+                        feature='createSyntax',
+                        instead=
+                            'Deprecated syntax.'
+                            + ' Use "%s := new %s" instead.' % (
+                                variable,
+                                classname
+                        ),
+                        level=Levels.Warning)
                     id=None
                     if DEBUG:
                         print('%s := new %s' % (variable,classname))
 
                     ObjectCreation(
-                        block=_getBlock(),
+                        block=_get_block(),
                         variableName=variable,
                         class_=self.classModel.classNamed[classname],
                         id=id,
@@ -647,9 +830,14 @@ class _PolymorphicSource(ModelSourceFile):
                     )
                     continue
 
-                #--- object creation(x := new C('lila') --------------------
+                #--------------------------------------------------
+                #--- object creation (new syntax)
+                #  x := new C('lila')
+                #--------------------------------------------------
+
                 r = (begin
-                     + r'! *(?P<name>\w+) *:= *new +(?P<className>\w+)'
+                     + r'! *(?P<name>\w+) *:= *'
+                     +r'new +(?P<className>\w+)'
                      + ' *( *\( *(\'(?P<id>\w+)\')? *\))?'
                      + end)
                 m = re.match(r, line)
@@ -661,7 +849,7 @@ class _PolymorphicSource(ModelSourceFile):
                         print('%s := new %s : %s' % (variable,id,classname))
 
                     ObjectCreation(
-                        block=_getBlock(),
+                        block=_get_block(),
                         variableName=variable,
                         class_=self.classModel.classNamed[classname],
                         id=id,
@@ -669,17 +857,15 @@ class _PolymorphicSource(ModelSourceFile):
                     )
                     continue
 
-                #--- attribute assignement ----------------------------------------
+                #--------------------------------------------------
+                #--- attribute assignement
+                #--------------------------------------------------
+
                 r = (begin
                         + r'! *(set )? *(?P<name>\w+) *'
                         + r'\. *(?P<attribute>\w+) *'
                         + r':= *(?P<expr>.*) *'
                         + end )
-                # r2 = (begin
-                #         + r'create +(?P<name>\w+) *'
-                #         + r'\. *(?P<attribute>\w+) *'
-                #         + r':= *(?P<value>.*)'
-                #         + end )
                 m = re.match(r, line)
                 if m:
                     variable=m.group('name')
@@ -689,7 +875,7 @@ class _PolymorphicSource(ModelSourceFile):
                         print ('%s.%s := %s' % (
                             variable, attribute, expression))
                     AttributeAssignment(
-                        block=_getBlock(),
+                        block=_get_block(),
                         variableName=variable,
                         attributeName=attribute,
                         expression=expression,
@@ -697,7 +883,10 @@ class _PolymorphicSource(ModelSourceFile):
                     )
                     continue
 
-                #--- link creation-------------------------------------------------
+                #--------------------------------------------------
+                #--- link creation
+                #--------------------------------------------------
+
                 r = (begin
                      + r'! *insert *\((?P<names>[\w, ]+)\) *'
                      + r'into +'
@@ -708,13 +897,14 @@ class _PolymorphicSource(ModelSourceFile):
                     names = [
                         n.strip()
                         for n in m.group('names').split(',')]
-                    assoc=self.classModel.associationNamed[m.group('associationName')]
+                    assoc=self.classModel.associationNamed[
+                        m.group('associationName')]
                     if DEBUG:
                         print('new (%s) : %s' % (
                             ','.join(names),
                             assoc.name ))
                     LinkCreation(
-                        block=_getBlock(),
+                        block=_get_block(),
                         names=names,
                         association=assoc,
                         id=None,
@@ -722,10 +912,14 @@ class _PolymorphicSource(ModelSourceFile):
                     )
                     continue
 
-                #--- link object creation (form1 ) --------------------------------
-                # ex: create r1 : Rent between (a1,b2)
+                #--------------------------------------------------
+                #--- link object creation (old form)
+                #--- create r1 : Rent between (a1,b2)
+                #--------------------------------------------------
+                # ex:
                 r = (begin
-                     + r'! *create +(?P<name>\w+) *: *(?P<assocClassName>\w+) +'
+                     + r'! *create +(?P<name>\w+) *: *'
+                     +r'(?P<assocClassName>\w+) +'
                      + r'between +\((?P<names>[\w, ]+)\) *'
                      + end )
                 m = re.match(r, line)
@@ -733,14 +927,25 @@ class _PolymorphicSource(ModelSourceFile):
                     assoc_class_name = m.group('assocClassName')
                     name = m.group('name')
                     names = m.group('objectList').replace(' ','').split(',')
-                    ac = self.classModel.associationClassNamed[assoc_class_name]
+                    ac = self.classModel.associationClassNamed[
+                        assoc_class_name]
+                    _check_allowed(
+                        feature='createSyntax',
+                        instead=
+                            ('Deprecated syntax.'
+                            + ' Use "%s := new %s'
+                            +' between (%s)" instead.') % (
+                                name,
+                                assoc_class_name,
+                                ', '.join(names)),
+                        level=Levels.Warning)
                     if DEBUG:
                         print(('new %s between (%s)' % (
                             assoc_class_name,
                             ','.join(names))
                         ))
                     LinkObjectCreation(
-                        block=_getBlock(),
+                        block=_get_block(),
                         variableName=name,
                         names=names,
                         id=None,
@@ -749,8 +954,11 @@ class _PolymorphicSource(ModelSourceFile):
                     )
                     continue
 
-                #--- link object creation (form2 ) --------------------------------
-                # v1 := new Rent('lila') between (r1,a2,v3)
+                #--------------------------------------------------
+                #--- link object creation (new form)
+                #--- v1 := new Rent('lila') between (r1,a2,v3)
+                #--------------------------------------------------
+
                 r = (begin
                      + r'! *(?P<name>\w+) *:='
                      + r' *new +(?P<assocClassName>\w+)'
@@ -771,7 +979,7 @@ class _PolymorphicSource(ModelSourceFile):
                             ','.join(names)
                         )))
                     LinkObjectCreation(
-                        block=_getBlock(),
+                        block=_get_block(),
                         variableName=name,
                         names=names,
                         id=id,
@@ -780,18 +988,33 @@ class _PolymorphicSource(ModelSourceFile):
                     )
                     continue
 
+                #--------------------------------------------------
+                #--- object (or link object) destruction
+                #--------------------------------------------------
 
-                #--- object (or link object) destruction --------------------------
                 r = (begin
                      + r'! *destroy +(?P<name>\w+)'+ end )
                 m = re.match(r, line)
                 if m:
+                    if not _check_allowed(
+                        feature='delete',
+                        entitiesMsg='Object deletions',
+                        level=Levels.Error):
+                        continue
                     name = m.group('name')
                     if DEBUG:
                         print( 'delete object %s' % name )
                     ObjectDestruction(
-                        block=_getBlock(),
+                        block=_get_block(),
                         variableName=name,
+                    )
+                    # TODO implement deletion with ripple effect
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Fatal,
+                        message=(
+                            'Object deletion is not implemented so far.'),
+                        line=_S.line_no
                     )
                     continue
                     # check if this is an regular object or a link object
@@ -801,24 +1024,40 @@ class _PolymorphicSource(ModelSourceFile):
                     #     del self.state.linkObject[name]
                     # continue
 
-                #--- link destruction ---------------------------------------------
+                #--------------------------------------------------
+                #--- link destruction
+                #--------------------------------------------------
+
                 r = (begin
                      + r'! *delete *\((?P<objectList>[\w, ]+)\)'
                      + r' +from +(?P<associationName>\w+)'
                      + end )
                 m = re.match(r, line)
                 if m:
+                    if not _check_allowed(
+                        feature='delete',
+                        entitiesMsg='Link deletions',
+                        level=Levels.Error):
+                        continue
                     object_names = \
                         m.group('objectList').replace(' ', '').split(',')
                     association_name = m.group('associationName')
                     # link_name = '_'.join(object_names)
                     # del self.state.links[link_name]
-                    print( 'delete link from %s between %s' % (
-                        association_name,
-                        object_names
-                    ))
-                    raise NotImplementedError('FIXME: implement link destruction')
-                    # continue
+                    if DEBUG:
+                        print( 'delete link from %s between %s' % (
+                            association_name,
+                            object_names
+                        ))
+                    # TODO implement deletion
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Fatal,
+                        message=(
+                            'Link deletion is not implemented so far.'),
+                        line=_S.line_no
+                    )
+                    continue
 
 
 
@@ -828,8 +1067,6 @@ class _PolymorphicSource(ModelSourceFile):
             #==========================================================
 
             if self.evaluateScenario and line.startswith('|||||:'): # sex
-
-
 
                 #------------------------------------------------------
                 #  Cardinality evaluation
@@ -901,13 +1138,15 @@ class _PolymorphicSource(ModelSourceFile):
                                     checkEvaluation=last_check_evaluation,
                                     role=role,
                                 ))
+                        actual_card = current_cardinality_info['numberOfObjects']  # type: int
+
                         CardinalityViolationObject(
                             cardinalityViolation=card_eval,
                             violatingObject=(
                                 current_cardinality_info['objectName']
                             ),
                             actualCardinality=(
-                                current_cardinality_info['numberOfObjects']
+                                actual_card
                             )
                         )
 
@@ -1047,15 +1286,16 @@ class _PolymorphicSource(ModelSourceFile):
                         current_query_evaluation=None
                         continue
 
-
+            # ------------------------------------------------------
             # ---- check
+            # ------------------------------------------------------
             # WARNING: this rule MUST go after the rules thats starts
             # with 'check' something as this one will take precedence!
             r = begin + 'check *(?P<params>( -[avd])*)' + end
             m = re.match(r, line)
             if m:
                 check = Check(
-                    block=_getBlock(),
+                    block=_get_block(),
                     verbose='v' in m.group('params'),
                     showFaultyObjects='d' in m.group('params'),
                     all='a' in m.group('params'),
@@ -1067,29 +1307,59 @@ class _PolymorphicSource(ModelSourceFile):
                         op=check)
                 continue
 
-            # ---- error type1
-            # WARNING: this rule MUST go after the rules thats starts
-            # with 'check' something as this one will take precedence!
-            r = begin + '<input>(?P<msg>.*)' + end
+            # ------------------------------------------------------
+            # ---- USE error type1
+            # ------------------------------------------------------
+            r = (
+                begin
+                +r'<(?P<filename>[^>]+)>'
+                +r':? *'
+                +r'(line *(?P<line>\d+) *:? *(?P<col>\d+))?'
+                +r' *:?'
+                +r'(?P<msg>.*)'
+                +end)
             m = re.match(r, line)
             if m:
-                print('**** ERROR: "%s"' % m.group('msg'))
+                filename=m.group('filename')
+                assert filename=='input' # As far as we know
+                errline=m.group('line')
+                assert errline is None or errline=='1' # As far as we know
+                errcol=(
+                    int(m.group('col')) if m.group('col') is not None
+                    else None)
+                LocalizedIssue(
+                    sourceFile=self,
+                    level=Levels.Error,
+                    message=m.group('msg'),
+                    line=_S.line_no, # the errline is always1
+                    column=errcol
+                )
                 continue
 
-            # ---- error type1
-            # WARNING: this rule MUST go after the rules thats starts
-            # with 'check' something as this one will take precedence!
-            r = begin + 'Error:(?P<msg>.*)' + end
+            # ------------------------------------------------------
+            # ---- USE error type2
+            # ------------------------------------------------------
+
+            r = begin + 'Error:? *(?P<msg>.*)' + end
             m = re.match(r, line)
             if m:
-                print('**** ERROR: "%s"' % m.group('msg'))
+                LocalizedIssue(
+                    sourceFile=self,
+                    level=Levels.Error,
+                    message=m.group('msg'),
+                    line=_S.line_no
+                )
                 continue
 
-            #---- unknown or unimplemented commands ---------------------------
+            # ------------------------------------------------------
+            #---- Unrecognized line
+            # ------------------------------------------------------
 
-            print('++++'
-                'Error at line #%i: cannot parse this line:\n'
-                   '--> "%s"' % (_S.line_no,_S.original_line)
+            LocalizedIssue(
+                sourceFile=self,
+                level=Levels.Fatal,
+                message=('Cannot parse line #%i.'%_S.line_no),
+                line=_S.line_no
             )
             continue
 
@@ -1112,11 +1382,12 @@ class SoilSource(_PolymorphicSource):
         super(SoilSource, self).__init__(
             evaluateScenario=False,
             soilFileName=soilFileName,
-            sexFileName=None,
             classModel=classModel,
             usecaseModel=usecaseModel,
             parsePrefix='^',
             preIssueMessages=[])
+        self.doParse(soilFileName)
+
 
 
 class SexSource(_PolymorphicSource):
@@ -1129,7 +1400,14 @@ class SexSource(_PolymorphicSource):
             soilFileName,
             classModel,
             usecaseModel=None,
-            permissionModel=None):
+            permissionModel=None,
+            allowedFeatures=(
+                 'delete',
+                 'query',
+                 'usecase',
+                 'context',
+                 'createSyntax',
+                 'topLevelBlock')):
         #type: (Text, ClassModel, Optional[UsecaseModel], Optional[PermissionModel]) -> None
         """
         The process is the following:
@@ -1146,41 +1424,57 @@ class SexSource(_PolymorphicSource):
         All this results with a scenario which
         has an associated scenarioEvaluation.
         """
-        # The classModel must exist ...
-        assert classModel is not None
-        # and it must have to source to be parsed by USE
-        assert classModel.source is not None
-
-        # TODO: it would be possible to parse/evaluate
-        # the scn without .use or to generate a source from
-        # the model. Low priority for now.
-
-        # First execute USE with both the model and the scenario
-        self.useFileName=classModel.source.fileName
-        self.sexFileName=None #type: Optional[Text]
-        # filled (or not) by __generateSex
-        try:
-            e=self.__generateSex(soilFileName, classModel)
-        except FatalError:
-            print('#############################')
-        e=None ########################################"
-        errors=[] if e is None else [e]
 
         super(SexSource, self).__init__(
             evaluateScenario=True,
             soilFileName=soilFileName,
-            sexFileName=self.sexFileName,
             classModel=classModel,
             usecaseModel=usecaseModel,
             permissionModel=permissionModel,
             parsePrefix='^(\d{5}|\|{5}):',
-            preIssueMessages=errors)
+            allowedFeatures=allowedFeatures
+            )
 
-    def __generateSex(self, soilFileName, classModel):
+        # The classModel must exist
+        assert classModel is not None
+
+
+        # The classModel it must have to source to be parsed by USE
+        assert classModel.source is not None
+        # TODO: it would be possible to parse/evaluate
+        # the scn without .use or to generate a source from
+        # the model. Low priority for now.
+
+
+        try:
+            sex_file=self.__generateSexFile(
+                soilFileName,
+                classModel)
+            self.doParse(sex_file)
+
+        except FatalError as e:
+            # The fatal error has already registered
+            pass
+        except Exception as e:
+            # Some uncatched execption. Generate an error.
+            # Not need to create a fatal one as the process
+            # is already stopped.
+            Issue(
+                origin=self,
+                level=Levels.Error,
+                message='Exception: %s' % str(e)
+            )
+            raise
+
+
+
+
+
+
+    def __generateSexFile(self, soilFileName, classModel):
         """
         Execute the UseOCL tool with .use and .soil
-        Can raise FataError. In that case the issue
-
+        Can raise a FatalError.
         """
         if not classModel.isValid:
             raise FatalError(
@@ -1195,9 +1489,11 @@ class SexSource(_PolymorphicSource):
                     level=Levels.Fatal,
                     message='File not found: %s' % soilFileName))
         try:
-            self.sexFileName = USEEngine.executeSoilFileAsSex(
-                useFile=self.useFileName,
+            sex_file=USEEngine.executeSoilFileAsSex(
+                useFile=classModel.source.fileName,
                 soilFile=soilFileName)
+
+            return sex_file
         except Exception as e:
             m='Error during USE execution: %s' % str(e)
             raise FatalError(
