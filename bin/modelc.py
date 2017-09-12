@@ -25,7 +25,7 @@ from modelscripts.scripts.glossaries.parser import (
     GlossaryModelSource
 )
 from modelscripts.scripts.glossaries.printer import (
-    GlossaryPrinter
+    GlossaryModelPrinter
 )
 
 from modelscripts.scripts.classes.parser import (
@@ -91,7 +91,7 @@ class MegaModelCLI(object):
             GlossaryModelSource(fs[0])
         )
         # Is this test useful??? if self.glossaryModelSource is not None:
-        GlossaryPrinter(self.glossaryModelSource).display()
+        GlossaryModelPrinter(self.glossaryModelSource).display()
 
 
     def processClassModelSource(self):
@@ -107,7 +107,7 @@ class MegaModelCLI(object):
             self.classModelSource=(
                 ClassModelSource(fs[0])
             )
-            modelscripts.scripts.classes.printer.SourcePrinter(
+            modelscripts.scripts.classes.printer.ClassSourcePrinter(
                 theSource=self.classModelSource
             ).display()
             # # Is this test useful???   if self.classModelSource is not None:
