@@ -5,31 +5,14 @@
 # TODO: implement error management
 
 from __future__ import absolute_import, division, print_function, unicode_literals
-# from future.utils import python_2_unicode_compatible
-from typing import Text, List, Optional, Union #Set, Dict,
-import os
+
 import re
+
+from typing import Text, List, Optional, Union
 
 from modelscripts.base.sources import (
     ModelSourceFile,
 )
-from modelscripts.base.issues import (
-    Issue,
-    Level,
-)
-
-from modelscripts.scripts.permissions.printer import (
-    Printer
-)
-
-from modelscripts.metamodels.permissions import (
-    UCPermissionModel,
-    FactorizedPermissionRule,
-    Subject,
-    Resource,
-    Action
-)
-
 from modelscripts.metamodels.classes import (
     Entity,
     ClassModel,
@@ -39,13 +22,20 @@ from modelscripts.metamodels.classes import (
     # Attribute,
     # Role,
 )
-
+from modelscripts.metamodels.permissions import (
+    UCPermissionModel,
+    FactorizedPermissionRule,
+    metamodel
+)
+from modelscripts.metamodels.permissions.sar import Subject, Action, Resource
 from modelscripts.metamodels.usecases import (
     UsecaseModel,
     # Actor,
     # Usecase,
 )
-
+from modelscripts.scripts.permissions.printer import (
+    PermissionModelPrinter
+)
 
 DEBUG=4
 
@@ -88,7 +78,7 @@ class PermissionModelSource(ModelSourceFile):
         """
 
         if self.isValid:
-            p=Printer(
+            p=PermissionModelPrinter(
                 permissionModel=self.permissionModel,
                 displayLineNos=True,
             )
@@ -305,3 +295,4 @@ def _resolve_resource(classModel, expr):
     else:
         return None
 
+metamodel.registerSourcePrinter(PermissionModelSource)

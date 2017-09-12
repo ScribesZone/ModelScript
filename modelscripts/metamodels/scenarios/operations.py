@@ -23,14 +23,14 @@ from abc import ABCMeta
 
 from typing import Optional, List, Text
 
+from modelscripts.base.sources import SourceElement
 from modelscripts.metamodels.classes import (
     Class,
     Association,
     AssociationClass,
     Attribute,
 )
-from modelscripts.metamodels.permissions import Subject
-from modelscripts.base.sources import SourceElement
+from modelscripts.metamodels.permissions.sar import Subject
 
 
 #--------------------------------------------------------------

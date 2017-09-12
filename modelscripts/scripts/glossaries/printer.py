@@ -5,31 +5,27 @@ from typing import Text, Union, Optional, Dict, List
 from modelscripts.base.printers import (
     AbstractPrinter
 )
-
 from modelscripts.metamodels.glossaries import (
     GlossaryModel,
-    Domain,
-    Entry,
+    metamodel
 )
 from modelscripts.metamodels.texts import (
-    TextBlock,
-    Line,
-    Token,
     Reference
 )
 
 
+# TODO: separate SourcePrinter and ModelPrinter
+class GlossaryModelPrinter(AbstractPrinter):
 
-class GlossaryPrinter(AbstractPrinter):
-
+    # TODO: adapt signature
     def __init__(self, glossaryModel, displayLineNos=True):
         #type: (GlossaryModel, bool) -> None
-        super(GlossaryPrinter, self).__init__(
+        super(GlossaryModelPrinter, self).__init__(
             displayLineNos=displayLineNos)
         self.glossaryModel=glossaryModel
 
     def do(self):
-        super(GlossaryPrinter, self).do()
+        super(GlossaryModelPrinter, self).do()
         self.doGlossaryModel(self.glossaryModel)
         return self.output
 
@@ -85,3 +81,9 @@ class GlossaryPrinter(AbstractPrinter):
             else:
                 _+=token.string
         self.outLine(_,lineNo=line.lineNo)
+
+#TODO: define GlossaryModelSourcePrinter
+
+
+metamodel.registerModelPrinter(GlossaryModelPrinter)
+#TODO: register GlossaryModelSourcePrinter when ready

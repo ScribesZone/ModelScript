@@ -2,20 +2,19 @@
 
 from abc import ABCMeta
 
+from modelscripts.metamodels.permissions.accesses import (
+    AccessSet
+)
 from modelscripts.metamodels.scenarios.blocks import (
     Block,
     ContextBlock,
     UsecaseInstanceBlock,
     TopLevelBlock
 )
-
 from modelscripts.metamodels.scenarios.evaluations.operations import (
     evaluateOperation,
 )
 
-from modelscripts.metamodels.permissions import (
-    AccessSet
-)
 
 #TODO: checj how to create nested AccessSet so that block can have their own access set
 def evaluateBlock(scenarioEvaluation, block):

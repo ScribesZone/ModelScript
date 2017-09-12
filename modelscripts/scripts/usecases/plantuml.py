@@ -10,6 +10,9 @@ This is currently only a preliminary version.
 import os
 import logging
 
+from modelscripts.metamodels.usecases import metamodel
+
+
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
@@ -17,9 +20,7 @@ def indent(prefix,s):
     return '\n'.join([ prefix+l for l in s.split('\n') ])
 
 
-
-
-class Generator(object):
+class UsecaseDiagramPrinter(object):
     def __init__(self, usecaseModel):
         self.usecaseModel = usecaseModel
         self.output = ''
@@ -61,3 +62,4 @@ class Generator(object):
         self.out('}\n')
         self.out('@enduml\n')
 
+metamodel.registerDiagramPrinter(UsecaseDiagramPrinter)

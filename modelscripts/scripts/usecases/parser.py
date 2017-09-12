@@ -7,19 +7,15 @@ import re
 from modelscripts.base.sources import (
     ModelSourceFile,
 )
-from modelscripts.base.issues import (
-    Issue,
-    Level,
-)
 from modelscripts.scripts.usecases.printer import (
-    Printer
+    UsecaseModelPrinter
 )
-
 from modelscripts.metamodels.usecases import (
     UsecaseModel,
     System,
     Actor,
     Usecase,
+    metamodel
 )
 DEBUG=0
 
@@ -174,9 +170,11 @@ class UsecaseModelSource(ModelSourceFile):
         """
 
         if self.isValid:
-            p=Printer(self.usecaseModel, displayLineNos=True)
+            p=UsecaseModelPrinter(self.usecaseModel, displayLineNos=True)
             print(p.do())
         else:
             print('%s error(s) in the usecase model' % len(self.issueBox))
             for e in self.issueBox:
                 print(e)
+
+metamodel.registerSource(UsecaseModelSource)

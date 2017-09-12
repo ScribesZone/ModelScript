@@ -9,7 +9,9 @@ This is currently only a preliminary version.
 
 import os
 import logging
-
+from modelscripts.metamodels.objects import (
+    metamodel
+)
 
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
@@ -20,7 +22,7 @@ def indent(prefix,s):
 
 
 
-class Generator(object):
+class ObjectDiagramPrinter(object):
     def __init__(self, state):
         self.state = state
         self.output = ''
@@ -76,7 +78,7 @@ class Generator(object):
         )
         if o.slotNamed:
             self.out('object %s {\n' % _header)
-            for (att,val) in o.slotNamed.iteritems():
+            for (att,val) in o.slotNamed.iteritems(): #TODO: check
                 self.out('    %s = %s\n' % (att,val))
             self.out('}\n\n')
         else:
@@ -107,3 +109,5 @@ class Generator(object):
                 r.uid,
                 "" if aname is None else ": "+aname,
             ))
+
+metamodel.registerDiagramPrinter(ObjectDiagramPrinter)

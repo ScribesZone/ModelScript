@@ -5,9 +5,9 @@ import collections
 
 from typing import Dict, Text
 
-from modelscripts.metamodels.permissions import Subject
-from modelscripts.base.models import Model
 from modelscripts.base.sources import SourceElement
+from modelscripts.megamodels import Model, Metamodel
+from modelscripts.metamodels.permissions.sar import Subject
 
 
 class UsecaseModel(Model):
@@ -21,6 +21,10 @@ class UsecaseModel(Model):
     @property
     def actors(self):
         return self.actorNamed.values()
+
+    @property
+    def metamodel(self):
+        return metamodel
 
 
 class System(SourceElement):
@@ -95,3 +99,12 @@ class Usecase(SourceElement, Subject):
         else:
             actor.usecases.append(self)
             self.actors.append(actor)
+
+
+
+metamodel = Metamodel(
+    id='uc',
+    label='usecase',
+    extension='.ucm',
+    modelClass=UsecaseModel
+)

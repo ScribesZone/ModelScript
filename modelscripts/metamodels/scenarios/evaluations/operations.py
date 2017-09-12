@@ -4,8 +4,33 @@ Meta elements for modeling the evaluation of operations
 """
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
+
 from typing import Dict, Text, List, Optional
 
+from modelscripts.metamodels.classes import (
+    Class,
+    Association,
+    AssociationClass,
+    Role,
+    Attribute,
+)
+from modelscripts.metamodels.classes.expressions import (
+    Invariant
+)
+from modelscripts.metamodels.objects import (
+    Object,
+    Link,
+    LinkObject,
+)
+from modelscripts.metamodels.permissions import (
+    CreateAction,
+    # ReadAction,
+    UpdateAction,
+    DeleteAction,
+    # ExecuteAction,
+)
+from modelscripts.metamodels.permissions.accesses import Access
+from modelscripts.metamodels.permissions.sar import Subject
 from modelscripts.metamodels.scenarios.operations import (
     Operation,
     ObjectCreation,
@@ -18,30 +43,7 @@ from modelscripts.metamodels.scenarios.operations import (
     Check,
 )
 
-from modelscripts.metamodels.objects import (
-    Object,
-    Link,
-    LinkObject,
-)
-from modelscripts.metamodels.classes import (
-    Class,
-    Association,
-    AssociationClass,
-    Role,
-    Attribute,
-)
-from modelscripts.metamodels.classes.expressions import (
-    Invariant
-)
-from modelscripts.metamodels.permissions import (
-    Subject,
-    Access,
-    CreateAction,
-    # ReadAction,
-    UpdateAction,
-    DeleteAction,
-    # ExecuteAction,
-)
+
 def evaluateOperation(blockEvaluation, op):
     #type: ('BlockEvaluation', Operation) -> OperationEvaluation
     """

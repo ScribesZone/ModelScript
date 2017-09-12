@@ -18,13 +18,18 @@ import collections
 
 from typing import Optional, Dict, List, Text
 
+from modelscripts.base.sources import (
+    SourceFile,
+    SourceElement
+)
+from modelscripts.megamodels import Model, Metamodel
 from modelscripts.metamodels.classes import (
     ClassModel,
 )
 from modelscripts.metamodels.permissions import (
-    PermissionModel,
-    UCPermissionModel,
-    Subject)
+    UCPermissionModel)
+from modelscripts.metamodels.permissions.gpermission import PermissionModel
+from modelscripts.metamodels.permissions.sar import Subject
 from modelscripts.metamodels.scenarios.blocks import (
     Block,
     MainBlock,
@@ -37,15 +42,6 @@ from modelscripts.metamodels.usecases import (
     Actor,
     UsecaseModel,
 )
-from modelscripts.base.models import Model
-from modelscripts.base.sources import (
-    SourceFile,
-    SourceElement
-)
-
-# from modelscripts.metamodels.scenarios.evaluations import (
-#     ScenarioEvaluation
-# )
 
 DEBUG=3
 
@@ -80,6 +76,10 @@ class ScenarioModel(Model, Subject):
         #--- evaluation
         self.scenarioEvaluation=None  # filled if evaluation exist
         #type: Optional['ScenarioEvaluation']
+
+    @property
+    def metamodel(self):
+        return metamodel
 
     @property
     def logicalOrderBlocks(self):
@@ -117,3 +117,9 @@ class ActorInstance(SourceElement, Subject):
         return [self.actor]
 
 
+metamodel = Metamodel(
+    id='sc',
+    label='scenario',
+    extension='.scm',
+    modelClass=ScenarioModel
+)

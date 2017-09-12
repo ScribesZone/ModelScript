@@ -95,7 +95,7 @@ def check_isValid(testFile, plantUMLengine):
     assert use_file.isValid
     print('\n'*2+'='*80)
     print('Generating '+puml_file_path)
-    out = modelscripts.scripts.classes.plantuml.Generator(use_file.classModel)
+    out = modelscripts.scripts.classes.plantuml.ClassDiagramPrinter(use_file.classModel)
     print(out.do(outputFile=puml_file_path))
     print('\n'*2+'.'*80)
     plantUMLengine.generate(puml_file_path)

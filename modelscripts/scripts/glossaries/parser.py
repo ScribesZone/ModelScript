@@ -1,29 +1,22 @@
 # coding=utf-8
 from __future__ import unicode_literals, print_function, absolute_import, division
 from typing import Text, Union, Optional, Dict, List
-import os
-import io
 import re
 
 from modelscripts.base.sources import (
     ModelSourceFile,
-)
-from modelscripts.base.issues import (
-    Issue,
-    Level,
 )
 
 from modelscripts.metamodels.glossaries import (
     GlossaryModel,
     Domain,
     Entry,
+    metamodel,
 )
 from modelscripts.metamodels.texts import (
     TextBlock,
-    Line,
 )
 from modelscripts.scripts.texts.parser import TextSourceFragment
-
 
 DEBUG=0
 
@@ -200,8 +193,8 @@ class GlossaryModelSource(ModelSourceFile):
         """
 
         if self.isValid:
-            from  modelscripts.scripts.glossaries.printer import GlossaryPrinter
-            p=GlossaryPrinter(
+            from  modelscripts.scripts.glossaries.printer import GlossaryModelPrinter
+            p=GlossaryModelPrinter(
                 glossaryModel=self.glossaryModel,
                 displayLineNos=True)
             print(p.do())
@@ -209,3 +202,5 @@ class GlossaryModelSource(ModelSourceFile):
             print('%s error(s) in the glossary model' % len(self.issueBox))
             for e in self.issueBox:
                 print(e)
+
+metamodel.registerSource(GlossaryModelSource)

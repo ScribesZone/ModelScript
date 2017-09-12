@@ -18,7 +18,7 @@ from modelscripts.metamodels.texts import (
     Reference,
 
 )
-from modelscripts.base.models import Model
+from modelscripts.megamodels import Model, Metamodel
 from modelscripts.base.sources import SourceElement
 
 
@@ -32,6 +32,10 @@ class GlossaryModel(Model):
         )
         self.domainNamed=collections.OrderedDict()
         # type: Dict[Text, Domain]
+
+    @property
+    def metamodel(self):
+        return metamodel
 
     def findEntry(self, term):
         #type: (Text) -> Optional[Entry]
@@ -103,3 +107,10 @@ class Entry(SourceElement):
 
         self.references=[]
         #type: List[Reference]
+
+metamodel = Metamodel(
+    id='gl',
+    label='glossary',
+    extension='.glm',
+    modelClass=GlossaryModel
+)

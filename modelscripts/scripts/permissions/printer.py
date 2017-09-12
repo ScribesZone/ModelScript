@@ -1,29 +1,28 @@
 # coding=utf-8
 from __future__ import unicode_literals, print_function, absolute_import, division
+
 from typing import Text, List
 
 from modelscripts.base.printers import (
     AbstractPrinter
 )
-
 from modelscripts.metamodels.permissions import (
     UCPermissionModel,
-    Action,
+    metamodel
 )
+from modelscripts.metamodels.permissions.sar import Action
 
 
-
-
-class Printer(AbstractPrinter):
+class PermissionModelPrinter(AbstractPrinter):  # TODO: check implementation
 
     def __init__(self, permissionModel, displayLineNos=True):
         #type: (UCPermissionModel, bool) -> None
-        super(Printer,self).__init__(
+        super(PermissionModelPrinter, self).__init__(
             displayLineNos=displayLineNos)
         self.permissionModel=permissionModel
 
     def do(self):
-        super(Printer,self).do()
+        super(PermissionModelPrinter, self).do()
         self._permissionModel(self.permissionModel)
         return self.output
 
@@ -81,3 +80,5 @@ def actionNames(actions):
         [ name if names in names else ""
           for name in 'CRUDX']
     )
+
+metamodel.registerModelPrinter(PermissionModelPrinter)

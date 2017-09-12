@@ -112,6 +112,9 @@ from modelscripts.metamodels.scenarios.evaluations.operations import (
 from modelscripts.metamodels.permissions import (
     PermissionModel
 )
+from modelscripts.scripts.megamodels.parser import (
+    matchImportExpr
+)
 
 __all__ = (
     'SoilSource',
@@ -132,7 +135,7 @@ class _PolymorphicSource(ModelSourceFile):
     def __init__(self,
                  evaluateScenario,
                  soilFileName,
-                 classModel,
+                 classModel=None,
                  usecaseModel=None,
                  permissionModel=None,
                  allowedFeatures=(
@@ -164,15 +167,18 @@ class _PolymorphicSource(ModelSourceFile):
                 soilFileName.
             classModel:
                 The class model used to resolve Classes, Associations, etc.
-                This model is required as it makes not sense to parse the
-                soil file without the use file.
+                If not provided the source may contains some errors.
+                This is checked dynamically and a Fatal error will be
+                raised. If not provided to the constructor
+                an import can set the class model source.
             usecaseModel:
-                A use case model is necessary only if
-                there are directives for actor instance
-                and usecase instance.
-                Can be used without evaluateScenario.
+                A use case model is necessary only if there are
+                directives for actor instance and usecase instance.
+                If not provided warning will be generated.
+                Usecase Model can be used without evaluateScenario.
             permissionModel:
                 In case of evaluateScenario used to check accesses.
+                No permission will be checked at all if not provided.
             allowedFeatures:
                 'delete'
                 'query'
@@ -187,6 +193,8 @@ class _PolymorphicSource(ModelSourceFile):
                 error and nothing else will happen.
 
         """
+
+
         # call the super class but without reading file
         # for the moment. The method doReadFileLines()
         # will be called explicitely
@@ -200,9 +208,9 @@ class _PolymorphicSource(ModelSourceFile):
         self.evaluateScenario=evaluateScenario  #type: bool
 
         self.soilFileName=soilFileName  #type: Text
-        self.classModel=classModel  #type:ClassModel
-        self.usecaseModel=usecaseModel  #type:Optional[UsecaseModel]
-        self.permissionModel=permissionModel  #type:Optional[PermissionModel]
+        self.classModel=classModel  #type: Optional[ClassModel]
+        self.usecaseModel=usecaseModel  #type: Optional[UsecaseModel]
+        self.permissionModel=permissionModel #type: Optional[PermissionModel]
         self._parsePrefix=parsePrefix
         self.modelHeader=modelHeader
         self.allowedFeatures=allowedFeatures
@@ -210,10 +218,10 @@ class _PolymorphicSource(ModelSourceFile):
         # create an empty scenario populated by _parse
         self.scenario = ScenarioModel(  # type:ScenarioModel
             source=self,
-            classModel=self.classModel,
+            classModel=self.classModel,  # this can change later with import
             name=None,
-            usecaseModel=self.usecaseModel,
-            permissionModel=self.permissionModel,
+            usecaseModel=self.usecaseModel, # this can change later
+            permissionModel=self.permissionModel, # this can change later
             file=self.soilFileName)
 
 
@@ -330,6 +338,17 @@ class _PolymorphicSource(ModelSourceFile):
                 nextline=self.realSourceLines[_S.sex_line_no]
                 return _is_error_line(nextline)
 
+        def _reqClassModel():
+            """ Check that the model is available"""
+            if self.classModel is None:
+                LocalizedIssue(
+                    sourceFile=self,
+                    level=Levels.Fatal,
+                    message='No class model imported.',
+                    line=_S.line_no)
+            else:
+                return self.classModel
+
         def _is_error_line(line):
             # print(line)
             m1=re.match('^\|\|\|\|\| *<[^>]>.*', line)
@@ -338,8 +357,6 @@ class _PolymorphicSource(ModelSourceFile):
 
         begin = prefix + r' *'
         end = ' *$'
-
-
 
         if DEBUG>=1:
             print('\nParsing %s with %s usecase model\n' % (
@@ -454,7 +471,7 @@ class _PolymorphicSource(ModelSourceFile):
             #--------------------------------------------------
             # Line comment --
             #--------------------------------------------------
-
+            # TODO: check comment processing appiled in use parser
             # End of line (EOL comment)
             r = r'^(?P<content>.*?)--(?P<comment> *([^@].*)?)$'
             m = re.match(r, line)
@@ -529,6 +546,18 @@ class _PolymorphicSource(ModelSourceFile):
                     continue
 
                 #TODO: add here the possibility to have object model
+
+
+
+
+                # -------------------------------------------------
+                # @import ...
+                # -------------------------------------------------
+                m=matchImportExpr(line, prefixRegexp=begin+' *-- *@')
+                if m is not None:
+                    raise NotImplementedError('import to be implemented')
+                    continue
+
 
                 # -------------------------------------------------
                 # @actorinstance <actor> : <instance>
@@ -824,7 +853,7 @@ class _PolymorphicSource(ModelSourceFile):
                     ObjectCreation(
                         block=_get_block(),
                         variableName=variable,
-                        class_=self.classModel.classNamed[classname],
+                        class_=_reqClassModel().classNamed[classname],
                         id=id,
                         lineNo=_S.line_no
                     )
@@ -851,7 +880,7 @@ class _PolymorphicSource(ModelSourceFile):
                     ObjectCreation(
                         block=_get_block(),
                         variableName=variable,
-                        class_=self.classModel.classNamed[classname],
+                        class_=_reqClassModel().classNamed[classname],
                         id=id,
                         lineNo=_S.line_no
                     )
@@ -897,7 +926,7 @@ class _PolymorphicSource(ModelSourceFile):
                     names = [
                         n.strip()
                         for n in m.group('names').split(',')]
-                    assoc=self.classModel.associationNamed[
+                    assoc=_reqClassModel().associationNamed[
                         m.group('associationName')]
                     if DEBUG:
                         print('new (%s) : %s' % (
@@ -927,7 +956,7 @@ class _PolymorphicSource(ModelSourceFile):
                     assoc_class_name = m.group('assocClassName')
                     name = m.group('name')
                     names = m.group('objectList').replace(' ','').split(',')
-                    ac = self.classModel.associationClassNamed[
+                    ac = _reqClassModel().associationClassNamed[
                         assoc_class_name]
                     _check_allowed(
                         feature='createSyntax',
@@ -971,7 +1000,7 @@ class _PolymorphicSource(ModelSourceFile):
                     name = m.group('name')
                     id = m.group('id')
                     names = m.group('objectList').replace(' ','').split(',')
-                    ac = self.classModel.associationClassNamed[assoc_class_name]
+                    ac = _reqClassModel().associationClassNamed[assoc_class_name]
                     if DEBUG:
                         print(("new %s('%s') between (%s)" % (
                             assoc_class_name,
@@ -1126,7 +1155,7 @@ class _PolymorphicSource(ModelSourceFile):
                         +end)
                     m = re.match(r, line)
                     if m:
-                        role=self.classModel.findRole(
+                        role=_reqClassModel().findRole(
                             current_cardinality_info['associationName'],
                             m.group('role'))
                         if role in last_check_evaluation.cardinalityEvaluations:
@@ -1183,7 +1212,7 @@ class _PolymorphicSource(ModelSourceFile):
                     +end)
                 m = re.match(r, line)
                 if m:
-                    invariant=self.classModel.findInvariant(
+                    invariant=_reqClassModel().findInvariant(
                         classOrAssociationClassName=m.group('context'),
                         invariantName=m.group('invname')
                     )

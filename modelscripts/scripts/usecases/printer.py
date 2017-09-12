@@ -1,6 +1,5 @@
 # coding=utf-8
 from __future__ import unicode_literals, print_function, absolute_import, division
-from typing import Text, Union, Optional, Dict, List
 
 from modelscripts.base.printers import (
     AbstractPrinter
@@ -8,23 +7,21 @@ from modelscripts.base.printers import (
 
 from modelscripts.metamodels.usecases import (
     UsecaseModel,
-    Actor,
-    System,
-    Usecase
+    metamodel
 )
 
 
 
-class Printer(AbstractPrinter):
+class UsecaseModelPrinter(AbstractPrinter):  # check
 
     def __init__(self, usecaseModel, displayLineNos=True):
         #type: (UsecaseModel, bool) -> None
-        super(Printer,self).__init__(
+        super(UsecaseModelPrinter, self).__init__(
             displayLineNos=displayLineNos)
         self.usecaseModel=usecaseModel
 
     def do(self):
-        super(Printer,self).do()
+        super(UsecaseModelPrinter, self).do()
         self._usecaseModel(self.usecaseModel)
         return self.output
 
@@ -76,6 +73,8 @@ class Printer(AbstractPrinter):
                 self.outLine('')
         self.outLine('')
 
+# TODO: implement UsecaseSourcePrinter
 
-
+metamodel.registerModelPrinter(UsecaseModelPrinter)
+# TODO: register UsecaseSourcePrinter
 

@@ -6,20 +6,21 @@ from modelscripts.use.use.printer import (
     UseSourcePrinter,
     UseModelPrinter
 )
+from modelscripts.metamodels.classes import metamodel
 
 
 
-class ModelPrinter(UseModelPrinter):
+class ClassModelPrinter(UseModelPrinter):
     def __init__(self,
                  theModel,
                  summary=False,
                  displayLineNos=True):
-        super(ModelPrinter, self).__init__(
+        super(ClassModelPrinter, self).__init__(
             theModel=theModel,
             summary=summary,
             displayLineNos=displayLineNos)
 
-class SourcePrinter(UseSourcePrinter):
+class ClassSourcePrinter(UseSourcePrinter):
     def __init__(self,
                  theSource,
                  summary=False,
@@ -28,3 +29,7 @@ class SourcePrinter(UseSourcePrinter):
             theSource=theSource,
             summary=summary,
             displayLineNos=displayLineNos)
+
+metamodel.registerModelPrinter(ClassModelPrinter)
+metamodel.registerSourcePrinter(ClassSourcePrinter)
+

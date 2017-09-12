@@ -15,7 +15,8 @@ from modelscripts.base.printers import (
 from modelscripts.metamodels.scenarios import (
     ScenarioModel,
     operations,
-    blocks
+    blocks,
+    metamodel
 )
 from modelscripts.metamodels.scenarios.evaluations import (
     ScenarioEvaluation,
@@ -423,3 +424,5 @@ class ScenarioSourcePrinter(SourcePrinter):
             self._issues()
         return self.output
 
+metamodel.registerSourcePrinter(ScenarioSourcePrinter)
+metamodel.registerModelPrinter(ScenarioModelPrinter)

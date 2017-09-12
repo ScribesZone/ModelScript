@@ -9,7 +9,7 @@ This is currently only a preliminary version.
 
 import os
 import logging
-
+from modelscripts.metamodels.classes import metamodel
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
@@ -20,7 +20,7 @@ def indent(prefix,s):
 
 
 
-class Generator(object):
+class ClassDiagramPrinter(object):
     def __init__(self, classModel):
         self.classModel = classModel
         self.output = ''
@@ -229,3 +229,4 @@ class Generator(object):
     #     self.eolComment(condition)
     #     self.out(indent(prefix_rest,condition.expression)+'\n')
 
+metamodel.registerDiagramPrinter(ClassDiagramPrinter)

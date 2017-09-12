@@ -58,7 +58,7 @@ def check_isValid(filename, puml_engine):
     )
     print('\n'*2+'='*80)
     print('Generating '+puml_file_path)
-    gen = modelscripts.scripts.usecases.plantuml.Generator(ucm)
+    gen = modelscripts.scripts.usecases.plantuml.UsecaseDiagramPrinter(ucm)
     print(gen.do(outputFile=puml_file_path))
     print('\n'*2+'.'*80)
 

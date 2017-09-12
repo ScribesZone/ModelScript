@@ -44,9 +44,10 @@ from modelscripts.metamodels.scenarios.evaluations.blocks import (
 from modelscripts.metamodels.scenarios.evaluations.operations import (
     OperationEvaluation,
 )
-from modelscripts.metamodels.permissions import (
-    PermissionSet,
-    AccessSet,
+from modelscripts.metamodels.permissions.gpermission import PermissionSet
+
+from modelscripts.metamodels.permissions.accesses import (
+    AccessSet
 )
 
 

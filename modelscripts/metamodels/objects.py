@@ -24,7 +24,7 @@ from typing import List, Optional, Dict
 from modelscripts.metamodels.classes import (
     Attribute,
 )
-from modelscripts.base.models import Model
+from modelscripts.megamodels import Model, Metamodel
 
 
 class ObjectModel(Model):
@@ -41,6 +41,10 @@ class ObjectModel(Model):
 
         self.linkObjects = []
         # type: List[LinkObject]
+
+    @property
+    def metamodel(self):
+        return metamodel
 
     def status(self):
         return (
@@ -115,7 +119,7 @@ class Object(StateElement):
         # type: Dict[str,Attribute]
 
     def delete(self):
-        raise NotImplementedError
+        raise NotImplementedError('Delete operation on objects is not implemented')
 
 
 
@@ -152,4 +156,11 @@ class LinkObject(Object, Link):
         state.linkObjects.append(self)
 
     def delete(self):
-        raise NotImplementedError
+        raise NotImplementedError('Delete operation on link object is not implemented')
+
+metamodel = Metamodel(
+    id='ob',
+    label='object',
+    extension='.obm',
+    modelClass=ObjectModel
+)

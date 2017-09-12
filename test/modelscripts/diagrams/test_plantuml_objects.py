@@ -75,7 +75,7 @@ def check_isValid(class_model, soil_file_name, puml_engine):
     )
     print('\n'*2+'='*80)
     print('Generating '+puml_file_path)
-    gen = modelscripts.scripts.objects.plantuml.Generator(state)
+    gen = modelscripts.scripts.objects.plantuml.ObjectDiagramPrinter(state)
     print( gen.do(outputFile=puml_file_path))
     print('\n'*2+'.'*80)
 

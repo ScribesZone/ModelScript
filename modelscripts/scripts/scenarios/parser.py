@@ -3,7 +3,9 @@
 from __future__ import unicode_literals, print_function, absolute_import, division
 
 from typing import Text, Optional
-
+from modelscripts.metamodels.scenarios import (
+    metamodel
+)
 from modelscripts.metamodels.classes import (
     ClassModel
 )
@@ -37,3 +39,5 @@ class ScenarioEvaluationModelSource(SexSource):
             classModel=classModel,
             usecaseModel=usecaseModel,
             permissionModel=permissionModel)
+
+metamodel.registerSource(ScenarioEvaluationModelSource)

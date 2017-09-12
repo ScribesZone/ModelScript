@@ -40,12 +40,12 @@ import logging
 
 from typing import Text, Optional, Union, Any, List, Dict
 
-from modelscripts.metamodels.permissions import Resource
-from modelscripts.base.models import Model
 from modelscripts.base.sources import (
     SourceElement,
     SourceFile
 )
+from modelscripts.megamodels import Model, Metamodel
+from modelscripts.metamodels.permissions.sar import Resource
 
 #TODO: make associationclass class and assoc + property
 # currently the implem is based on separated list for assocclass
@@ -110,6 +110,9 @@ class ClassModel(Model):
         self._conditions = [] #type: List['Condition']
 
 
+    @property
+    def metamodel(self):
+        return metamodel
 
     @property
     def label(self):
@@ -671,13 +674,12 @@ class AssociationClass(Class, Association):
         del self.model.associationNamed[name]
         self.model.associationClassNamed[name] = self
 
-
-
-
-
-
-
-
+metamodel = Metamodel(
+    id='cl',
+    label='class',
+    extension='.clm',
+    modelClass=ClassModel
+)
 
 # http://pythex.org
 # TODO

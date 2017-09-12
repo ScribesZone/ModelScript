@@ -4,14 +4,15 @@ Metamodel elements for block of operations.
 Part of the Scenario metamodel.
 """
 
-from typing import Union, Optional, Dict, List, Text
-from abc import ABCMeta, abstractmethod
-from modelscripts.base.sources import SourceElement
+from abc import ABCMeta
 
+from typing import Optional, List
+
+from modelscripts.base.sources import SourceElement
+from modelscripts.metamodels.permissions.sar import Subject
 from modelscripts.metamodels.scenarios.operations import (
     Operation,
 )
-from modelscripts.metamodels.permissions import Subject, AccessSet
 
 
 class Block(SourceElement, Subject):
