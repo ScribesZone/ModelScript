@@ -10,13 +10,13 @@ from test.modelscripts import getUseFile
 
 import os
 
-from modelscripts.base.printers import (
+from modelscribes.base.printers import (
     AnnotatedSourcePrinter
 )
-from modelscripts.use.use.parser import (
+from modelscribes.use.use.parser import (
     UseSource
 )
-from modelscripts.use.use.printer import (
+from modelscribes.use.use.printer import (
     UseSourcePrinter
 )
 

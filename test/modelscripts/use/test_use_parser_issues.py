@@ -7,10 +7,10 @@ log = logging.getLogger('test.'+__name__)
 
 
 import os
-from modelscripts.use.use.parser import (
+from modelscribes.use.use.parser import (
     UseSource
 )
-from modelscripts.use.use.printer import (
+from modelscribes.use.use.printer import (
     UseSourcePrinter
 )
 
@@ -70,12 +70,12 @@ def testNoFile():
     assert use_source.hasIssues
     assert not use_source.isValid
 
-import modelscripts.use.engine
+import modelscribes.use.engine
 
 def testBrokenUSEEngine():
-    tmp_USE_OCL_COMMAND = modelscripts.use.engine.USE_OCL_COMMAND
+    tmp_USE_OCL_COMMAND = modelscribes.use.engine.USE_OCL_COMMAND
     try:
-        modelscripts.use.engine.USE_OCL_COMMAND = 'useabc'
+        modelscribes.use.engine.USE_OCL_COMMAND = 'useabc'
         an_existing_file=getTestFile('use/issues/frozen/card1.use')
 
         use_source = UseSource(an_existing_file)
@@ -86,7 +86,7 @@ def testBrokenUSEEngine():
     except:
         raise
     finally:
-        modelscripts.use.engine.USE_OCL_COMMAND = tmp_USE_OCL_COMMAND
+        modelscribes.use.engine.USE_OCL_COMMAND = tmp_USE_OCL_COMMAND
 
 
 

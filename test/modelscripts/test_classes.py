@@ -3,11 +3,11 @@
 from test.modelscripts import TEST_CASES_DIRECTORY
 
 import os
-import modelscripts.use.use.parser
+import modelscribes.use.use.parser
 
 def test_UseOclModel_Simple():
     testFile = 'Demo.use'
-    use_model_file = modelscripts.use.use.parser.UseSource(
+    use_model_file = modelscribes.use.use.parser.UseSource(
         os.path.join(TEST_CASES_DIRECTORY, 'use', testFile))
     assert use_model_file.isValid
     classModel = use_model_file.classModel

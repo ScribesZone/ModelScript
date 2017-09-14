@@ -13,12 +13,12 @@ from test.modelscripts import (
 )
 
 import os
-import modelscripts.use.use.parser
-from modelscripts.use.use.printer import (
+import modelscribes.use.use.parser
+from modelscribes.use.use.printer import (
     UseSourcePrinter
 )
-import modelscripts.scripts.classes.plantuml
-import modelscripts.diagrams.plantuml.engine
+import modelscribes.scripts.classes.plantuml
+import modelscribes.diagrams.plantuml.engine
 
 
 # TODO: add this again
@@ -79,13 +79,13 @@ def testGenerator_UseOclModel_full():
     # #print test_files2
     all_test_files = test_files1+test_files2
 
-    plantUMLengine = modelscripts.diagrams.plantuml.engine.PlantUMLEngine()
+    plantUMLengine = modelscribes.diagrams.plantuml.engine.PlantUMLEngine()
     for test_file in all_test_files:
         yield check_isValid, test_file, plantUMLengine
 
 
 def check_isValid(testFile, plantUMLengine):
-    use_file = modelscripts.use.use.parser.UseSource(
+    use_file = modelscribes.use.use.parser.UseSource(
         TEST_CASES_DIRECTORY + os.sep + testFile)
     puml_file_path = os.path.join(
         BUILD_DIRECTORY,
@@ -95,7 +95,7 @@ def check_isValid(testFile, plantUMLengine):
     assert use_file.isValid
     print('\n'*2+'='*80)
     print('Generating '+puml_file_path)
-    out = modelscripts.scripts.classes.plantuml.ClassDiagramPrinter(use_file.classModel)
+    out = modelscribes.scripts.classes.plantuml.ClassDiagramPrinter(use_file.classModel)
     print(out.do(outputFile=puml_file_path))
     print('\n'*2+'.'*80)
     plantUMLengine.generate(puml_file_path)

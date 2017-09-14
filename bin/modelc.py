@@ -17,33 +17,33 @@ from collections import OrderedDict
 thisDir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(thisDir,'..'))
 
-import modelscripts.use.use.parser
+import modelscribes.use.use.parser
 # import modelscript.use.eval.tester
-import modelscripts.use.engine
+import modelscribes.use.engine
 
-from modelscripts.scripts.glossaries.parser import (
+from modelscribes.scripts.glossaries.parser import (
     GlossaryModelSource
 )
-from modelscripts.scripts.glossaries.printer import (
+from modelscribes.scripts.glossaries.printer import (
     GlossaryModelPrinter
 )
 
-from modelscripts.scripts.classes.parser import (
+from modelscribes.scripts.classes.parser import (
     ClassModelSource
 )
-import modelscripts.scripts.classes.printer
+import modelscribes.scripts.classes.printer
 
-from modelscripts.scripts.usecases.parser import (
+from modelscribes.scripts.usecases.parser import (
     UsecaseModelSource
 )
-from modelscripts.scripts.permissions.parser import (
+from modelscribes.scripts.permissions.parser import (
     PermissionModelSource
 )
-from modelscripts.scripts.scenarios.parser import (
+from modelscribes.scripts.scenarios.parser import (
     ScenarioModelSource,
     ScenarioEvaluationModelSource
 )
-from modelscripts.scripts.objects.parser import (
+from modelscribes.scripts.objects.parser import (
     ObjectModelSource
 )
 
@@ -107,7 +107,7 @@ class MegaModelCLI(object):
             self.classModelSource=(
                 ClassModelSource(fs[0])
             )
-            modelscripts.scripts.classes.printer.ClassSourcePrinter(
+            modelscribes.scripts.classes.printer.ClassSourcePrinter(
                 theSource=self.classModelSource
             ).display()
             # # Is this test useful???   if self.classModelSource is not None:
@@ -238,7 +238,7 @@ class MegaModelCLI(object):
 
 
 def printVersion():
-    version = modelscripts.use.engine.USEEngine.useVersion()
+    version = modelscribes.use.engine.USEEngine.useVersion()
     print("modelc - based on use version %s - University of Bremen" % version)
 
 

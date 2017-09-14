@@ -1,10 +1,10 @@
 # coding=utf-8
 
 from test.modelscripts import getUseFile
-from  modelscripts.use.use.printer import (
+from  modelscribes.use.use.printer import (
     UseModelPrinter
 )
-from modelscripts.use.use.parser import (
+from modelscribes.use.use.parser import (
     UseSource
 )
 

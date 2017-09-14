@@ -64,7 +64,7 @@ def getTestDir(relativeDir, exist=True):
 #----------- testing issues ------------------------------
 
 
-from modelscripts.base.issues import (
+from modelscribes.base.issues import (
     IssueBox,
     Level,
     Levels,

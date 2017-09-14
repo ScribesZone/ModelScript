@@ -13,9 +13,9 @@ from test.modelscripts import (
 )
 
 import os
-import modelscripts.scripts.usecases.parser
-import modelscripts.scripts.usecases.plantuml
-import modelscripts.diagrams.plantuml.engine
+import modelscribes.scripts.usecases.parser
+import modelscribes.scripts.usecases.plantuml
+import modelscribes.diagrams.plantuml.engine
 
 # TODO: add this again
 # def test_UseOclModel_Simple():
@@ -32,7 +32,7 @@ def testGenerator_UseOclModel_full():
             for f in os.listdir(test_dir)
             if f.endswith('.ucm')]
 
-    puml_engine = modelscripts.diagrams.plantuml.engine.PlantUMLEngine()
+    puml_engine = modelscribes.diagrams.plantuml.engine.PlantUMLEngine()
     for filename in files:
         yield check_isValid, filename, puml_engine
 
@@ -40,7 +40,7 @@ def testGenerator_UseOclModel_full():
 def check_isValid(filename, puml_engine):
 
     #--- parser: .ucs -> system -------------------
-    source = modelscripts.scripts.usecases.parser.UsecaseModelSource(
+    source = modelscribes.scripts.usecases.parser.UsecaseModelSource(
         usecaseFileName=filename,
     )
     # if not source.isValid:
@@ -58,7 +58,7 @@ def check_isValid(filename, puml_engine):
     )
     print('\n'*2+'='*80)
     print('Generating '+puml_file_path)
-    gen = modelscripts.scripts.usecases.plantuml.UsecaseDiagramPrinter(ucm)
+    gen = modelscribes.scripts.usecases.plantuml.UsecaseDiagramPrinter(ucm)
     print(gen.do(outputFile=puml_file_path))
     print('\n'*2+'.'*80)
 

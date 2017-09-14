@@ -7,8 +7,8 @@ log = logging.getLogger('test.' + __name__)
 from test.modelscripts import TEST_CASES_DIRECTORY
 
 import os
-import modelscripts.use.eval.evaluator
-import modelscripts.use.use.parser
+import modelscribes.use.eval.evaluator
+import modelscribes.use.use.parser
 from test.modelscripts \
     import getSoilFile, getUseFile, getZipFile, getSoilFileList
 from pytesthelpers.datadriven import DataTestCase, DataTestSuite
@@ -39,11 +39,11 @@ class Test_UseEvaluationResults(DataTestSuite):
     class DataTest(DataTestCase):
         def caseSetup(self):
             self.modelFile = getUseFile(self._case['model'])
-            self.useModel = modelscripts.use.use.parser.UseSource(
+            self.useModel = modelscribes.use.use.parser.UseSource(
                 self.modelFile)
             assert self.useModel.isValid  # we assume that this is ok
             self.stateFiles = getSoilFileList(self._case['states'])
-            self._ = modelscripts.use.eval.evaluator.UseEvaluationResults(
+            self._ = modelscribes.use.eval.evaluator.UseEvaluationResults(
                 self.useModel, self.stateFiles)
 
         def points(self): return [

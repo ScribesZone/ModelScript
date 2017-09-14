@@ -12,10 +12,10 @@ from test.modelscripts import (
 )
 
 import os
-import modelscripts.use.use.parser
-import modelscripts.scripts.usecases.parser
-import modelscripts.metamodels.permissions
-import modelscripts.scripts.permissions.parser
+import modelscribes.use.use.parser
+import modelscribes.scripts.usecases.parser
+import modelscribes.metamodels.permissions
+import modelscribes.scripts.permissions.parser
 
 # TODO: add this again
 # def test_UseOclModel_Simple():
@@ -29,14 +29,14 @@ def testGenerator_UseOclModel_full():
 
     #--- get the class model ----------------------
     use_file_name=os.path.join(test_dir,'a.clm')
-    use_file = modelscripts.use.use.parser.UseSource(
+    use_file = modelscribes.use.use.parser.UseSource(
         use_file_name)
     assert(use_file.isValid)
     class_model = use_file.classModel
 
     #--- get the usecase model ----------------------
     usecase_file_name=os.path.join(test_dir,'a.ucm')
-    usecase_source = modelscripts.scripts.usecases.parser.UsecaseModelSource(
+    usecase_source = modelscribes.scripts.usecases.parser.UsecaseModelSource(
         usecase_file_name)
     assert(usecase_source.isValid)
     usecase_model = usecase_source.usecaseModel
@@ -51,7 +51,7 @@ def testGenerator_UseOclModel_full():
 def check_isValid(class_model, usecaseModel, permission_file):
 
     #--- parser: .soil -> scenario -------------------
-    pmsource = modelscripts.scripts.permissions.parser.PermissionModelSource(permissionFileName=permission_file,
+    pmsource = modelscribes.scripts.permissions.parser.PermissionModelSource(permissionFileName=permission_file,
                                                                              usecaseModel=usecaseModel,
                                                                              classModel=class_model)
     if not pmsource.isValid:

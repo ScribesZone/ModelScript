@@ -10,7 +10,7 @@ from test.modelscripts import (
 )
 
 import os
-import modelscripts.use.engine.merger
+import modelscribes.use.engine.merger
 
 
 # TODO: add this again
@@ -37,5 +37,5 @@ def testGenerator_UseOclModel_full():
 
 
 def check_isValid(soilfile, tracefile, sexfile):
-    modelscripts.use.engine.merger.merge(soilfile, tracefile, sexfile)
+    modelscribes.use.engine.merger.merge(soilfile, tracefile, sexfile)
 

@@ -5,12 +5,12 @@ import logging
 from test.modelscripts import (
     getTestFiles,
 )
-from modelscripts.use.sex.parser import (
+from modelscribes.use.sex.parser import (
     SexSource,
 )
 from test.modelscripts.sex import _getModelsForScenario
 
-from modelscripts.scripts.scenarios.printer import (
+from modelscribes.scripts.scenarios.printer import (
     ScenarioSourcePrinter
 )
 

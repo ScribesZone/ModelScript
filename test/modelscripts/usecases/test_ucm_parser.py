@@ -3,7 +3,7 @@ import os
 import logging
 
 from test.modelscripts import TEST_CASES_DIRECTORY
-from modelscripts.scripts.usecases.parser import UsecaseModelSource
+from modelscribes.scripts.usecases.parser import UsecaseModelSource
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)

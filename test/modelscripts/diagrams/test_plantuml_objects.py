@@ -13,14 +13,14 @@ from test.modelscripts import (
 )
 
 import os
-import modelscripts.use.use.parser
-from modelscripts.scripts.scenarios.printer import (
+import modelscribes.use.use.parser
+from modelscribes.scripts.scenarios.printer import (
     ScenarioSourcePrinter
 )
-import modelscripts.scripts.objects.plantuml
-import modelscripts.diagrams.plantuml.engine
-import modelscripts.use.sex.parser
-import modelscripts.metamodels.scenarios.evaluations
+import modelscribes.scripts.objects.plantuml
+import modelscribes.diagrams.plantuml.engine
+import modelscribes.use.sex.parser
+import modelscribes.metamodels.scenarios.evaluations
 
 # TODO: add this again
 # def test_UseOclModel_Simple():
@@ -35,7 +35,7 @@ def testGenerator_UseOclModel_full():
 
     #--- get the class model ----------------------
     use_file_name=os.path.join(test_dir,'main.use')
-    use_file = modelscripts.use.use.parser.UseSource(
+    use_file = modelscribes.use.use.parser.UseSource(
         use_file_name)
     assert(use_file.isValid)
     class_model = use_file.classModel
@@ -46,7 +46,7 @@ def testGenerator_UseOclModel_full():
             for f in os.listdir(test_dir)
             if f.endswith('.soil')]
 
-    puml_engine = modelscripts.diagrams.plantuml.engine.PlantUMLEngine()
+    puml_engine = modelscribes.diagrams.plantuml.engine.PlantUMLEngine()
     for soil_file_name in soil_files:
         yield check_isValid, class_model, soil_file_name, puml_engine
 
@@ -54,7 +54,7 @@ def testGenerator_UseOclModel_full():
 def check_isValid(class_model, soil_file_name, puml_engine):
 
     #--- parser: .soil -> scenario -------------------
-    soil_source = modelscripts.use.sex.parser.SoilSource(soilFileName=soil_file_name, classModel=class_model)
+    soil_source = modelscribes.use.sex.parser.SoilSource(soilFileName=soil_file_name, classModel=class_model)
     if not soil_source.isValid:
         ScenarioSourcePrinter(soil_source).display()
     assert soil_source.isValid
@@ -62,7 +62,7 @@ def check_isValid(class_model, soil_file_name, puml_engine):
 
     #--- abstract execution: scenario -> state -------
 
-    scneval=modelscripts.metamodels.scenarios.evaluations.ScenarioEvaluation(scenario=scn)
+    scneval=modelscribes.metamodels.scenarios.evaluations.ScenarioEvaluation(scenario=scn)
     state=scneval.state
 
     #--- diag generation: state -> .puml --------------
@@ -75,7 +75,7 @@ def check_isValid(class_model, soil_file_name, puml_engine):
     )
     print('\n'*2+'='*80)
     print('Generating '+puml_file_path)
-    gen = modelscripts.scripts.objects.plantuml.ObjectDiagramPrinter(state)
+    gen = modelscribes.scripts.objects.plantuml.ObjectDiagramPrinter(state)
     print( gen.do(outputFile=puml_file_path))
     print('\n'*2+'.'*80)
 
