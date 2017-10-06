@@ -3,20 +3,19 @@ from __future__ import unicode_literals, print_function, absolute_import, divisi
 from typing import Text, Union, Optional, Dict, List
 import re
 
-from modelscribes.base.sources import (
-    ModelSourceFile,
-)
+from modelscribes.megamodels.sources import ModelSourceFile
 
 from modelscribes.metamodels.glossaries import (
     GlossaryModel,
     Domain,
     Entry,
-    metamodel,
+    METAMODEL,
 )
 from modelscribes.metamodels.texts import (
     TextBlock,
 )
 from modelscribes.scripts.texts.parser import TextSourceFragment
+from modelscribes.megamodels.metamodels import Metamodel
 
 DEBUG=0
 
@@ -27,28 +26,39 @@ class GlossaryModelSource(ModelSourceFile):
         super(GlossaryModelSource, self).__init__(
             fileName=glossaryFileName)
 
-        self.glossaryModel = None
-
         self.__descriptionLinesPerEntry={}
         #type: Optional[Dict[Entry, List[Text]]]
-        #Just used to store during first step parsing the
-        #lines that make the description of the entry.
-        #This will be used later as the source of the
-        #embedded parser for text. This filed will be set
-        #to None just after.
+        # Just used to store during first step parsing the
+        # lines that make the description of the entry.
+        # This will be used later as the source of the
+        # embedded parser for text. This field will be set
+        # to None just after.
+
+
         self.__descriptionFirstLinePerEntry={}
         #type: Optional[Dict[Entry, List[Text]]]
 
         self._parse()
 
     @property
-    def model(self):
-        return self.glossaryModel
+    def metamodel(self):
+        #type: () -> Metamodel
+        return METAMODEL
 
     @property
-    def usedModelByKind(self):
-        _={}
-        return _
+    def glossaryModel(self):
+        #type: () -> GlossaryModel
+        m=self.model #type: GlossaryModel
+        return m
+    #
+    # @property
+    # def usedModelByKind(self):
+    #     _={}
+    #     return _
+
+    @property
+    def megamodelStatementPrefix(self):
+        return r' *(--)? *@'
 
     def _parse(self):
         self._parse_main_body()
@@ -60,8 +70,9 @@ class GlossaryModelSource(ModelSourceFile):
         """
         Parse everything in the glossary except the description
         of entries are parsed by the subparser for TextBlock
-        In this first phase we just store the information as lines
-        (and first line number). This info will be used in second
+        In this first phase we just store the information
+        as lines (and first line number). This info will
+        be used in second
         phase to feed the embedded parser.
         """
 
@@ -82,16 +93,6 @@ class GlossaryModelSource(ModelSourceFile):
             m=re.match(r, line)
             if m:
                 continue
-
-            if current_context is None:
-                r = '^glossary +model *$'
-                m=re.match(r, line)
-                if m:
-                    self.glossaryModel=GlossaryModel(
-                        lineNo=line_no,
-                    )
-                    current_context=self.glossaryModel
-                    continue
 
             if (isinstance(current_context, (
                     GlossaryModel,
@@ -199,8 +200,9 @@ class GlossaryModelSource(ModelSourceFile):
                 displayLineNos=True)
             print(p.do())
         else:
-            print('%s error(s) in the glossary model' % len(self.issueBox))
+            print('%s error(s) in the glossary model'
+                  % len(self.issueBox))
             for e in self.issueBox:
                 print(e)
 
-metamodel.registerSource(GlossaryModelSource)
+METAMODEL.registerSource(GlossaryModelSource)

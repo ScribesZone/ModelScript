@@ -7,7 +7,7 @@ import modelscribes.use.use.parser
 
 def test_UseOclModel_Simple():
     testFile = 'Demo.use'
-    use_model_file = modelscribes.use.use.parser.UseSource(
+    use_model_file = modelscribes.use.use.parser.UseModelSource(
         os.path.join(TEST_CASES_DIRECTORY, 'use', testFile))
     assert use_model_file.isValid
     classModel = use_model_file.classModel

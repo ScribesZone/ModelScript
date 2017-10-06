@@ -85,7 +85,7 @@ def testGenerator_UseOclModel_full():
 
 
 def check_isValid(testFile, plantUMLengine):
-    use_file = modelscribes.use.use.parser.UseSource(
+    use_file = modelscribes.use.use.parser.UseModelSource(
         TEST_CASES_DIRECTORY + os.sep + testFile)
     puml_file_path = os.path.join(
         BUILD_DIRECTORY,

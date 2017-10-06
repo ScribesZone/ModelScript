@@ -13,12 +13,16 @@ def indent(prefix, s, suffix='', firstPrefix=None):
 class AbstractPrinter(object):
     __metaclass__ = ABCMeta
 
-    def __init__(self, summary=False, displayLineNos=True, baseIndent=0):
+    def __init__(self,
+                 summary=False,
+                 displayLineNos=True,
+                 baseIndent=0):
         #type: (bool) -> None
         self._baseIndent=baseIndent
         self.output = ''
         self.displayLineNos=displayLineNos
         self.summary=summary
+        # self.eolAtEOF=eolAtEOF
 
     def indent(self, n=1):
         self._baseIndent+=n
@@ -64,10 +68,13 @@ class AbstractPrinter(object):
     def do(self):
         pass
 
-    def display(self, withLastEOL=True):
+    def display(self, removeLastEOL=False, addLastEOL=True):
         text=self.do()
-        if not withLastEOL and text.endswith('\n'):
+        endsWithEOL=text.endswith('\n')
+        if removeLastEOL and endsWithEOL:
             text=text[:-1]
+        if addLastEOL and not endsWithEOL:
+            text=text+'\n'
         print(text, end='')
 
 # class ErrorsPrinter(object):
@@ -129,9 +136,8 @@ class AnnotatedSourcePrinter(SourcePrinter):
 
     def do(self):
         self.output=''
-        self._issuesSummary(self.theSource.fullIssueBox)
-        unlocalized_issues=self.theSource.fullIssueBox.at(0)
-        self._unlocalizedIssues(unlocalized_issues)
+
+        self._issueHeader()
 
         for (index, line) in enumerate(self.theSource.sourceLines):
             line_no=index+1
@@ -141,6 +147,11 @@ class AnnotatedSourcePrinter(SourcePrinter):
             if localized_issues:
                 self._localizedIssues(localized_issues)
         return self.output
+
+    def _issueHeader(self):
+        self._issuesSummary(self.theSource.fullIssueBox)
+        unlocalized_issues=self.theSource.fullIssueBox.at(0)
+        self._unlocalizedIssues(unlocalized_issues)
 
     def _line(self, line_no, line):
         self.outLine(line)
@@ -153,8 +164,7 @@ class AnnotatedSourcePrinter(SourcePrinter):
     def _unlocalizedIssues(self, issues, pattern='{level}: {message}'):
         for i in issues:
             self.outLine(
-                i.str(pattern=pattern,
-                    linesBefore=0))
+                i.str(pattern=pattern))
 
     def _localizedIssues(self, issues, pattern='{level}: {message}'):
         for i in issues:

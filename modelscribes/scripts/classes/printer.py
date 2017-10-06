@@ -6,7 +6,7 @@ from modelscribes.use.use.printer import (
     UseSourcePrinter,
     UseModelPrinter
 )
-from modelscribes.metamodels.classes import metamodel
+from modelscribes.metamodels.classes import METAMODEL
 
 
 
@@ -30,6 +30,6 @@ class ClassSourcePrinter(UseSourcePrinter):
             summary=summary,
             displayLineNos=displayLineNos)
 
-metamodel.registerModelPrinter(ClassModelPrinter)
-metamodel.registerSourcePrinter(ClassSourcePrinter)
+METAMODEL.registerModelPrinter(ClassModelPrinter)
+METAMODEL.registerSourcePrinter(ClassSourcePrinter)
 

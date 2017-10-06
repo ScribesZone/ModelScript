@@ -3,7 +3,7 @@ from abc import ABCMeta
 from typing import List
 
 from modelscribes.base.sources import SourceElement
-from modelscribes.megamodels import Model
+from modelscribes.megamodels.models import Model
 from modelscribes.metamodels.permissions.sar import SAR
 
 class Permission(SAR):

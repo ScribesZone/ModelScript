@@ -18,24 +18,26 @@ from modelscribes.metamodels.texts import (
     Reference,
 
 )
-from modelscribes.megamodels import Model, Metamodel
+from modelscribes.megamodels.metamodels import Metamodel
+from modelscribes.megamodels.models import Model
 from modelscribes.base.sources import SourceElement
-
+from modelscribes.megamodels.dependencies.metamodels import (
+    MetamodelDependency
+)
 
 class GlossaryModel(Model):
 
-    def __init__(self, source=None, lineNo=None):
-        super(GlossaryModel, self).__init__(
-            source=source,
-            name=None,
-            lineNo=lineNo
-        )
+    def __init__(self):
+        super(GlossaryModel, self).__init__()
+
         self.domainNamed=collections.OrderedDict()
         # type: Dict[Text, Domain]
 
     @property
     def metamodel(self):
-        return metamodel
+        #type: () -> Metamodel
+        return METAMODEL
+
 
     def findEntry(self, term):
         #type: (Text) -> Optional[Entry]
@@ -108,9 +110,15 @@ class Entry(SourceElement):
         self.references=[]
         #type: List[Reference]
 
-metamodel = Metamodel(
+METAMODEL = Metamodel(
     id='gl',
     label='glossary',
     extension='.glm',
     modelClass=GlossaryModel
 )
+# MetamodelDependency(
+#     sourceId='gl',
+#     targetId='gl',
+#     optional=True,
+#     multiple=True,
+# )

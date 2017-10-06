@@ -2,13 +2,17 @@
 
 from __future__ import print_function
 
-from modelscribes.use.use.parser import UseSource
-from modelscribes.metamodels.classes import metamodel
+from modelscribes.use.use.parser import UseModelSource
+from modelscribes.metamodels.classes import METAMODEL
 
 
-class ClassModelSource(UseSource):
+class ClassModelSource(UseModelSource):
 
     def __init__(self, classModelSourceFile):
         super(ClassModelSource, self).__init__(classModelSourceFile)
 
-metamodel.registerSource(ClassModelSource)
+    @property
+    def metamodel(self):
+        return METAMODEL
+
+METAMODEL.registerSource(ClassModelSource)

@@ -6,7 +6,6 @@ Model errors in source files either localized or not.
 import os
 from collections import OrderedDict
 from typing import Optional, List, Text, Union, Callable, Dict
-
 from modelscribes.base.annotations import (
     Annotations
 )
@@ -62,7 +61,8 @@ class Issue(object):
     """
     An issue in a given entity with issue list (WithIssueList).
     Direct instances of Issue are not localized.
-    The class LocalizedIssue must be used if the error line is known.
+    The class LocalizedIssue must be used if the error line
+    is known.
     """
     def __init__(self, origin, level, message):
         #type: (WithIssueList, Level, 'Text') -> None
@@ -149,10 +149,13 @@ class LocalizedIssue(Issue):
             # move error before first line to first
             l=1
             c=0
+        elif nblines==0:
+            l=1
+            c=0
         elif line>nblines:
             # move error after last line to last line
             l=nblines
-            self.column=len(lines[nblines-1])
+            c=len(lines[nblines-1])
         else:
             # regular location for a line
             l=line
@@ -164,7 +167,7 @@ class LocalizedIssue(Issue):
         This values may have been adjusted
         """
 
-        self.column = column #type: Optional[int]
+        self.column = c #type: Optional[int]
         """
         The column number or None. If defined
         it could be 0 or 1 more than the length 
@@ -211,6 +214,8 @@ class LocalizedIssue(Issue):
                 line=self.line,
                 column=self.column,
                 message=self.message)
+            # remove the col number if None
+            line=line.replace('None:','')
             return [line]
 
         def cursor_lines():
@@ -220,7 +225,7 @@ class LocalizedIssue(Issue):
             else:
                 line=(
                     prefixStd
-                    + ' '*(self.column-len(prefixStd))
+                    + ' '*(self.column) #-len(prefixStd))
                     + '^' )
                 return [line]
 
@@ -284,15 +289,15 @@ class LocalizedIssue(Issue):
 
 class IssueBox(object):
 
-    def __init__(self, parent=None):
-        #type: (IssueBox) -> None
+    def __init__(self, parents=()):
+        #type: (List[IssueBox]) -> None
         self._issueList=[] #type: List[Issue]
-        self.parent=parent #type:Optional[IssueBox]
+        self.parents=list(parents) #type:List[IssueBox]
 
         self._issuesAtLine=OrderedDict() #type: Dict[Optional[int], List[Issue]]
         """ 
         Store for a given line the issues at this line.
-       There is no  entry for lines without issues.
+        There is no  entry for lines without issues.
         _issuesAtLine[0] are are not localized issues.
         """
 
@@ -304,29 +309,40 @@ class IssueBox(object):
         if isinstance(issue, LocalizedIssue):
             index=issue.line
         else:
-            index=None
+            index=0
         if index not in self._issuesAtLine:
             self._issuesAtLine[index]=[]
         self._issuesAtLine[index].append(issue)
 
+    def addParent(self, issueBox):
+        #type: (IssueBox) -> None
+        """
+        Add the issue box as the last parents.
+        If it is already in the list, do nothing.
+        """
+        if not issueBox in self.parents:
+            self.parents.append(issueBox)
 
 
-    def at(self, lineNo):
+
+    def at(self, lineNo, parentsFirst=True):
         """
         Return the list of issues at the specified line.
         If the line is 0 then return non localized issues.
         Return both local and parents issues.
         """
         # int -> List[Issue]
-        parent_issues=(
-            [] if self.parent is None
-            else self.parent.at(lineNo))
+        parent_issues=[
+            i for p in self.parents
+                for i in p.at(lineNo, parentsFirst=parentsFirst) ]
         self_issues=(
             [] if lineNo not in self._issuesAtLine
             else self._issuesAtLine[lineNo]
         )
-        all=parent_issues+self_issues
-        return all
+        if parentsFirst:
+            return parent_issues+self_issues
+        else:
+            return self_issues+parent_issues
 
     @property
     def all(self):
@@ -334,7 +350,8 @@ class IssueBox(object):
         Return both local and parents issues
         """
         return (
-            ([] if self.parent is None else self.parent.all)
+            [ i for p in self.parents
+                    for i in p._issueList ]
             + self._issueList
         )
 
@@ -413,7 +430,7 @@ class IssueBox(object):
         else:
             return (
                 Annotations.prefix+'%s (%s)' % (
-                    times(self.nb, 'Issues'),
+                    times(self.nb, 'Issue'),
                     ', '.join(level_msgs)
                 )
             )
@@ -434,8 +451,10 @@ class IssueBox(object):
 
 
 class WithIssueList(object):
-    def __init__(self, parent=None):
-        self.issueBox=IssueBox(parent=parent)
+    def __init__(self, parents=()):
+        #type: (List[IssueBox]) -> None
+        assert(isinstance(parents, list))
+        self.issueBox=IssueBox(parents=parents)
 
     @property
     def isValid(self):

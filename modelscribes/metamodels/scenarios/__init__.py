@@ -22,7 +22,11 @@ from modelscribes.base.sources import (
     SourceFile,
     SourceElement
 )
-from modelscribes.megamodels import Model, Metamodel
+from modelscribes.megamodels.metamodels import Metamodel
+from modelscribes.megamodels.models import Model
+from modelscribes.megamodels.dependencies.metamodels import (
+    MetamodelDependency
+)
 from modelscribes.metamodels.classes import (
     ClassModel,
 )
@@ -46,25 +50,19 @@ from modelscribes.metamodels.usecases import (
 DEBUG=3
 
 class ScenarioModel(Model, Subject):
-    def __init__(self,
-                 classModel,
-                 source=None,
-                 name=None,
-                 usecaseModel=None,
-                 permissionModel=None,
-                 file=None, lineNo=None,
-                 docComment=None,
-                 eolComment=None):
-        #type: (ClassModel, Optional[SourceFile], Optional[Text], Optional[UsecaseModel], PermissionModel, Text, int) -> None
-        super(ScenarioModel, self).__init__(
-            source=source,
-            name=name,
-            lineNo=lineNo, docComment=docComment, eolComment=eolComment
-        )
-        self.file = file #type: Text
-        self.usecaseModel=usecaseModel #type: Optional[UsecaseModel]
-        self.classModel=classModel #type: ClassModel
-        self.permissionModel=permissionModel #type: UCPermissionModel
+    def __init__(self):
+        #type: () -> None
+
+        super(ScenarioModel, self).__init__()
+
+        self.usecaseModel=None #type: Optional[UsecaseModel]
+        # set later
+
+        self.classModel=None #type: Optional[ClassModel]
+        # set later
+
+        self.permissionModel=None #type: Optional[UCPermissionModel]
+        # set later
 
         self.actorInstanceNamed = collections.OrderedDict()
         #type: Dict[Text, ActorInstance]
@@ -79,7 +77,8 @@ class ScenarioModel(Model, Subject):
 
     @property
     def metamodel(self):
-        return metamodel
+        #type: () -> Metamodel
+        return METAMODEL
 
     @property
     def logicalOrderBlocks(self):
@@ -117,9 +116,34 @@ class ActorInstance(SourceElement, Subject):
         return [self.actor]
 
 
-metamodel = Metamodel(
+METAMODEL = Metamodel(
     id='sc',
     label='scenario',
     extension='.scm',
-    modelClass=ScenarioModel
+    modelClass=ScenarioModel,
+    modelKinds=('', 'preliminary', 'detailled')
+)
+MetamodelDependency(
+    sourceId='sc',
+    targetId='gl',
+    optional=True,
+    multiple=True,
+)
+MetamodelDependency(
+    sourceId='sc',
+    targetId='cl',
+    optional=False,
+    multiple=False,
+)
+MetamodelDependency(
+    sourceId='sc',
+    targetId='uc',
+    optional=True,
+    multiple=False,
+)
+MetamodelDependency(
+    sourceId='sc',
+    targetId='pm',
+    optional=True,
+    multiple=False,
 )

@@ -64,30 +64,7 @@ def getTestDir(relativeDir, exist=True):
 #----------- testing issues ------------------------------
 
 
-from modelscribes.base.issues import (
-    IssueBox,
-    Level,
-    Levels,
-)
 
-F=Levels.Fatal
-E=Levels.Error
-W=Levels.Warning
-I=Levels.Info
-H=Levels.Hint
-
-def assertIssueBox(issueBox, expected=None):
-    #type: (IssueBox, Dict[Level, int]) -> None
-    if expected is not None:
-        actual=issueBox.summaryMap
-        for level in expected:
-            assert actual[level] == expected[level], (
-                '%i %s found. %i expected' % (
-                    actual[level],
-                    level.label,
-                    expected[level]
-                )
-            )
 
 
 

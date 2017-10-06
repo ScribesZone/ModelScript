@@ -5,21 +5,36 @@
 
 
 from __future__ import absolute_import, division, print_function, unicode_literals
-
 from typing import List, Optional
+from modelscribes.megamodels.dependencies.metamodels import (
+    MetamodelDependency
+)
+from modelscribes.megamodels.metamodels import Metamodel
 
-from modelscribes.megamodels import Metamodel
 # ---------------------------------------------------------------
 #  Abstract syntax
 # ---------------------------------------------------------------
-from modelscribes.metamodels.permissions.gpermission import Permission, PermissionSet, PermissionModel, PermissionRule
-from modelscribes.metamodels.permissions.sar import Action, SAR
+from modelscribes.metamodels.permissions.gpermission import (
+    Permission,
+    PermissionSet,
+    PermissionModel,
+    PermissionRule
+)
+from modelscribes.metamodels.permissions.sar import (
+    Action,
+    SAR
+)
 from modelscribes.metamodels.permissions.sar import (
     Subject,
     Resource,
     Action,
-
 )
+from modelscribes.metamodels.usecases import (
+    UsecaseModel
+)
+
+
+ClassModel='ClassModel'
 
 #------------------------------------------------------------------------------
 #    Usecases/Classes specific
@@ -52,18 +67,23 @@ class FactorizedPermissionRule(PermissionRule):
 
 class UCPermissionModel(PermissionModel):
 
-    def __init__(self, usecaseModel, classModel, source=None):
+    def __init__(self):
         # #type: (UsecaseModel, ClassModel, SourceFile) -> None
-        super(UCPermissionModel, self).__init__(source=source)
-        self.usecaseModel=usecaseModel
-        self.classModel=classModel
+        super(UCPermissionModel, self).__init__()
+
+        self.usecaseModel=None #type: Optional[UsecaseModel]
+        #type: set later
+
+        self.classModel=None #type: Optional[ClassModel]
+
         self.rules=[]             #type: List[FactorizedPermissionRule]
 
         self._permissionSet=None   #type: Optional[PermissionSet]
 
     @property
     def metamodel(self):
-        return metamodel
+        #type: () -> Metamodel
+        return METAMODEL
 
     @property
     def permissionSet(self):
@@ -88,9 +108,27 @@ class UCPermissionModel(PermissionModel):
         return '\n'.join([str(r) for r in self.rules])
 
 
-metamodel=Metamodel(
+METAMODEL=Metamodel(
     id='pm',    # other model could be registered
     label='permission',
     extension='.pmm',
     modelClass=UCPermissionModel
+)
+MetamodelDependency(
+    sourceId='pm',
+    targetId='gl',
+    optional=True,
+    multiple=True,
+)
+MetamodelDependency(
+    sourceId='pm',
+    targetId='uc',
+    optional=False,
+    multiple=False,
+)
+MetamodelDependency(
+    sourceId='pm',
+    targetId='cl',
+    optional=False,
+    multiple=False,
 )

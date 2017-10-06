@@ -4,7 +4,7 @@ from __future__ import unicode_literals, print_function, absolute_import, divisi
 
 from typing import Text, Optional
 from modelscribes.metamodels.scenarios import (
-    metamodel
+    METAMODEL
 )
 from modelscribes.metamodels.classes import (
     ClassModel
@@ -40,4 +40,4 @@ class ScenarioEvaluationModelSource(SexSource):
             usecaseModel=usecaseModel,
             permissionModel=permissionModel)
 
-metamodel.registerSource(ScenarioEvaluationModelSource)
+METAMODEL.registerSource(ScenarioEvaluationModelSource)

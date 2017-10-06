@@ -1,10 +1,18 @@
 # coding=utf-8
+from __future__ import print_function
 import os
 import logging
 
 from test.modelscripts import TEST_CASES_DIRECTORY
 from modelscribes.scripts.usecases.parser import UsecaseModelSource
-
+from modelscribes.base.printers import (
+    AnnotatedSourcePrinter
+)
+from modelscribes.scripts.megamodels.printer import (
+    ImportBoxPrinter
+)
+# TODO: create a UsecaseSourcePrinter
+# from modelscribes.scripts.usecases.printer import UsecaseSourcePrinter
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
@@ -23,5 +31,10 @@ def testGenerator_AllSoilFile():
 
 def check_IsValid(testFile):
     ucs = UsecaseModelSource(testFile)
-    assert(ucs.isValid)
-
+    print('='*40,os.path.basename(testFile),'='*40)
+    ImportBoxPrinter(ucs.importBox).display()
+    print('-'*90)
+    AnnotatedSourcePrinter(ucs).display()
+    # TODO: add printer
+    # UsecaseSourcePrinter(ucs).display()
+    assert ucs.isValid

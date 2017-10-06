@@ -10,7 +10,7 @@ This is currently only a preliminary version.
 import os
 import logging
 
-from modelscribes.metamodels.usecases import metamodel
+from modelscribes.metamodels.usecases import METAMODEL
 
 
 # logging.basicConfig(level=logging.DEBUG)
@@ -62,4 +62,4 @@ class UsecaseDiagramPrinter(object):
         self.out('}\n')
         self.out('@enduml\n')
 
-metamodel.registerDiagramPrinter(UsecaseDiagramPrinter)
+METAMODEL.registerDiagramPrinter(UsecaseDiagramPrinter)

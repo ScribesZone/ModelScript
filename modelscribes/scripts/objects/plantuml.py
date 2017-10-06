@@ -10,7 +10,7 @@ This is currently only a preliminary version.
 import os
 import logging
 from modelscribes.metamodels.objects import (
-    metamodel
+    METAMODEL
 )
 
 # logging.basicConfig(level=logging.DEBUG)
@@ -110,4 +110,4 @@ class ObjectDiagramPrinter(object):
                 "" if aname is None else ": "+aname,
             ))
 
-metamodel.registerDiagramPrinter(ObjectDiagramPrinter)
+METAMODEL.registerDiagramPrinter(ObjectDiagramPrinter)

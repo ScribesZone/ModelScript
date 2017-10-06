@@ -1,7 +1,11 @@
 # coding=utf-8
 from typing import List, Optional
 
-from modelscribes.megamodels import Model, Metamodel
+from modelscribes.megamodels.metamodels import Metamodel
+from modelscribes.megamodels.dependencies.metamodels import (
+    MetamodelDependency
+)
+from modelscribes.megamodels.models import Model
 from modelscribes.metamodels.permissions import (
     PermissionSet
 )
@@ -56,18 +60,34 @@ class AccessModel(Model):
 
     def __init__(self, permissionSet=None, source=None):
         super(AccessModel, self).__init__(
+            metamodel=METAMODEL,
             source=source
         )
         self.accessSet=AccessSet(permissionSet=permissionSet) #type:AccessSet
 
-    @property
-    def metamodel(self):
-        return metamodel
 
-metamodel = Metamodel(
+METAMODEL = Metamodel(
     id='ac',
     label='access',
     extension='.ac',
     modelClass=AccessModel
+)
+MetamodelDependency(
+    sourceId='ac',
+    targetId='gl',
+    optional=True,
+    multiple=True,
+)
+MetamodelDependency(
+    sourceId='ac',
+    targetId='uc',
+    optional=False,
+    multiple=False,
+)
+MetamodelDependency(
+    sourceId='ac',
+    targetId='cl',
+    optional=False,
+    multiple=False,
 )
 

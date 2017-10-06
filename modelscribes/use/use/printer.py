@@ -74,9 +74,16 @@ class UseModelPrinter(ModelPrinter):
             for t in self.theModel.basicTypes:
                 self.out('-- basic type : %s \n' % t.name)
 
-        self._docComment(self.theModel, '')
+        #TODO: Add again management of doccomment for model
+        # Model does not inherit anymore from doccomment
+        # but it still make sense to add comment for them
+        # self._docComment(self.theModel, '')
         self.out('model %s' % self.theModel.name)
-        self._eolComment(self.theModel)
+        #TODO: Add again management of eolcomment for model
+        # Model does not inherit anymore from doccomment
+        # but it still make sense to add comment for them
+        # self._docComment(self.theModel, '')
+        # self._eolComment(self.theModel)
         self.out('\n')
 
         for e in self.theModel.enumerations:
@@ -246,7 +253,7 @@ class UseSourcePrinter(SourcePrinter):
 
     def do(self):
         self.output=''
-        if self.theSource.model is not None:
+        if self.theSource.isValid:
             p=UseModelPrinter(
                 theModel=self.theSource.model,
                 summary=self.summary,

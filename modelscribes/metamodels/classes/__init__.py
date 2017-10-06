@@ -44,8 +44,13 @@ from modelscribes.base.sources import (
     SourceElement,
     SourceFile
 )
-from modelscribes.megamodels import Model, Metamodel
+from modelscribes.megamodels.metamodels import Metamodel
+from modelscribes.megamodels.dependencies.metamodels import (
+    MetamodelDependency
+)
+from modelscribes.megamodels.models import Model
 from modelscribes.metamodels.permissions.sar import Resource
+
 
 #TODO: make associationclass class and assoc + property
 # currently the implem is based on separated list for assocclass
@@ -67,26 +72,18 @@ class ClassModel(Model):
     """
     Class model.
     """
-    def __init__(self,
-                 name=None,
-                 source=None,
-                 code=None,
-                 lineNo=None,
-                 docComment=None,
-                 eolComment=None):
-        #type: (Optional[Text], Optional[SourceFile], Any, int, Text, Text) -> None
-        super(ClassModel, self).__init__(
-            source=source, name=name, code=code,
-            lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+    def __init__(self):
+        #type: () -> None
+        super(ClassModel, self).__init__()
 
-        self._isResolved = False
+        self._isResolved=False
 
-        self.enumerationNamed = collections.OrderedDict() #type: Dict[Text, Enumeration]
+        self.enumerationNamed=collections.OrderedDict() #type: Dict[Text, Enumeration]
         #: Map of enumerations, indexed by name.
 
         #: Map of basic types. Indexed by type names/
         #: populated during the resolution phase
-        self.basicTypeNamed = collections.OrderedDict()  #type: Dict[Text, BasicType]
+        self.basicTypeNamed=collections.OrderedDict()  #type: Dict[Text, BasicType]
 
         self.classNamed = collections.OrderedDict()  #type: Dict[Text, Class]
         #: Map of classes (including association classes), indexed by name.
@@ -112,7 +109,7 @@ class ClassModel(Model):
 
     @property
     def metamodel(self):
-        return metamodel
+        return METAMODEL
 
     @property
     def label(self):
@@ -674,11 +671,18 @@ class AssociationClass(Class, Association):
         del self.model.associationNamed[name]
         self.model.associationClassNamed[name] = self
 
-metamodel = Metamodel(
+METAMODEL = Metamodel(
     id='cl',
     label='class',
     extension='.clm',
     modelClass=ClassModel
+)
+
+MetamodelDependency(
+    sourceId='cl',
+    targetId='gl',
+    optional=True,
+    multiple=True,
 )
 
 # http://pythex.org

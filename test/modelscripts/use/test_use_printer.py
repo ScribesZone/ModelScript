@@ -5,7 +5,7 @@ from  modelscribes.use.use.printer import (
     UseModelPrinter
 )
 from modelscribes.use.use.parser import (
-    UseSource
+    UseModelSource
 )
 
 def testGenerator_UseOCLPrinter():
@@ -23,7 +23,7 @@ def testGenerator_UseOCLPrinter():
 
 def check_UseOCLPrinter(case):
     useFile = getUseFile(case['use'])
-    model = UseSource(useFile).classModel
+    model = UseModelSource(useFile).classModel
     assert model is not None
     UseModelPrinter(model).display()
 

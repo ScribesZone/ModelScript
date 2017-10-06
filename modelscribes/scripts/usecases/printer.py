@@ -7,7 +7,7 @@ from modelscribes.base.printers import (
 
 from modelscribes.metamodels.usecases import (
     UsecaseModel,
-    metamodel
+    METAMODEL
 )
 
 
@@ -75,6 +75,6 @@ class UsecaseModelPrinter(AbstractPrinter):  # check
 
 # TODO: implement UsecaseSourcePrinter
 
-metamodel.registerModelPrinter(UsecaseModelPrinter)
+METAMODEL.registerModelPrinter(UsecaseModelPrinter)
 # TODO: register UsecaseSourcePrinter
 

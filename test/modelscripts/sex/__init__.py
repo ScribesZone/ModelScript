@@ -5,14 +5,14 @@ from test.modelscripts import (
 )
 
 from modelscribes.scripts.usecases.parser import UsecaseModelSource
-from modelscribes.use.use.parser import UseSource
+from modelscribes.use.use.parser import UseModelSource
 from modelscribes.scripts.permissions.parser import (
     PermissionModelSource
 )
 
 def _getModelsForScenario(soilDir, fuse, fucm=None, fpmm=None):
     usefilename = getTestFile(os.path.join(soilDir, fuse))
-    uf=UseSource(usefilename)
+    uf=UseModelSource(usefilename)
     assert(uf.isValid)
     clm=uf.classModel
 

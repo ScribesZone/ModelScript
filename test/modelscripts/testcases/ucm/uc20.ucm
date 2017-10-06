@@ -1,3 +1,5 @@
+--@ usecase model UC20
+
 system CyberBibliotheque
 
 actor Personne

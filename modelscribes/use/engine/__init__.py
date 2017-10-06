@@ -9,6 +9,7 @@ Otherwise the value UseEngine.USE_OCL_COMMAND should be set explicitely.
 
 
 from typing import Text, List, Optional, Union
+import os
 
 import logging
 # logging.basicConfig(level=logging.DEBUG)
@@ -16,7 +17,6 @@ log = logging.getLogger('test.' + __name__)
 
 import os
 import tempfile
-import operator
 import re
 
 __all__ = [
@@ -27,14 +27,23 @@ __all__ = [
 DEBUG=0
 
 #: Path of to the use command binary.
-#: If the default value (``"use"``) does not work, for instance if
-#: the use binary is not in the system path, you can change this
-#: value either in the source, or programmatically using something
-#: like ::
+#: If the default value (``"use"``) does not work,
+# for instance if the use binary is not in the system
+# path, you can change this value either in the source,
+# or programmatically using something like ::
 #:
-#:     USEEngine.USE_OCL_COMMAND = r'c:\Path\To\UseCommand\bin\use'
-#:
-USE_OCL_COMMAND = 'use'
+#:     USEEngine.USE_OCL_COMMAND = \
+#          r'c:\Path\To\UseCommand\bin\use'
+
+
+USE_SYSTEM_INSTALLED_USE=False
+
+if USE_SYSTEM_INSTALLED_USE:
+    USE_OCL_COMMAND = 'use'
+else:
+    USE_OCL_COMMAND=os.path.join(
+        os.path.dirname(os.path.realpath(__file__)),
+        'res','use-4.1.1','bin', 'use')
 
 
 class USEEngine(object):
@@ -215,11 +224,14 @@ class USEEngine(object):
 
     @classmethod
     def analyzeUSEModel(cls, useFileName):
+        #type: (Text) -> int
         """
-        Submit a ``.use`` model to use and indicates return the exit code.
+        Submit a ``.use`` model to use and indicates
+        return the exit code.
 
         Args:
-            useFileName (str): The path of the ``.use`` file to analyze.
+            useFileName (Text):
+                The path of the ``.use`` file to analyze.
 
         Returns (int):
             use command exit code.

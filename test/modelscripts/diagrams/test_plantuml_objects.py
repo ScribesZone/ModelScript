@@ -35,7 +35,7 @@ def testGenerator_UseOclModel_full():
 
     #--- get the class model ----------------------
     use_file_name=os.path.join(test_dir,'main.use')
-    use_file = modelscribes.use.use.parser.UseSource(
+    use_file = modelscribes.use.use.parser.UseModelSource(
         use_file_name)
     assert(use_file.isValid)
     class_model = use_file.classModel

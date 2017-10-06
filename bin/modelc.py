@@ -13,6 +13,7 @@ from collections import OrderedDict
 #TODO: add permission/access management
 #TODO: -v / -e -w to display errors/suppress warning
 
+import modelscribes.metamodels
 
 thisDir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(thisDir,'..'))

@@ -6,25 +6,31 @@ import collections
 from typing import Dict, Text
 
 from modelscribes.base.sources import SourceElement
-from modelscribes.megamodels import Model, Metamodel
+from modelscribes.megamodels.metamodels import Metamodel
+from modelscribes.megamodels.dependencies.metamodels import (
+    MetamodelDependency
+)
+
+from modelscribes.megamodels.models import Model
 from modelscribes.metamodels.permissions.sar import Subject
 
 
 class UsecaseModel(Model):
-    def __init__(self, source=None):
-        super(UsecaseModel, self).__init__(source=source)
+    def __init__(self):
+        super(UsecaseModel, self).__init__()
         self.system=None # Filled later
 
         self.actorNamed = collections.OrderedDict()
         # type: Dict[Text, Actor]
 
     @property
-    def actors(self):
-        return self.actorNamed.values()
+    def metamodel(self):
+        #type: () -> Metamodel
+        return METAMODEL
 
     @property
-    def metamodel(self):
-        return metamodel
+    def actors(self):
+        return self.actorNamed.values()
 
 
 class System(SourceElement):
@@ -102,9 +108,16 @@ class Usecase(SourceElement, Subject):
 
 
 
-metamodel = Metamodel(
+METAMODEL = Metamodel(
     id='uc',
     label='usecase',
     extension='.ucm',
-    modelClass=UsecaseModel
+    modelClass=UsecaseModel,
+    modelKinds=('', 'preliminary', 'detailled')
+)
+MetamodelDependency(
+    sourceId='uc',
+    targetId='gl',
+    optional=True,
+    multiple=True,
 )

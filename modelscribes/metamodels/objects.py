@@ -24,15 +24,16 @@ from typing import List, Optional, Dict
 from modelscribes.metamodels.classes import (
     Attribute,
 )
-from modelscribes.megamodels import Model, Metamodel
+from modelscribes.megamodels.metamodels import Metamodel
+from modelscribes.megamodels.models import Model
+from modelscribes.megamodels.dependencies.metamodels import (
+    MetamodelDependency
+)
 
 
 class ObjectModel(Model):
-    def __init__(self, source=None, name=None):
-        super(ObjectModel, self).__init__(source=source)
-
-        self.name=name
-
+    def __init__(self):
+        super(ObjectModel, self).__init__()
         self.objects = []
         # type: List[Object]
 
@@ -42,10 +43,6 @@ class ObjectModel(Model):
         self.linkObjects = []
         # type: List[LinkObject]
 
-    @property
-    def metamodel(self):
-        return metamodel
-
     def status(self):
         return (
             '%i objects\n%i links\n%i link objects' % (
@@ -53,6 +50,11 @@ class ObjectModel(Model):
             len(self.links),
             len(self.linkObjects)
         ))
+
+    @property
+    def metamodel(self):
+        #type: () -> Metamodel
+        return METAMODEL
 
 class StateElement(object):
     def __init__(self, state):
@@ -158,9 +160,27 @@ class LinkObject(Object, Link):
     def delete(self):
         raise NotImplementedError('Delete operation on link object is not implemented')
 
-metamodel = Metamodel(
+METAMODEL = Metamodel(
     id='ob',
     label='object',
     extension='.obm',
     modelClass=ObjectModel
+)
+MetamodelDependency(
+    sourceId='ob',
+    targetId='gl',
+    optional=True,
+    multiple=True,
+)
+MetamodelDependency(
+    sourceId='ob',
+    targetId='ob',
+    optional=True,
+    multiple=True,
+)
+MetamodelDependency(
+    sourceId='ob',
+    targetId='cl',
+    optional=True,
+    multiple=True,
 )

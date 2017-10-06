@@ -1,0 +1,10 @@
+--@ usecase model uc9
+
+
+system cyberBibliotheque
+
+actor employe
+actor Bibliothequaire
+usecase  sortirLivre
+usecase RentrerLivre
+

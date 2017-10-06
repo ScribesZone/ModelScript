@@ -29,16 +29,14 @@ from modelscribes.base.symbols import (
     Symbol
 )
 
-from modelscribes.base.sources import (
-    ModelSourceFile,
-    DocCommentLines,
-)
+from modelscribes.base.parsers import DocCommentLines
+from modelscribes.megamodels.sources import ModelSourceFile
+from modelscribes.megamodels.metamodels import Metamodel
 from modelscribes.base.issues import (
     Issue,
-    IssueBox,
     LocalizedIssue,
     Levels,
-    FatalError,
+    FatalError
 )
 import modelscribes.use.engine
 from modelscribes.metamodels.classes import (
@@ -52,6 +50,7 @@ from modelscribes.metamodels.classes import (
     Association,
     Role,
     AssociationClass,
+    METAMODEL
 )
 
 from modelscribes.metamodels.classes.expressions import (
@@ -61,7 +60,7 @@ from modelscribes.metamodels.classes.expressions import (
 )
 
 __all__ = (
-    'UseSource'
+    'UseModelSource'
 )
 
 
@@ -69,78 +68,86 @@ __all__ = (
 #    Operation, Invariant, Association, Role, AssociationClass, \
 #    PreCondition, PostCondition, BasicType
 
-def removeExtraSpaces(x):
+def _removeExtraSpaces(x):
     return ' '.join(x.split())
 
-class UseSource(ModelSourceFile):
+
+class UseModelSource(ModelSourceFile):
     """
     Abstraction of ``.use`` source file.
     This source file can be valid or not. In this later case
     a reference to the contained class model will be available.
     """
 
-    def __init__(self, useFileName):
+    def __init__(self, fileName):
+        #type: (Text) -> None
         """
         Execute the given .use file with use interpreter, then
         parse the result (possiblity with errors) and finally
-        build and return a UseSource.
+        build and return a UseModelSource.
 
-        If the source is 'use valid', this the UseSource contains a
+        If the source is 'use valid', this the UseModelSource contains a
         class model, otherwise it contains the list of errors
         as well as the USE OCL command exit code.
 
-        :param useFileName: The path of the '.use' source file to analyze
+        :param fileName:
+            The path of the '.use' source file to analyze
         Examples:
             see test.modelscript.test_parser
         """
-        #type: (Text) -> None
 
         #: class model representing the file in a conceptual way
         #: start with an empty class model but will be set to None
         #: in case of Errors
 
-        try:
+        # noinspection PySuperArguments
 
-            # noinspection PySuperArguments
-            super(UseSource, self).__init__(
-                fileName=useFileName)
-            self.classModel = ClassModel(source=self)
+        self.commandExitCode = None #type: Optional[int]
+        """Exit code of use command"""
 
-            self.commandExitCode = None #type: Optional[int]
-            """Exit code of use command"""
-            # Filled by _ex
+        self.isOldUSEFile=fileName.endswith('.use')
+        # Filled by __executeUSEToExtractErrors
+
+        super(UseModelSource, self).__init__(
+            fileName=fileName,
+            noSymbolChecking=self.isOldUSEFile,
+            # activate the patch to recognize USE OCL "model <name>"
+            recognizeUSEOCLNativeModelDefinition=True)
 
 
-
-            # Try to validate the class model and fill
-            #       self.errors,
-            #       self.commandExitCode,
-            self.__executeUSEToExtractErrors()
-            if self.isValid:
-                # No errors. Parse the regular .use source file.
-                # (There is no comment in the output of use)
-                self.__parseLinesAndCreateModel()
-                self.__resolveModel()
-            if not self.isValid:
-                self.classModel=None
-        except  FatalError:
-            self.classModel=None
-            # Error has already been already registered
-            # so nothing else to do here.
-            pass
-
-    @property
-    def model(self):
-        return self.classModel
-
-    @property
-    def usedModelByKind(self):
-        return {}
 
 
     #--------------------------------------------------------------------------
     #    Class implementation
     #--------------------------------------------------------------------------
+
+    @property
+    def classModel(self):
+        m=self.model #type: ClassModel
+        return m
+
+
+    @property
+    def metamodel(self):
+        #type: () -> Metamodel
+        return METAMODEL
+
+    @property
+    def megamodelStatementPrefix(self):
+        return r' *(--)? *@'
+
+    def parseToFillModel(self):
+        # Try to validate the class model and fill
+        #       self.errors,
+        #       self.commandExitCode,
+        self.__executeUSEToExtractErrors()
+
+        if self.isValid:
+            # No errors. Parse the regular .use source file.
+            # (There is no comment in the output of use)
+            self.__parseLinesAndCreateModel()
+            self.__resolveModel()
+
 
     def __executeUSEToExtractErrors(self):
         """
@@ -153,7 +160,8 @@ class UseSource(ModelSourceFile):
         """
         engine = modelscribes.use.engine.USEEngine
         try:
-            self.commandExitCode = engine.analyzeUSEModel(self.fileName)
+            self.commandExitCode = engine.analyzeUSEModel(
+                self.fileName)
         except Exception as e:
             Issue(
                 origin=self,
@@ -161,8 +169,10 @@ class UseSource(ModelSourceFile):
                 message=('Cannot execute "use" tool. %s' % str(e))
             )
         if self.commandExitCode != 0:
+            #create errors from the ouput generated by USE
             for line in engine.err.splitlines():
                 self.__addErrorFromLine(line)
+            #TODO: check this comment
             # Remove 2 lines at the beginning (use intro + command)
             # and two lines at the end (information + quit command)
             # tmp = engine.out.splitlines()[2:-2]
@@ -201,7 +211,7 @@ class UseSource(ModelSourceFile):
                     fileName=m.group('filename') # FIXME if needed (note ???)
                     )
                 return
-        except:
+        except FatalError:
             pass
         Issue(
             origin=self,
@@ -414,7 +424,7 @@ class UseSource(ModelSourceFile):
                     if l != ''
                 ]
                 for literal in literals:
-                    if not Symbol.is_camlCase(literal):
+                    if not self.isOldUSEFile and not Symbol.is_camlCase(literal):
                         LocalizedIssue(
                             sourceFile=self,
                             level=Levels.Warning,
@@ -423,7 +433,7 @@ class UseSource(ModelSourceFile):
                                 % literal),
                             line=line_no
                         )  # TODO: add column
-                if not Symbol.is_CamlCase(m.group('name')):
+                if not self.isOldUSEFile and not Symbol.is_CamlCase(m.group('name')):
                     LocalizedIssue(
                         sourceFile=self,
                         level=Levels.Warning,
@@ -467,7 +477,7 @@ class UseSource(ModelSourceFile):
                                     if l != ''
                                     ]
                         for literal in literals:
-                            if not Symbol.is_camlCase(literal):
+                            if not self.isOldUSEFile and not Symbol.is_camlCase(literal):
                                 LocalizedIssue(
                                     sourceFile=self,
                                     level=Levels.Warning,
@@ -496,7 +506,7 @@ class UseSource(ModelSourceFile):
                     superclasses = ()
                 else:
                     superclasses = [c.strip() for c in m.group('superclasses').split(',')]
-                if not Symbol.is_CamlCase(m.group('name')):
+                if not self.isOldUSEFile and  not Symbol.is_CamlCase(m.group('name')):
                     LocalizedIssue(
                         sourceFile=self,
                         level=Levels.Warning,
@@ -542,7 +552,7 @@ class UseSource(ModelSourceFile):
                     superclasses = [c.strip() for c in m.group('superclasses').split(',')]
                     # print('YYY'+m.group('name'))
                     # print(superclasses)
-                if not Symbol.is_CamlCase(m.group('name')):
+                if not self.isOldUSEFile and not Symbol.is_CamlCase(m.group('name')):
                     LocalizedIssue(
                         sourceFile=self,
                         level=Levels.Warning,
@@ -582,7 +592,7 @@ class UseSource(ModelSourceFile):
                     is_derived = m.group('keyword') == 'derive'
                     is_init = m.group('keyword') == 'init'
                     expression = m.group('expression')
-                    if not Symbol.is_camlCase(m.group('name')):
+                    if not self.isOldUSEFile and not Symbol.is_camlCase(m.group('name')):
                         LocalizedIssue(
                             sourceFile=self,
                             level=Levels.Warning,
@@ -632,7 +642,7 @@ class UseSource(ModelSourceFile):
                     )
                     signature = signature.replace(' ','')
                     expr=m.group('expr')
-                    if not Symbol.is_camlCase(m.group('name')):
+                    if not self.isOldUSEFile and not Symbol.is_camlCase(m.group('name')):
                         LocalizedIssue(
                             sourceFile=self,
                             level=Levels.Warning,
@@ -672,7 +682,7 @@ class UseSource(ModelSourceFile):
                 current_attribute = None
                 current_operation = None
                 current_context = None
-                if not Symbol.is_CamlCase(m.group('name')):
+                if not self.isOldUSEFile and not Symbol.is_CamlCase(m.group('name')):
                     LocalizedIssue(
                         sourceFile=self,
                         level=Levels.Warning,
@@ -736,7 +746,7 @@ class UseSource(ModelSourceFile):
                     if m.group('subsets') == '':
                         subsets = None
                     else:
-                        subsets = removeExtraSpaces(m.group('subsets')).split('subsets ')[1:]
+                        subsets = _removeExtraSpaces(m.group('subsets')).split('subsets ')[1:]
                     # Parse the 'qualifiers' series
                     if m.group('qualifiers') is None:
                         qualifiers = None
@@ -755,7 +765,7 @@ class UseSource(ModelSourceFile):
                                 'The name of the role is not defined.'),
                             line=line_no
                         )  # TODO: add column
-                    elif not Symbol.is_camlCase(role_name):
+                    elif not self.isOldUSEFile and not Symbol.is_camlCase(role_name):
                         LocalizedIssue(
                             sourceFile=self,
                             level=Levels.Warning,

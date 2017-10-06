@@ -2,7 +2,7 @@
 
 from __future__ import unicode_literals, print_function, absolute_import, division
 from modelscribes.metamodels.objects import (
-    metamodel
+    METAMODEL
 )
 from modelscribes.use.sex.parser import (
     SoilSource
@@ -20,4 +20,4 @@ class ObjectModelSource(SoilSource):  # use sex
 
     #TODO: implementation to be continued
 
-metamodel.registerSource(ObjectModelSource)
+METAMODEL.registerSource(ObjectModelSource)

@@ -5,7 +5,7 @@ from modelscribes.base.printers import (
     AbstractPrinter
 )
 from modelscribes.metamodels.permissions.accesses import (
-    metamodel,
+    METAMODEL,
     AccessModel,
 )
 from modelscribes.scripts.permissions.printer import (
@@ -46,4 +46,4 @@ class AccessModelPrinter(AbstractPrinter): # TODO: check this
         ))
 
 
-metamodel.registerModelPrinter(AccessModelPrinter)
+METAMODEL.registerModelPrinter(AccessModelPrinter)

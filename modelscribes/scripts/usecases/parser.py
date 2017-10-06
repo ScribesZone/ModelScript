@@ -1,44 +1,62 @@
 # coding=utf-8
 from __future__ import unicode_literals, print_function, absolute_import, division
 from typing import Text
-import os
 import re
 
-from modelscribes.base.sources import (
-    ModelSourceFile,
+from modelscribes.base.symbols import (
+    Symbol
 )
+
+from modelscribes.megamodels.sources import ModelSourceFile
 from modelscribes.scripts.usecases.printer import (
     UsecaseModelPrinter
+)
+from modelscribes.base.issues import (
+    Issue,
+    LocalizedIssue,
+    Levels,
+    FatalError,
 )
 from modelscribes.metamodels.usecases import (
     UsecaseModel,
     System,
     Actor,
     Usecase,
-    metamodel
+    METAMODEL
+)
+
+__all__=(
+    'UsecaseModelSource'
 )
 DEBUG=0
+
+
+# Todo, check errors, etc.
 
 class UsecaseModelSource(ModelSourceFile):
     def __init__(self, usecaseFileName):
         #type: (Text) -> None
         super(UsecaseModelSource, self).__init__(
-            fileName=usecaseFileName
+            fileName=usecaseFileName,
         )
-        self.usecaseModel = UsecaseModel(source=self)
-        self._parse()
-        # Todo, check errors, etc.
+
 
     @property
-    def model(self):
-        return self.usecaseModel
+    def usecaseModel(self):
+        #type: () -> UsecaseModel
+        m=self.model #type: UsecaseModel
+        return m
+
 
     @property
-    def usedModelByKind(self):
-        _={}
-        return _
+    def metamodel(self):
+        return METAMODEL
 
-    def _parse(self):
+    @property
+    def megamodelStatementPrefix(self):
+        return r' *(--)? *@'
+
+    def parseToFillModel(self):
 
         def _ensureActor(name):
             if name in self.usecaseModel.actorNamed:
@@ -82,22 +100,34 @@ class UsecaseModelSource(ModelSourceFile):
             m = re.match(r, line)
             if m:
                 continue
+            # TODO: add proper comment management
 
             #--- system X -------------------------
             r = begin(0)+r'system +(?P<name>\w+)'+end
             m = re.match(r, line)
             if m:
                 if self.usecaseModel.system is not None:
-                    raise SyntaxError(
-                        'Error at line #%i: system defined twice'
-                        % line_no
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Warning,
+                        message='System defined twice',
+                        line=line_no,
                     )
+                name=m.group('name')
                 System(
                     usecaseModel=self.usecaseModel,
-                    name=m.group('name'),
+                    name=name,
                     lineNo=line_no,
                 )
-
+                if not Symbol.is_CamlCase(name):
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Warning,
+                        message=(
+                            '"%s" should be in CamlCase.'
+                            % name),
+                        line=line_no
+                    )
                 continue
 
             #--- actor X --------------------------
@@ -106,31 +136,52 @@ class UsecaseModelSource(ModelSourceFile):
             if m:
                 current_usecase=None
                 if self.usecaseModel.system is None:
-                    raise SyntaxError(
-                        'Error at line #%i: system not defined'
-                        % line_no
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Warning,
+                        message='System is not defined yet.',
+                        line=line_no,
                     )
-                n=m.group('name')
-                current_actor=_ensureActor(n)
+                name=m.group('name')
+                current_actor=_ensureActor(name)
                 current_actor.kind=m.group('kind'),
                 current_actor.lineNo=line_no
                 current_section='actor'
+                if not Symbol.is_CamlCase(name):
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Warning,
+                        message=(
+                            '"%s" should be in CamlCase.'
+                            % name),
+                        line=line_no
+                    )
                 continue
 
             #--- usecase X --------------------------
             r = begin(0)+r'usecase +(?P<name>\w+)'+end
             m = re.match(r, line)
             if m:
-                current_actor=None
                 if self.usecaseModel.system is None:
-                    raise SyntaxError(
-                        'Error at line #%i: system not defined'
-                        % line_no
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Warning,
+                        message='System is not defined yet.',
+                        line=line_no,
                     )
-                n=m.group('name')
-                current_usecase=_ensureUsecase(n)
+                name=m.group('name')
+                current_usecase=_ensureUsecase(name)
                 current_usecase.lineNo = line_no
                 current_section='usecase'
+                if not Symbol.is_CamlCase(name):
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Warning,
+                        message=(
+                            '"%s" should be in CamlCase.'
+                            % name),
+                        line=line_no
+                    )
                 continue
 
             if current_actor:
@@ -151,30 +202,36 @@ class UsecaseModelSource(ModelSourceFile):
                         uc.lineNo=line_no
                     continue
 
-            raise SyntaxError(
-                'Error at line #%i: syntax error'
-                % line_no
+            LocalizedIssue(
+                sourceFile=self,
+                level=Levels.Error,
+                message=(
+                    'Syntax error. Line ignored.'),
+                line=line_no
             )
 
         if self.usecaseModel.system is None:
-            raise SyntaxError(
-                'Error: no system defined'
+            Issue(
+                origin=self,
+                level=Levels.Error,
+                message=(
+                    'No "system" definition.'),
             )
 
-    def printStatus(self):
-        """
-        Print the status of the file:
+    # def printStatus(self):
+    #     """
+    #     Print the status of the file:
+    #
+    #     * the list of errors if the file is invalid,
+    #     * a short summary of entities (classes, attributes, etc.) otherwise
+    #     """
+    #
+    #     if self.isValid:
+    #         p=UsecaseModelPrinter(self.usecaseModel, displayLineNos=True)
+    #         print(p.do())
+    #     else:
+    #         print('%s error(s) in the usecase model' % len(self.issueBox))
+    #         for e in self.issueBox:
+    #             print(e)
 
-        * the list of errors if the file is invalid,
-        * a short summary of entities (classes, attributes, etc.) otherwise
-        """
-
-        if self.isValid:
-            p=UsecaseModelPrinter(self.usecaseModel, displayLineNos=True)
-            print(p.do())
-        else:
-            print('%s error(s) in the usecase model' % len(self.issueBox))
-            for e in self.issueBox:
-                print(e)
-
-metamodel.registerSource(UsecaseModelSource)
+METAMODEL.registerSource(UsecaseModelSource)

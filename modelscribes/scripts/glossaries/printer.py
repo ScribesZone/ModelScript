@@ -7,7 +7,7 @@ from modelscribes.base.printers import (
 )
 from modelscribes.metamodels.glossaries import (
     GlossaryModel,
-    metamodel
+    METAMODEL
 )
 from modelscribes.metamodels.texts import (
     Reference
@@ -85,5 +85,5 @@ class GlossaryModelPrinter(AbstractPrinter):
 #TODO: define GlossaryModelSourcePrinter
 
 
-metamodel.registerModelPrinter(GlossaryModelPrinter)
+METAMODEL.registerModelPrinter(GlossaryModelPrinter)
 #TODO: register GlossaryModelSourcePrinter when ready

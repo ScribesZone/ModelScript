@@ -9,7 +9,7 @@ This is currently only a preliminary version.
 
 import os
 import logging
-from modelscribes.metamodels.classes import metamodel
+from modelscribes.metamodels.classes import METAMODEL
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
@@ -229,4 +229,4 @@ class ClassDiagramPrinter(object):
     #     self.eolComment(condition)
     #     self.out(indent(prefix_rest,condition.expression)+'\n')
 
-metamodel.registerDiagramPrinter(ClassDiagramPrinter)
+METAMODEL.registerDiagramPrinter(ClassDiagramPrinter)

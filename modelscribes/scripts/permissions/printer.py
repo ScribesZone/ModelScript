@@ -8,7 +8,7 @@ from modelscribes.base.printers import (
 )
 from modelscribes.metamodels.permissions import (
     UCPermissionModel,
-    metamodel
+    METAMODEL
 )
 from modelscribes.metamodels.permissions.sar import Action
 
@@ -81,4 +81,4 @@ def actionNames(actions):
           for name in 'CRUDX']
     )
 
-metamodel.registerModelPrinter(PermissionModelPrinter)
+METAMODEL.registerModelPrinter(PermissionModelPrinter)

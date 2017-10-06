@@ -14,7 +14,7 @@ from modelscribes.base.printers import (
     AnnotatedSourcePrinter
 )
 from modelscribes.use.use.parser import (
-    UseSource
+    UseModelSource
 )
 from modelscribes.use.use.printer import (
     UseSourcePrinter
@@ -90,7 +90,7 @@ def testGenerator_use4Dir():
         yield check_isValid, relfile
 
 def check_isValid(reltestfile):
-    use_source = UseSource(getTestFile(reltestfile))
+    use_source = UseModelSource(getTestFile(reltestfile))
     AnnotatedSourcePrinter(use_source).display()
     print('====='*20)
     UseSourcePrinter(use_source).display()

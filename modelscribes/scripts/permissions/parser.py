@@ -10,28 +10,22 @@ import re
 
 from typing import Text, List, Optional, Union
 
-from modelscribes.base.sources import (
-    ModelSourceFile,
-)
+from modelscribes.megamodels.sources import ModelSourceFile
 from modelscribes.metamodels.classes import (
     Entity,
     ClassModel,
     Class,
     Association,
     AssociationClass,
-    # Attribute,
-    # Role,
 )
 from modelscribes.metamodels.permissions import (
     UCPermissionModel,
     FactorizedPermissionRule,
-    metamodel
+    METAMODEL
 )
 from modelscribes.metamodels.permissions.sar import Subject, Action, Resource
 from modelscribes.metamodels.usecases import (
     UsecaseModel,
-    # Actor,
-    # Usecase,
 )
 from modelscribes.scripts.permissions.printer import (
     PermissionModelPrinter
@@ -41,40 +35,35 @@ DEBUG=4
 
 class PermissionModelSource(ModelSourceFile):
 
-    def __init__(self, permissionFileName, usecaseModel, classModel):
-        #type: (Text, UsecaseModel, ClassModel)->None
+    def __init__(self, fileName):
+        #type: (Text)->None
         super(PermissionModelSource, self).__init__(
-            fileName=permissionFileName)
-
-        self.usecaseModel = usecaseModel
-        self.classModel = classModel
-        self.permissionModel = UCPermissionModel(
-            usecaseModel=usecaseModel,
-            classModel=classModel,
-        )
+            fileName=fileName)
 
         self._parse()
         # Todo, check errors, etc.
 
     @property
-    def model(self):
-        return self.permissionModel
+    def permissionModel(self):
+        #type: () -> UCPermissionModel
+        m=self.model #type: UCPermissionModel
+        return m
 
     @property
-    def usedModelByKind(self):
-        _={}
-        if self.classModel is not None:
-            _['cl'] = self.classModel
-        if self.usecaseModel is not None:
-            _['uc'] = self.usecaseModel
-        return _
+    def metamodel(self):
+        return METAMODEL
+
+    @property
+    def megamodelStatementPrefix(self):
+        return r' *(--)? *@'
 
     def printStatus(self):
         """
         Print the status of the file:
 
         * the list of errors if the file is invalid,
-        * a short summary of entities (classes, attributes, etc.) otherwise
+        * a short summary of entities (classes,
+          attributes, etc.) otherwise
         """
 
         if self.isValid:
@@ -96,8 +85,7 @@ class PermissionModelSource(ModelSourceFile):
 
         if DEBUG>=1:
             print('\nParsing %s\n' % self.fileName)
-        # print('************* %s lines' % len(list(self.sourceLines)) )
-        #print('************* %s lines' % len(list(self.sourceLines)) )
+
 
         for (line_index, line) in enumerate(self.sourceLines):
             original_line = line
@@ -110,20 +98,20 @@ class PermissionModelSource(ModelSourceFile):
             if DEBUG>=2:
                 print ('#%i : %s' % (line_no, original_line))
 
-            #---- blank lines ---------------------------------------------
+            #---- blank lines ------------------------
             r = '^ *$'
             m = re.match(r, line)
             if m:
                 continue
 
-            #---- comments -------------------------------------------------
+            #---- comments ----------------------------
             r = '^ *--.*$'
             m = re.match(r, line)
             if m:
                 continue
 
 
-            #--- permission statement ------------------------
+            #--- permission statement ------------------
             r = (begin(0)
                  +r' *(?P<subjects>[\w,]+)'
                  +r' +(?P<actions>C?R?U?D?X?)'
@@ -295,4 +283,4 @@ def _resolve_resource(classModel, expr):
     else:
         return None
 
-metamodel.registerSourcePrinter(PermissionModelSource)
+METAMODEL.registerSource(PermissionModelSource)

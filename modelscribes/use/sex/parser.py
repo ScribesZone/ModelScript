@@ -53,11 +53,8 @@ from abc import ABCMeta
 
 from modelscribes.use.engine import USEEngine
 
-from modelscribes.base.sources import (
-    ModelSourceFile,
-    DocCommentLines,
-)
-
+from modelscribes.base.parsers import DocCommentLines
+from modelscribes.megamodels.sources import ModelSourceFile
 
 from modelscribes.base.issues import (
     Issue,
@@ -81,6 +78,7 @@ from modelscribes.metamodels.scenarios import (
     ScenarioModel,
     ActorInstance,
     ContextBlock,
+    METAMODEL
 )
 from modelscribes.metamodels.scenarios.blocks import (
     UsecaseInstanceBlock,
@@ -112,9 +110,6 @@ from modelscribes.metamodels.scenarios.evaluations.operations import (
 from modelscribes.metamodels.permissions import (
     PermissionModel
 )
-from modelscribes.scripts.megamodels.parser import (
-    matchImportExpr
-)
 
 __all__ = (
     'SoilSource',
@@ -129,15 +124,15 @@ def isEmptySoilFile(file):
     return match is None
 
 
-class _PolymorphicSource(ModelSourceFile):
+class _SexOrSoilSource(ModelSourceFile):
     __metaclass__ = ABCMeta
 
     def __init__(self,
                  evaluateScenario,
                  soilFileName,
-                 classModel=None,
-                 usecaseModel=None,
-                 permissionModel=None,
+                 # classModel=None,
+                 # usecaseModel=None,
+                 # permissionModel=None,
                  allowedFeatures=(
                          'delete',
                          'query',
@@ -198,12 +193,12 @@ class _PolymorphicSource(ModelSourceFile):
         # call the super class but without reading file
         # for the moment. The method doReadFileLines()
         # will be called explicitely
-        super(_PolymorphicSource, self).__init__(
+        super(_SexOrSoilSource, self).__init__(
             fileName=soilFileName,
             realFileName=None,  # will be set later
             # realFileName is ignored if None
             preErrorMessages=preIssueMessages,
-            postponeFileRead=True)
+            readFileLater=True)
 
         self.evaluateScenario=evaluateScenario  #type: bool
 
@@ -215,30 +210,41 @@ class _PolymorphicSource(ModelSourceFile):
         self.modelHeader=modelHeader
         self.allowedFeatures=allowedFeatures
 
-        # create an empty scenario populated by _parse
-        self.scenario = ScenarioModel(  # type:ScenarioModel
-            source=self,
-            classModel=self.classModel,  # this can change later with import
-            name=None,
-            usecaseModel=self.usecaseModel, # this can change later
-            permissionModel=self.permissionModel, # this can change later
-            file=self.soilFileName)
+        # # create an empty scenario populated by _parse
+        # self.scenario = ScenarioModel(  # type:ScenarioModel
+        #     source=self,
+        #     classModel=self.classModel,  # this can change later with import
+        #     name=None,
+        #     usecaseModel=self.usecaseModel, # this can change later
+        #     permissionModel=self.permissionModel, # this can change later
+        #     file=self.soilFileName)
+
+    @property
+    def metamodel(self):
+        return METAMODEL
+
+    @property
+    def scenario(self):
+        m=self.model #type: ScenarioModel
+        return m
+
+    # @property
+    # def usedModelByKind(self):
+    #     _={}
+    #     if self.classModel is not None:
+    #         _['cl'] = self.classModel
+    #     if self.usecaseModel is not None:
+    #         _['uc'] = self.usecaseModel
+    #     if self.permissionModel is not None:
+    #         _['pm'] = self.permissionModel
+    #     return _
 
 
     @property
-    def model(self):
-        return self.scenario
+    def megamodelStatementPrefix(self):
+        return self._parsePrefix+super(_SexOrSoilSource, self).megamodelStatementPrefix
 
-    @property
-    def usedModelByKind(self):
-        _={}
-        if self.classModel is not None:
-            _['cl'] = self.classModel
-        if self.usecaseModel is not None:
-            _['uc'] = self.usecaseModel
-        if self.permissionModel is not None:
-            _['pm'] = self.permissionModel
-        return _
+
 
     def doParse(self, realFileName):
         """
@@ -258,7 +264,6 @@ class _PolymorphicSource(ModelSourceFile):
             else:
                 self.scenario=None
         except FatalError:
-            self.scenario = None
             # The fatal error has already been already registered
             # so nothing else to do here.
             pass
@@ -1393,7 +1398,7 @@ class _PolymorphicSource(ModelSourceFile):
             continue
 
 
-class SoilSource(_PolymorphicSource):
+class SoilSource(_SexOrSoilSource):
     """
     Source corresponding directly to the raw .soil source given
     as the parameter.
@@ -1404,22 +1409,22 @@ class SoilSource(_PolymorphicSource):
     """
     def __init__(
             self,
-            soilFileName,
-            classModel,
-            usecaseModel=None):
+            soilFileName):
+            # classModel,
+            # usecaseModel=None):
         #type: (Text, ClassModel) -> None
         super(SoilSource, self).__init__(
             evaluateScenario=False,
             soilFileName=soilFileName,
-            classModel=classModel,
-            usecaseModel=usecaseModel,
+            # classModel=classModel,
+            # usecaseModel=usecaseModel,
             parsePrefix='^',
             preIssueMessages=[])
         self.doParse(soilFileName)
 
 
 
-class SexSource(_PolymorphicSource):
+class SexSource(_SexOrSoilSource):
     """
     Source corresponding to a scenario execution with execution results.
     The .soil file merged with the trace of the execution of USE .soil file.
@@ -1468,10 +1473,10 @@ class SexSource(_PolymorphicSource):
         assert classModel is not None
 
 
-        # The classModel it must have to source to be parsed by USE
+        # The classModel must have a source to be parsed by USE
         assert classModel.source is not None
         # TODO: it would be possible to parse/evaluate
-        # the scn without .use or to generate a source from
+        # In fact the scn without .use or to generate a source from
         # the model. Low priority for now.
 
 
@@ -1519,7 +1524,7 @@ class SexSource(_PolymorphicSource):
                     message='File not found: %s' % soilFileName))
         try:
             sex_file=USEEngine.executeSoilFileAsSex(
-                useFile=classModel.source.fileName,
+                useFile=classModel.sourceImport.fileName,
                 soilFile=soilFileName)
 
             return sex_file

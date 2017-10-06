@@ -10,7 +10,7 @@ from modelscribes.metamodels.objects import (
     Object,
     Link,
     LinkObject,
-    metamodel
+    METAMODEL
 )
 
 
@@ -36,5 +36,5 @@ class ObjectModelPrinter(AbstractPrinter):
 
 #TODO: add ObjectModelSourcePrinter
 
-metamodel.registerModelPrinter(ObjectModelPrinter)
+METAMODEL.registerModelPrinter(ObjectModelPrinter)
 #TODO: register ObjectModelSourcePrinter
