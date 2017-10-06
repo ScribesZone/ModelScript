@@ -57,7 +57,6 @@ class UsecaseModelSource(ModelSourceFile):
         return r' *(--)? *@'
 
     def parseToFillModel(self):
-
         def _ensureActor(name):
             if name in self.usecaseModel.actorNamed:
                 return self.usecaseModel.actorNamed[name]

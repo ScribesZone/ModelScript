@@ -40,7 +40,7 @@ class PermissionModelSource(ModelSourceFile):
         super(PermissionModelSource, self).__init__(
             fileName=fileName)
 
-        self._parse()
+        self.parseToFillModel()
         # Todo, check errors, etc.
 
     @property
@@ -78,7 +78,7 @@ class PermissionModelSource(ModelSourceFile):
                 print(e)
 
 
-    def _parse(self):
+    def parseToFillModel(self):
 
         def begin(n): return '^'
         end = ' *$'
