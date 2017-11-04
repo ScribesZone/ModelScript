@@ -5,7 +5,7 @@ Meta elements for modeling results of a scenario evaluation.
 Information come from different sources:
 - CardinalityEvaluation come from USE OCL execution
 - InvariantEvaluation come from USE OCL execution
-- BlockEvaluation come from abstrace execution (evaluate on Operation)
+- BlockEvaluation come from abstract execution (evaluate on Operation)
 
 The structure of the metamodel is::
 

@@ -56,12 +56,12 @@ class System(SourceElement):
 
 class Actor(SourceElement, Subject):
     def __init__(self,
-                 ucModel, name, kind='human',
+                 usModel, name, kind='human',
                  code=None, lineNo=None,
                  docComment=None, eolComment=None):
         super(Actor, self).__init__(name, code, lineNo, docComment, eolComment)
 
-        self.usecaseModel = ucModel
+        self.usecaseModel = usModel
         self.usecaseModel.actorNamed[name]=self
         self.kind=kind # system|human
         self.superActors=[]
@@ -109,14 +109,14 @@ class Usecase(SourceElement, Subject):
 
 
 METAMODEL = Metamodel(
-    id='uc',
+    id='us',
     label='usecase',
-    extension='.ucm',
+    extension='.uss',
     modelClass=UsecaseModel,
     modelKinds=('', 'preliminary', 'detailled')
 )
 MetamodelDependency(
-    sourceId='uc',
+    sourceId='us',
     targetId='gl',
     optional=True,
     multiple=True,

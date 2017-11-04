@@ -23,14 +23,19 @@ Either find some errors or create a class model
 
 #import os
 import re
-from typing import Text, Optional
+from typing import Text, Optional, Callable
 
 from modelscribes.base.symbols import (
     Symbol
 )
 
+from modelscribes.base.preprocessors import (
+    Preprocessor
+)
+
 from modelscribes.base.parsers import DocCommentLines
 from modelscribes.megamodels.sources import ModelSourceFile
+
 from modelscribes.megamodels.metamodels import Metamodel
 from modelscribes.base.issues import (
     Issue,
@@ -64,10 +69,6 @@ __all__ = (
 )
 
 
-# , \
-#    Operation, Invariant, Association, Role, AssociationClass, \
-#    PreCondition, PostCondition, BasicType
-
 def _removeExtraSpaces(x):
     return ' '.join(x.split())
 
@@ -79,8 +80,8 @@ class UseModelSource(ModelSourceFile):
     a reference to the contained class model will be available.
     """
 
-    def __init__(self, fileName):
-        #type: (Text) -> None
+    def __init__(self, originalFileName, preprocessor=None):
+        #type: (Text, Optional[Preprocessor]) -> None
         """
         Execute the given .use file with use interpreter, then
         parse the result (possiblity with errors) and finally
@@ -105,16 +106,50 @@ class UseModelSource(ModelSourceFile):
         self.commandExitCode = None #type: Optional[int]
         """Exit code of use command"""
 
-        self.isOldUSEFile=fileName.endswith('.use')
+        self.isOldUSEFile=originalFileName.endswith('.use')
         # Filled by __executeUSEToExtractErrors
 
         super(UseModelSource, self).__init__(
-            fileName=fileName,
+            fileName=originalFileName,
+            realFileName=None,  # will be set later
+            readFileLater=False,
+            fillImportBoxLater=False,
+            parseFileLater=True,
             noSymbolChecking=self.isOldUSEFile,
             # activate the patch to recognize USE OCL "model <name>"
             recognizeUSEOCLNativeModelDefinition=True)
 
 
+
+        try:
+
+            # ---- (1) preprocessing -------------------------------------
+            if preprocessor is None:
+                use_filename=originalFileName
+            else:
+                use_filename=preprocessor.do(
+                    issueOrigin=self,
+                    filename=originalFileName)
+            self.doReadFiles(realFileName=use_filename)
+
+
+            # ---- (3) parsing sex to model ------------------------------
+            self.parseToFillModel()
+
+        except FatalError as e:
+            # The fatal error has already registered. Do nothing
+            pass
+
+        except Exception as e:
+            # Some uncatched execption. Generate an error.
+            # Not need to create a fatal one as the process
+            # is already stopped.
+            Issue(
+                origin=self,
+                level=Levels.Error,
+                message='Exception: %s' % str(e)
+            )
+            raise #? should it be better do just pass ?
 
 
     #--------------------------------------------------------------------------
@@ -132,9 +167,6 @@ class UseModelSource(ModelSourceFile):
         #type: () -> Metamodel
         return METAMODEL
 
-    @property
-    def megamodelStatementPrefix(self):
-        return r' *(--)? *@'
 
     def parseToFillModel(self):
         # Try to validate the class model and fill
@@ -161,7 +193,7 @@ class UseModelSource(ModelSourceFile):
         engine = modelscribes.use.engine.USEEngine
         try:
             self.commandExitCode = engine.analyzeUSEModel(
-                self.fileName)
+                self.realFileName)
         except Exception as e:
             Issue(
                 origin=self,
@@ -242,7 +274,7 @@ class UseModelSource(ModelSourceFile):
         current_condition = None    # invariant, precondition or condition
         current_operation_condition = None
 
-        for (line_index,line) in enumerate(self.sourceLines):
+        for (line_index,line) in enumerate(self.realSourceLines):
 
             original_line = line
             line = line.replace('\t',' ')
@@ -396,7 +428,7 @@ class UseModelSource(ModelSourceFile):
             if m:
                 c=self.classModel
                 c.name=m.group('name')
-                c.code=self.sourceLines
+                c.code=self.realSourceLines
                 c.lineNo = line_no
                 c.docComment = last_doc_comment.consume()
                 c.eolComment = current_eol_comment
@@ -1127,3 +1159,10 @@ class UseModelSource(ModelSourceFile):
         for i in self.classModel._conditions:
             __resolveCondition(i)
 
+
+    def __preprocessOriginalFile(self, preprocessor, originalFileName):
+        #type: (Callable[[Text, Any], Text], Text) -> Text
+        if preprocessor is None:
+            return originalFileName
+        else:
+            return preprocessor(originalFileName, self)

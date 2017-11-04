@@ -1,0 +1,12 @@
+usecase model A
+
+system A
+
+actor M
+    usecases
+        U1
+        U2
+
+actor N
+    usecases
+        U1

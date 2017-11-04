@@ -1,0 +1,14 @@
+permission model A2
+import usecase model from "a.uss"
+import class model from "a.cls"
+import class model from "a1.cls"
+
+M,N  CD  C,R
+M   C   D
+M   RU  C.cs
+M   RU  C.ci
+N   R   R.r1
+N   CD  R
+U1  CD  S
+U1  R   S.sa
+

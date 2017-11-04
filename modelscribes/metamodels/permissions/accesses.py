@@ -69,7 +69,7 @@ class AccessModel(Model):
 METAMODEL = Metamodel(
     id='ac',
     label='access',
-    extension='.ac',
+    extension='.acs',
     modelClass=AccessModel
 )
 MetamodelDependency(
@@ -80,7 +80,7 @@ MetamodelDependency(
 )
 MetamodelDependency(
     sourceId='ac',
-    targetId='uc',
+    targetId='us',
     optional=False,
     multiple=False,
 )

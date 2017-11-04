@@ -40,12 +40,12 @@ def getTestFiles(relativeDirectory, relative=True, extension=''):
         if accept(simplename) ]
     return rel_files
 
-def getTestFile(relativeFileName, exist=True):
+def getTestFile(relativeFileName, checkExist=True):
     f=os.path.join(
         TEST_CASES_DIRECTORY,
         relativeFileName
     )
-    if exist:
+    if checkExist:
         if not os.path.isfile(f):
             raise IOError('Test file %s not found' % relativeFileName)
     return f

@@ -72,7 +72,7 @@ class UCPermissionModel(PermissionModel):
         super(UCPermissionModel, self).__init__()
 
         self.usecaseModel=None #type: Optional[UsecaseModel]
-        #type: set later
+        #set later
 
         self.classModel=None #type: Optional[ClassModel]
 
@@ -109,25 +109,25 @@ class UCPermissionModel(PermissionModel):
 
 
 METAMODEL=Metamodel(
-    id='pm',    # other model could be registered
+    id='pe',    # other model could be registered
     label='permission',
-    extension='.pmm',
+    extension='.pes',
     modelClass=UCPermissionModel
 )
 MetamodelDependency(
-    sourceId='pm',
+    sourceId='pe',
     targetId='gl',
     optional=True,
     multiple=True,
 )
 MetamodelDependency(
-    sourceId='pm',
-    targetId='uc',
+    sourceId='pe',
+    targetId='us',
     optional=False,
     multiple=False,
 )
 MetamodelDependency(
-    sourceId='pm',
+    sourceId='pe',
     targetId='cl',
     optional=False,
     multiple=False,

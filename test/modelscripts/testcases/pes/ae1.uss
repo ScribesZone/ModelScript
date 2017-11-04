@@ -1,0 +1,12 @@
+usecase model AE1
+
+system AE1
+
+actor M
+    useca ses
+        U1
+        U2
+
+actor N
+    usecases
+        U1

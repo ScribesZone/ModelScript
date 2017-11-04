@@ -2,42 +2,54 @@
 
 from __future__ import unicode_literals, print_function, absolute_import, division
 
-from typing import Text, Optional
 from modelscribes.metamodels.scenarios import (
     METAMODEL
 )
-from modelscribes.metamodels.classes import (
-    ClassModel
-)
-from modelscribes.metamodels.usecases import (
-    UsecaseModel
-)
-from modelscribes.metamodels.permissions import (
-    PermissionModel
-)
 from modelscribes.use.sex.parser import (
-    SoilSource,
     SexSource,
 )
 
+from modelscribes.base.preprocessors import (
+    Preprocessor,
+    RegexpTransfo,
+    PrefixToCommentTransfo
+)
 
-class ScenarioModelSource(SoilSource):
 
-    def __init__(self, soilFileName, classModel, usecaseModel):
-        #type: (Text, ClassModel, Optional[UsecaseModel]) -> None
-        super(ScenarioModelSource, self).__init__(
-            soilFileName=soilFileName,
-            classModel=classModel,
-            usecaseModel=usecaseModel)
+class ScsToSoilPreprocessor(Preprocessor):
+    def __init__(self):
+        super(ScsToSoilPreprocessor, self).__init__(
+            sourceText='scenario model',
+            targetText='.soil scenario model',
+            targetExtension='.soil'
+        )
+        self.addTransfo(RegexpTransfo(
+            '^ *! *check *',
+            'check -v -d -a' ))
+        self.addTransfo(RegexpTransfo(
+            '^ *(scenario|import)',
+            '' ))
+        self.addTransfo(PrefixToCommentTransfo((
+            'actor',
+            'uci',
+            'usecase',
+            'end',
+            'enduci',
+            'context',
+            'endcontext')))
+
 
 class ScenarioEvaluationModelSource(SexSource):
 
-    def __init__(self, soilFileName, classModel, usecaseModel, permissionModel):
-        #type: (Text, ClassModel, Optional[UsecaseModel], Optional[PermissionModel]) -> None
+    def __init__(self, originalFileName):
+
         super(ScenarioEvaluationModelSource, self).__init__(
-            soilFileName=soilFileName,
-            classModel=classModel,
-            usecaseModel=usecaseModel,
-            permissionModel=permissionModel)
+            originalFileName,
+            preprocessor=ScsToSoilPreprocessor())
+
+    @property
+    def metamodel(self):
+        return METAMODEL
+
 
 METAMODEL.registerSource(ScenarioEvaluationModelSource)

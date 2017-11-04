@@ -1,0 +1,4 @@
+permission model A3
+import usecase model from "a.uss"
+import class model from "a.cls"
+import usecase model from "a.cls"

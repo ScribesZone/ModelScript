@@ -3,7 +3,8 @@ from __future__ import unicode_literals, print_function, absolute_import, divisi
 from typing import Text, Union, Optional, Dict, List
 
 from modelscribes.base.printers import (
-    AbstractPrinter
+    AbstractPrinter,
+    SourcePrinter
 )
 from modelscribes.metamodels.glossaries import (
     GlossaryModel,
@@ -12,7 +13,12 @@ from modelscribes.metamodels.glossaries import (
 from modelscribes.metamodels.texts import (
     Reference
 )
-
+from modelscribes.base.issues import (
+    Issue,
+    LocalizedIssue,
+    Levels,
+    FatalError,
+)
 
 # TODO: separate SourcePrinter and ModelPrinter
 class GlossaryModelPrinter(AbstractPrinter):
@@ -42,7 +48,7 @@ class GlossaryModelPrinter(AbstractPrinter):
     #     self.out('%s\n' % s )
 
     def doGlossaryModel(self, glossary):
-        self.outLine('glossary model', lineNo=glossary.lineNo)
+        self.outLine('glossary model', lineNo=None)  # TODO: change parser glossary.lineNo)
         for domain in glossary.domainNamed.values():
             self.domain(domain)
 
@@ -82,8 +88,31 @@ class GlossaryModelPrinter(AbstractPrinter):
                 _+=token.string
         self.outLine(_,lineNo=line.lineNo)
 
-#TODO: define GlossaryModelSourcePrinter
+
+class GlossarySourcePrinter(SourcePrinter):
+
+    def __init__(self,
+                 theSource,
+                 summary=False,
+                 displayLineNos=True,
+                 ):
+        super(GlossarySourcePrinter, self).__init__(
+            theSource=theSource,
+            summary=summary,
+            displayLineNos=displayLineNos)
+
+    def do(self):
+        self.output=''
+        if self.theSource.isValid:
+            p=GlossaryModelPrinter(
+                glossaryModel=self.theSource.model,
+                displayLineNos=self.displayLineNos,
+            ).do()
+            self.out(p)
+        else:
+            self._issues()
+        return self.output
 
 
 METAMODEL.registerModelPrinter(GlossaryModelPrinter)
-#TODO: register GlossaryModelSourcePrinter when ready
+METAMODEL.registerSourcePrinter(GlossarySourcePrinter)

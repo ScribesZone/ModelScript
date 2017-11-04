@@ -101,8 +101,8 @@ class ScenarioModelPrinter(ModelPrinter):
 
         if self.scenario.name is not None:
             self.outLine(
-                '-- @%s %s' % (self.modelHeader, self.scenario.name),
-                self.scenario.lineNo)
+                '-- @%s %s' % (self.modelHeader, self.scenario.name)
+            )
 
         for ai in self.scenario.actorInstanceNamed.values():
             self._actorInstance(ai)

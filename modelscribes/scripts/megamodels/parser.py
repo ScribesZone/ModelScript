@@ -1,5 +1,10 @@
 # coding=utf-8
 
+"""
+Megamodel statements are always extracted from
+RAW UNPROCESSED ORIGINAL source file.
+"""
+from __future__ import print_function
 
 import os
 import re
@@ -22,6 +27,9 @@ from modelscribes.megamodels.megamodels import (
 from modelscribes.megamodels.metamodels import (
     Metamodel
 )
+from modelscribes.scripts.megamodels.printer import (
+    ImportBoxPrinter
+)
 
 __all__=(
     'MegamodelStatement'
@@ -33,6 +41,10 @@ __all__=(
 )
 
 ModelSourceFile='ModelSourceFile'
+
+DEBUG=2
+
+# TODO: do nested parsing of import to get better errors
 
 class MegamodelStatement(object):
     __metaclass__ = ABCMeta
@@ -58,6 +70,20 @@ class ImportStatement(MegamodelStatement):
         self.literalTargetFileName=literalTargetFileName
         self.absoluteTargetFilename=absoluteTargetFilename
 
+    def __str__(self):
+        return 'import %s model from "%s"' % (
+            self.metamodel.label,
+            self.literalTargetFileName
+        )
+
+    def __repr__(self):
+        return '%s:%i: import %s model from "%s"' % (
+            self.sourceFile.basename,
+            self.lineNo,
+            self.metamodel.label,
+            self.literalTargetFileName
+        )
+
 
 class DefinitionStatement(MegamodelStatement):
     def __init__(self,
@@ -72,36 +98,53 @@ class DefinitionStatement(MegamodelStatement):
         self.modelKind=modelKind
         self.name=name
 
+
+
 def isMegamodelStatement(
         lineNo,
-        modelSourceFile,
-        prefixRegexp=r' *(--)? *@',
-        noSymbolChecking=False,
-        recognizeUSEOCLNativeModelDefinition=False):
+        modelSourceFile):
+    """
+    Megamodel statements are always extracted from
+    RAW UNPROCESSED ORIGINAL source file. So no
+    prefix is necessary
+
+    Check without doing anythin else if a line
+    is a megamodel statement. This allows
+    parser to ignore megamodel statement since they
+    have already been processed.
+    """
 
     r1=_matchModelDefinition(
         lineNo,
         modelSourceFile=modelSourceFile,
         justMatch=True,
-        prefixRegexp=prefixRegexp,
-        noSymbolChecking=noSymbolChecking,
-        recognizeUSEOCLNativeModelDefinition=
-            recognizeUSEOCLNativeModelDefinition)
-    if r1 is None:
-        return False
+        #        prefixRegexp=prefixRegexp,
+        #Megamodel statements are always extracted from
+        # RAW UNPROCESSED ORIGINAL source file.
+        noSymbolChecking=False,
+        recognizeUSEOCLNativeModelDefinition=False)
+    if r1 is not None:
+        return True
     r2=_matchModelImport(
         lineNo,
         modelSourceFile=modelSourceFile,
-        justMatch=True,
-        prefixRegexp=prefixRegexp)
+        justMatch=True
+        #        prefixRegexp=prefixRegexp,
+        # Megamodel statements are always extracted from
+        # RAW UNPROCESSED ORIGINAL source file.
+        #noSymbolChecking = False
+    )
     return r2 is not None
+
 
 def _matchModelImport(
         lineNo,
         modelSourceFile,
-        justMatch=False,
-        prefixRegexp=r' *(--)? *@'):
-    #type: (int, ModelSourceFile, bool, Text) -> Optional[Union[bool,ImportStatement]]
+        justMatch=False ):
+        #Megamodel statements are always extracted from
+        # RAW UNPROCESSED ORIGINAL source file.
+        # prefixRegexp=r' *(--)? *@?'):
+    #type: (int, ModelSourceFile, bool) -> Optional[Union[bool,ImportStatement]]
     """
         Check if the line is an import statement.
 
@@ -114,16 +157,17 @@ def _matchModelImport(
         Otherwise raise a fatal error that go in the issue box.
         Import statements looks like this
             import usecase model x.cs
-            import glossary model a/b/../c.glm
+            import glossary model a/b/../c.gls
     """
     re_stmt=(
-        prefixRegexp
-        +r' *(?P<import>import)'
+        r'^ *(?P<import>import)'
         +r' +(?P<metamodelLabel>\w+)'
         +r' +model'
-        +r' +(?P<target>[\w\./\-]+) *$')
+        +r' +from'
+        +r' +"(?P<target>[\w\./\-]+)" *$')
     line=modelSourceFile.realSourceLines[lineNo - 1]
     m = re.match(re_stmt, line, re.MULTILINE)
+
     if m is None:
         return None
     else:
@@ -195,10 +239,10 @@ def _matchModelDefinition(
         lineNo,
         modelSourceFile,
         justMatch=False,
-        prefixRegexp=r' *(--)? *@',
+        # prefixRegexp=r' *(--)? *@?',
         noSymbolChecking=False,
         recognizeUSEOCLNativeModelDefinition=False):
-    # type: (int, ModelSourceFile, bool, Text) -> Optional[Union[bool,DefinitionStatement]]
+    # type: (int, ModelSourceFile, bool, bool, bool) -> Optional[Union[bool,DefinitionStatement]]
     """
         Check if the line is a model definition statement.
 
@@ -220,8 +264,7 @@ def _matchModelDefinition(
     """
     def _parseStandardSyntax():
         re_stmt = (
-            prefixRegexp
-            + r' *((?P<modelKind>\w+) +)?'
+            r'^ *((?P<modelKind>\w+) +)?'
             + r'(?P<metamodelLabel>\w+)'
             + r' +model'
             + r' +(?P<name>\w+) *$')
@@ -382,7 +425,6 @@ def parseToFillImportBox(modelSource,
                 lineNo=line_no,
                 modelSourceFile=modelSource,
                 justMatch=False,
-                prefixRegexp=modelSource.megamodelStatementPrefix,
                 noSymbolChecking=noSymbolChecking,
                 recognizeUSEOCLNativeModelDefinition=
                     recognizeUSEOCLNativeModelDefinition
@@ -407,27 +449,34 @@ def parseToFillImportBox(modelSource,
             mi = _matchModelImport(
                 lineNo=line_no,
                 modelSourceFile=modelSource,
-                justMatch=False,
-                prefixRegexp=modelSource.megamodelStatementPrefix
-            )
+                justMatch=False )
             if mi is not None:
+                if DEBUG >=2:
+                    print('\nDEBUG: >>>>>>>> '+repr(mi))
+
                 modelSource.importBox.addImport(
                     SourceImport(importStmt=mi)
                 )
+
+
+                if DEBUG >=2:
+                    ImportBoxPrinter(modelSource.importBox).display()
+                    print('DEBUG: <<<<<<<< '+repr(mi)+'\n')
                 continue
 
-            # --------- whatever line is ok -------------------
+            # --------- any other line is ok -------------------
             continue
 
     def _check():
         if modelSource.importBox.modelName is None:
+            m2_label=modelSource.model.metamodel.label
             Issue(
                 origin = modelSource,
                 level = Levels.Warning,
                 message = (
                     'Unamed model.'
-                    ' A statement like'
-                    ' "class model <name>" must be added.'))
+                    ' Add "%s model <name>".'
+                    % m2_label))
         # TODO: add here other checks about import cards
 
     model_definition_found = True
@@ -435,30 +484,3 @@ def parseToFillImportBox(modelSource,
     _check()
 
 
-    #
-# def extractMegaModelFromText(sourceFile):
-#
-#
-#
-#
-# def extractModelStatements(
-#         sourceFile,
-#         prefixRegexp=r' *(--)? *@'):
-#     #type: (SourceFile, Text) -> List[MegamodelStatement]
-#     def read_file():
-#         with io.open(sourceFile.fileName,
-#                      'rU',
-#                      encoding='utf8') as f:
-#             lines = list(
-#                 line.rstrip() for line in f.readlines())
-#         return lines
-#
-#     _=[]
-#     for line in read_file():
-#         stmt=matchModelStatement(
-#             line,
-#             sourceFile,
-#             prefixRegexp)
-#         if stmt is not None:
-#             _.append(stmt)
-#     return _

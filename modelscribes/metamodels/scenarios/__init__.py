@@ -12,7 +12,7 @@ The structure of this module is::
     --->0..1 ScenarioEvaluation
 """
 
-# TODO: add support for  'include <x.obm>
+# TODO: add support for  'include <x.obs>
 
 import collections
 
@@ -119,9 +119,9 @@ class ActorInstance(SourceElement, Subject):
 METAMODEL = Metamodel(
     id='sc',
     label='scenario',
-    extension='.scm',
+    extension='.scs',
     modelClass=ScenarioModel,
-    modelKinds=('', 'preliminary', 'detailled')
+    modelKinds=('', 'informal', 'preliminary', 'detailed')
 )
 MetamodelDependency(
     sourceId='sc',
@@ -132,18 +132,18 @@ MetamodelDependency(
 MetamodelDependency(
     sourceId='sc',
     targetId='cl',
-    optional=False,
-    multiple=False,
-)
-MetamodelDependency(
-    sourceId='sc',
-    targetId='uc',
     optional=True,
     multiple=False,
 )
 MetamodelDependency(
     sourceId='sc',
-    targetId='pm',
+    targetId='us',
+    optional=True,
+    multiple=False,
+)
+MetamodelDependency(
+    sourceId='sc',
+    targetId='pe',
     optional=True,
     multiple=False,
 )

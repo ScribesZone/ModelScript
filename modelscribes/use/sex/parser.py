@@ -2,8 +2,9 @@
 
 """
 Parser of subset of the soil language and of the sex format.
+Parser of subset of the soil language and of the sex format.
 The same parser can parse both:
-* .soil files, that is USE .soil files
+* .soil files, that is USE .soil files (NOT MAINTAINED anymore)
 * .sex files, that are an internal format merging .soil files with trace results
 See the 'merge' module for more information.
 
@@ -39,32 +40,39 @@ http://useocl.sourceforge.net/wiki/index.php/SOIL
 # TODO: add proper mamangement for Warning and Errors
 # TODO: check if a USE OCL run before parsin is necessary/better
 
+# FIXME: check what to do with optional class model
+
 from __future__ import unicode_literals, print_function, absolute_import, division
 
 import os
 import re
 
-from typing import Text, Optional, Union, List
+from typing import Text, Optional, Union, List, Callable, Any
 
-# DEBUG=3
-DEBUG=0
+
 
 from abc import ABCMeta
 
 from modelscribes.use.engine import USEEngine
 
 from modelscribes.base.parsers import DocCommentLines
+from modelscribes.base.preprocessors import Preprocessor
 from modelscribes.megamodels.sources import ModelSourceFile
 
 from modelscribes.base.issues import (
     Issue,
     LocalizedIssue,
     Levels,
-    Level,
     FatalError,
 )
 
+from modelscribes.metamodels.glossaries import (
+    GlossaryModel,
+)
 
+from modelscribes.scripts.classes.parser import (
+    ClassModelSource
+)
 from modelscribes.metamodels.classes import (
     ClassModel,
 )
@@ -111,8 +119,15 @@ from modelscribes.metamodels.permissions import (
     PermissionModel
 )
 
+from modelscribes.scripts.megamodels.parser import (
+    isMegamodelStatement
+)
+
+DEBUG=3
+#DEBUG=0
+
 __all__ = (
-    'SoilSource',
+    # 'SoilSource',
     'SexSource',
 )
 
@@ -129,11 +144,14 @@ class _SexOrSoilSource(ModelSourceFile):
 
     def __init__(self,
                  evaluateScenario,
-                 soilFileName,
-                 # classModel=None,
-                 # usecaseModel=None,
-                 # permissionModel=None,
+                 originalFileName,
+
                  allowedFeatures=(
+                         'permission',   # not used yet
+                         'access', # not used yet
+                         'update', # not used yet
+                         'check', # not used
+                         'assocClass',
                          'delete',
                          'query',
                          'usecase',
@@ -143,11 +161,15 @@ class _SexOrSoilSource(ModelSourceFile):
                  modelHeader='detailed scenario model',
                  parsePrefix='^',
                  preIssueMessages=()):
-        #type: (bool,Text, ClassModel, Optional[UsecaseModel], Optional[PermissionModel], Text, List[Text]) -> None
+        #type: (bool,Text, List[Text], Text, Text, List[Text]) -> None
+
+        # TODO:3 check obsolete comment
         """
+
         Initialize the soil/sex sources attributes
-        but DO NOT parse the file for now. The doParse() method
-        is called explictely in the concrete subclasses.
+        but DO NOT parse the file for now.
+        The parseToFillModel() method is called explictely in
+        the concrete subclasses.
         See subclasses
 
         Args:
@@ -155,25 +177,6 @@ class _SexOrSoilSource(ModelSourceFile):
                 If true, the scenario has been executed
                 WITH USE
             and it will have an scenarioEvaluation associated.
-            soilFileName:
-                The name of the soil file.
-                If evaluateScenario the sex file generated
-                (generated previously) will be parsed instead of
-                soilFileName.
-            classModel:
-                The class model used to resolve Classes, Associations, etc.
-                If not provided the source may contains some errors.
-                This is checked dynamically and a Fatal error will be
-                raised. If not provided to the constructor
-                an import can set the class model source.
-            usecaseModel:
-                A use case model is necessary only if there are
-                directives for actor instance and usecase instance.
-                If not provided warning will be generated.
-                Usecase Model can be used without evaluateScenario.
-            permissionModel:
-                In case of evaluateScenario used to check accesses.
-                No permission will be checked at all if not provided.
             allowedFeatures:
                 'delete'
                 'query'
@@ -189,80 +192,123 @@ class _SexOrSoilSource(ModelSourceFile):
 
         """
 
+        # TODO:3 check obsolete comment
+        """
 
-        # call the super class but without reading file
-        # for the moment. The method doReadFileLines()
-        # will be called explicitely
-        super(_SexOrSoilSource, self).__init__(
-            fileName=soilFileName,
-            realFileName=None,  # will be set later
-            # realFileName is ignored if None
-            preErrorMessages=preIssueMessages,
-            readFileLater=True)
-
+            originalFileName:
+                The name of the soil file.
+                If evaluateScenario the sex file generated
+                (generated previously) will be parsed instead of
+                originalFileName.
+            classModel:
+                The class model used to resolve Classes, Associations, etc.
+                If not provided the source may contains some errors.
+                This is checked dynamically and a Fatal error will be
+                raised. If not provided to the constructor
+                an import can set the class model source.
+            usecaseModel:
+                A use case model is necessary only if there are
+                directives for actor instance and usecase instance.
+                If not provided warning will be generated.
+                Usecase Model can be used without evaluateScenario.
+            permissionModel:
+                In case of evaluateScenario used to check accesses.
+                No permission will be checked at all if not provided.
+        """
         self.evaluateScenario=evaluateScenario  #type: bool
-
-        self.soilFileName=soilFileName  #type: Text
-        self.classModel=classModel  #type: Optional[ClassModel]
-        self.usecaseModel=usecaseModel  #type: Optional[UsecaseModel]
-        self.permissionModel=permissionModel #type: Optional[PermissionModel]
+        self.soilFileName=originalFileName  #type: Text
         self._parsePrefix=parsePrefix
         self.modelHeader=modelHeader
-        self.allowedFeatures=allowedFeatures
 
-        # # create an empty scenario populated by _parse
-        # self.scenario = ScenarioModel(  # type:ScenarioModel
-        #     source=self,
-        #     classModel=self.classModel,  # this can change later with import
-        #     name=None,
-        #     usecaseModel=self.usecaseModel, # this can change later
-        #     permissionModel=self.permissionModel, # this can change later
-        #     file=self.soilFileName)
+        # Call the super class.
+        # - creates an empty model of type metamodel
+        # - read the logical (.soil) file
+        # - parse import statements (ImportBox)
+        # - parsing will be done later
+        if DEBUG>=2:
+            print(
+                'DEBUG: reading/parsing the file %s for imports' %
+                originalFileName)
+        super(_SexOrSoilSource, self).__init__(
+            fileName=originalFileName,
+            realFileName=None,  # will be set later
+            preErrorMessages=preIssueMessages,
+            readFileLater=False,
+            fillImportBoxLater=False,
+            parseFileLater=True,
+            noSymbolChecking=False,
+            allowedFeatures=allowedFeatures,
+            recognizeUSEOCLNativeModelDefinition=False)
+        if DEBUG>=2:
+            print(
+                'DEBUG: reading/parsing file for imports done')
+
+        self.scenarioModel.usecaseModel=self.usecaseModel
+        self.scenarioModel.classModel=self.classModel
+        self.scenarioModel.permissionModel=self.permissionModel
+        self.scenarioModel.glossaryModel=self.glossaryModel
+
+    @property
+    def classSource(self):
+        #type: () -> Optional[ClassModelSource]
+        return self.importBox.source('cl')
+
+    @property
+    def classModel(self):
+        #type: () -> Optional[ClassModel]
+        # TODO: the optional stuff should come from metamdel
+        return self.importBox.model('cl', optional='True')
+
+    @property
+    def usecaseModel(self):
+        #type: () -> Optional[UsecaseModel]
+        # TODO: the optional stuff should come from metamdel
+        return self.importBox.model('us', optional='True')
+
+    @property
+    def glossaryModel(self):
+        # TODO: the optional stuff should come from metamdel
+        #type: () -> Optional[GlossaryModel]
+        return self.importBox.model('gl', optional='True')
+
+    @property
+    def permissionModel(self):
+        #type: () -> Optional[PermissionModel]
+        # TODO: the optional stuff should come from metamdel
+        return self.importBox.model('pe', optional='True')
+
+    @property
+    def scenarioModel(self):
+        #type: () -> ScenarioModel
+        m=self.model #type: ScenarioModel
+        return m
+
+    @property
+    def scenarioModel(self):
+        m=self.model #type: ScenarioModel
+        return m
 
     @property
     def metamodel(self):
         return METAMODEL
 
-    @property
-    def scenario(self):
-        m=self.model #type: ScenarioModel
-        return m
-
-    # @property
-    # def usedModelByKind(self):
-    #     _={}
-    #     if self.classModel is not None:
-    #         _['cl'] = self.classModel
-    #     if self.usecaseModel is not None:
-    #         _['uc'] = self.usecaseModel
-    #     if self.permissionModel is not None:
-    #         _['pm'] = self.permissionModel
-    #     return _
-
-
-    @property
-    def megamodelStatementPrefix(self):
-        return self._parsePrefix+super(_SexOrSoilSource, self).megamodelStatementPrefix
 
 
 
-    def doParse(self, realFileName):
+
+    def parseToFillModel(self):
         """
         This method is called after the constructor because
         the reading of the file must be deferred in the case
         of sex file
-
         """
         try:
-            self.doReadFile(realFileName)
-            self._parse(self._parsePrefix)
-
             if self.isValid:
                 self._parse(self._parsePrefix)
                 if self.evaluateScenario:
-                    ScenarioEvaluation.evaluate(self.scenario)
-            else:
-                self.scenario=None
+                    ScenarioEvaluation.evaluate(self.scenarioModel)
+            # else:
+            #     self.scenario=None
         except FatalError:
             # The fatal error has already been already registered
             # so nothing else to do here.
@@ -270,8 +316,12 @@ class _SexOrSoilSource(ModelSourceFile):
 
 
 
+
     def _parse(self, prefix):
         #type: (Text) -> None
+
+        def _entityError(e, suffix=''):
+            return '%s are not allowed %s' % (e, suffix)
 
         class _S(object):
             """
@@ -294,28 +344,7 @@ class _SexOrSoilSource(ModelSourceFile):
             # type: Optional[ContextBlock]
             #: can be nested in other blocks (in practice in should not as one cannot find the order of execution based on blocks)
 
-        def _check_allowed(
-                feature,
-                entitiesMsg=None,
-                level=Levels.Error,
-                extra='', instead=None):
-            # type: (Text, Text, Level, Text, Text) -> bool
-            is_allowed = feature in self.allowedFeatures
-            if not is_allowed:
-                if instead is not None:
-                    m = instead
-                else:
-                    m = '%s are not allowed in %ss. %s.' % (
-                        entitiesMsg,
-                        self.modelHeader,
-                        extra)
-                LocalizedIssue(
-                    sourceFile=self,
-                    level=level,
-                    message=m,
-                    line=_S.line_no
-                )
-            return is_allowed
+
 
         def _get_block():
             """
@@ -329,7 +358,7 @@ class _SexOrSoilSource(ModelSourceFile):
                 if _S.main_block is None:
                     # no block, create one
                     _S.main_block = TopLevelBlock(
-                        scenario=self.scenario,
+                        scenario=self.scenarioModel,
                         lineNo=_S.line_no
                     )
                 return _S.main_block
@@ -456,12 +485,12 @@ class _SexOrSoilSource(ModelSourceFile):
                 last_doc_comment.clean()
                 continue
 
-
-            #--------------------------------------------------
-            # Line comment --
-            #--------------------------------------------------
-
-            # TODO: check comment processing appiled in use parser
+    # TODO: to restore
+            # #--------------------------------------------------
+            # # Line comment --
+            # #--------------------------------------------------
+            #
+            # # TODO: check comment processing appiled in use parser
             # Full line comment
             r = prefix+' *--(?P<comment> *([^@].*)?)'+end
             m = re.match(r, line)
@@ -498,10 +527,12 @@ class _SexOrSoilSource(ModelSourceFile):
             r = begin+'(?P<kind>\?\??) *(?P<expr>.*)'+end
             m = re.match(r, line)
             if m:
-                _check_allowed(
+                if not self.checkAllowed(
                         feature='query',
-                        entitiesMsg='Queries',
-                        level=Levels.Fatal)
+                        message=_entityError(
+                            'Queries', '.  Skipped.'),
+                        level=Levels.Error):
+                    continue
                 query=Query(
                     block=_get_block(),
                     expression=m.group('expr'),
@@ -515,54 +546,71 @@ class _SexOrSoilSource(ModelSourceFile):
                             op=query))
                 continue
 
+            # --- megamodel statements -------------
+            # currently useless as megastmt are replace by ''
+            is_mms = isMegamodelStatement(
+                lineNo=_S.line_no,
+                modelSourceFile=self)
+            if is_mms:
+                # megamodel statements have already been
+                # parse so silently ignore them
+                continue
+            pass
 
             #-------------------------------------------------
             # directives
             #-------------------------------------------------
 
+            #FIXME:1 does not match lines with -- *@ !!!
+            print('XX'*10,line)
+            print('XX'*10,begin+r'-- *@')
             if re.match(begin+r'-- *@', line):
-
-                # -------------------------------------------------
-                # @scenario model? <name>
-                # -------------------------------------------------
-                r = begin+'-- *@scenario( +model?) +(?P<name>\w+)'+end
-                m = re.match(r, line)
-                if m:
-                    if (len(self.scenario.originalOrderBlocks)>=1
-                        or len(self.scenario.actorInstanceNamed)>=1):
-                        LocalizedIssue(
-                            sourceFile=self,
-                            level=Levels.Warning,
-                            message='Scenario declaration must be at the top of the file.',
-                            line=_S.line_no
-                        )
-                    if self.scenario.name is not None:
-                        LocalizedIssue(
-                            sourceFile=self,
-                            level=Levels.Warning,
-                            message=(
-                                'The scenario has been already named "%s".' %
-                                self.scenario.name),
-                            line=_S.line_no
-                        )
-
-                    self.scenario.name=m.group('name')
-                    self.scenario.lineNo=_S.line_no
-                    continue
-
-                #TODO: add here the possibility to have object model
+                print('YY' * 10, line)
 
 
 
 
-                # -------------------------------------------------
-                # @import ...
-                # -------------------------------------------------
-                m=matchImportExpr(line, prefixRegexp=begin+' *-- *@')
-                if m is not None:
-                    raise NotImplementedError('import to be implemented')
-                    continue
+                # # -------------------------------------------------
+                # # @scenario model? <name>
+                # # -------------------------------------------------
+                # r = begin+'-- *@scenario( +model?) +(?P<name>\w+)'+end
+                # m = re.match(r, line)
+                # if m:
+                #     if (len(self.scenarioModel.originalOrderBlocks)>=1
+                #         or len(self.scenarioModel.actorInstanceNamed)>=1):
+                #         LocalizedIssue(
+                #             sourceFile=self,
+                #             level=Levels.Warning,
+                #             message='Scenario declaration must be at the top of the file.',
+                #             line=_S.line_no
+                #         )
+                #     if self.scenarioModel.name is not None:
+                #         LocalizedIssue(
+                #             sourceFile=self,
+                #             level=Levels.Warning,
+                #             message=(
+                #                 'The scenario has been already named "%s".' %
+                #                 self.scenarioModel.name),
+                #             line=_S.line_no
+                #         )
+                #
+                #     self.scenarioModel.name=m.group('name')
+                #     self.scenarioModel.lineNo=_S.line_no
+                #     continue
+                #
+                # #TODO: add here the possibility to have object model
+                #
 
+
+
+                # # -------------------------------------------------
+                # # @import ...
+                # # -------------------------------------------------
+                # m=matchImportExpr(line, prefixRegexp=begin+' *-- *@')
+                # if m is not None:
+                #     raise NotImplementedError('import to be implemented')
+                #     continue
+                #
 
                 # -------------------------------------------------
                 # @actorinstance <actor> : <instance>
@@ -574,11 +622,11 @@ class _SexOrSoilSource(ModelSourceFile):
                      +end)
                 m = re.match(r, line)
                 if m:
-                    if not _check_allowed(
-                        feature='usecase',
-                        entitiesMsg='Actor instance definitions',
-                        level=Levels.Error,
-                        extra='Ignored'):
+                    if not self.checkAllowed(
+                            feature='usecase',
+                            message=_entityError(
+                                'Actor instances', '. Skipped.'),
+                            level=Levels.Error):
                         continue
 
                     if self.usecaseModel is None:
@@ -592,7 +640,7 @@ class _SexOrSoilSource(ModelSourceFile):
 
                     #--- instance --------
                     iname=m.group('name')
-                    if iname in self.scenario.actorInstanceNamed:
+                    if iname in self.scenarioModel.actorInstanceNamed:
                         LocalizedIssue(
                             sourceFile=self,
                             level=Levels.Warning,
@@ -603,7 +651,7 @@ class _SexOrSoilSource(ModelSourceFile):
 
                     #--- actor ----------
                     aname=m.group('actor')
-                    if aname not in self.scenario.usecaseModel.actorNamed:
+                    if aname not in self.scenarioModel.usecaseModel.actorNamed:
                         LocalizedIssue(
                             sourceFile=self,
                             level=Levels.Error,
@@ -612,14 +660,14 @@ class _SexOrSoilSource(ModelSourceFile):
                         )
                         continue
 
-                    a=self.scenario.usecaseModel.actorNamed[aname]
+                    a=self.scenarioModel.usecaseModel.actorNamed[aname]
                     ai = ActorInstance(
-                        scenario=self.scenario,
+                        scenario=self.scenarioModel,
                         name=iname,
                         actor=a,
                         lineNo=_S.line_no
                     )
-                    self.scenario.actorInstanceNamed[iname]=ai
+                    self.scenarioModel.actorInstanceNamed[iname]=ai
                     continue
 
                 # -------------------------------------------------
@@ -630,12 +678,13 @@ class _SexOrSoilSource(ModelSourceFile):
                 m = re.match(r, line)
                 if m:
 
-                    if not _check_allowed(
-                        feature='context',
-                        entitiesMsg='Context blocks',
-                        level=Levels.Error,
-                        extra='Ignored'):
+                    if not self.checkAllowed(
+                            feature='context',
+                            message=_entityError(
+                                'Context blocks', '. Skipped.'),
+                            level=Levels.Error):
                         continue
+
 
                     if _S.main_block is not None:
 
@@ -652,7 +701,7 @@ class _SexOrSoilSource(ModelSourceFile):
                         continue
                     if _S.context_block is None:
                         _S.context_block=ContextBlock(
-                            self.scenario,
+                            self.scenarioModel,
                             lineNo=_S.line_no,
                         )
                     continue
@@ -664,11 +713,11 @@ class _SexOrSoilSource(ModelSourceFile):
                 r = prefix+'-- *@endcontext'+end
                 m = re.match(r, line)
                 if m:
-                    if not _check_allowed(
-                        feature='context',
-                        entitiesMsg='Context blocks',
-                        level=Levels.Error,
-                        extra='Ignored'):
+                    if not self.checkAllowed(
+                            feature='context',
+                            message=_entityError(
+                                'Context blocks', '. Skipped.'),
+                            level=Levels.Error):
                         continue
                     if _S.context_block is None:
                         LocalizedIssue(
@@ -685,7 +734,8 @@ class _SexOrSoilSource(ModelSourceFile):
                 # @uci <actori> <usecase>
                 #--------------------------------------------------
                 r = (prefix
-                     +r'-- *@uci'
+                     # +r'-- *@ *(uci|usecase( +instance)?)'
+                     +r'-- *@ *uci'
                      +r' +(?P<name>\w+)'
                      # TODO: add online definition of actor instance
                      # +r' *(: *(?P<actor>\w+))?'
@@ -693,11 +743,11 @@ class _SexOrSoilSource(ModelSourceFile):
                      +end)
                 m = re.match(r, line)
                 if m:
-                    if not _check_allowed(
-                        feature='usecase',
-                        entitiesMsg='Actor instance definitions',
-                        level=Levels.Error,
-                        extra='Ignored'):
+                    if not self.checkAllowed(
+                            feature='usecase',
+                            message=_entityError(
+                                'Actor instance definitions', '. Skipped.'),
+                            level=Levels.Error):
                         continue
                     if self.usecaseModel is None:
                         LocalizedIssue(
@@ -717,7 +767,7 @@ class _SexOrSoilSource(ModelSourceFile):
                         )
                         _S.context_block = None
                     ainame=m.group('name')
-                    if ainame not in self.scenario.actorInstanceNamed:
+                    if ainame not in self.scenarioModel.actorInstanceNamed:
                         LocalizedIssue(
                             sourceFile=self,
                             level=Levels.Fatal,
@@ -725,10 +775,10 @@ class _SexOrSoilSource(ModelSourceFile):
                                       % ainame ),
                             line=_S.line_no
                         )
-                    ai=self.scenario.actorInstanceNamed[ainame] #type: ActorInstance
+                    ai=self.scenarioModel.actorInstanceNamed[ainame] #type: ActorInstance
                     a=ai.actor #type: Actor
                     ucname=m.group('usecase')
-                    if ucname not in self.scenario.usecaseModel.system.usecaseNamed:
+                    if ucname not in self.scenarioModel.usecaseModel.system.usecaseNamed:
                         LocalizedIssue(
                             sourceFile=self,
                             level=Levels.Fatal,
@@ -736,7 +786,7 @@ class _SexOrSoilSource(ModelSourceFile):
                                       % ucname ),
                             line=_S.line_no
                         )
-                    uc=self.scenario.usecaseModel.system.usecaseNamed[ucname] #type: Usecase
+                    uc=self.scenarioModel.usecaseModel.system.usecaseNamed[ucname] #type: Usecase
                     if uc not in a.usecases:
                         LocalizedIssue(
                             sourceFile=self,
@@ -749,7 +799,7 @@ class _SexOrSoilSource(ModelSourceFile):
                             line=_S.line_no
                         )
                     _S.main_block=UsecaseInstanceBlock(
-                        scenario=self.scenario,
+                        scenario=self.scenarioModel,
                         actorInstance=ai,
                         useCase=uc,
                         lineNo=_S.line_no,
@@ -765,11 +815,11 @@ class _SexOrSoilSource(ModelSourceFile):
                      +end)
                 m = re.match(r, line)
                 if m:
-                    if not _check_allowed(
-                        feature='usecase',
-                        entitiesMsg='Usecase instances',
-                        level=Levels.Error,
-                        extra='Ignored'):
+                    if not self.checkAllowed(
+                            feature='usecase',
+                            message=_entityError(
+                                'Usecase instances', '. Skipped.'),
+                            level=Levels.Error):
                         continue
                     if self.usecaseModel is None:
                         LocalizedIssue(
@@ -811,14 +861,14 @@ class _SexOrSoilSource(ModelSourceFile):
                     )
                     continue
 
-                #--------------------------------------------------
-                #---- comments ------------------------------------
-                #--------------------------------------------------
-
-                r = prefix+'--.*'+end
-                m = re.match(r, line)
-                if m:
-                    continue
+                # #--------------------------------------------------
+                # #---- comments ------------------------------------
+                # #--------------------------------------------------
+                #
+                # r = prefix+'--.*'+end
+                # m = re.match(r, line)
+                # if m:
+                #     continue
 
 
 
@@ -827,6 +877,14 @@ class _SexOrSoilSource(ModelSourceFile):
             #==================================================
 
             if re.match(begin + r'!', line):
+
+                if not self.checkAllowed(
+                        feature='update',
+                        lineNo=_S.line_no,
+                        message=_entityError(
+                            'Update operations', '. Skipped.'),
+                        level=Levels.Error):
+                    continue
 
                 #--------------------------------------------------
                 #--- object creation (old syntax)
@@ -842,15 +900,12 @@ class _SexOrSoilSource(ModelSourceFile):
                 if m:
                     variable=m.group('name')
                     classname=m.group('className')
-                    _check_allowed(
-                        feature='createSyntax',
-                        instead=
-                            'Deprecated syntax.'
-                            + ' Use "%s := new %s" instead.' % (
-                                variable,
-                                classname
-                        ),
-                        level=Levels.Warning)
+                    self.checkAllowed(
+                            feature='createSyntax',
+                            lineNo=_S.line_no,
+
+                        message=_entityError('Deprecated syntax'),
+                            level=Levels.Warning)
                     id=None
                     if DEBUG:
                         print('%s := new %s' % (variable,classname))
@@ -928,6 +983,13 @@ class _SexOrSoilSource(ModelSourceFile):
                      + end )
                 m = re.match(r, line)
                 if m:
+                    if not self.checkAllowed(
+                            feature='assocClass',
+                            lineNo=_S.line_no,
+                            message=_entityError(
+                                'Association classes', '. Skipped.'),
+                            level=Levels.Error):
+                        continue
                     names = [
                         n.strip()
                         for n in m.group('names').split(',')]
@@ -963,16 +1025,13 @@ class _SexOrSoilSource(ModelSourceFile):
                     names = m.group('objectList').replace(' ','').split(',')
                     ac = _reqClassModel().associationClassNamed[
                         assoc_class_name]
-                    _check_allowed(
-                        feature='createSyntax',
-                        instead=
-                            ('Deprecated syntax.'
-                            + ' Use "%s := new %s'
-                            +' between (%s)" instead.') % (
-                                name,
-                                assoc_class_name,
-                                ', '.join(names)),
-                        level=Levels.Warning)
+                    self.checkAllowed(
+                            feature='createSyntax',
+                            lineNo=_S.line_no,
+
+                        message=_entityError(
+                                ' Deprecated syntax.'),
+                            level=Levels.Warning)
                     if DEBUG:
                         print(('new %s between (%s)' % (
                             assoc_class_name,
@@ -1001,6 +1060,12 @@ class _SexOrSoilSource(ModelSourceFile):
                      + end )
                 m = re.match(r, line)
                 if m:
+                    if not self.checkAllowed(
+                            feature='assocClass',
+                            message=_entityError(
+                                'Association classes', '. Skipped.'),
+                            level=Levels.Error):
+                        continue
                     assoc_class_name = m.group('assocClassName')
                     name = m.group('name')
                     id = m.group('id')
@@ -1030,10 +1095,11 @@ class _SexOrSoilSource(ModelSourceFile):
                      + r'! *destroy +(?P<name>\w+)'+ end )
                 m = re.match(r, line)
                 if m:
-                    if not _check_allowed(
-                        feature='delete',
-                        entitiesMsg='Object deletions',
-                        level=Levels.Error):
+                    if not self.checkAllowed(
+                            feature='delete',
+                            message=_entityError(
+                                'Object deletions', '.  Skipped.'),
+                            level=Levels.Error):
                         continue
                     name = m.group('name')
                     if DEBUG:
@@ -1068,10 +1134,12 @@ class _SexOrSoilSource(ModelSourceFile):
                      + end )
                 m = re.match(r, line)
                 if m:
-                    if not _check_allowed(
-                        feature='delete',
-                        entitiesMsg='Link deletions',
-                        level=Levels.Error):
+                    if not self.checkAllowed(
+                            feature='delete',
+                            lineNo=_S.line_no,
+                            message=_entityError(
+                                'Link deletions', '.  Skipped.'),
+                            level=Levels.Error):
                         continue
                     object_names = \
                         m.group('objectList').replace(' ', '').split(',')
@@ -1328,6 +1396,12 @@ class _SexOrSoilSource(ModelSourceFile):
             r = begin + 'check *(?P<params>( -[avd])*)' + end
             m = re.match(r, line)
             if m:
+                if not self.checkAllowed(
+                        feature='assocClass',
+                        message=_entityError(
+                            'Checks', '. Skipped.'),
+                        level=Levels.Error):
+                    continue
                 check = Check(
                     block=_get_block(),
                     verbose='v' in m.group('params'),
@@ -1398,97 +1472,101 @@ class _SexOrSoilSource(ModelSourceFile):
             continue
 
 
-class SoilSource(_SexOrSoilSource):
-    """
-    Source corresponding directly to the raw .soil source given
-    as the parameter.
-    WARNING: USE is *NOT* executed so some errors may
-    be left undiscovered. Moreover, there is no cardinality check,
-    no invariant checking, etc.
-    From this soil source, one can get an object model.
-    """
-    def __init__(
-            self,
-            soilFileName):
-            # classModel,
-            # usecaseModel=None):
-        #type: (Text, ClassModel) -> None
-        super(SoilSource, self).__init__(
-            evaluateScenario=False,
-            soilFileName=soilFileName,
-            # classModel=classModel,
-            # usecaseModel=usecaseModel,
-            parsePrefix='^',
-            preIssueMessages=[])
-        self.doParse(soilFileName)
-
-
 
 class SexSource(_SexOrSoilSource):
     """
-    Source corresponding to a scenario execution with execution results.
-    The .soil file merged with the trace of the execution of USE .soil file.
+    Source corresponding to a scenario execution with execution
+    results. The .soil file merged with the trace of the execution
+    of USE .soil file.
     """
     def __init__(
             self,
-            soilFileName,
-            classModel,
-            usecaseModel=None,
-            permissionModel=None,
+            originalFileName,
+            preprocessor=None,
             allowedFeatures=(
-                 'delete',
-                 'query',
-                 'usecase',
-                 'context',
-                 'createSyntax',
-                 'topLevelBlock')):
-        #type: (Text, ClassModel, Optional[UsecaseModel], Optional[PermissionModel]) -> None
+                    'permission',  # not used yet
+                    'access',  # not used yet
+                    'update',  # not used yet
+                    'check',  # not used
+                    'assocClass',
+                    'delete',
+                    'query',
+                    'usecase',
+                    'context',
+                    'createSyntax',
+                    'topLevelBlock')
+    ):
+        #type: (Text, Optional[Preprocessor], List[Text]) -> None
         """
         The process is the following:
 
-        1. The regular soilFileName is executed below by USE OCL.
-           After some merging this leads to a sex file with
-           results of queries and checks computed by USE OCL.
+        1.  If a preprocessor is provided first call it on
+            the original filename and used the file returned
+            for the rest of the process. If no preprocessor
+            is given the original file is used unprocessed.
 
-        2. Then the scenario is abstractly executed
-           (see ScenarioEvaluation).
-           This allows to get the evaluation of operations
-           that are not computed by USE OCL (update operations).
+        2.  The resulting file is then executed by USE OCL.
+            After some merging this leads to a .sex file with
+            results of queries and checks computed by USE OCL.
 
-        All this results with a scenario which
-        has an associated scenarioEvaluation.
+        3.  The sex file is then parsed with the parseToFillModel.
+            and the scenario is abstractly executed
+            (see ScenarioEvaluation). This allows to get
+            the evaluation of operations which result is not
+            displayed by USE OCL (update operations).
+
+        All this results with a ScenarioModel which
+        has an associated ScenarioEvaluation.
         """
 
+
+
+        # initialize the parser but with postponed parsing
+        # no preprocessing take places
         super(SexSource, self).__init__(
             evaluateScenario=True,
-            soilFileName=soilFileName,
-            classModel=classModel,
-            usecaseModel=usecaseModel,
-            permissionModel=permissionModel,
-            parsePrefix='^(\d{5}|\|{5}):',
+            originalFileName=originalFileName,
+            parsePrefix='^((\d{5}|\|{5}):)?',  #
             allowedFeatures=allowedFeatures
             )
 
+        # TODO: remove this restriction
         # The classModel must exist
-        assert classModel is not None
+        # assert self.classModel is not None
+        # assert self.classSource is not None
+
+        # # The classModel must have a source to be parsed by USE
+        # assert self.classModel.source is not None
+        # # TODO: it would be possible to parse/evaluate
+        # # In fact the scn without .use or to generate a source from
+        # # the model. Low priority for now.
 
 
-        # The classModel must have a source to be parsed by USE
-        assert classModel.source is not None
-        # TODO: it would be possible to parse/evaluate
-        # In fact the scn without .use or to generate a source from
-        # the model. Low priority for now.
 
 
         try:
+
+            # ---- (1) preprocessing -------------------------
+            if preprocessor is None:
+                soil_filename = originalFileName
+            else:
+                soil_filename = preprocessor.do(
+                    issueOrigin=self,
+                    filename=originalFileName)
+
+            # ---- (2) sex generation (execution+merging) -----
             sex_file=self.__generateSexFile(
-                soilFileName,
-                classModel)
-            self.doParse(sex_file)
+                soil_filename,
+                self.classSource.fileName)
+            self.doReadFiles(realFileName=sex_file)
+
+            # ---- (3) parsing sex to model ------------------
+            self.parseToFillModel()
 
         except FatalError as e:
-            # The fatal error has already registered
+            # The fatal error has already registered. Do nothing
             pass
+
         except Exception as e:
             # Some uncatched execption. Generate an error.
             # Not need to create a fatal one as the process
@@ -1498,40 +1576,97 @@ class SexSource(_SexOrSoilSource):
                 level=Levels.Error,
                 message='Exception: %s' % str(e)
             )
-            raise
+            raise #? should it be better do just pass ?
+
+    def __preprocessOriginalFile(self, preprocessor, originalFileName):
+        #type: (Callable[[Text, Any], Text], Text) -> Text
+        if preprocessor is None:
+            return originalFileName
+        else:
+            return preprocessor(originalFileName, self)
 
 
-
-
-
-
-    def __generateSexFile(self, soilFileName, classModel):
+    def __generateSexFile(self, soilFileName, useFileName):
+        #type: (Text, Text) -> Text
         """
         Execute the UseOCL tool with .use and .soil
-        Can raise a FatalError.
+        Can raise a FatalError.from modelscribes.base.preprocessors import (
+    Preprocessor
+)
+        Return the filename of the sex file generated
         """
-        if not classModel.isValid:
-            raise FatalError(
-                Issue(
-                    origin=self,
-                    level=Levels.Fatal,
-                    message='Class model is invalid' % self.fileName))
+
+        # # Check that the class model is valid
+        # if not classModel.isValid:
+        #     raise FatalError(
+        #         Issue(
+        #             origin=self,
+        #             level=Levels.Fatal,
+        #             message='Class model is invalid' % self.fileName))
+        if DEBUG>=2:
+            print((
+                'DEBUG: generating sex file from:\n'
+                '    use=%s\n'
+                '    soil=%s\n' ) % (
+                    soilFileName,
+                    useFileName))
+
+        # Check that the soil file exists
         if not os.path.isfile(soilFileName):
             raise FatalError(
                 Issue(
                     origin=self,
                     level=Levels.Fatal,
                     message='File not found: %s' % soilFileName))
-        try:
-            sex_file=USEEngine.executeSoilFileAsSex(
-                useFile=classModel.sourceImport.fileName,
-                soilFile=soilFileName)
 
-            return sex_file
-        except Exception as e:
-            m='Error during USE execution: %s' % str(e)
+        # Check that the use file exists
+        if not os.path.isfile(useFileName):
             raise FatalError(
                 Issue(
                     origin=self,
                     level=Levels.Fatal,
-                    message=m))
+                    message='File not found: %s' % useFileName))
+
+        # Execute USE OCL to generate the sex file
+        try:
+            sex_file=USEEngine.executeSoilFileAsSex(
+                useFile=useFileName,
+                soilFile=soilFileName)
+
+            if DEBUG >= 2:
+                print('DEBUG: sex file generation done (%s)' %
+                      sex_file)
+                print('       ')
+            return sex_file
+
+        except Exception as e:
+            m='Error during USE execution: %s' % str(e)
+            Issue(
+                origin=self,
+                level=Levels.Fatal,
+                message=m)
+
+
+# class SoilSource(_SexOrSoilSource):
+#     """
+#     Source corresponding directly to the raw .soil source given
+#     as the parameter.
+#     WARNING: USE is *NOT* executed so some errors may
+#     be left undiscovered. Moreover, there is no cardinality check,
+#     no invariant checking, etc.
+#     From this soil source, one can get an object model.
+#     """
+#     def __init__(
+#             self,
+#             soilFileName):
+#             # classModel,
+#             # usecaseModel=None):
+#         #type: (Text, ClassModel) -> None
+#         super(SoilSource, self).__init__(
+#             evaluateScenario=False,
+#             soilFileName=soilFileName,
+#             parsePrefix='^',
+#             preIssueMessages=[])
+#         self.doParse(soilFileName)
+#
+

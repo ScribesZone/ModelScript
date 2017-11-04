@@ -47,10 +47,10 @@ from modelscribes.metamodels.scenarios.operations import (
 def evaluateOperation(blockEvaluation, op):
     #type: ('BlockEvaluation', Operation) -> OperationEvaluation
     """
-    Reuse or create an operation evaluation for op
-    and connect it to op and blockEvaluation.
-    If op.operationEvaluation already exist then
-    reuse it as the evaluation is already there.
+    Reuse or create an evaluation for the operation 'op'.
+    Connect it to 'op' and blockEvaluation.
+    If op.operationEvaluation already exists then
+    reuses it as the evaluation is already there.
     This is the case for Queries and Check.
     """
     if op.operationEvaluation is not None:

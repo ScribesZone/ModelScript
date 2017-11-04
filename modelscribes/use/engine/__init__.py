@@ -8,8 +8,7 @@ Otherwise the value UseEngine.USE_OCL_COMMAND should be set explicitely.
 
 
 
-from typing import Text, List, Optional, Union
-import os
+from typing import Text, Optional
 
 import logging
 # logging.basicConfig(level=logging.DEBUG)
@@ -23,8 +22,8 @@ __all__ = [
     'USEEngine',
 ]
 
-# DEBUG=4
-DEBUG=0
+DEBUG=4
+#DEBUG=0
 
 #: Path of to the use command binary.
 #: If the default value (``"use"``) does not work,
@@ -284,18 +283,59 @@ class USEEngine(object):
         1. first create the trace (.stc) with executeSoilFileAsTrace
         2. merge the soil file and trace file with merge
         """
+
         from modelscribes.use.engine.merger import merge
+
         abs_use_file=os.path.realpath(useFile)
         abs_soil_file=os.path.realpath(soilFile)
+        if DEBUG>=3:
+            print(
+                'DEBUG: executeSoilFileAsSex: '
+                'Soil file: %s' % abs_soil_file)
+            displayFileContent(abs_soil_file)
+            print(
+                'DEBUG: executeSoilFileAsSex:'
+                'executeSoilFileAsTrace')
         trace_filename = cls.executeSoilFileAsTrace(
             abs_use_file,
             abs_soil_file)
+
         if DEBUG>=3:
-            print('**** executeSoilFileAsSex: TRACE RESULT %s saved in ' % trace_filename)
-        sex_filename=merge(abs_soil_file, trace_filename, sexFileName=sexFile)
+            print(
+                'DEBUG: executeSoilFileAsSex: '
+                'TRACE RESULT saved in %s' % trace_filename)
+            displayFileContent(trace_filename)
+            print('DEBUG: executeSoilFileAsSex: now merging')
+        sex_filename=merge(
+            abs_soil_file,
+            trace_filename,
+            sexFileName=sexFile)
+        if DEBUG>=3:
+            print(
+                'DEBUG: executeSoilFileAsSex: '
+                'TRACE RESULT saved in %s' % sex_filename)
+            displayFileContent(sex_filename)
         with open(sex_filename, 'rU') as f:
             cls.outAndErr=f.read()
         return sex_filename
+
+
+def displayFileContent(filename, prefix='    ', length=5):
+    import io
+    with io.open(filename,
+                 'rU',
+                 encoding='utf8') as f:
+        lines = list(
+            line.rstrip() for line in f.readlines())
+
+    print(prefix+'%i line(s) in %s :' % (len(lines), filename))
+    prefixed_lines=[
+        prefix+str(n+1)+' | ' +l
+        for (n,l) in enumerate(lines[:length])]
+    print('\n'.join(prefixed_lines))
+    if len(lines)>length:
+        print(prefix+'  | ... %s more lines ...' %(len(lines)-length))
+
 
 
 
@@ -324,7 +364,7 @@ class USEEngine(object):
     #     def __generateSoilValidationDriver(stateFilePaths):
     #         """
     #         Create a soil sequence with the necessary statements to drive the
-    #         sequence of state validation. That is, it loads and checks each
+    #         sequence of snapshot validation. That is, it loads and checks each
     #         state one after each other.
     #
     #         The soil driver sequence generated looks like:

@@ -2,7 +2,8 @@
 from __future__ import unicode_literals, print_function, absolute_import, division
 
 from modelscribes.base.printers import (
-    AbstractPrinter
+    AbstractPrinter,
+    SourcePrinter
 )
 
 from modelscribes.metamodels.usecases import (
@@ -37,14 +38,17 @@ class UsecaseModelPrinter(AbstractPrinter):  # check
         for actor in usecaseModel.actorNamed.values():
             self.actor(actor)
 
-        self.outLine(
-            'system %s ' % usecaseModel.system.name,
-            lineNo=usecaseModel.system.lineNo,
-            linesBefore=1,
-            linesAfter=1)
+        if usecaseModel.system is None:
+            self.outLine('-- NO SYSTEM DEFINED !')
+        else:
+            self.outLine(
+                'system %s ' % usecaseModel.system.name,
+                lineNo=usecaseModel.system.lineNo,
+                linesBefore=1,
+                linesAfter=1)
 
-        for usecase in usecaseModel.system.usecases:
-            self.usecase(usecase)
+            for usecase in usecaseModel.system.usecases:
+                self.usecase(usecase)
 
 
 
@@ -67,14 +71,41 @@ class UsecaseModelPrinter(AbstractPrinter):  # check
                     self.outLine('%s %s' % (a.name, u.name))
             else:
                 self.outLine('-- %s DO_NOTHING' % a.name)
-        for u in usecaseModel.system.usecases:
-            if len(u.actors)==0:
-                self.outLine('-- NOBODY %s' % u.name)
-                self.outLine('')
-        self.outLine('')
+        if usecaseModel.system is None:
+            self.outLine('-- NO SYSTEM DEFINED !')
+            for u in usecaseModel.system.usecases:
+                if len(u.actors)==0:
+                    self.outLine('-- NOBODY %s' % u.name)
+                    self.outLine('')
+            self.outLine('')
 
-# TODO: implement UsecaseSourcePrinter
+
+
+class UsecaseSourcePrinter(SourcePrinter):
+
+    def __init__(self,
+                 theSource,
+                 summary=False,
+                 displayLineNos=True,
+                 ):
+        super(UsecaseSourcePrinter, self).__init__(
+            theSource=theSource,
+            summary=summary,
+            displayLineNos=displayLineNos)
+
+    def do(self):
+        self.output=''
+        if self.theSource.isValid:
+            p=UsecaseModelPrinter(
+                usecaseModel=self.theSource.model,
+                displayLineNos=self.displayLineNos,
+            ).do()
+            self.out(p)
+        else:
+            self._issues()
+        return self.output
 
 METAMODEL.registerModelPrinter(UsecaseModelPrinter)
-# TODO: register UsecaseSourcePrinter
+METAMODEL.registerSourcePrinter(UsecaseSourcePrinter)
+
 

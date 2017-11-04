@@ -9,7 +9,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import re
 
 from typing import Text, List, Optional, Union
-
+from modelscribes.base.issues import (
+    LocalizedIssue,
+    Levels,
+)
 from modelscribes.megamodels.sources import ModelSourceFile
 from modelscribes.metamodels.classes import (
     Entity,
@@ -27,11 +30,12 @@ from modelscribes.metamodels.permissions.sar import Subject, Action, Resource
 from modelscribes.metamodels.usecases import (
     UsecaseModel,
 )
-from modelscribes.scripts.permissions.printer import (
-    PermissionModelPrinter
+from modelscribes.scripts.megamodels.parser import (
+    isMegamodelStatement
 )
 
-DEBUG=4
+
+DEBUG=0
 
 class PermissionModelSource(ModelSourceFile):
 
@@ -40,8 +44,13 @@ class PermissionModelSource(ModelSourceFile):
         super(PermissionModelSource, self).__init__(
             fileName=fileName)
 
-        self.parseToFillModel()
-        # Todo, check errors, etc.
+    @property
+    def usecaseModel(self):
+        return self.importBox.model('us')
+
+    @property
+    def classModel(self):
+        return self.importBox.model('cl')
 
     @property
     def permissionModel(self):
@@ -52,30 +61,6 @@ class PermissionModelSource(ModelSourceFile):
     @property
     def metamodel(self):
         return METAMODEL
-
-    @property
-    def megamodelStatementPrefix(self):
-        return r' *(--)? *@'
-
-    def printStatus(self):
-        """
-        Print the status of the file:
-
-        * the list of errors if the file is invalid,
-        * a short summary of entities (classes,
-          attributes, etc.) otherwise
-        """
-
-        if self.isValid:
-            p=PermissionModelPrinter(
-                permissionModel=self.permissionModel,
-                displayLineNos=True,
-            )
-            print(p.do())
-        else:
-            print('%s error(s) in the model' % len(self.issueBox))
-            for e in self.issueBox:
-                print(e)
 
 
     def parseToFillModel(self):
@@ -104,10 +89,21 @@ class PermissionModelSource(ModelSourceFile):
             if m:
                 continue
 
-            #---- comments ----------------------------
-            r = '^ *--.*$'
+            #---- comments -------------------------------------------------
+            r = '^ *-- *[^@].*$'
             m = re.match(r, line)
             if m:
+                continue
+            # TODO: add proper comment management
+
+            #--- megamodel statements -------------
+            is_mms=isMegamodelStatement(
+                lineNo=line_no,
+                modelSourceFile=self)
+            # print('OOO',line,is_mms)
+            if is_mms:
+                # megamodel statements have already been
+                # parse so silently ignore them
                 continue
 
 
@@ -122,9 +118,13 @@ class PermissionModelSource(ModelSourceFile):
                 subject_strs=m.group('subjects').split(',')
                 subjects=_resolve_subjects(self.usecaseModel, subject_strs)
                 if not isinstance(subjects, list):
-                    raise ValueError(
-                        'Error at line %i. Subject "%s" does not exist' % (
-                            line_no, subjects))
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Error,
+                        message='Invalid subject "%s"'
+                                % subjects,
+                        line=line_no
+                    )
 
                 #---- ops
                 actions=[]
@@ -133,18 +133,24 @@ class PermissionModelSource(ModelSourceFile):
                     if action not in actions:
                         actions.append(action)
                 if len(actions)==0 :
-                    raise SyntaxError(
-                        'Syntax error at line %i. No action specified'
-                        % line_no
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Error,
+                        message='No action specified',
+                        line=line_no
                     )
 
                 #---- resources
                 resource_strs=m.group('resources').split(',')
                 resources=_resolve_resources(self.classModel, resource_strs)
                 if not isinstance(resources, list):
-                    raise ValueError(
-                        'Error at line %i. Resource "%s" does not exist' % (
-                            line_no, resources))
+                    LocalizedIssue(
+                        sourceFile=self,
+                        level=Levels.Error,
+                        message='Invalid resources "%s"'
+                                % resources,
+                        line=line_no
+                    )
                 rule=FactorizedPermissionRule(
                     model=self.permissionModel,
                     subjects=subjects,
@@ -157,17 +163,13 @@ class PermissionModelSource(ModelSourceFile):
 
                 continue
 
-            raise SyntaxError(
-                'Error: cannot parse line #%s: %s' % (
-                    line_no,
-                    original_line
-                ))
-
-        # TODO: is this a copy paste ?
-        if self.usecaseModel.system is None:
-            raise SyntaxError(
-                'Error: no system defined'
+            LocalizedIssue(
+                sourceFile=self,
+                level=Levels.Error,
+                message='Syntax error.',
+                line=line_no
             )
+
 
 
 
@@ -284,3 +286,4 @@ def _resolve_resource(classModel, expr):
         return None
 
 METAMODEL.registerSource(PermissionModelSource)
+#print('/'*150+'\n',METAMODEL.sourceClass)

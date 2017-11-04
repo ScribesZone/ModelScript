@@ -1,7 +1,0 @@
---@ usecase model UC4
---@ import usecase model uc10.ucm
-
-system UC4
-
-usecase  SortirLivre
-usecase RentrerLivre

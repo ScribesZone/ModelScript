@@ -1,0 +1,7 @@
+usecase model UC5
+
+
+system CyberBibliotheque
+
+actor Employe
+actor Bibliothequaire

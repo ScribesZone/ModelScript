@@ -10,7 +10,6 @@ from modelscribes.megamodels.megamodels import Megamodel
 
 
 class MetamodelDependency(object):
-    # type: (Metamodel, Metamodel, bool, bool) -> None
     """
     'id's parameters are used instead of metamodels to avoid
     python module dependency cycles.

@@ -162,6 +162,8 @@ def merge(soilFile, traceFile, sexFileName=None):
             continue
 
         #---- message for empty files
+        #FIXME: check why merging does not work when there is this answer
+        #TODO: add a test for it.
         if re.match('^Nothing to do, because file .*contains no data!',line):
             if DEBUG>=2:
                 print(' ' * 10 + 'skip')

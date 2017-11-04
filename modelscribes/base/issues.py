@@ -10,6 +10,8 @@ from modelscribes.base.annotations import (
     Annotations
 )
 
+DEBUG=1
+
 class FatalError(Exception):
     def __init__(self, SourceError):
         super(FatalError, self).__init__()
@@ -74,7 +76,7 @@ class Issue(object):
         assert message is not None and message!=''
 
         self.origin = origin  #type: WithIssueList
-        """ The source file. An instance of SourceFile. """
+        """ A source file or a model. """
 
         self.message = message
         """ The error message. """
@@ -82,9 +84,15 @@ class Issue(object):
         self.level=level  #type:Level
 
         self.origin.issueBox._add(self)
+
+        if DEBUG>=1:
+            self.display()
+
         if level==Levels.Fatal:
             raise FatalError(self)
 
+    def display(self):
+        print('DEBUG: Issue: '+str(self))
 
 
     def str(self,
@@ -178,8 +186,6 @@ class LocalizedIssue(Issue):
             origin=sourceFile,
             level=level,
             message=message)
-
-
 
 
     def str(self,
@@ -288,17 +294,22 @@ class LocalizedIssue(Issue):
 
 
 class IssueBox(object):
+    """
+    A collection of issues. It allows to have nested issues box
+    and have some query mecanisms.
+    """
 
     def __init__(self, parents=()):
         #type: (List[IssueBox]) -> None
         self._issueList=[] #type: List[Issue]
         self.parents=list(parents) #type:List[IssueBox]
 
-        self._issuesAtLine=OrderedDict() #type: Dict[Optional[int], List[Issue]]
+        self._issuesAtLine=OrderedDict()
+        #type: Dict[Optional[int], List[Issue]]
         """ 
         Store for a given line the issues at this line.
         There is no  entry for lines without issues.
-        _issuesAtLine[0] are are not localized issues.
+        _issuesAtLine[0] are for unlocalized issues.
         """
 
     def _add(self, issue):
@@ -328,8 +339,8 @@ class IssueBox(object):
     def at(self, lineNo, parentsFirst=True):
         """
         Return the list of issues at the specified line.
-        If the line is 0 then return non localized issues.
-        Return both local and parents issues.
+        If the line is 0 then return unlocalized issues.
+        Return both local and parents issues recursively.
         """
         # int -> List[Issue]
         parent_issues=[
@@ -345,18 +356,33 @@ class IssueBox(object):
             return self_issues+parent_issues
 
     @property
+    def allParents(self):
+        #type: () -> List[IssueBox]
+        """
+        Return all parents recursively.
+        """
+        return list(
+            x
+            for p in self.parents
+                for x in p.allParents+[p]
+        )
+
+    @property
     def all(self):
         """
-        Return both local and parents issues
+        Return both local and parents issues recursively
         """
         return (
-            [ i for p in self.parents
+            [ i for p in self.allParents
                     for i in p._issueList ]
             + self._issueList
         )
 
     @property
     def nb(self):
+        """
+        Return the nb of all issues (local and parents)
+        """
         return len(self.all)
 
     def select(self,
@@ -426,25 +452,31 @@ class IssueBox(object):
                 level_msgs.append(
                     times(n, l.label))
         if len(level_msgs)==1:
-            return Annotations.prefix+level_msgs[0]
+            text=level_msgs[0]
         else:
-            return (
-                Annotations.prefix+'%s (%s)' % (
+            text= '%s (%s)' % (
                     times(self.nb, 'Issue'),
                     ', '.join(level_msgs)
                 )
-            )
+        return Annotations.fullLine(text)
 
 
 
-    def str(self, level=None, op='=', mode='fragment',
+    def str(self,
+            level=None,
+            op='=',
+            mode='fragment',
             summary=True):
-        header=self.summaryLine if summary else ''
+        header=(
+            Annotations.full+'\n'
+            +self.summaryLine+'\n'
+            +Annotations.full) if summary else ''
         return '\n'.join(
             [header]
             + [
                 i.str(mode=mode)
-                for i in self.select(level,op)])
+                for i in self.select(level,op)]
+            + [Annotations.full+'\n' ])
 
     def __str__(self):
         return self.str()

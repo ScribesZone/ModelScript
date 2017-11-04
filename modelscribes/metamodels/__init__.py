@@ -5,7 +5,6 @@ import modelscribes.metamodels.permissions
 import modelscribes.metamodels.permissions.accesses
 import modelscribes.metamodels.scenarios
 import modelscribes.metamodels.glossaries
-import modelscribes.metamodels.scenarios
 import modelscribes.metamodels.glossaries
 import modelscribes.metamodels.objects
 import modelscribes.metamodels.usecases

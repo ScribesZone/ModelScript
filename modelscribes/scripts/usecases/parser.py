@@ -1,4 +1,8 @@
 # coding=utf-8
+
+
+#FIXME: Check if line patterns are too permissive at the end
+
 from __future__ import unicode_literals, print_function, absolute_import, division
 from typing import Text
 import re
@@ -8,6 +12,10 @@ from modelscribes.base.symbols import (
 )
 
 from modelscribes.megamodels.sources import ModelSourceFile
+
+from modelscribes.scripts.megamodels.parser import (
+    isMegamodelStatement
+)
 from modelscribes.scripts.usecases.printer import (
     UsecaseModelPrinter
 )
@@ -25,13 +33,12 @@ from modelscribes.metamodels.usecases import (
     METAMODEL
 )
 
+
 __all__=(
     'UsecaseModelSource'
 )
 DEBUG=0
 
-
-# Todo, check errors, etc.
 
 class UsecaseModelSource(ModelSourceFile):
     def __init__(self, usecaseFileName):
@@ -52,18 +59,27 @@ class UsecaseModelSource(ModelSourceFile):
     def metamodel(self):
         return METAMODEL
 
-    @property
-    def megamodelStatementPrefix(self):
-        return r' *(--)? *@'
-
     def parseToFillModel(self):
+
+        def _checkSystemExist(isLast=False):
+            if self.usecaseModel.system is None:
+                LocalizedIssue(
+                    sourceFile=self,
+                    level=Levels.Fatal,
+                    message='System is not defined %s' %
+                            (' yet.' if not isLast else '!'),
+                    line=line_no,
+                )
+
         def _ensureActor(name):
+            _checkSystemExist(isLast=False)
             if name in self.usecaseModel.actorNamed:
                 return self.usecaseModel.actorNamed[name]
             else:
                 return Actor(self.usecaseModel, name)
 
         def _ensureUsecase(name):
+            _checkSystemExist(isLast=False)
             if name in self.usecaseModel.system.usecaseNamed:
                 return self.usecaseModel.system.usecaseNamed[name]
             else:
@@ -95,11 +111,21 @@ class UsecaseModelSource(ModelSourceFile):
                 continue
 
             #---- comments -------------------------------------------------
-            r = '^ *--.*$'
+            r = '^ *-- *[^@].*$'
             m = re.match(r, line)
             if m:
                 continue
             # TODO: add proper comment management
+
+            #--- megamodel statements -------------
+            is_mms=isMegamodelStatement(
+                lineNo=line_no,
+                modelSourceFile=self)
+            if is_mms:
+                # megamodel statements have already been
+                # parse so silently ignore them
+                continue
+
 
             #--- system X -------------------------
             r = begin(0)+r'system +(?P<name>\w+)'+end
@@ -134,13 +160,6 @@ class UsecaseModelSource(ModelSourceFile):
             m = re.match(r, line)
             if m:
                 current_usecase=None
-                if self.usecaseModel.system is None:
-                    LocalizedIssue(
-                        sourceFile=self,
-                        level=Levels.Warning,
-                        message='System is not defined yet.',
-                        line=line_no,
-                    )
                 name=m.group('name')
                 current_actor=_ensureActor(name)
                 current_actor.kind=m.group('kind'),
@@ -161,13 +180,6 @@ class UsecaseModelSource(ModelSourceFile):
             r = begin(0)+r'usecase +(?P<name>\w+)'+end
             m = re.match(r, line)
             if m:
-                if self.usecaseModel.system is None:
-                    LocalizedIssue(
-                        sourceFile=self,
-                        level=Levels.Warning,
-                        message='System is not defined yet.',
-                        line=line_no,
-                    )
                 name=m.group('name')
                 current_usecase=_ensureUsecase(name)
                 current_usecase.lineNo = line_no
@@ -201,6 +213,7 @@ class UsecaseModelSource(ModelSourceFile):
                         uc.lineNo=line_no
                     continue
 
+
             LocalizedIssue(
                 sourceFile=self,
                 level=Levels.Error,
@@ -209,13 +222,9 @@ class UsecaseModelSource(ModelSourceFile):
                 line=line_no
             )
 
-        if self.usecaseModel.system is None:
-            Issue(
-                origin=self,
-                level=Levels.Error,
-                message=(
-                    'No "system" definition.'),
-            )
+        # End of file
+        line_no=len(self.sourceLines)
+        _checkSystemExist(isLast=True)
 
     # def printStatus(self):
     #     """

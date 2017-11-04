@@ -26,6 +26,9 @@ from modelscribes.megamodels.dependencies.metamodels import (
 )
 
 class GlossaryModel(Model):
+    """
+    Collection of named domains.
+    """
 
     def __init__(self):
         super(GlossaryModel, self).__init__()
@@ -67,6 +70,10 @@ class GlossaryModel(Model):
 
 
 class Domain(SourceElement):
+    """
+    A collection of entry indexed by the main term.
+    """
+
 
     def __init__(self, glossaryModel, name, lineNo=None):
         super(Domain, self).__init__(
@@ -77,10 +84,14 @@ class Domain(SourceElement):
         self.glossaryModel.domainNamed[name]=self
         self.entryNamed=collections.OrderedDict()
         # type: Dict[Text, Entry]
-        # Entries indexed y main term name
+        # Entries indexed by main term name
 
 
 class Entry(SourceElement):
+    """
+    A main term with alternative terms, description
+    and references
+    """
 
     def __init__(self,
                  domain,
@@ -113,7 +124,7 @@ class Entry(SourceElement):
 METAMODEL = Metamodel(
     id='gl',
     label='glossary',
-    extension='.glm',
+    extension='.gls',
     modelClass=GlossaryModel
 )
 # MetamodelDependency(

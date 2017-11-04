@@ -1,0 +1,7 @@
+permission model A11
+import usecase model from "ae1.uss"
+import class model from "a.cls"
+
+X  CD  C,R
+
+

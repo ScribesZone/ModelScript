@@ -46,23 +46,32 @@ class AbstractPrinter(object):
                 linesBefore=0,
                 linesAfter=0,
                 indent=0,
+                increaseLineNo=False,
                 ):
         if linesBefore >= 1:
             for i in range(linesBefore):
                 self.outLine('')
-        self.out(self.lineNoString(lineNo=lineNo))
-        self.out('%s%s%s' % (
-            self._indentPrefix(indent)
-            ,prefix,
-            s) )
-        if suffix is not None:
-            self.out(suffix)
+        # string with multilines should be processes line by line
+        lines = s.split('\n')
+        current_line_no=lineNo
+        for (index, line) in enumerate(lines):
+            if lineNo is not None:
+                if increaseLineNo:
+                    current_line_no += lineNo+index
+            self.out(self.lineNoString(lineNo=current_line_no))
+            self.out('%s%s%s' % (
+                self._indentPrefix(indent),
+                prefix,
+                line) )
+            if suffix is not None:
+                self.out(suffix)
+
         if linesAfter >= 1:
             for i in range(linesAfter):
                 self.outLine('')
 
     def _indentPrefix(self, indent=0):
-        return ' '*(self._baseIndent+indent)
+        return ' '*4*(self._baseIndent+indent)
 
     @abstractmethod
     def do(self):

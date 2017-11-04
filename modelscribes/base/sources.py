@@ -5,15 +5,19 @@ Source files and annotated source files.
 """
 
 import abc
-import io
 import os
 from abc import ABCMeta
 
-from typing import Text, List, Optional
+from typing import Text, List, Optional, Any
 
 import fragments
+from modelscribes.base.files import (
+    readFileLines
+)
 from modelscribes.base.issues import (
     Issue,
+    LocalizedIssue,
+    Level,
     Levels,
     WithIssueList
 )
@@ -43,9 +47,10 @@ class SourceFile(WithIssueList):
     def __init__(self,
                  fileName,
                  realFileName=None,
-                 preErrorMessages=(),
-                 doNotReadFile=False):
-        #type: (Text, Optional[Text]) -> None
+                 preErrorMessages=(), # Type to be checked
+                 doNotReadFiles=False,
+                 allowedFeatures=()):
+        #type: (Text, Optional[Text], List[Any], bool, Optional[Text]) -> None
         """
         Create a source by parsing a given file. It is possible
         to have a 'logical' file that is what the user see, and
@@ -64,7 +69,7 @@ class SourceFile(WithIssueList):
                 will set this parameter
             preErrorMessages:
                 The errors in this list will be added.
-            doNotReadFile:
+            doNotReadFiles:
                 If False the file is read directly.
                 Otherwise the method doReadFile must be called!
         """
@@ -77,7 +82,7 @@ class SourceFile(WithIssueList):
         """ The filename as given when creating the source file"""
 
         self.realFileName=(
-            None if doNotReadFile  # filled later
+            None if doNotReadFiles  # filled later
             else (
                 fileName if realFileName is None
                 else realFileName))
@@ -104,7 +109,7 @@ class SourceFile(WithIssueList):
         an exception, the sourceLines will still be of the
         appropriate type (no lines)
         The caller must call doReadFile explictely
-        if doNotReadFile.
+        if doNotReadFiles.
         """
 
         self.realSourceLines=[]  #type: List[Text]
@@ -116,11 +121,70 @@ class SourceFile(WithIssueList):
         an exception, the sourceLines will still be of the
         appropriate type (no lines)
         The caller must call doReadFile explictely
-        if doNotReadFile.
+        if doNotReadFiles.
         """
 
-        if not doNotReadFile:
-            self.doReadFile(self.realFileName)
+        self.allowedFeatures=allowedFeatures #type: List[Text]
+        """
+        A list of feature names that could be issued
+        in the parser.
+        """
+
+        if not doNotReadFiles:
+            self.doReadFiles(
+                logicalFileName=self.fileName,
+                realFileName=self.realFileName)
+
+    def checkAllowed(
+            self,
+            feature,
+            message,
+            lineNo=None,
+            level=Levels.Fatal ):
+        # type: (Text, Text, int, Level, Text) -> bool
+        """
+        Check if a feature is allowed.
+        If this not the case raise an issue with
+        a proper message (see the code).
+        """
+        is_allowed = feature in self.allowedFeatures
+        if not is_allowed:
+            if lineNo is None:
+                Issue(self, level=level, message=message )
+            else:
+                LocalizedIssue(
+                    sourceFile=self,
+                    level=level,
+                    message=message,
+                    line=lineNo
+                )
+        return is_allowed
+
+    # def checkEntitiesAllowed( self,
+    #         feature,
+    #         entitiesMsg,
+    #
+    #         lineNo=None,
+    #         level=Levels.Error,
+    #         ,
+    #         extra=''):
+    #     # type: (Text, int, Level, Text, Text) -> bool
+    #     """
+    #     Check if a feature is allowed.
+    #     If this not the case raise an issue with
+    #     a proper message (see the code).
+    #     """
+    #     self.checkAllowed(
+    #         feature=feature,
+    #         lineNo=lineNo,
+    #         level=level,
+    #
+    #         )
+    #
+    #     m = '%s are not allowed in %ss. %s.' % (
+    #         entitiesMsg,
+    #         self.modelHeader,
+    #         extra)
 
 
     @property
@@ -136,39 +200,42 @@ class SourceFile(WithIssueList):
             else self.realFileName != self.fileName
         )
 
-    def doReadFile(self, realFileToRead):
+    def doReadFiles(self, logicalFileName=None, realFileName=None):
         #type: (Text)->List(Text)
         """
-        Read a file as a list of line and file self.sourceLines
+        Read one or two files.
         """
-        def _read_lines(file):
-            try:
-                with io.open(file,
-                             'rU',
-                             encoding='utf8') as f:
-                    lines = list(
-                        line.rstrip() for line in f.readlines())
-                return lines
-            except :
-                Issue(
-                    origin=self,
-                    level=Levels.Fatal,
-                    message=('Cannot read file "%s"' %
-                             file)
-                )
+
+        assert logicalFileName or realFileName
+        if logicalFileName is not None:
+            self.fileName=logicalFileName
+            self.sourceLines=readFileLines(
+                file=self.fileName,
+                issueOrigin=self,
+                message='Cannot read source file %s')
+        if realFileName is not None:
+            self.realFileName=realFileName
+            if logicalFileName==realFileName:
+                self.realSourceLines=self.sourceLines
+            else:
+                self.realFileName = realFileName
+                self.realSourceLines = readFileLines(
+                    file=self.realFileName,
+                    issueOrigin=self,
+                    message='Cannot read generated file %s')
 
 
-        self.realFileName=realFileToRead
-
-        # read the actual file
-        self.realSourceLines= _read_lines(self.realFileName)
-
-        if self.fileName==self.realFileName:
-            self.sourceLines=self.realSourceLines
-        else:
-            # read the 'logical' source file
-            self.sourceLines=_read_lines(self.fileName)
-        return
+        # self.realFileName=realFileToRead
+        #
+        # # read the actual file
+        # self.realSourceLines= _read_lines(self.realFileName)
+        #
+        # if self.fileName==self.realFileName:
+        #     self.sourceLines=self.realSourceLines
+        # else:
+        #     # read the 'logical' source file
+        #     self.sourceLines=_read_lines(self.fileName)
+        # return
 
 
     @property
@@ -189,7 +256,7 @@ class SourceFile(WithIssueList):
         #type: ()->Text
         """
         Extension of the file including '.'
-        For instance '.clm'
+        For instance '.cls'
         """
         return os.path.splitext(os.path.basename(self.fileName))[1]
 

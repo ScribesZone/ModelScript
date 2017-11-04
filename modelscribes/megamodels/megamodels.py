@@ -15,6 +15,8 @@ Model='Model'
 MetamodelDependency='MetamodelDepndency'
 ModelDependency='ModelDependency'
 
+# XXX TODO: Make a print for megamodel
+# XXX TODO: add a import modelscribes to load everything
 
 class Megamodel(object):
 
@@ -53,6 +55,9 @@ class Megamodel(object):
         Megamodel._metamodelById[metamodel.id]=metamodel
         Megamodel._metamodelByLabel[metamodel.label]=metamodel
         Megamodel._metamodelByExtension[metamodel.extension]=metamodel
+        # print('+++'*30+'\n')
+        #print('Register metamodel', metamodel)
+        # print('+++'*30+'\n')
         # This avoid having undefined index later
 
 
@@ -209,3 +214,5 @@ class Megamodel(object):
     def checkMetamodelLevel(cls):
         for mmd in cls.metamodelDependencies():
             mmd.check()
+
+# TODO: add megamodel print

@@ -674,7 +674,7 @@ class AssociationClass(Class, Association):
 METAMODEL = Metamodel(
     id='cl',
     label='class',
-    extension='.clm',
+    extension='.cls',
     modelClass=ClassModel
 )
 

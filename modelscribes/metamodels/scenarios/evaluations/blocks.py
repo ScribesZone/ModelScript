@@ -16,7 +16,7 @@ from modelscribes.metamodels.scenarios.evaluations.operations import (
 )
 
 
-#TODO: checj how to create nested AccessSet so that block can have their own access set
+# TODO: check how to create nested AccessSet so that block can have their own access set
 def evaluateBlock(scenarioEvaluation, block):
     #type: ('ScenarioEvaluation', Block) -> BlockEvaluation
     if isinstance(block, ContextBlock):
@@ -26,7 +26,7 @@ def evaluateBlock(scenarioEvaluation, block):
     elif isinstance(block, TopLevelBlock):
         return TopLevelBlockEvaluation(scenarioEvaluation, block)
     else:
-        return NotImplementedError
+        raise NotImplementedError()
 
 
 #----------------------------------------------------------------------------

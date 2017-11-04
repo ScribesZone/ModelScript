@@ -1,0 +1,6 @@
+scenario model CL01
+import class model from "main.cls"
+
+!create djamel : Employee
+!djamel.name := 'Djamel'
+!djamel.salary := 2600

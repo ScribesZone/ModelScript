@@ -4,7 +4,8 @@ from __future__ import unicode_literals, print_function, absolute_import, divisi
 from typing import Text, List
 
 from modelscribes.base.printers import (
-    AbstractPrinter
+    ModelPrinter,
+    SourcePrinter
 )
 from modelscribes.metamodels.permissions import (
     UCPermissionModel,
@@ -13,13 +14,18 @@ from modelscribes.metamodels.permissions import (
 from modelscribes.metamodels.permissions.sar import Action
 
 
-class PermissionModelPrinter(AbstractPrinter):  # TODO: check implementation
+class PermissionModelPrinter(ModelPrinter):  # TODO: check implementation
 
-    def __init__(self, permissionModel, displayLineNos=True):
-        #type: (UCPermissionModel, bool) -> None
+    def __init__(self,
+                 theModel,
+                 summary=False,
+                 displayLineNos=True):
+        #type: (UCPermissionModel, bool, bool) -> None
         super(PermissionModelPrinter, self).__init__(
+            theModel=theModel,
+            summary=summary,
             displayLineNos=displayLineNos)
-        self.permissionModel=permissionModel
+        self.permissionModel=theModel
 
     def do(self):
         super(PermissionModelPrinter, self).do()
@@ -31,10 +37,38 @@ class PermissionModelPrinter(AbstractPrinter):  # TODO: check implementation
             'permission model',
             lineNo=None, #usecaseModel.lineNo)  # TODO: change parser
             linesAfter=1 )
-        self.outLine(str(permissionModel))
+        self.outLine(
+            str(permissionModel),
+            indent=0,
+            lineNo=None)
     #
     # def _rule(self, rule):
     #     self.outLine(str(rule))
+
+# TODO: to be replaced by a generic version
+class PermissionSourcePrinter(SourcePrinter):
+
+    def __init__(self,
+                 theSource,
+                 summary=False,
+                 displayLineNos=True):
+        super(PermissionSourcePrinter, self).__init__(
+            theSource=theSource,
+            summary=summary,
+            displayLineNos=displayLineNos)
+
+    def do(self):
+        self.output=''
+        if self.theSource.isValid:
+            p=PermissionModelPrinter(
+                theModel=self.theSource.model,
+                summary=self.summary,
+                displayLineNos=self.displayLineNos
+            ).do()
+            self.out(p)
+        else:
+            self._issues()
+        return self.output
 
 
 
@@ -82,3 +116,4 @@ def actionNames(actions):
     )
 
 METAMODEL.registerModelPrinter(PermissionModelPrinter)
+METAMODEL.registerSourcePrinter(PermissionSourcePrinter)

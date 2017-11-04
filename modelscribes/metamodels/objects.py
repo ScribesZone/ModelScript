@@ -121,6 +121,8 @@ class Object(StateElement):
         # type: Dict[str,Attribute]
 
     def delete(self):
+        #TODO:  implement delete operation on objects
+
         raise NotImplementedError('Delete operation on objects is not implemented')
 
 
@@ -158,12 +160,13 @@ class LinkObject(Object, Link):
         state.linkObjects.append(self)
 
     def delete(self):
+        #TODO:  implement delete operation on link objects
         raise NotImplementedError('Delete operation on link object is not implemented')
 
 METAMODEL = Metamodel(
     id='ob',
     label='object',
-    extension='.obm',
+    extension='.obs',
     modelClass=ObjectModel
 )
 MetamodelDependency(

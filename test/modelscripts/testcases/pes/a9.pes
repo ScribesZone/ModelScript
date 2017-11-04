@@ -1,0 +1,6 @@
+permission model A9
+import usecase model from "ae1.uss"
+
+M,N  CD  C,R
+
+

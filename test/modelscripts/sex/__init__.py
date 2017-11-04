@@ -10,35 +10,33 @@ from modelscribes.scripts.permissions.parser import (
     PermissionModelSource
 )
 
-def _getModelsForScenario(soilDir, fuse, fucm=None, fpmm=None):
+def _getModelsForScenario(soilDir, fuse, fusm=None, fpem=None):
     usefilename = getTestFile(os.path.join(soilDir, fuse))
     uf=UseModelSource(usefilename)
     assert(uf.isValid)
     clm=uf.classModel
 
-    if fucm is None:
-        ucm=None
+    if fusm is None:
+        usm=None
     else:
-        ucmfilename=getTestFile(os.path.join(soilDir, fucm))
-        ucs=UsecaseModelSource(ucmfilename)
+        usmfilename=getTestFile(os.path.join(soilDir, fusm))
+        ucs=UsecaseModelSource(usmfilename)
         assert(ucs.isValid)
-        ucm=ucs.usecaseModel
-        assert(ucm is not None)
+        usm=ucs.usecaseModel
+        assert(usm is not None)
 
-    if fpmm is None:
-        pmm=None
+    if fpem is None:
+        pem=None
     else:
-        assert(ucm is not None)
-        pmmfilename=os.path.join(os.path.join(soilDir, fpmm))
-        if os.path.isfile(pmmfilename):
-            pms=PermissionModelSource(
-                permissionFileName=pmmfilename,
-                usecaseModel=ucm,
-                classModel=clm)
-            assert(pms.isValid)
-            pmm=pms.permissionModel
-            assert(pmm is not None)
+        assert(usm is not None)
+        pemfilename=os.path.join(os.path.join(soilDir, fpem))
+        if os.path.isfile(pemfilename):
+            pes=PermissionModelSource(
+                permissionFileName=pemfilename)
+            assert(pes.isValid)
+            pem=pes.permissionModel
+            assert(pem is not None)
         else:
-            pmm=None
+            pem=None
 
-    return (clm, ucm, pmm)
+    return (clm, usm, pem)

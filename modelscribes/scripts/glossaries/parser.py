@@ -4,12 +4,20 @@ from typing import Text, Union, Optional, Dict, List
 import re
 
 from modelscribes.megamodels.sources import ModelSourceFile
-
+from modelscribes.scripts.megamodels.parser import (
+    isMegamodelStatement
+)
 from modelscribes.metamodels.glossaries import (
     GlossaryModel,
     Domain,
     Entry,
     METAMODEL,
+)
+from modelscribes.base.issues import (
+    Issue,
+    LocalizedIssue,
+    Levels,
+    FatalError,
 )
 from modelscribes.metamodels.texts import (
     TextBlock,
@@ -23,22 +31,25 @@ class GlossaryModelSource(ModelSourceFile):
     def __init__(self, glossaryFileName):
         #type: (Text) -> None
 
-        super(GlossaryModelSource, self).__init__(
-            fileName=glossaryFileName)
-
         self.__descriptionLinesPerEntry={}
         #type: Optional[Dict[Entry, List[Text]]]
-        # Just used to store during first step parsing the
-        # lines that make the description of the entry.
-        # This will be used later as the source of the
-        # embedded parser for text. This field will be set
-        # to None just after.
-
+        """
+        Just used to store during the first step parsing the
+        lines that make the description of the entry.
+        This will be used later as the source of the
+        embedded parser for text. This field will be set
+        to None just after.
+        """
 
         self.__descriptionFirstLinePerEntry={}
         #type: Optional[Dict[Entry, List[Text]]]
 
-        self._parse()
+        super(GlossaryModelSource, self).__init__(
+            fileName=glossaryFileName)
+
+        #
+        #
+        # self.parseToFillModel()
 
     @property
     def metamodel(self):
@@ -50,33 +61,24 @@ class GlossaryModelSource(ModelSourceFile):
         #type: () -> GlossaryModel
         m=self.model #type: GlossaryModel
         return m
-    #
-    # @property
-    # def usedModelByKind(self):
-    #     _={}
-    #     return _
 
-    @property
-    def megamodelStatementPrefix(self):
-        return r' *(--)? *@'
 
-    def _parse(self):
+    def parseToFillModel(self):
         self._parse_main_body()
         if self.glossaryModel and self.isValid:
             self._parse_and_resolve_descriptions()
 
-
     def _parse_main_body(self):
         """
         Parse everything in the glossary except the description
-        of entries are parsed by the subparser for TextBlock
+        of entries. These descriptions are parsed by the
+        subparser for TextBlock.
         In this first phase we just store the information
         as lines (and first line number). This info will
-        be used in second
-        phase to feed the embedded parser.
+        be used in second phase to feed the embedded parser.
         """
 
-        current_context=None
+        current_context=self.glossaryModel
         #type: Optional[Union[GlossaryModel, Domain, Entry]]
 
         for (line_index, line) in enumerate(self.sourceLines):
@@ -84,16 +86,39 @@ class GlossaryModelSource(ModelSourceFile):
             line = line.replace(u'\t',u' ')
             line_no = line_index+1
 
+            #-----------------------------------------------
+            #  comments
+            #-----------------------------------------------
+
             r = '^ *--.*$'
             m=re.match(r, line)
             if m:
                 continue
 
+            #-----------------------------------------------
+            #  blank lines
+            #-----------------------------------------------
             r = '^ *$'
             m=re.match(r, line)
             if m:
                 continue
 
+
+            #-----------------------------------------------
+            #  megamodel statements
+            #-----------------------------------------------
+            is_mms = isMegamodelStatement(
+                lineNo=line_no,
+                modelSourceFile=self)
+            if is_mms:
+                # megamodel statements have already been
+                # parse so silently ignore them
+                continue
+
+
+            #-----------------------------------------------
+            #  domain
+            #-----------------------------------------------
             if (isinstance(current_context, (
                     GlossaryModel,
                     Domain,
@@ -101,6 +126,7 @@ class GlossaryModelSource(ModelSourceFile):
                 r=r'^domain +(?P<name>\w+) *$'
                 m=re.match(r, line)
                 if m:
+                    #FIXME: don't create a domain if defined before
                     domain=Domain(
                         glossaryModel=self.glossaryModel,
                         name=m.group('name'),
@@ -109,6 +135,10 @@ class GlossaryModelSource(ModelSourceFile):
                     current_context=domain
                     continue
 
+
+            #-----------------------------------------------
+            #  domain
+            #-----------------------------------------------
             if isinstance(current_context, (
                     Domain,
                     Entry)):
@@ -125,6 +155,7 @@ class GlossaryModelSource(ModelSourceFile):
                         current_context.domain
                         if isinstance(current_context, Entry)
                         else current_context)
+                    #FIXME: error if term already in domain
                     entry=Entry(
                         domain=domain,
                         mainTerm=m.group('word1'),
@@ -141,13 +172,18 @@ class GlossaryModelSource(ModelSourceFile):
                     current_context=entry
                     continue
 
+            #-----------------------------------------------
+            #  description
+            #-----------------------------------------------
+
             if isinstance(current_context, Entry):
                 r='^        (?P<line>.*)'
                 m = re.match(r, line)
                 if m:
                     entry=current_context
 
-                    # store the line no if this the first line of descr
+                    # store the line number if this the first
+                    # line of description
                     if entry not in self.__descriptionFirstLinePerEntry:
                         self.__descriptionFirstLinePerEntry[entry]=line_no
 
@@ -155,8 +191,17 @@ class GlossaryModelSource(ModelSourceFile):
                          entry].append(m.group('line'))
                     continue
 
-            print('ERROR at line %i. Cannot parse this line:'%line_no)
-            print('-> %s' % line)
+            #-----------------------------------------------
+            #  error
+            #-----------------------------------------------
+
+            LocalizedIssue(
+                sourceFile=self,
+                level=Levels.Error,
+                message='Syntax error',
+                line=line_no
+            )
+
 
 
     def _parse_and_resolve_descriptions(self):
@@ -168,7 +213,6 @@ class GlossaryModelSource(ModelSourceFile):
         for domain in self.glossaryModel.domainNamed.values():
             for entry in domain.entryNamed.values():
                 desctext='\n'.join(self.__descriptionLinesPerEntry[entry])
-                print('=',len(desctext))
                 lno=self.__descriptionFirstLinePerEntry[entry]
                 textParser=TextSourceFragment(
                     string=desctext,
@@ -181,28 +225,5 @@ class GlossaryModelSource(ModelSourceFile):
                     self.glossaryModel.resolveTextBlock(entry.description)
         self.__descriptionFirstLinePerEntry={}
 
-
-
-
-
-    def printStatus(self):
-        """
-        Print the status of the file:
-
-        * the list of errors if the file is invalid,
-        * a short summary of entities (classes, attributes, etc.) otherwise
-        """
-
-        if self.isValid:
-            from  modelscribes.scripts.glossaries.printer import GlossaryModelPrinter
-            p=GlossaryModelPrinter(
-                glossaryModel=self.glossaryModel,
-                displayLineNos=True)
-            print(p.do())
-        else:
-            print('%s error(s) in the glossary model'
-                  % len(self.issueBox))
-            for e in self.issueBox:
-                print(e)
 
 METAMODEL.registerSource(GlossaryModelSource)

@@ -27,17 +27,20 @@ class ImportBoxPrinter(AbstractPrinter):
 
     def _importBox(self, importBox):
         self._modelDefinition(importBox)
+        for import_ in importBox.imports:
+            self._sourceImport(import_)
 
 
     def _modelDefinition(self, importBox):
-        self.outLine(
-            '%s %s model %s' % (
+        words=(
                 importBox.modelKind,
                 importBox.modelSource.metamodel.label,
-                importBox.modelName),
+                'model',
+                importBox.modelName)
+        self.outLine(
+            ' '.join([ w for w in words if w ]),
             lineNo=None)
-        for import_ in importBox.imports:
-            self._sourceImport(import_)
+
 
     def _sourceImport(self, import_):
         self.outLine(

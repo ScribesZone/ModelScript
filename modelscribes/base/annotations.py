@@ -6,8 +6,16 @@ import tempfile
 from typing import Text, Optional
 
 class Annotations(object):
+    lineLength=80
+    char='*'
+    full=char*lineLength
     prefix='**** '
     cont=  '**   '
+
+    @classmethod
+    def fullLine(cls, text):
+        _=cls.prefix+text+' '
+        return _+cls.char*(cls.lineLength-len(_))
 
     @classmethod
     def regexp(cls):

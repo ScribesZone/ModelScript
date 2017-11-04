@@ -239,7 +239,7 @@ class UseModelPrinter(ModelPrinter):
         self._eolComment(condition)
         self.out(indent(prefix_rest,condition.expression)+'\n')
 
-
+# TODO: to be replaced by a generic version
 class UseSourcePrinter(SourcePrinter):
 
     def __init__(self,
