@@ -26,8 +26,11 @@ class ScsToSoilPreprocessor(Preprocessor):
         self.addTransfo(RegexpTransfo(
             '^ *! *check *',
             'check -v -d -a' ))
+
+        # remove megastatement as they are used
+        # before preprocessing and are no longer useful.
         self.addTransfo(RegexpTransfo(
-            '^ *(scenario|import)',
+            '^ *(scenario|import|object)', # remove mega
             '' ))
         self.addTransfo(PrefixToCommentTransfo((
             'actor',

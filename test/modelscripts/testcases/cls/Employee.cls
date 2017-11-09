@@ -1,5 +1,5 @@
 
-model Employee
+class model Employee
 
 
 class Person
@@ -11,7 +11,7 @@ operations
   raiseSalary(rate : Real) : Real
 end
 
-package sf jchjvh cj
+package sf jchjvh cj TODO
 
 class Company
 attributes

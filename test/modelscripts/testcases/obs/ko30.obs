@@ -1,0 +1,44 @@
+object model US90
+import class model from "main.cls"
+
+actori toufik:CEO
+actori maria:Secretary
+actori xavier:Manager
+
+
+context
+    !computing := new Department
+    !computing.name := 'Computing departement'
+    !computing.location := 'Los alaambritos'
+    !computing.budget := 10000
+endcontext
+
+!djamel := new Employee
+!djamel.name := 'Djamel'
+!djamel.salary := 2600
+!insert (djamel, computing) into WorksIn
+
+!check
+uci maria RegisterNewEmployee
+    !ioannis := new Employee
+    !ioannis.name := 'Ioannis'
+    !ioannis.salary := 1900
+    !insert (ioannis, computing) into WorksIn
+enduci
+
+??2+3*5=3
+!turbo := new Project
+!turbo.name := 'Maxi turbo project'
+!turbo.budget := 5000
+! c1 := new Control() between (computing, turbo)
+! c1.frequence:=15
+
+uci maria IncreaseSalary
+    context
+        !sandrine := new Employee
+        !sandrine.name := 'Sandrine'
+        !sandrine.salary := 2000
+        !insert (sandrine, computing) into WorksIn
+    endcontext
+    !sandrine.salary := 2600
+enduci

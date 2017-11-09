@@ -23,7 +23,7 @@ Either find some errors or create a class model
 
 #import os
 import re
-from typing import Text, Optional, Callable
+from typing import Text, Optional, Callable, Any
 
 from modelscribes.base.symbols import (
     Symbol
@@ -80,7 +80,16 @@ class UseModelSource(ModelSourceFile):
     a reference to the contained class model will be available.
     """
 
-    def __init__(self, originalFileName, preprocessor=None):
+    def __init__(self,
+                 originalFileName,
+                 preprocessor=None,
+                 allowedFeatures=(
+                         'enum',
+                         'assocClass',
+                         'operation',
+                         'inv',
+                         'pre/post'),
+                 ):
         #type: (Text, Optional[Preprocessor]) -> None
         """
         Execute the given .use file with use interpreter, then
@@ -91,7 +100,7 @@ class UseModelSource(ModelSourceFile):
         class model, otherwise it contains the list of errors
         as well as the USE OCL command exit code.
 
-        :param fileName:
+        :param originalFileName:
             The path of the '.use' source file to analyze
         Examples:
             see test.modelscript.test_parser
@@ -117,6 +126,7 @@ class UseModelSource(ModelSourceFile):
             parseFileLater=True,
             noSymbolChecking=self.isOldUSEFile,
             # activate the patch to recognize USE OCL "model <name>"
+            allowedFeatures=allowedFeatures,
             recognizeUSEOCLNativeModelDefinition=True)
 
 
@@ -255,7 +265,8 @@ class UseModelSource(ModelSourceFile):
     def __parseLinesAndCreateModel(self):
 
 
-
+        def _entityError(e, suffix=''):
+            return '%s are not allowed%s' % (e, suffix)
 
 
         in_block_comment = False
@@ -446,6 +457,13 @@ class UseModelSource(ModelSourceFile):
                 r' *$'
             m = re.match(r, line)
             if m:
+                if not self.checkAllowed(
+                        feature='enum',
+                        lineNo=line_no,
+                        message=_entityError(
+                            ' Enumerations'),
+                        level=Levels.Fatal):
+                    continue
                 current_context = None
                 current_association = None
                 current_class = None
@@ -573,6 +591,13 @@ class UseModelSource(ModelSourceFile):
                 r' *$'
             m = re.match(r, line)
             if m:
+                if not self.checkAllowed(
+                        feature='assocClass',
+                        lineNo=line_no,
+                        message=_entityError(
+                            'Association classes'),
+                        level=Levels.Fatal):
+                    continue
                 current_context = None
                 current_enumeration = None
                 current_attribute = None
@@ -658,6 +683,13 @@ class UseModelSource(ModelSourceFile):
             m = re.match(r, line)
             if m and '(' in line and ')' in line:
                 if current_class is not None:
+                    if not self.checkAllowed(
+                            feature='operation',
+                            lineNo=line_no,
+                            message=_entityError(
+                                'Operations'),
+                            level=Levels.Fatal):
+                        continue
                     current_enumeration = None
                     current_attribute = None
                     current_condition = None
@@ -866,6 +898,13 @@ class UseModelSource(ModelSourceFile):
                         condname = '' if m.group('name') is None else m.group('name')
                         if m.group('cond') == 'inv':
                             # An invariant can have no context at all. Deal with it.
+                            if not self.checkAllowed(
+                                    feature='inv',
+                                    lineNo=line_no,
+                                    message=_entityError(
+                                        'Invariants', '.  Skipped.'),
+                                    level=Levels.Fatal):
+                                continue
                             if current_context is None:
                                 classname = None
                                 variables = None
@@ -889,6 +928,13 @@ class UseModelSource(ModelSourceFile):
                                 eolComment=current_eol_comment,
                             )
                         elif m.group('cond') == 'pre':
+                            if not self.checkAllowed(
+                                    feature='pre/post',
+                                    lineNo=line_no,
+                                    message=_entityError(
+                                        'Preconditions', '.  Skipped.'),
+                                    level=Levels.Fatal):
+                                continue
                             classname = current_context['classname']
                             current_condition = PreCondition(
                                 name=condname,
@@ -901,6 +947,13 @@ class UseModelSource(ModelSourceFile):
                                 eolComment=current_eol_comment,
                             )
                         elif m.group('cond') == 'post':
+                            if not self.checkAllowed(
+                                    feature='pre/post',
+                                    lineNo=line_no,
+                                    message=_entityError(
+                                        'Postconditions', '.  Skipped.'),
+                                    level=Levels.Fatal):
+                                continue
                             classname = current_context['classname']
                             current_condition = PostCondition(
                                 name=condname,

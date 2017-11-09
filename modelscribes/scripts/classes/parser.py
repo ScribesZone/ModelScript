@@ -19,8 +19,8 @@ class ClsToUsePreprocessor(Preprocessor):
             targetExtension='.use'
         )
         self.addTransfo(RegexpTransfo(
-            '^ *class +model ',
-            ' model '))
+            '^ *class +model (?P<rest>.*)',
+            'model {rest}'))
         self.addTransfo(PrefixToCommentTransfo((
             'package',)))
 

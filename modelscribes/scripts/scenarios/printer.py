@@ -146,16 +146,16 @@ class ScenarioModelPrinter(ModelPrinter):
         self.outLine('---> TODO: block access set ')
 
     def _contextBlock(self, b):
-        self.outLine('-- @context', b.lineNo)
+        self.outLine('context', b.lineNo)
         if self.doDisplayEvaluation and b.blockEvaluation is not None:
             self._blockEvaluation(b.blockEvaluation)
         for op in b.operations:
             self._operation(op)
-        self.outLine('-- @endcontext', None) #TODO
+        self.outLine('end', None) #TODO
 
     def _usecaseInstanceBlock(self, b):
         self.outLine(
-            '-- @uci %s %s' %(
+            'uci %s %s' %(
                 b.actorInstance.name,
                 b.useCase.name),
             b.lineNo
@@ -164,7 +164,7 @@ class ScenarioModelPrinter(ModelPrinter):
             self._blockEvaluation(b.blockEvaluation)
         for op in b.operations:
             self._operation(op)
-        self.outLine('-- @enduci', None) #TODO
+        self.outLine('end', None) #TODO
 
 
     def _topLevelBlock(self, b):

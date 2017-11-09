@@ -36,10 +36,6 @@ http://useocl.sourceforge.net/wiki/index.php/SOIL
 # TODO: add @assert inv * is True|False      -> check -d -v
 # TODO: add @assert query expr is result     -> ??
 
-
-# TODO: add proper mamangement for Warning and Errors
-# TODO: check if a USE OCL run before parsin is necessary/better
-
 # FIXME: check what to do with optional class model
 
 from __future__ import unicode_literals, print_function, absolute_import, division
@@ -149,8 +145,8 @@ class _SexOrSoilSource(ModelSourceFile):
                  allowedFeatures=(
                          'permission',   # not used yet
                          'access', # not used yet
-                         'update', # not used yet
-                         'check', # not used
+                         'update',
+                         'check',
                          'assocClass',
                          'delete',
                          'query',
@@ -158,7 +154,6 @@ class _SexOrSoilSource(ModelSourceFile):
                          'context',
                          'createSyntax',
                          'topLevelBlock'),
-                 modelHeader='detailed scenario model',
                  parsePrefix='^',
                  preIssueMessages=()):
         #type: (bool,Text, List[Text], Text, Text, List[Text]) -> None
@@ -218,7 +213,6 @@ class _SexOrSoilSource(ModelSourceFile):
         self.evaluateScenario=evaluateScenario  #type: bool
         self.soilFileName=originalFileName  #type: Text
         self._parsePrefix=parsePrefix
-        self.modelHeader=modelHeader
 
         # Call the super class.
         # - creates an empty model of type metamodel
@@ -283,10 +277,10 @@ class _SexOrSoilSource(ModelSourceFile):
         m=self.model #type: ScenarioModel
         return m
 
-    @property
-    def scenarioModel(self):
-        m=self.model #type: ScenarioModel
-        return m
+    # @property
+    # def scenarioModel(self):
+    #     m=self.model #type: ScenarioModel
+    #     return m
 
     @property
     def metamodel(self):
@@ -321,7 +315,7 @@ class _SexOrSoilSource(ModelSourceFile):
         #type: (Text) -> None
 
         def _entityError(e, suffix=''):
-            return '%s are not allowed %s' % (e, suffix)
+            return '%s are not allowed%s' % (e, suffix)
 
         class _S(object):
             """
@@ -529,6 +523,7 @@ class _SexOrSoilSource(ModelSourceFile):
             if m:
                 if not self.checkAllowed(
                         feature='query',
+                        lineNo=_S.line_no,
                         message=_entityError(
                             'Queries', '.  Skipped.'),
                         level=Levels.Error):
@@ -561,60 +556,11 @@ class _SexOrSoilSource(ModelSourceFile):
             # directives
             #-------------------------------------------------
 
-            #FIXME:1 does not match lines with -- *@ !!!
-            print('XX'*10,line)
-            print('XX'*10,begin+r'-- *@')
             if re.match(begin+r'-- *@', line):
-                print('YY' * 10, line)
 
-
-
-
-                # # -------------------------------------------------
-                # # @scenario model? <name>
-                # # -------------------------------------------------
-                # r = begin+'-- *@scenario( +model?) +(?P<name>\w+)'+end
-                # m = re.match(r, line)
-                # if m:
-                #     if (len(self.scenarioModel.originalOrderBlocks)>=1
-                #         or len(self.scenarioModel.actorInstanceNamed)>=1):
-                #         LocalizedIssue(
-                #             sourceFile=self,
-                #             level=Levels.Warning,
-                #             message='Scenario declaration must be at the top of the file.',
-                #             line=_S.line_no
-                #         )
-                #     if self.scenarioModel.name is not None:
-                #         LocalizedIssue(
-                #             sourceFile=self,
-                #             level=Levels.Warning,
-                #             message=(
-                #                 'The scenario has been already named "%s".' %
-                #                 self.scenarioModel.name),
-                #             line=_S.line_no
-                #         )
-                #
-                #     self.scenarioModel.name=m.group('name')
-                #     self.scenarioModel.lineNo=_S.line_no
-                #     continue
-                #
-                # #TODO: add here the possibility to have object model
-                #
-
-
-
-                # # -------------------------------------------------
-                # # @import ...
-                # # -------------------------------------------------
-                # m=matchImportExpr(line, prefixRegexp=begin+' *-- *@')
-                # if m is not None:
-                #     raise NotImplementedError('import to be implemented')
-                #     continue
-                #
-
-                # -------------------------------------------------
+                # -------------------------------
                 # @actorinstance <actor> : <instance>
-                # -------------------------------------------------
+                # -----------------------------------
 
                 r = (prefix
                      +'-- *@actori +(?P<name>\w+) *'
@@ -624,6 +570,7 @@ class _SexOrSoilSource(ModelSourceFile):
                 if m:
                     if not self.checkAllowed(
                             feature='usecase',
+                            lineNo=_S.line_no,
                             message=_entityError(
                                 'Actor instances', '. Skipped.'),
                             level=Levels.Error):
@@ -1608,8 +1555,9 @@ class SexSource(_SexOrSoilSource):
                 'DEBUG: generating sex file from:\n'
                 '    use=%s\n'
                 '    soil=%s\n' ) % (
-                    soilFileName,
-                    useFileName))
+                    useFileName,
+                    soilFileName
+                    ))
 
         # Check that the soil file exists
         if not os.path.isfile(soilFileName):
@@ -1629,6 +1577,7 @@ class SexSource(_SexOrSoilSource):
 
         # Execute USE OCL to generate the sex file
         try:
+            # FIXME:1 must preprocess .cls file first to make it use
             sex_file=USEEngine.executeSoilFileAsSex(
                 useFile=useFileName,
                 soilFile=soilFileName)

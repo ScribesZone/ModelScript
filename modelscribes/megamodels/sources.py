@@ -52,6 +52,7 @@ class ModelSourceFile(SourceFile):
                  parseFileLater=False,
                  noSymbolChecking=False,
                  allowedFeatures=(),
+                 modelFactory=None,
                  recognizeUSEOCLNativeModelDefinition=False):
         #type: (Text, Optional[Text], List[Any], bool, bool, bool, bool, List[Text], bool) -> None
         """
@@ -106,8 +107,7 @@ class ModelSourceFile(SourceFile):
         # This should be done in all case so that
         # the model attribute always exist even if there
         # are some error in reading the file
-        self.model=self.metamodel.modelClass()  #type: Model
-
+        self.model = self.emptyModel()  # type: Model
 
 
         # Call the super class, read the file or not
@@ -163,6 +163,10 @@ class ModelSourceFile(SourceFile):
     def metamodel(self):
         #type: () -> Metamodel
         raise NotImplementedError('Method must be implemented')
+
+    def emptyModel(self):
+        # type: () -> Model
+        return self.metamodel.modelClass()  # type: Model
 
     @property
     def fullIssueBox(self):

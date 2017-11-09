@@ -50,7 +50,7 @@ class SourceFile(WithIssueList):
                  preErrorMessages=(), # Type to be checked
                  doNotReadFiles=False,
                  allowedFeatures=()):
-        #type: (Text, Optional[Text], List[Any], bool, Optional[Text]) -> None
+        #type: (Text, Optional[Text], List[Any], bool, List[Text]) -> None
         """
         Create a source by parsing a given file. It is possible
         to have a 'logical' file that is what the user see, and

@@ -143,7 +143,6 @@ def _matchModelImport(
         justMatch=False ):
         #Megamodel statements are always extracted from
         # RAW UNPROCESSED ORIGINAL source file.
-        # prefixRegexp=r' *(--)? *@?'):
     #type: (int, ModelSourceFile, bool) -> Optional[Union[bool,ImportStatement]]
     """
         Check if the line is an import statement.
@@ -346,16 +345,16 @@ def _matchModelDefinition(
                         str(metamodel.modelKinds))))
 
         # Check that the metamodel is the expected one
-        if metamodel != source_metamodel:
-            LocalizedIssue(
-                sourceFile=modelSourceFile,
-                line=lineNo,
-                level=Levels.Fatal,  # could be error with some work
-                message=(
-                    'A %s model cannot be defined in a "%s" file.' % (
-                        metamodel.label,
-                        source_metamodel.extension,
-                    )))
+        # if metamodel != source_metamodel:
+        #     LocalizedIssue(
+        #         sourceFile=modelSourceFile,
+        #         line=lineNo,
+        #         level=Levels.Fatal,  # could be error with some work
+        #         message=(
+        #             'A %s model cannot be defined in a "%s" file.' % (
+        #                 metamodel.label,
+        #                 source_metamodel.extension,
+        #             )))
 
         # Check name
         name=m['name']

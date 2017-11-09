@@ -1,31 +1,29 @@
+# coding=utf-8
 
+# TODO:0 restore modelc
+# TODO!0 chech error/print for main lang
+
+# TODO:1 add inheritance in cl metamodel
+# FIXME:1 display /tmp error in sex/use
+#        for metamodels, since composed metamodels are
+#        important (e.g. permissoion -> usecase
+# todo:1 modeli interacive use
+# TODO:1 add @assertion
+# TODO:1 import between cl diagram could be very useful
 
 # TODO:2 handle 'Nothing to do, because file' in merge
 #       check with us01scs  without ?0
 #       currently the merger generate an empty file
 #
-# glm gld glossary model
-# ucm ucd usecase model
-# clm cld class model
-# obm obd object model
-# scm     scenario model
-# pmm     permission model
-# acm     access model
-#
-#
-#
-#
-# ucm  -s e     system actor usecase
-# clm  -s e     enumeration class attribute operation association role inv
-# obm  -s e  -- clm   object link objectlink
-# scm  -s e  -- ucm clm     actori block operation assertion
-# pmm  -s e  -- ucm clm
-#
-#
 
-#
-#
-#
+# TODO:2 enable 0package
+# TODO:2 check permission analysis
+# TODO:2 enable glosssary in all models
+# TODO:3 re parser
+# TODO:3 is parser
+# TODO:3 oc parser -> cl
+
+
 # megamodels
 # ----------
 # * parser
