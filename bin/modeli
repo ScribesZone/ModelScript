@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+ipython --no-banner --ipython-dir /D2/ScribesZone/ModelScribes/modelscribes/res/ipython
