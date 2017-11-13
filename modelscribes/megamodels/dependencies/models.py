@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Define dependencies between model.
+"""
 
 from typing import Optional
 from modelscribes.megamodels.models import Model
@@ -6,8 +9,17 @@ from modelscribes.megamodels.megamodels import Megamodel
 from modelscribes.megamodels.dependencies.metamodels import (
     MetamodelDependency
 )
+from modelscribes.megamodels.dependencies import Dependency
 
-class ModelDependency(object):
+
+class ModelDependency(Dependency):
+    """
+    Model dependency is:
+    - a source model
+    - a target model
+    - an optional "SourceElement"
+    - a metamodel dependency
+    """
     def __init__(self,
                  sourceModel,
                  targetModel,
@@ -19,9 +31,19 @@ class ModelDependency(object):
         Megamodel.registerModelDependency(self)
 
     @property
+    def source(self):
+        return  self.sourceModel
+
+    @property
+    def target(self):
+        return self.targetModel
+
+    @property
     def metamodelDependency(self):
         #type: (ModelDependency) -> MetamodelDependency
         """
+        Return the metamodel dependency this model dependency
+        conforms to.
         This could raise a ValueError if there are more
         than one or no metamodel dependency.This should not
         occur unless the metamodels are not built with care.

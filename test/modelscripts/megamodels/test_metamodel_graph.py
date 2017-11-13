@@ -1,10 +1,13 @@
 # coding=utf-8
 
-import modelscribes.metamodels  # DO NOT REMOVE
-import modelscribes.scripts.parsers # DO NOT REMOVE
-import modelscribes.scripts.printers # DO NOT REMOVE
+import modelscribes.all
 
 from modelscribes.megamodels.megamodels import Megamodel
+from modelscribes.scripts.megamodels.printer import MegamodelPrinter
+
+def test_megamodel_printer():
+    MegamodelPrinter().display()
+
 
 
 def test_display_megamodel():
@@ -12,13 +15,13 @@ def test_display_megamodel():
 
     print('Metamodels:')
 
-    print('  By id')
+    print('  Metamodels by id')
     for (id,mm) in Megamodel._metamodelById.items():
-        print('    %s -> %s' % (id, mm))
+        print('    %s -> %s' % (id, str(mm)))
 
     print('  Via metamodels()')
     for mm in Megamodel.metamodels():
-        print('    %s' % repr(mm))
+        print('    %s' % mm.id)
 
     print('Metamodel dependencies:')
     for mmd in Megamodel.metamodelDependencies():

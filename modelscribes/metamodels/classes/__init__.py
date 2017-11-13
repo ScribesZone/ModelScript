@@ -111,9 +111,11 @@ class ClassModel(Model):
     def metamodel(self):
         return METAMODEL
 
-    @property
-    def label(self):
-        return self.name
+
+    # UUU
+    # @property
+    # def label(self):
+    #     return self.name
 
     @property
     def enumerations(self):

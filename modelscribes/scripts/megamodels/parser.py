@@ -30,6 +30,7 @@ from modelscribes.megamodels.metamodels import (
 from modelscribes.scripts.megamodels.printer import (
     ImportBoxPrinter
 )
+from modelscribes.config import Config
 
 __all__=(
     'MegamodelStatement'
@@ -42,7 +43,7 @@ __all__=(
 
 ModelSourceFile='ModelSourceFile'
 
-DEBUG=2
+DEBUG=0
 
 # TODO: do nested parsing of import to get better errors
 
@@ -450,17 +451,17 @@ def parseToFillImportBox(modelSource,
                 modelSourceFile=modelSource,
                 justMatch=False )
             if mi is not None:
-                if DEBUG >=2:
-                    print('\nDEBUG: >>>>>>>> '+repr(mi))
+                if DEBUG>=1 or Config.realtimeImportPrint >=1:
+                    print('\nim: >>>>>>>> '+repr(mi))
 
                 modelSource.importBox.addImport(
                     SourceImport(importStmt=mi)
                 )
 
 
-                if DEBUG >=2:
+                if DEBUG>=1 or Config.realtimeImportPrint >=1:
                     ImportBoxPrinter(modelSource.importBox).display()
-                    print('DEBUG: <<<<<<<< '+repr(mi)+'\n')
+                    print('im: <<<<<<<< '+repr(mi)+'\n')
                 continue
 
             # --------- any other line is ok -------------------

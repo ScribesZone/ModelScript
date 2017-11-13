@@ -1,9 +1,7 @@
 # coding=utf-8
 
 
-import modelscribes.scripts.parsers
-import modelscribes.scripts.printers
-
+import modelscribes.all
 from modelscribes.metamodels import (
     scenarios
 )
@@ -11,6 +9,9 @@ from test.modelscripts.issues import (
     F, E, W, I, H,
     checkFileIssues,
     checkValidIssues
+)
+from modelscribes.scripts.megamodels.printer import (
+    MegamodelPrinter
 )
 
 
@@ -35,4 +36,12 @@ def testGenerator_Issues():
         ['.scs'],
         EXPECTED_ISSUES)
     for (file , ex) in res:
-        yield (checkValidIssues, file, scenarios.METAMODEL,  ex)
+        # if file.endswith('us01.scs'):
+            yield (
+                checkValidIssues,
+                file,
+                scenarios.METAMODEL,
+                ex)
+
+def testFinalMegamodel():
+    MegamodelPrinter().display()

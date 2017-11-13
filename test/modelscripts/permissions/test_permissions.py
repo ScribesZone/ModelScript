@@ -2,9 +2,10 @@
 from __future__ import print_function
 from nose.plugins.attrib import attr
 
-import modelscribes.scripts.parsers
-import modelscribes.scripts.printers
-
+import modelscribes.all
+from modelscribes.scripts.megamodels.printer import (
+    MegamodelPrinter
+)
 from modelscribes.metamodels import (
     permissions
 )
@@ -41,5 +42,6 @@ def testGenerator_Issues():
         yield (checkValidIssues, file, permissions.METAMODEL,  ex)
 
 
-
+def testFinalMegamodel():
+    MegamodelPrinter().display()
 

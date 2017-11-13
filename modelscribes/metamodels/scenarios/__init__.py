@@ -30,6 +30,9 @@ from modelscribes.megamodels.dependencies.metamodels import (
 from modelscribes.metamodels.classes import (
     ClassModel,
 )
+from modelscribes.metamodels.scenarios.evaluations import (
+    ScenarioEvaluation
+)
 from modelscribes.metamodels.permissions import (
     UCPermissionModel)
 from modelscribes.metamodels.permissions.gpermission import PermissionModel
@@ -72,8 +75,9 @@ class ScenarioModel(Model, Subject):
         self.originalOrderBlocks=[] #type:List[Block]
 
         #--- evaluation
-        self.scenarioEvaluation=None  # filled if evaluation exist
-        #type: Optional['ScenarioEvaluation']
+        self.scenarioEvaluation=ScenarioEvaluation(self)
+        #type: 'ScenarioEvaluation'
+        # Create always an empty model to avoid None exception
 
     @property
     def metamodel(self):
@@ -92,6 +96,13 @@ class ScenarioModel(Model, Subject):
     @property
     def actorInstanceNames(self):
         return self.actorInstanceNamed.keys()
+
+    @property
+    def isEvaluated(self):
+        return self.scenarioEvaluation.isEvaluated
+
+    def evaluate(self, originalOrder=True):
+        self.scenarioEvaluation.evaluate(originalOrder)
 
 
 

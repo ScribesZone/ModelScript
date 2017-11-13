@@ -7,6 +7,7 @@ from abc import abstractmethod, ABCMeta
 from typing import Text, Optional, List
 import re
 
+from modelscribes.config import Config
 from modelscribes.base.files import (
     readFileLines,
     writeTmpFileLines
@@ -82,14 +83,17 @@ class Preprocessor(object):
 
     def preprocessLine(self, line):
         newLine=self.transformLine(line)
-        if line==newLine:
-            print('pp: ..... ', line)
-        else:
-            print('pp: >>>>> ', newLine)
+        if Config.preprocessorPrint>=1:
+            if line==newLine:
+                print('pp:       ', line)
+            else:
+                print('pp: xxxxx ', line)
+                print('pp: >>>>> ', newLine)
         return newLine
 
     def do(self, issueOrigin, filename):
-        print('\n'+'='*30+' preprocessing  '+'='*30)
+        if Config.preprocessorPrint>=1:
+            print('\npp: '+'='*30+' preprocessing  '+'='*30)
         lines=readFileLines(
             file=filename,
             issueOrigin=issueOrigin,
@@ -97,7 +101,8 @@ class Preprocessor(object):
                 'Cannot read '+self.sourceText+' %s.')
         new_lines=[
             self.preprocessLine(l) for l in lines ]
-        print('='*30+' end preprocessing '+'='*30)
+        if Config.preprocessorPrint>=1:
+            print('pp: '+'='*30+' end preprocessing '+'='*30)
 
         return writeTmpFileLines(
             lines=new_lines,

@@ -119,7 +119,7 @@ from modelscribes.scripts.megamodels.parser import (
     isMegamodelStatement
 )
 
-DEBUG=3
+DEBUG=0
 #DEBUG=0
 
 __all__ = (
@@ -245,7 +245,7 @@ class _SexOrSoilSource(ModelSourceFile):
     @property
     def classSource(self):
         #type: () -> Optional[ClassModelSource]
-        return self.importBox.source('cl')
+        return self.importBox.sourceFile('cl')
 
     @property
     def classModel(self):
@@ -297,17 +297,18 @@ class _SexOrSoilSource(ModelSourceFile):
         of sex file
         """
         try:
+            self._parse(self._parsePrefix)
             if self.isValid:
-                self._parse(self._parsePrefix)
-                if self.evaluateScenario:
-                    ScenarioEvaluation.evaluate(self.scenarioModel)
-            # else:
-            #     self.scenario=None
+                if not self.scenarioModel.isEvaluated:  # .model. but typing
+                    self.model.evaluate()
+
+        # else:
+        #     self.scenario=None
         except FatalError:
             # The fatal error has already been already registered
             # so nothing else to do here.
             pass
-
+        pass
 
 
 
@@ -1515,7 +1516,7 @@ class SexSource(_SexOrSoilSource):
             pass
 
         except Exception as e:
-            # Some uncatched execption. Generate an error.
+            # Some uncatched exception. Generate an error.
             # Not need to create a fatal one as the process
             # is already stopped.
             Issue(

@@ -17,7 +17,7 @@ def raiseIssueOrException(exception, message, issueOrigin):
         Issue(
             origin=issueOrigin,
             level=Levels.Fatal,
-            message=message % file
+            message=message
         )
 
 def readFileLines(

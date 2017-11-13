@@ -9,6 +9,7 @@ from typing import Optional, List, Text, Union, Callable, Dict
 from modelscribes.base.annotations import (
     Annotations
 )
+from modelscribes.config import Config
 
 DEBUG=1
 
@@ -85,14 +86,11 @@ class Issue(object):
 
         self.origin.issueBox._add(self)
 
-        if DEBUG>=1:
-            self.display()
+        if DEBUG>=1 or Config.realtimeIssuePrint>=1:
+            print('is: Issue: ' + str(self))
 
         if level==Levels.Fatal:
             raise FatalError(self)
-
-    def display(self):
-        print('DEBUG: Issue: '+str(self))
 
 
     def str(self,
@@ -467,6 +465,8 @@ class IssueBox(object):
             op='=',
             mode='fragment',
             summary=True):
+        if not self.hasIssues:
+            return ''
         header=(
             Annotations.full+'\n'
             +self.summaryLine+'\n'

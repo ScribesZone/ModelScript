@@ -1,8 +1,10 @@
 # coding=utf-8
 from __future__ import print_function
 
-from modelscribes.metamodels import (
-    usecases
+import modelscribes.all
+from modelscribes.metamodels import usecases
+from modelscribes.scripts.megamodels.printer import (
+    MegamodelPrinter
 )
 
 from test.modelscripts.issues import (
@@ -10,9 +12,6 @@ from test.modelscripts.issues import (
     checkFileIssues,
     checkValidIssues,
 )
-
-import modelscribes.scripts.parsers
-import modelscribes.scripts.printers
 
 
 
@@ -31,3 +30,5 @@ def testGenerator_Issues():
     for (file , ex) in res:
         yield (checkValidIssues, file, usecases.METAMODEL, ex)
 
+def testFinalMegamodel():
+    MegamodelPrinter().display()

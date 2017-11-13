@@ -162,9 +162,16 @@ class UseModelSource(ModelSourceFile):
             raise #? should it be better do just pass ?
 
 
+
+
     #--------------------------------------------------------------------------
     #    Class implementation
     #--------------------------------------------------------------------------
+
+    @classmethod
+    def __dir__(cls):
+        # return super(UseModelSource, cls).__dir__()
+        return ['basename','extension']
 
     @property
     def classModel(self):

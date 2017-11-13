@@ -31,9 +31,9 @@ from modelscribes.metamodels.objects import (
     ObjectModel,
     Object
 )
-from modelscribes.metamodels.scenarios import (
-    ScenarioModel
-)
+# from modelscribes.metamodels.scenarios import (
+#     ScenarioModel
+# )
 from modelscribes.metamodels.scenarios.blocks import (
     Block,
 )
@@ -75,21 +75,25 @@ class ScenarioEvaluation(object):
 
     """
 
-    @classmethod
-    def evaluate(cls, scenario, originalOrder=True):
-        #type: (ScenarioModel, bool) -> None
-        if scenario.scenarioEvaluation is None:
-            scenario.scenarioEvaluation = ScenarioEvaluation(
-                scenario=scenario,
-                originalOrder=originalOrder
-            )
+    # @classmethod
+    # def evaluate(cls, scenario, originalOrder=True):
+    #     #type: (ScenarioModel, bool) -> None
+    #     if scenario.scenarioEvaluation is None:
+    #         scenario.scenarioEvaluation = ScenarioEvaluation(
+    #             scenario=scenario,
+    #             originalOrder=originalOrder
+    #         )
 
-    def __init__(self, scenario, originalOrder=True):
-        #type: (ScenarioModel) -> None
-        self.scenario = scenario  #type: ScenarioModel
+    def __init__(self, scenario):
+        #type: ('ScenarioModel') -> None
+        """ Create an "Empty" model. It will be filled by .evaluate() """
+
+        self.isEvaluated = False
+        self.scenario = scenario  #type: 'ScenarioModel'
         self.scenario.scenarioEvaluation = self
 
-        self.originalOrder = originalOrder
+        self.originalOrder = None  #type: Optional[bool]
+        # This will be known when the evaluation is done y evaluate()
 
         self.blockEvaluationByBlock = OrderedDict()
         #type: Dict[Block, BlockEvaluation]
@@ -116,15 +120,20 @@ class ScenarioEvaluation(object):
         self.accessSet=AccessSet(
             permissionSet=self.permissionSet)
 
-        self._eval()
 
-    def _eval(self):
-        if self.originalOrder:
-            blocks = self.scenario.originalOrderBlocks
-        else:
-            blocks = self.scenario.logicalOrderBlocks
-        for block in blocks:
-            blockeval = evaluateBlock(self, block)
-            self.blockEvaluationByBlock[block]=blockeval
-
+    def evaluate(self, originalOrder=True):
+        #type: ('ScenarioModel', bool) -> None
+        if self.originalOrder is not None and self.originalOrder!=originalOrder:
+            # raise an ValueError if evaluate is called more than
+            # twice or more but with different evaluation order
+            raise ValueError('Inconsistent use of ScenarioModel.evaluate()')
+        if not self.isEvaluated:
+            if self.originalOrder:
+                blocks = self.scenario.originalOrderBlocks
+            else:
+                blocks = self.scenario.logicalOrderBlocks
+            for block in blocks:
+                blockeval = evaluateBlock(self, block)
+                self.blockEvaluationByBlock[block]=blockeval
+        self.isEvaluated=True
 

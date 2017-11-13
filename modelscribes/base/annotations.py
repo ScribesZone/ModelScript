@@ -7,10 +7,10 @@ from typing import Text, Optional
 
 class Annotations(object):
     lineLength=80
-    char='*'
+    char='~'
     full=char*lineLength
-    prefix='**** '
-    cont=  '**   '
+    prefix=char*4+' '
+    cont=  char*2+'   '
 
     @classmethod
     def fullLine(cls, text):

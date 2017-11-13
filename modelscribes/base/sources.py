@@ -14,6 +14,9 @@ import fragments
 from modelscribes.base.files import (
     readFileLines
 )
+from modelscribes.megamodels.megamodels import (
+    Megamodel
+)
 from modelscribes.base.issues import (
     Issue,
     LocalizedIssue,
@@ -160,33 +163,6 @@ class SourceFile(WithIssueList):
                 )
         return is_allowed
 
-    # def checkEntitiesAllowed( self,
-    #         feature,
-    #         entitiesMsg,
-    #
-    #         lineNo=None,
-    #         level=Levels.Error,
-    #         ,
-    #         extra=''):
-    #     # type: (Text, int, Level, Text, Text) -> bool
-    #     """
-    #     Check if a feature is allowed.
-    #     If this not the case raise an issue with
-    #     a proper message (see the code).
-    #     """
-    #     self.checkAllowed(
-    #         feature=feature,
-    #         lineNo=lineNo,
-    #         level=level,
-    #
-    #         )
-    #
-    #     m = '%s are not allowed in %ss. %s.' % (
-    #         entitiesMsg,
-    #         self.modelHeader,
-    #         extra)
-
-
     @property
     def isBasedInHiddenFile(self):
         #type: () -> Optional[bool]
@@ -224,19 +200,9 @@ class SourceFile(WithIssueList):
                     issueOrigin=self,
                     message='Cannot read generated file %s')
 
-
-        # self.realFileName=realFileToRead
-        #
-        # # read the actual file
-        # self.realSourceLines= _read_lines(self.realFileName)
-        #
-        # if self.fileName==self.realFileName:
-        #     self.sourceLines=self.realSourceLines
-        # else:
-        #     # read the 'logical' source file
-        #     self.sourceLines=_read_lines(self.fileName)
-        # return
-
+    @property
+    def path(self):
+        return os.path.realpath(self.fileName)
 
     @property
     def name(self):
@@ -264,6 +230,11 @@ class SourceFile(WithIssueList):
     def basename(self):
         #type: ()->Text
         return os.path.basename(self.fileName)
+
+    @property
+    def label(self):
+        #type: ()->Text
+        return self.basename
 
     @property
     def directory(self):

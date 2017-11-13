@@ -1,3 +1,11 @@
 # coding=utf-8
-from modelscribes.scripts.classes.parser import ClassModelSource as cl
-from modelscribes.scripts.usecases.parser import UsecaseModelSource as us
+
+import modelscribes.all
+from modelscribes.megamodels.megamodels import Megamodel
+
+def c(filename):
+    return Megamodel.loadFile(filename)
+
+M=Megamodel
+
+print('cli LOADED')

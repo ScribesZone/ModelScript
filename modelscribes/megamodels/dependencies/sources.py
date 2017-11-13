@@ -1,11 +1,20 @@
 # coding=utf-8
 """
-Manage import boxes and source imports.
+Manage "SourceImports" and "ImportBoxes". A SourceImport
+is a concrete implementation of "SourceFileDependency".
+It is materialized by a statement like "import usecase
+model from "<file>"
+(the actual format is defined in the megamodel parser).
+A import box is basically a list of source import.
+
 Actually import source files, that is parse them
 and bound them in "SourceImport".
 """
-from typing import Dict, Text, List, Optional
 
+from typing import Dict, Text, List, Optional
+from abc import ABCMeta
+from modelscribes.megamodels.dependencies import Dependency
+from modelscribes.megamodels.dependencies.models import ModelDependency
 #from modelscribes.megamodels.sources import ModelSourceFile
 ModelSourceFile='ModelSourceFile'
 
@@ -14,7 +23,7 @@ ImportStatement='ImportStatement'
 
 from collections import OrderedDict
 
-# XXX FIXME: th testucm_parser should raise an issue for importing a uc
+# FIXME:test_ucm_parser should raise an issue for importing a uc
 
 from modelscribes.base.issues import (
     Levels,
@@ -25,53 +34,107 @@ from modelscribes.megamodels.megamodels import Megamodel
 DEBUG=1
 
 __all__ = (
+    'SourceFileDependency',
     'SourceImport',
     'ImportBox'
 )
 
-class SourceImport(object):
+
+class SourceFileDependency(Dependency):
     """
-    Basically a pair of model sources, one being
-    the importing source, the other one the imported source.
-    Actually perform the import, that is read and parse the
-    target file.
+    A dependency between source
+    """
+    __metaclass__ = ABCMeta
+
+    def __init__(self, importingSourceFile, importedSourceFile):
+        #type: (ModelSourceFile, ModelSourceFile) -> None
+        """
+        Create the dependency and register it in the metamodel.
+        """
+
+        self.importingSourceFile=importingSourceFile
+        #type: ModelSourceFile
+        """ Source file that contains the import """
+
+        self.importedSourceFile= importedSourceFile
+        #type: ModelSourceFile
+        """ Imported source file. The target of the import"""
+
+        Megamodel.registerSourceDependency(self)
+
+        # register model dependency if not already there
+        # (it should not be there)
+        sm=self.importingSourceFile.model
+        tm=self.importedSourceFile.model
+        if Megamodel.modelDependency(sm, tm) is None:
+            d=ModelDependency(sm, tm)
+            Megamodel.registerModelDependency(d)
+
+
+    @property
+    def source(self):
+        #type: () -> ModelSourceFile
+        return self.importingSourceFile
+
+    @property
+    def target(self):
+        #type: () -> ModelSourceFile
+        return  self.importedSourceFile
+
+
+class SourceImport(SourceFileDependency):
+    """
+    A SourceFileDependency with additionaly the
+    source import statement located the source in the form
+    of a ImportStatement created by the megamodel parser.
     """
     def __init__(self, importStmt):
         #type: (ImportStatement) -> None
         """
-        Create an import and actually import the
-        target source file into the source file.
-        Also bind the issueBox of the source towards
-        to target as issues in the target are important
-        for the source.
+        Create an SourceImport and actually perform the
+        actuel import of target source file. If the target
+        source file is not already registered in the megamodel
+        then the target is
+        read and a ModelSourceFile is therefore created.
+        This possibly could generate some issues but these
+        are stored in the target ModelSourceFile.
+        The issueBox of the importing ModelSourceFile is
+        linked to the one of the target. This allows to
+        source to "see" issues produced in the target.
         """
 
         self.importStmt=importStmt #type: ImportStatement
         """ Link to the syntactic import statement """
 
-        self.importingSourceFile=self.importStmt.sourceFile
-        #type: ModelSourceFile
-        """ source file that contains the import """
-
         self.importBox=None #type: Optional[ImportBox]
+        """ Back reference to the containing import box """
         # filled in ImportBox.addImport
+        try:
+            # already registered
+            importedSourceFile=Megamodel.source(
+                importStmt.absoluteTargetFilename)
+        except:
+            # Not registered yet:
+            # actually perform the import
+            importedSourceFile=self._doImport(importStmt)
 
-        # Actually perform the import
-        self.importedSourceFile= self.doImport(importStmt)
-        #type: ModelSourceFile
-        """ imported file. The target of the import"""
+        super(SourceImport, self).__init__(
+            self.importStmt.sourceFile,
+            importedSourceFile
+        )
 
-        self.doBindIssueBoxes()
+        self._doBindIssueBoxes()
 
         if self.importedSourceFile.issueBox.bigIssues:
             Issue(
                 origin=self.importingSourceFile,
                 level=Levels.Fatal,
-                message='Serious issue(s) found when importing "%s"' %
+                message=
+                    'Serious issue(s) found when importing "%s"' %
                     self.importedSourceFile.basename
             )
 
-    def doImport(self, importStmt):
+    def _doImport(self, importStmt):
         #type: (ImportStatement) -> ModelSourceFile
         """
         Actually perform the import of the target
@@ -86,16 +149,16 @@ class SourceImport(object):
             importStmt.absoluteTargetFilename)
         return importedSourceFile
 
-    def doBindIssueBoxes(self):
+    def _doBindIssueBoxes(self):
         """
-        bind the issuebox from importing file to imported file
+        Bind the issuebox from importing file to imported file
         """
         self.importingSourceFile.issueBox.addParent(
             self.importedSourceFile.issueBox)
         if DEBUG>=9:
-            print('DEBUG: aaa'+str(self.importingSourceFile.issueBox))
+            print('DEBUG: aaa'+
+                  str(self.importingSourceFile.issueBox))
 
-        # return
 
     def __repr__(self):
         return ('%s import %s' % (
@@ -109,28 +172,17 @@ class SourceImport(object):
         ))
 
 
-class ImportBox(object):
-    """
-    An import box is basically a collection of SourceImports
-    for a given model source, the one containing the ImportBox.
-    A convinient way to access to imported sources and models.
-    The ImportBox contains as well the name of the model, and the
-    kind of the model (even though strictly speaking this info
-    is not linked to 'Imports'.
-    """
 
-    def __init__(self, modelSource):
-        #type: (ModelSourceFile) -> None
+class ModelDescriptor(object):
+    __metaclass__ = ABCMeta
 
-        self.modelSource=modelSource #type: ModelSourceFile
-        """ 
-        Source file containing the import box.
-        """
+    def __init__(self):
 
         self._modelName=None #type: Optional[Text]
         """ 
         Name of the importing model.
         This name is found in the model declaration statement.
+        It is set by the method setModelInfo().
         """
         # will be set by parseToFillImportBox
 
@@ -139,9 +191,59 @@ class ImportBox(object):
         Model kind of the importing model. Could be for
         instance "conceptual" or "preliminary".
         This information is found in the model 
-        declaration statement.
+        declaration statement. It will be set by
+        the method parseToFillImportBox() in the model source
+        which call setModelInfo().
         """
-        # will be set by parseToFillImportBox
+
+    @property
+    def modelName(self):
+        # type: () -> Text
+        return self._modelName
+
+    @property
+    def modelKind(self):
+        # type: () -> Text
+        return self._modelKind
+
+    def setModelInfo(self, modelName, modelKind):
+        """
+        Set description.
+        """
+        self._modelName = modelName
+        self._modelKind = modelKind
+
+
+
+class ImportBox(ModelDescriptor):
+    """
+    An import box is like a collection of SourceImports
+    but for a given model source, the one containing the
+    ImportBox.
+    A convinient way to access to imported sources and models.
+
+    The ImportBox contains as well the name of the model, and
+    the kind of the model (even though strictly speaking this
+    information is not linked to 'Imports'. (Not found a
+    better place to put these attributes and a better name
+    for ImportBox)
+    """
+
+    def __init__(self, modelSource):
+        #type: (ModelSourceFile) -> None
+        """
+        Creates an empty ImportBox for the given
+        ModelSourceFile.
+        """
+
+        super(ImportBox, self).__init__()
+
+        self.modelSource=modelSource #type: ModelSourceFile
+        """ 
+        Source file containing the import box.
+        """
+
+
 
         self._importsByMetamodelId=OrderedDict()
         #type: Dict[Text, List[SourceImport]]
@@ -153,41 +255,32 @@ class ImportBox(object):
         # ??? type: Dict[Text, List[ModelSourceFile]] <-- probably an error
 
 
-    @property
-    def modelName(self):
-        #type: () -> Text
-        return self._modelName
 
-    @property
-    def modelKind(self):
-        #type: () -> Text
-        return self._modelKind
-
-
-    def setModelInfo(self, modelName, modelKind):
-        """
-        Set 'importing' attributes in this import box.
-        Set as well the same information in the model.
-        This cannot be avoided via a property for instance
-        because the model may exist independently from the source.
-        """
-        self._modelName=modelName
-        self._modelKind=modelKind
-        # Fill as well the model box. It cannot be derived
-        # as models can be build without any source
-        self.modelSource.model.modelName = modelName
-        self.modelSource.model.modelKind = modelKind
-        # the metamodel metamodel should be set already
 
     @property
     def imports(self):
         #type: () -> List[SourceImport]
         """
-        List of all source imports
+        List of all SourceImports starting from this
+        ImportBox, that is, from the corresponding.
+        ModelSourceFile.
         """
         return [
             i for ilist in self._importsByMetamodelId.values()
                 for i in ilist ]
+
+    def setModelInfo(self, modelName, modelKind):
+        super(ImportBox, self).setModelInfo(
+            modelName,
+            modelKind)
+        # Fill as well the model box. It cannot be derived
+        # as models can be build without any source
+        # This cannot be avoided via a property for instance
+        # because the model may exist independently from
+        # the source. KKK
+        self.modelSource.model.name = modelName
+        self.modelSource.model.kind = modelKind
+
 
     def addImport(self, sourceImport_):
         #type: (SourceImport) -> None
@@ -244,11 +337,23 @@ class ImportBox(object):
                 message=
                     'More than on %s model imported.' % metamodel_label)
 
-    def sources(self, id):
+    def sourceFiles(self, id):
+        #type: () -> List[ModelSourceFile]
+        """
+        Returns the list of all source files imported for
+        a given metamodel id.
+        """
         return [
             s.importedSourceFile for s in self.sourceImports(id)]
 
-    def source(self, id, optional=False):
+    def sourceFile(self, id, optional=False):
+        #type: (Text, bool) -> Optional[ModelSourceFile]
+        """
+        Return "the one and only one" source file for a
+        given metamodel id. If there is no such source file
+        then return None. If there are more than one source
+        file then produce a fatal issue.
+        """
         si=self.sourceImport(id, optional=optional)
         if si is None:
             return None
@@ -256,9 +361,20 @@ class ImportBox(object):
             return si.importedSourceFile
 
     def models(self, id):
-        return [s.importedSourceFile.model for s in self.sourceImports(id)]
+        """
+        Returns the list of all models imported for
+        a given metamodel id.
+        """
+        return [s.importedSourceFile.model
+                for s in self.sourceImports(id)]
 
     def model(self, id, optional=False):
+        """
+        Returns "the one and only one" model imported for
+        a given metamodel id.  If there is no such model
+        then return None. If there are more than one
+        then produce a fatal issue.
+        """
         si=self.sourceImport(id, optional=optional)
         if si is None:
             return None

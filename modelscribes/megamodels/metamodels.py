@@ -1,14 +1,22 @@
 # coding=utf-8
+"""
+Metamodel with its description (label, extension, kinds) but
+also implementation (modelClass, sourceClass, printer Classes).
+"""
 from typing import Text, Callable, Optional, List
 from collections import OrderedDict
 
-from modelscribes.megamodels.megamodels import Megamodel
-
+from modelscribes.megamodels.megamodels import (
+    Megamodel,
+    MegamodelElement
+)
 Cls=Callable
 OptCls=Optional[Cls]
 
 
-class Metamodel(object):  # TODO should be model instead of object
+class Metamodel(MegamodelElement):
+    # TODO:5 should be (Model) instead of (Object)
+
     def __init__(self,
                  id,
                  label,
@@ -42,7 +50,6 @@ class Metamodel(object):  # TODO should be model instead of object
 
     @property
     def sourceClass(self):
-        # print('&&&&&&&&&&'*10,self.label)
         if self._sourceClass is None:
             raise NotImplementedError(
                 '%s.source not implemented' % self.label)
@@ -74,47 +81,59 @@ class Metamodel(object):  # TODO should be model instead of object
             return self._diagramPrinterClass
 
     def registerSource(self, cls):
-        # TODO: check that cls is a subclass
         self._sourceClass=cls
-        # print('+-'*10+'%s.registerSource(%s)' %
-        #      (self.label, cls))
 
     def registerModelPrinter(self, cls):
-        # TODO: check that cls is a subclass
         self._modelPrinterClass=cls
-        # print('+-'*10+'%s.registerModelPrinter(%s)' %
-        #      (self.label, cls))
 
     def registerSourcePrinter(self, cls):
-        # TODO: check that cls is a subclass
         self._sourcePrinterClass=cls
-        #print('+-'*10+'%s.registerSourcePrinter(%s)' %
-        #      (self.label, cls))
 
     def registerDiagramPrinter(self, cls):
-        # TODO: check that cls is a subclass
         self._diagramPrinterClass=cls
-        # print('+-'*10+'%s.registerDiagramPrinter(%s)' %
-        #       (self.label, cls))
+
 
     @property
     def models(self):
         #type: () -> List['Model']
+        """
+        Return all models for the current metamodel.
+        """
         return Megamodel.models(metamodel=self)
 
     @property
     def outMetamodelDependencies(self):
+        """
+        Return all metamodel dependencies from the current
+        metamodel.
+        """
         return Megamodel.metamodelDependencies(
             source=self
         )
 
     @property
+    def outgoingDependencies(self):
+        return self.outMetamodelDependencies
+
+    @property
+    def incomingDependencies(self):
+        return Megamodel.metamodelDependencies(target=self)
+
+    @property
     def outMetamodels(self):
+        """
+        Return all metamodels that this metamodel depends on.
+        """
         return list(OrderedDict.fromkeys(
             [ mmd.targetMetamodel
               for mmd in self.outMetamodelDependencies ]
 
         ))
+
+    @property
+    def targets(self):
+        return self.outMetamodels
+
 
 
     def __str__(self):
@@ -127,7 +146,9 @@ class Metamodel(object):  # TODO should be model instead of object
         def name(cls):
             return 'None' if cls is None else cls.__name__
 
-        return 'metamodel(%s/%s/%s/%s new(%s) src(%s) prt(%s) prtSrc(%s) prtDg(%s)' % (
+        return (
+            'metamodel(%s/%s/%s/%s '
+            'new(%s) src(%s) prt(%s) prtSrc(%s) prtDg(%s)' % (
             self.label,
             self.id,
             self.extension,
@@ -136,4 +157,4 @@ class Metamodel(object):  # TODO should be model instead of object
             name(self._sourceClass),
             name(self._modelPrinterClass),
             name(self._sourcePrinterClass),
-            name(self._diagramPrinterClass))
+            name(self._diagramPrinterClass)))

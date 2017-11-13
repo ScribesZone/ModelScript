@@ -11,18 +11,18 @@ Otherwise the value UseEngine.USE_OCL_COMMAND should be set explicitely.
 from typing import Text, Optional
 
 import logging
-# logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('test.' + __name__)
-
 import os
 import tempfile
 import re
-
+from modelscribes.config import Config
 __all__ = [
     'USEEngine',
 ]
 
-DEBUG=4
+# logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('test.' + __name__)
+
+DEBUG=0
 #DEBUG=0
 
 #: Path of to the use command binary.
@@ -77,9 +77,15 @@ class USEEngine(object):
     @classmethod
     def _soilHelper(cls, name):
         #type: (Text)->Text
-        return os.path.join(
+        soil= os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
             'res', name)
+        if not os.path.isfile(soil):
+            raise EnvironmentError(
+                'Wrong installation. %s not found!' %
+                soil)
+        else:
+            return soil
 
 
     @classmethod
@@ -139,8 +145,8 @@ class USEEngine(object):
         commandPattern = '%s -nogui -nr %s %s '+ redirection
         cls.command = (commandPattern
                        % (USE_OCL_COMMAND, useSource, soilFile))
-        if DEBUG>=3:
-            print('**** USE EXECUTION %s' % cls.command)
+        if DEBUG>=3 or Config.realtimeUSE>=1:
+            print('us: USE EXECUTION %s' % cls.command)
         cls.directory = executionDirectory if executionDirectory is not None \
                      else os.getcwd()
         # cls.directory = executionDirectory if executionDirectory is not None \
@@ -235,9 +241,10 @@ class USEEngine(object):
         Returns (int):
             use command exit code.
         """
+        soil=cls._soilHelper('infoModelAndQuit.soil')
         cls._execute(
             useFileName,
-            cls._soilHelper('infoModelAndQuit.soil'))
+            soil)
         return cls.commandExitCode
 
 
@@ -288,31 +295,31 @@ class USEEngine(object):
 
         abs_use_file=os.path.realpath(useFile)
         abs_soil_file=os.path.realpath(soilFile)
-        if DEBUG>=3:
+        if DEBUG>=3 or Config.realtimeUSE>=1:
             print(
-                'DEBUG: executeSoilFileAsSex: '
+                'us: executeSoilFileAsSex: '
                 'Soil file: %s' % abs_soil_file)
             displayFileContent(abs_soil_file)
             print(
-                'DEBUG: executeSoilFileAsSex:'
+                'us: executeSoilFileAsSex:'
                 'executeSoilFileAsTrace')
         trace_filename = cls.executeSoilFileAsTrace(
             abs_use_file,
             abs_soil_file)
 
-        if DEBUG>=3:
+        if DEBUG>=3 or Config.realtimeUSE>=1:
             print(
-                'DEBUG: executeSoilFileAsSex: '
+                'us: executeSoilFileAsSex: '
                 'TRACE RESULT saved in %s' % trace_filename)
-            displayFileContent(trace_filename)
-            print('DEBUG: executeSoilFileAsSex: now merging')
+            displayFileContent(trace_filename, prefix='us:    ')
+            print('us: executeSoilFileAsSex: now merging')
         sex_filename=merge(
             abs_soil_file,
             trace_filename,
             sexFileName=sexFile)
         if DEBUG>=3:
             print(
-                'DEBUG: executeSoilFileAsSex: '
+                'us: executeSoilFileAsSex: '
                 'TRACE RESULT saved in %s' % sex_filename)
             displayFileContent(sex_filename)
         with open(sex_filename, 'rU') as f:

@@ -1,6 +1,11 @@
 # coding=utf-8
+"""
+Dependencies between metamodels. For instance permissions
+depend on usecases and classes.
+"""
 from typing import Text, List
 from modelscribes.megamodels.metamodels import Metamodel
+from modelscribes.megamodels.dependencies import Dependency
 # Model='Model'
 # Metamodel='Metamodel'
 # M='SourceElement'
@@ -9,10 +14,14 @@ ModelDependency='ModelDependency'
 from modelscribes.megamodels.megamodels import Megamodel
 
 
-class MetamodelDependency(object):
+class MetamodelDependency(Dependency):
     """
-    'id's parameters are used instead of metamodels to avoid
-    python module dependency cycles.
+    A metamodel dependency is based on a source metamodel
+    and a target metamodel but also on the fact that the
+    dependency is optional or not, and multiple or not.
+    For instance the dependency between permissions and
+    usecases is not optional and it is multiple (not
+    implemented yet).
     """
     def __init__(self,
                  sourceId,
@@ -20,6 +29,12 @@ class MetamodelDependency(object):
                  optional=False,
                  multiple=True):
         #type: (Text, Text, bool, bool) -> None
+        """
+        Create a metamodel dependency.
+        Note that parameters are ids instead of metamodels.
+        This is necessary to avoid python module
+        dependency cycles.
+        """
         self.sourceId=sourceId #type: Text
         self.targetId=targetId #type: Text
         self.optional=optional #type: bool
@@ -29,6 +44,10 @@ class MetamodelDependency(object):
     @property
     def sourceMetamodel(self):
         #type: (MetamodelDependency) -> Metamodel
+        """
+        Source metamodel ot ValueError if this metamodel
+        is not registered yet (which should not happen).
+        """
         try:
             return Megamodel.metamodel(id=self.sourceId)
         except:
@@ -39,8 +58,16 @@ class MetamodelDependency(object):
                 ))
 
     @property
+    def source(self):
+        return self.sourceMetamodel
+
+    @property
     def targetMetamodel(self):
         # type: (MetamodelDependency) -> Metamodel
+        """
+        Target metamodel ot ValueError if this metamodel
+        is not registered yet (which should not happen).
+        """
         try:
             return Megamodel.metamodel(id=self.targetId)
         except:
@@ -50,16 +77,27 @@ class MetamodelDependency(object):
                     self.targetId
                 ))
 
+    @property
+    def target(self):
+        return self.targetMetamodel
+
 
     @property
     def modelDependencies(self):
         # type: (MetamodelDependency) -> List(ModelDependency)
+        """
+        Model dependencies based on this metamodel dependency.
+        This could raise a ValueError.
+        """
         # could raise a ValueError
         return Megamodel.modelDependencies(
             metamodelDependency=self)
 
     def check(self):
-        # Check that both source and target are defined
+        """
+        Check that both source and target are registered.
+        If not raise ValueError.
+        """
         _=self.sourceMetamodel
         _=self.targetMetamodel
 

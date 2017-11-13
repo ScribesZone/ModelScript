@@ -1,24 +1,30 @@
 # coding=utf-8
 
-# TODO:0 restore modelc
-# TODO!0 chech error/print for main lang
-
+# TODO:0 restore modelc (use cli + config)
+# TODO:0 error not always printed !
+#        printer must inherit message printing from
+# TODO:0 object/evaluation model issuebox not bound to scenario
+#        so no error reported when building object message
+# TODO:0 chech error/print for main language
+# TODO:0 handle use message 'Nothing to do, because file' in merge
+#       check with us01scs  without ?0
+#       currently the merger generate an empty file
+#       is should be enough to first check soil line
+#       if not, just compile /use if imported
+#       otherwise just print comments
+# TODO:1 enable glossary in all models
 # TODO:1 add inheritance in cl metamodel
 # FIXME:1 display /tmp error in sex/use
 #        for metamodels, since composed metamodels are
 #        important (e.g. permissoion -> usecase
-# todo:1 modeli interacive use
 # TODO:1 add @assertion
 # TODO:1 import between cl diagram could be very useful
 
-# TODO:2 handle 'Nothing to do, because file' in merge
-#       check with us01scs  without ?0
-#       currently the merger generate an empty file
+
 #
 
 # TODO:2 enable 0package
 # TODO:2 check permission analysis
-# TODO:2 enable glosssary in all models
 # TODO:3 re parser
 # TODO:3 is parser
 # TODO:3 oc parser -> cl
