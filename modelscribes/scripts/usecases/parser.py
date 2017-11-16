@@ -238,8 +238,8 @@ class UsecaseModelSource(ModelSourceFile):
     #         p=UsecaseModelPrinter(self.usecaseModel, displayLineNos=True)
     #         print(p.do())
     #     else:
-    #         print('%s error(s) in the usecase model' % len(self.issueBox))
-    #         for e in self.issueBox:
+    #         print('%s error(s) in the usecase model' % len(self._issueBox))
+    #         for e in self._issueBox:
     #             print(e)
 
 METAMODEL.registerSource(UsecaseModelSource)

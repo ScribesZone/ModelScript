@@ -98,7 +98,7 @@ class SourceImport(SourceFileDependency):
         read and a ModelSourceFile is therefore created.
         This possibly could generate some issues but these
         are stored in the target ModelSourceFile.
-        The issueBox of the importing ModelSourceFile is
+        The _issueBox of the importing ModelSourceFile is
         linked to the one of the target. This allows to
         source to "see" issues produced in the target.
         """
@@ -125,7 +125,7 @@ class SourceImport(SourceFileDependency):
 
         self._doBindIssueBoxes()
 
-        if self.importedSourceFile.issueBox.bigIssues:
+        if self.importedSourceFile.issues.bigIssues:
             Issue(
                 origin=self.importingSourceFile,
                 level=Levels.Fatal,
@@ -153,11 +153,11 @@ class SourceImport(SourceFileDependency):
         """
         Bind the issuebox from importing file to imported file
         """
-        self.importingSourceFile.issueBox.addParent(
-            self.importedSourceFile.issueBox)
+        self.importingSourceFile.issues.addParent(
+            self.importedSourceFile.issues)
         if DEBUG>=9:
             print('DEBUG: aaa'+
-                  str(self.importingSourceFile.issueBox))
+                  str(self.importingSourceFile.issues))
 
 
     def __repr__(self):

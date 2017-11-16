@@ -108,7 +108,7 @@ class ModelPrinter(AbstractPrinter):
         self.theModel=theModel
 
     def _issues(self):
-        self.out(str(self.theModel.issueBox))
+        self.out(str(self.theModel.issues))
 
 # Not used
 class SourcePrinter(AbstractPrinter):
@@ -165,10 +165,10 @@ class AnnotatedSourcePrinter(SourcePrinter):
     def _line(self, line_no, line):
         self.outLine(line)
 
-    def _issuesSummary(self, issueBox):
-        s=issueBox.summaryLine
+    def _issuesSummary(self, issues):
+        s=issues.summaryLine
         if s!='':
-            self.outLine(issueBox.summaryLine)
+            self.outLine(issues.summaryLine)
 
     def _unlocalizedIssues(self, issues, pattern='{level}: {message}'):
         for i in issues:

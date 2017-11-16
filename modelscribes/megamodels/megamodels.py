@@ -548,11 +548,27 @@ class Megamodel(
         except:
             # source not registered, so builf it
             mm=cls.fileMetamodel(filename)
+            if mm is None:
+                b=os.path.basename(filename)
+                raise ValueError(
+                    'No metamodel available for %s' % b)
             try:
                 factory=mm.sourceClass
             except NotImplementedError:
-                raise ValueError('No parser available for %s' %
+                raise ValueError(
+                    'No parser available for %s' %
                                  mm.name )
             else:
                 return factory(filename)
 
+    @classmethod
+    def displayModel(cls, model):
+        printer=model.metamodel.modelPrinterClass(model)
+        printer.display()
+
+
+
+    @classmethod
+    def displaySource(cls, source):
+        printer=source.metamodel.sourcePrinterClass(source)
+        printer.display()

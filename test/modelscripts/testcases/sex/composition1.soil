@@ -1,0 +1,4 @@
+! c1 := new Car
+! c2 := new Car
+! w := new Wheel
+! insert(c1,w) into HasWheel

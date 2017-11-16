@@ -1,6 +1,7 @@
 # coding=utf-8
 
-# TODO:0 restore modelc (use cli + config)
+# TODO:0 improve modelc with option
+#       (use cli + config)
 # TODO:0 error not always printed !
 #        printer must inherit message printing from
 # TODO:0 object/evaluation model issuebox not bound to scenario
@@ -12,6 +13,24 @@
 #       is should be enough to first check soil line
 #       if not, just compile /use if imported
 #       otherwise just print comments
+# TODO:0 add constraint composition[0..1,1]
+
+# TODO:1 add sex parser to support composition
+# (ScribesEnv)jmfavre@jmfavre-HP-ZBook-15:/D2/ScribesZone/ModelScribes/test/modelscripts/testcases/sex$ use -qv composition.use composition3.soil
+# Warning: Insert has resulted in two aggregates for object `Wheel1'. Object `Wheel1' is already component of another object.
+# Warning: Insert has resulted in two aggregates for object `Wheel1'. Object `Wheel1' is already component of another object.
+# Warning: Insert has resulted in two aggregates for object `Wheel1'. Object `Wheel1' is already component of another object.
+# checking structure...
+# Error: Object `Wheel1' is shared by object `Car1' and object `Car3'.
+# Multiplicity constraint violation in association `HasWheel':
+#   Object `Wheel1' of class `Wheel' is connected to 3 objects of class `Car'
+#   at association end `car' but the multiplicity is specified as `1'.
+# checked structure in 1ms.
+# checking invariants...
+# checked 0 invariants in 0.000s, 0 failures.
+
+
+
 # TODO:1 enable glossary in all models
 # TODO:1 add inheritance in cl metamodel
 # FIXME:1 display /tmp error in sex/use
@@ -19,7 +38,7 @@
 #        important (e.g. permissoion -> usecase
 # TODO:1 add @assertion
 # TODO:1 import between cl diagram could be very useful
-
+# TODO:1 add check attribute 0..1
 
 #
 

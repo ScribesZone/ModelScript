@@ -17,7 +17,7 @@ from test.modelscripts.issues import (
 
 
 EXPECTED_ISSUES={
-    # 'us28.scs':         {F: 0, E: 0, W: 11, I: 0, H: 0},
+    'ko-employee.cls':    {F: 0, E: 1, W: 0, I: 0, H: 0},
     # 'us90.scs':         {F: 0, E: 0, W: 9, I: 0, H: 0},
     # 'empty01.scs':      {F: 1, E: 0, W: 1, I: 0, H: 0},
     # 'empty02.scs':      {F: 1, E: 0, W: 1, I: 0, H: 0},

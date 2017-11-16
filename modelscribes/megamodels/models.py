@@ -19,6 +19,7 @@ from modelscribes.megamodels.metamodels import Metamodel
 ModelDependency='ModelDependency'
 MetamodelDependency='MetamodelDependency'
 
+
 class Model(MegamodelElement, WithIssueList):
     """
     The root class for all models.
@@ -31,7 +32,7 @@ class Model(MegamodelElement, WithIssueList):
     - an issue box. This issue box stores "semantical"
       errors found on the model while the source
       file issuebox stores "syntactical" errors.
-      The issueBox has as a parent the sourceFile'
+      The _issueBox has as a parent the sourceFile'
       issue box if any.
     """
     __metaclass__ = abc.ABCMeta
@@ -79,6 +80,10 @@ class Model(MegamodelElement, WithIssueList):
             name,
             self.metamodel.id,
             source)
+
+    @property
+    def text(self):
+        return self.metamodel.modelPrinterClass(self).do()
 
     def outDependencies(self, targetMetamodel=None, metamodelDependency=None):
         #type: (Optional[Metamodel]) -> List[ModelDependency]

@@ -1,4 +1,35 @@
-# # coding=utf-8
+# coding=utf-8
+import sys
+import os
+
+modelscribes_home=os.path.realpath(
+    os.path.join(
+        os.path.dirname(__file__),
+        '..'))
+sys.path.insert(0,modelscribes_home)
+
+from modelscribes.locallibs.termcolor import cprint, colored, show as showColors
+import modelscribes.all
+from modelscribes.megamodels.megamodels import Megamodel
+if len(sys.argv)==1:
+    exit(0)
+
+many=len(sys.argv[1:])>1
+if sys.argv[1]=='color':
+    showColors()
+    exit(0)
+
+for filename in sys.argv[1:]:
+    if many:
+        cprint('#'*30+' '+filename+' '+'#'*30, 'blue')
+    source=Megamodel.loadFile(filename)
+    Megamodel.displaySource(source)
+    if many:
+        cprint(
+            '#'*28+' END '+filename+' '+'#'*28+'\n'*2,
+            'blue')
+
+
 # import sys
 # import os
 # import logging

@@ -84,7 +84,7 @@ class Issue(object):
 
         self.level=level  #type:Level
 
-        self.origin.issueBox._add(self)
+        self.origin._issueBox._add(self)
 
         if DEBUG>=1 or Config.realtimeIssuePrint>=1:
             print('is: Issue: ' + str(self))
@@ -323,14 +323,14 @@ class IssueBox(object):
             self._issuesAtLine[index]=[]
         self._issuesAtLine[index].append(issue)
 
-    def addParent(self, issueBox):
+    def addParent(self, issues):
         #type: (IssueBox) -> None
         """
         Add the issue box as the last parents.
         If it is already in the list, do nothing.
         """
-        if not issueBox in self.parents:
-            self.parents.append(issueBox)
+        if not issues in self.parents:
+            self.parents.append(issues)
 
 
 
@@ -481,21 +481,29 @@ class IssueBox(object):
     def __str__(self):
         return self.str()
 
+    def __repr__(self):
+        return self.__str__()
+
+
 
 class WithIssueList(object):
     def __init__(self, parents=()):
         #type: (List[IssueBox]) -> None
         assert(isinstance(parents, list))
-        self.issueBox=IssueBox(parents=parents)
+        self._issueBox=IssueBox(parents=parents)
+
+    @property
+    def issues(self):
+        return self._issueBox
 
     @property
     def isValid(self):
         # () -> bool
-        return self.issueBox.isValid
+        return self._issueBox.isValid
 
     @property
     def hasIssues(self):
-        return self.issueBox.hasIssues
+        return self._issueBox.hasIssues
 
     def addIssue(self, sourceError):
-        self.issueBox._add(sourceError)
+        self._issueBox._add(sourceError)

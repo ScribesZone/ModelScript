@@ -28,11 +28,11 @@ ExpectedIssueDict=Optional[Dict[Level, int]]
 
 from modelscribes.megamodels.metamodels import Metamodel
 
-def assertIssueBox(issueBox, expected=None):
+def assertIssueBox(issues, expected=None):
     #type: (IssueBox, ExpectedIssueDict) -> None
     unexpected=False
     if expected is not None:
-        actual=issueBox.summaryMap
+        actual=issues.summaryMap
         for level in expected:
             if actual[level] != expected[level]:
                 print(

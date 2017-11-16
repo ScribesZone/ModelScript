@@ -6,7 +6,7 @@ contains:
 
 *   an attribute `model` containing the model resulting from
     parsing the source file,
-*   an issueBox containing all import statements.
+*   an _issueBox containing all import statements.
 *   the model declaration statement.
 """
 from typing import Text, Optional, List, Any
@@ -135,7 +135,7 @@ class ModelSourceFile(SourceFile):
 
         # Backward link & issue box linking
         self.model.source=self
-        self.model.issueBox.addParent(self.issueBox)
+        self.model._issueBox.addParent(self._issueBox)
 
 
         # Create first an empty ImportBox.
@@ -195,7 +195,7 @@ class ModelSourceFile(SourceFile):
         """
         All issues including model issues.
         """
-        return self.model.issueBox
+        return self.model._issueBox
 
     @property
     def outgoingDependencies(self):
@@ -207,8 +207,15 @@ class ModelSourceFile(SourceFile):
         #type: () -> List[SourceImport]
         return Megamodel.sourceDependencies(target=self)
 
+
+    @property
+    def text(self):
+        return self.metamodel.sourcePrinterClass(self).do()
+
+
     @classmethod
     def __dir__(self):
+        # Added from ipython but this not work
         return [
             'label',
             'name']
@@ -225,7 +232,7 @@ class ModelSourceFile(SourceFile):
     #
     # hasIssues
     # isValid
-    # issueBox ?
+    # _issueBox ?
     # fullIssueBox ?
     #
     # model
