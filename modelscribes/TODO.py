@@ -4,8 +4,8 @@
 #       (use cli + config)
 # TODO:0 error not always printed !
 #        printer must inherit message printing from
-# TODO:0 object/evaluation model issuebox not bound to scenario
-#        so no error reported when building object message
+# TODO:0 bind object/evaluation model issuebox with scenario
+#        otherwise there is no error reported when building objects
 # TODO:0 chech error/print for main language
 # TODO:0 handle use message 'Nothing to do, because file' in merge
 #       check with us01scs  without ?0
@@ -14,7 +14,8 @@
 #       if not, just compile /use if imported
 #       otherwise just print comments
 # TODO:0 add constraint composition[0..1,1]
-
+# TODO:1 add Date type -> Integer (20171205)
+# TODO:1 add / for derived attributes
 # TODO:1 add sex parser to support composition
 # (ScribesEnv)jmfavre@jmfavre-HP-ZBook-15:/D2/ScribesZone/ModelScribes/test/modelscripts/testcases/sex$ use -qv composition.use composition3.soil
 # Warning: Insert has resulted in two aggregates for object `Wheel1'. Object `Wheel1' is already component of another object.
@@ -41,13 +42,27 @@
 # TODO:1 add check attribute 0..1
 
 #
-
+# TODO:3 disable x : Class in use
 # TODO:2 enable 0package
 # TODO:2 check permission analysis
 # TODO:3 re parser
 # TODO:3 is parser
 # TODO:3 oc parser -> cl
 
+
+#TODO: improve error management
+
+#TODO: add options to bin/modelc.py (-p, -s, ...)
+#TODO: check association/class metamodel
+
+#TODO: check what to do with  (link)object destruction
+
+#TODO: check plantuml generation
+
+#TODO: add support for @assert inv / query
+#TODO: add support for 'include x.obm' in scenarios
+
+# #TODO: plantuml, check how to get errors from generation
 
 # megamodels
 # ----------
