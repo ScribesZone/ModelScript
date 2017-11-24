@@ -10,7 +10,7 @@ from abc import ABCMeta
 
 from typing import Text, List, Optional, Any
 
-import fragments
+import modelscribes.base.fragments
 from modelscribes.base.files import (
     readFileLines
 )
@@ -282,7 +282,7 @@ class AnnotatedSourceFile(SourceFile):
         self.closingMark = closingMark
         self.hereMark = hereMark
 
-        fragmenter = fragments.RegexpFragmenter(
+        fragmenter = modelscribes.base.fragments.RegexpFragmenter(
             self.sourceLines,
             openingMark, closingMark, hereMark,
             mainValue = self, firstPosition = 1)

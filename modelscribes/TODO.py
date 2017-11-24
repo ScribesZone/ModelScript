@@ -13,9 +13,13 @@
 #       is should be enough to first check soil line
 #       if not, just compile /use if imported
 #       otherwise just print comments
-# TODO:0 add constraint composition[0..1,1]
+# TODO:0 add [0..1] syntax + constraint   not self.x->isUndefined
+# TODO:1 add / for derived attributes  syntax only /x -> @derived
+# TODO:1 add {a,b,c} -> -- @a @b @c
+# TODO:1 add {id} constratint C.x{id} C.y{id]
+#        ->  constraint inv none:C: C.allInstance->isUnique(c|Tuple{c.x,c.y})
+# TODO:1 add constraint composition[0..1,1]
 # TODO:1 add Date type -> Integer (20171205)
-# TODO:1 add / for derived attributes
 # TODO:1 add sex parser to support composition
 # (ScribesEnv)jmfavre@jmfavre-HP-ZBook-15:/D2/ScribesZone/ModelScribes/test/modelscripts/testcases/sex$ use -qv composition.use composition3.soil
 # Warning: Insert has resulted in two aggregates for object `Wheel1'. Object `Wheel1' is already component of another object.
@@ -30,17 +34,28 @@
 # checking invariants...
 # checked 0 invariants in 0.000s, 0 failures.
 
-
+# TODO:1  relational class model  checks
+# - pas d'association n-n
+# - pas de classes associatives
+# - pas de composition avec 0..1 du coté du composite
+# - pas d'aggregation
+# - pas de generalisation
+# - pas de classe abstraite
 
 # TODO:1 enable glossary in all models
 # TODO:1 add inheritance in cl metamodel
+# TODO:1
 # FIXME:1 display /tmp error in sex/use
 #        for metamodels, since composed metamodels are
-#        important (e.g. permissoion -> usecase
+#        important (e.g. permissoion -> usecase)
 # TODO:1 add @assertion
 # TODO:1 import between cl diagram could be very useful
-# TODO:1 add check attribute 0..1
 
+# TODO:2 Installation procedure.
+#       chmod +x for internal model-use
+#       chmox +x for bin/*
+# TODO:2 add check optional attribute 0..1
+#
 #
 # TODO:3 disable x : Class in use
 # TODO:2 enable 0package

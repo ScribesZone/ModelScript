@@ -41,7 +41,7 @@ c.InteractiveShellApp.exec_lines = [
     'sys.path.append("/D2/ScribesZone/PyTestHelpers")',
     'sys.path.append("/home/jmfavre/.config/gedit")',
     'sys.path.append("/home/jmfavre/.local/share/gtksourceview-3.0/language-specs")',
-    'from modelscribes.cli import *',
+    'from modelscribes.pyi import *',
     'cd /D2/ScribesZone/ModelScribes/test/modelscripts/testcases',
 ]
 

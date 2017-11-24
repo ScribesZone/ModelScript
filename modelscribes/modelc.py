@@ -1,28 +1,50 @@
 # coding=utf-8
 import sys
 import os
+import argparse
 
+#------ add modescribes to the path -------------------
 modelscribes_home=os.path.realpath(
     os.path.join(
         os.path.dirname(__file__),
         '..'))
 sys.path.insert(0,modelscribes_home)
+#------------------------------------------------------
 
-from modelscribes.locallibs.termcolor import cprint, colored, show as showColors
 import modelscribes.all
+from modelscribes.locallibs.termcolor import cprint, colored, show as showColors
 from modelscribes.megamodels.megamodels import Megamodel
-if len(sys.argv)==1:
-    exit(0)
+# if len(sys.argv)==1:
+#     exit(0)
+#
+# many=len(sys.argv[1:])>1
+# if sys.argv[1]=='color':
+#     showColors()
+#     exit(0)
 
-many=len(sys.argv[1:])>1
-if sys.argv[1]=='color':
-    showColors()
-    exit(0)
 
-for filename in sys.argv[1:]:
+parser = argparse.ArgumentParser(
+    prog='modelc',
+    description='Compile the given sources.')
+parser.add_argument('--feature', dest='feature', action='store_true')
+# parser.add_argument('--no-feature', dest='feature', action='store_false')
+# parser.set_defaults(feature=True)
+parser.add_argument('sources', metavar='source', nargs='*',
+                    help='A source file for a model.')
+
+args = parser.parse_args()
+# print(args.accumulate(args.integers))
+print args.sources
+print args.feature
+many=len(args.sources)>=1
+for filename in args.sources:
+    try:
+        source=Megamodel.loadFile(filename)
+    except ValueError as e:
+        cprint(str(e),'red')
+        continue
     if many:
-        cprint('#'*30+' '+filename+' '+'#'*30, 'blue')
-    source=Megamodel.loadFile(filename)
+        cprint('#' * 30 + ' ' + filename + ' ' + '#' * 30, 'blue')
     Megamodel.displaySource(source)
     if many:
         cprint(

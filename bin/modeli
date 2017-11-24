@@ -1,2 +1,4 @@
 #!/usr/bin/env bash
-ipython --no-banner --ipython-dir /D2/ScribesZone/ModelScribes/modelscribes/res/ipython
+THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+# ipython --no-banner --ipython-dir /D2/ScribesZone/ModelScribes/modelscribes/res/ipython
+ipython --no-banner -i ${THISDIR}/../modelscribes/modeli.py $*

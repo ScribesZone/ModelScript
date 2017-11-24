@@ -2,7 +2,7 @@
 from __future__ import print_function
 
 """
-This script can be called either 
+This script can be called either
 - from a shell, with the filename to annotate as a parameter
 - from gedit external tool interface, with the file name as env variables.
 It first remove the annotations from the file given, then process
