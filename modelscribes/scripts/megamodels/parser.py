@@ -13,7 +13,7 @@ from abc import ABCMeta
 from typing import Text, Optional, Union
 
 from modelscribes.base.issues import (
-    LocalizedIssue,
+    LocalizedSourceIssue,
     Issue,
     Levels,
 )
@@ -183,7 +183,7 @@ def _matchModelImport(
                 metamodel=Megamodel.metamodel(
                     label=metamodel_label) #type: Metamodel
             except ValueError as e:
-                LocalizedIssue(
+                LocalizedSourceIssue(
                     sourceFile=modelSourceFile,
                     line=lineNo,
                     level=Levels.Fatal, # could be error with some work
@@ -193,7 +193,7 @@ def _matchModelImport(
             target_mms=source_metamodel.outMetamodels
             # noinspection PyUnboundLocalVariable
             if metamodel not in target_mms:
-                LocalizedIssue(
+                LocalizedSourceIssue(
                     sourceFile=modelSourceFile,
                     line=lineNo,
                     level=Levels.Fatal, # could be error with some work
@@ -209,7 +209,7 @@ def _matchModelImport(
                              literal_target_filename))
             file_extension=os.path.splitext(abs_target_filename)[1]
             if file_extension != metamodel.extension:
-                LocalizedIssue(
+                LocalizedSourceIssue(
                     sourceFile=modelSourceFile,
                     line=lineNo,
                     level=Levels.Fatal, # could be error with some work
@@ -217,7 +217,7 @@ def _matchModelImport(
                         'The extension of the file must be "%s".' % (
                             metamodel.extension )))
             if not os.path.isfile(abs_target_filename):
-                LocalizedIssue(
+                LocalizedSourceIssue(
                     sourceFile=modelSourceFile,
                     line=lineNo,
                     level=Levels.Fatal, # could be error with some work
@@ -322,7 +322,7 @@ def _matchModelDefinition(
             metamodel=Megamodel.metamodel(
                 label=metamodel_label) #type: Metamodel
         except ValueError as e:
-            LocalizedIssue(
+            LocalizedSourceIssue(
                 sourceFile=modelSourceFile,
                 line=lineNo,
                 level=Levels.Fatal, # could be error with some work
@@ -334,7 +334,7 @@ def _matchModelDefinition(
             else m['modelKind'])
         # noinspection PyUnboundLocalVariable
         if model_kind not in metamodel.modelKinds:
-            LocalizedIssue(
+            LocalizedSourceIssue(
                 sourceFile=modelSourceFile,
                 line=lineNo,
                 level=Levels.Fatal, # could be error with some work
@@ -347,7 +347,7 @@ def _matchModelDefinition(
 
         # Check that the metamodel is the expected one
         # if metamodel != source_metamodel:
-        #     LocalizedIssue(
+        #     LocalizedSourceIssue(
         #         sourceFile=modelSourceFile,
         #         line=lineNo,
         #         level=Levels.Fatal,  # could be error with some work
@@ -360,7 +360,7 @@ def _matchModelDefinition(
         # Check name
         name=m['name']
         if not noSymbolChecking and not(Symbol.is_CamlCase(name)):
-            LocalizedIssue(
+            LocalizedSourceIssue(
                 sourceFile=modelSourceFile,
                 line=lineNo,
                 level=Levels.Error,
@@ -370,7 +370,7 @@ def _matchModelDefinition(
                     )))
         if name.lower() != modelSourceFile.name.lower():
             if not recognizeUSEOCLNativeModelDefinition:
-                LocalizedIssue(
+                LocalizedSourceIssue(
                     sourceFile=modelSourceFile,
                     line=lineNo,
                     level=Levels.Error,
@@ -431,7 +431,7 @@ def parseToFillImportBox(modelSource,
             )
             if md is not None:
                 if modelSource.importBox.modelName is not None:
-                    LocalizedIssue(
+                    LocalizedSourceIssue(
                         sourceFile=modelSource,
                         line=line_no,
                         level=Levels.Warning,
@@ -452,7 +452,7 @@ def parseToFillImportBox(modelSource,
                 justMatch=False )
             if mi is not None:
                 if DEBUG>=1 or Config.realtimeImportPrint >=1:
-                    print('\nim: >>>>>>>> '+repr(mi))
+                    print('\nimp: >>>>>>>> '+repr(mi))
 
                 modelSource.importBox.addImport(
                     SourceImport(importStmt=mi)
@@ -461,7 +461,7 @@ def parseToFillImportBox(modelSource,
 
                 if DEBUG>=1 or Config.realtimeImportPrint >=1:
                     ImportBoxPrinter(modelSource.importBox).display()
-                    print('im: <<<<<<<< '+repr(mi)+'\n')
+                    print('imp: <<<<<<<< '+repr(mi)+'\n')
                 continue
 
             # --------- any other line is ok -------------------

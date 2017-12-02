@@ -1,0 +1,6 @@
+-- @constraint model
+-- @import class model from "car1.cls"
+
+context self : Car
+inv sizes :
+    self.length > self.width

@@ -1,0 +1,10 @@
+-- @constraint model
+-- @import class model from "car1.cls"
+
+context self : Person
+inv nameOK :
+    self.name.characters->includes(' ')
+
+context self : Person
+inv deriveLoveCars :
+    self.loveCars = self.cars->size() >= 5

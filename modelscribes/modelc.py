@@ -3,53 +3,150 @@ import sys
 import os
 import argparse
 
-#------ add modescribes to the path -------------------
-modelscribes_home=os.path.realpath(
-    os.path.join(
-        os.path.dirname(__file__),
-        '..'))
-sys.path.insert(0,modelscribes_home)
-#------------------------------------------------------
+def setup():
+    #------ add modescribes to the path -------------------
+    modelscribes_home=os.path.realpath(
+        os.path.join(
+            os.path.dirname(__file__),
+            '..'))
+    sys.path.insert(0,modelscribes_home)
+    #------------------------------------------------------
+
+setup()
 
 import modelscribes.all
-from modelscribes.locallibs.termcolor import cprint, colored, show as showColors
+from modelscribes.locallibs.termcolor import cprint
+from modelscribes.base.printers import (
+    AbstractPrinterConfig,
+    ContentPrinterConfig
+)
 from modelscribes.megamodels.megamodels import Megamodel
-# if len(sys.argv)==1:
-#     exit(0)
-#
-# many=len(sys.argv[1:])>1
-# if sys.argv[1]=='color':
-#     showColors()
-#     exit(0)
+from modelscribes.config import Config
+
+OPTIONS=[
+    ('pre','preprocessorPrint'),
+    ('imp','realtimeImportPrint'),
+    ('iss','realtimeIssuePrint'),
+    ('use','realtimeUSE'),
+]
+
+def getArguments():
+    parser = argparse.ArgumentParser(
+        prog='modelc',
+        description='Compile the given sources.')
+    for (parameter,_) in OPTIONS:
+        parser.add_argument(
+            '--'+parameter,
+            dest=parameter,
+            const=1,
+            # default=0,
+            type=int,
+            nargs='?')
+    parser.add_argument(
+        '-bw',
+        dest='bw',
+        action='store_true',
+        default=False
+    )
+    parser.add_argument(
+        '--verbose', '-v',
+        dest='verbose',
+        action='store_true',
+        default=False
+    )
+    parser.add_argument(
+        '--quiet', '-q',
+        dest='quiet',
+        action='store_true',
+        default=False
+    )
+    parser.add_argument(
+        '--issues',
+        dest='issues',
+        const='top',
+        default='top',
+        choices=['top','inline','bottom'],
+        type=str,
+        nargs='?'
+    )
+    parser.add_argument(
+        '--list', '-l',
+        dest='listing',
+        const='source',
+        default='no',
+        choices=['no', 'source', 'model'],
+        type=str,
+        nargs='?'
+    )
+    parser.add_argument(
+        '--summary', '-s',
+        dest='summary',
+        const='bottom',
+        default='no',
+        choices=['no', 'top', 'bottom'],
+        type = str,
+        nargs = '?'
+    )
+    parser.add_argument(
+        'sources',
+        metavar='source',
+        nargs='*',
+        help='A source file for a model.')
+    args = parser.parse_args()
+    return args
+
+def updateConfig(args):
+    for (parameter, configOption) in OPTIONS:
+        val = getattr(args, parameter)
+        if val is not None:
+            # update config only if value is specified
+            print('%s(%s)=%s' % (configOption, parameter, val))
+            setattr(Config, configOption, val)
 
 
-parser = argparse.ArgumentParser(
-    prog='modelc',
-    description='Compile the given sources.')
-parser.add_argument('--feature', dest='feature', action='store_true')
-# parser.add_argument('--no-feature', dest='feature', action='store_false')
-# parser.set_defaults(feature=True)
-parser.add_argument('sources', metavar='source', nargs='*',
-                    help='A source file for a model.')
 
-args = parser.parse_args()
-# print(args.accumulate(args.integers))
-print args.sources
-print args.feature
-many=len(args.sources)>=1
-for filename in args.sources:
+def processSourceFiles(filename, manySourceFiles, args):
     try:
         source=Megamodel.loadFile(filename)
     except ValueError as e:
         cprint(str(e),'red')
-        continue
-    if many:
+        return str(e)
+    if manySourceFiles:
         cprint('#' * 30 + ' ' + filename + ' ' + '#' * 30, 'blue')
-    Megamodel.displaySource(source)
-    if many:
+    config=AbstractPrinterConfig(
+        styled=not args.bw,
+        verbose=args.verbose,
+        quiet=args.quiet
+    )
+    printer_config=ContentPrinterConfig(
+        title=source.basename,
+        issuesMode=args.issues,
+        contentMode=args.listing,
+        summaryMode=args.summary,
+    )
+    Megamodel.displaySource(
+        theSource=source,
+        # title=source.basename,
+        # issuesMode=args.issues,
+        # displayContent=args.list!='no',
+        # preferStructuredContent=args.list=='model',
+        # displaySummary=args.summary!='no',
+        # summaryFirst=args.summary=='top',
+        config=printer_config)
+    if manySourceFiles:
         cprint(
             '#'*28+' END '+filename+' '+'#'*28+'\n'*2,
             'blue')
+    return None
+
+
+args=getArguments()
+updateConfig(args)
+
+manySourceFiles=len(args.sources)>=2
+
+for filename in args.sources:
+    processSourceFiles(filename, manySourceFiles, args)
 
 
 # import sys

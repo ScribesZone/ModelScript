@@ -10,7 +10,7 @@ import re
 
 from typing import Text, List, Optional, Union
 from modelscribes.base.issues import (
-    LocalizedIssue,
+    LocalizedSourceIssue,
     Levels,
 )
 from modelscribes.megamodels.sources import ModelSourceFile
@@ -118,7 +118,7 @@ class PermissionModelSource(ModelSourceFile):
                 subject_strs=m.group('subjects').split(',')
                 subjects=_resolve_subjects(self.usecaseModel, subject_strs)
                 if not isinstance(subjects, list):
-                    LocalizedIssue(
+                    LocalizedSourceIssue(
                         sourceFile=self,
                         level=Levels.Error,
                         message='Invalid subject "%s"'
@@ -133,7 +133,7 @@ class PermissionModelSource(ModelSourceFile):
                     if action not in actions:
                         actions.append(action)
                 if len(actions)==0 :
-                    LocalizedIssue(
+                    LocalizedSourceIssue(
                         sourceFile=self,
                         level=Levels.Error,
                         message='No action specified',
@@ -144,7 +144,7 @@ class PermissionModelSource(ModelSourceFile):
                 resource_strs=m.group('resources').split(',')
                 resources=_resolve_resources(self.classModel, resource_strs)
                 if not isinstance(resources, list):
-                    LocalizedIssue(
+                    LocalizedSourceIssue(
                         sourceFile=self,
                         level=Levels.Error,
                         message='Invalid resources "%s"'
@@ -163,7 +163,7 @@ class PermissionModelSource(ModelSourceFile):
 
                 continue
 
-            LocalizedIssue(
+            LocalizedSourceIssue(
                 sourceFile=self,
                 level=Levels.Error,
                 message='Syntax error.',

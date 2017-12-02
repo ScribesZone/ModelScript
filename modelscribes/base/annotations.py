@@ -7,7 +7,7 @@ from typing import Text, Optional
 
 class Annotations(object):
     lineLength=80
-    char='~'
+    char='*'
     full=char*lineLength
     prefix=char*4+' '
     cont=  char*2+'   '

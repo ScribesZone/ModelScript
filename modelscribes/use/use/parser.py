@@ -39,7 +39,7 @@ from modelscribes.megamodels.sources import ModelSourceFile
 from modelscribes.megamodels.metamodels import Metamodel
 from modelscribes.base.issues import (
     Issue,
-    LocalizedIssue,
+    LocalizedSourceIssue,
     Levels,
     FatalError
 )
@@ -232,7 +232,7 @@ class UseModelSource(ModelSourceFile):
     def __addErrorFromLine(self, line):
         #type: (Text) -> None
         """
-        Convert a use error line into an LocalizedIssue.
+        Convert a use error line into an LocalizedSourceIssue.
 
         USE generate errors like:
             testcases/useerrors/bart.use:line 27:26 no viable alternative at input '='
@@ -251,7 +251,7 @@ class UseModelSource(ModelSourceFile):
             if m:
                 # sometimes the regexp fail.
                 # e.g. with "ERROR oct. 11, 2015 3:57:00 PM java.util.pref ..."
-                LocalizedIssue(
+                LocalizedSourceIssue(
                     sourceFile=self,
                     level=Levels.Error,
                     message=m.group('message'),
@@ -356,8 +356,11 @@ class UseModelSource(ModelSourceFile):
             #--------------------------------------------------
 
 
+            #TODO: add here support for processing @ commands
+
             # Full line comment
-            r = r'^ *--(?P<comment> *([^@].*)?)$'
+            # r = r'^ *--(?P<comment> *([^@].*)?)$'  <--- without @
+            r = r'^ *--(?P<comment>.*)$'
             m = re.match(r, line)
             if m:
                 c=m.group('comment')
@@ -370,7 +373,8 @@ class UseModelSource(ModelSourceFile):
 
 
             # End of line (EOL comment)
-            r = r'^(?P<content>.*?)--(?P<comment> *([^@].*)?)$'
+            # r = r'^(?P<content>.*?)--(?P<comment> *([^@].*)?)$'  iwthout @
+            r = r'^(?P<content>.*?)--(?P<comment>.*)$'
             m = re.match(r, line)
             if m:
                 # There is a eol comment on this line
@@ -482,7 +486,7 @@ class UseModelSource(ModelSourceFile):
                 ]
                 for literal in literals:
                     if not self.isOldUSEFile and not Symbol.is_camlCase(literal):
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Warning,
                             message=(
@@ -491,7 +495,7 @@ class UseModelSource(ModelSourceFile):
                             line=line_no
                         )  # TODO: add column
                 if not self.isOldUSEFile and not Symbol.is_CamlCase(m.group('name')):
-                    LocalizedIssue(
+                    LocalizedSourceIssue(
                         sourceFile=self,
                         level=Levels.Warning,
                         message=(
@@ -535,7 +539,7 @@ class UseModelSource(ModelSourceFile):
                                     ]
                         for literal in literals:
                             if not self.isOldUSEFile and not Symbol.is_camlCase(literal):
-                                LocalizedIssue(
+                                LocalizedSourceIssue(
                                     sourceFile=self,
                                     level=Levels.Warning,
                                     message=(
@@ -564,7 +568,7 @@ class UseModelSource(ModelSourceFile):
                 else:
                     superclasses = [c.strip() for c in m.group('superclasses').split(',')]
                 if not self.isOldUSEFile and  not Symbol.is_CamlCase(m.group('name')):
-                    LocalizedIssue(
+                    LocalizedSourceIssue(
                         sourceFile=self,
                         level=Levels.Warning,
                         message=(
@@ -614,10 +618,9 @@ class UseModelSource(ModelSourceFile):
                     superclasses = ()
                 else:
                     superclasses = [c.strip() for c in m.group('superclasses').split(',')]
-                    # print('YYY'+m.group('name'))
                     # print(superclasses)
                 if not self.isOldUSEFile and not Symbol.is_CamlCase(m.group('name')):
-                    LocalizedIssue(
+                    LocalizedSourceIssue(
                         sourceFile=self,
                         level=Levels.Warning,
                         message=(
@@ -657,7 +660,7 @@ class UseModelSource(ModelSourceFile):
                     is_init = m.group('keyword') == 'init'
                     expression = m.group('expression')
                     if not self.isOldUSEFile and not Symbol.is_camlCase(m.group('name')):
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Warning,
                             message=(
@@ -714,7 +717,7 @@ class UseModelSource(ModelSourceFile):
                     signature = signature.replace(' ','')
                     expr=m.group('expr')
                     if not self.isOldUSEFile and not Symbol.is_camlCase(m.group('name')):
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Warning,
                             message=(
@@ -754,7 +757,7 @@ class UseModelSource(ModelSourceFile):
                 current_operation = None
                 current_context = None
                 if not self.isOldUSEFile and not Symbol.is_CamlCase(m.group('name')):
-                    LocalizedIssue(
+                    LocalizedSourceIssue(
                         sourceFile=self,
                         level=Levels.Warning,
                         message=(
@@ -829,7 +832,7 @@ class UseModelSource(ModelSourceFile):
                     if role_name is None or role_name=='':
                         # Create an issue although the parser
                         # will use the name of the class by default
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Warning,
                             message=(
@@ -837,7 +840,7 @@ class UseModelSource(ModelSourceFile):
                             line=line_no
                         )  # TODO: add column
                     elif not self.isOldUSEFile and not Symbol.is_camlCase(role_name):
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Warning,
                             message=(
@@ -1046,7 +1049,7 @@ class UseModelSource(ModelSourceFile):
                 continue
 
             #---- a line has not been processed.
-            LocalizedIssue(
+            LocalizedSourceIssue(
                 sourceFile=self,
                 level=Levels.Fatal,
                 message=('Cannot process "%s"' % line),

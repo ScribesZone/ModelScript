@@ -4,7 +4,8 @@ from typing import Text, Union, Optional, Dict, List
 
 from modelscribes.base.printers import (
     AbstractPrinter,
-    SourcePrinter
+    SourcePrinter,
+    Styles,
 )
 from modelscribes.metamodels.glossaries import (
     GlossaryModel,
@@ -15,7 +16,7 @@ from modelscribes.metamodels.texts import (
 )
 from modelscribes.base.issues import (
     Issue,
-    LocalizedIssue,
+    LocalizedSourceIssue,
     Levels,
     FatalError,
 )
@@ -30,8 +31,8 @@ class GlossaryModelPrinter(AbstractPrinter):
             displayLineNos=displayLineNos)
         self.glossaryModel=glossaryModel
 
-    def do(self):
-        super(GlossaryModelPrinter, self).do()
+    def doBody(self):
+        super(GlossaryModelPrinter, self).doBody()
         self.doGlossaryModel(self.glossaryModel)
         return self.output
 
@@ -48,13 +49,15 @@ class GlossaryModelPrinter(AbstractPrinter):
     #     self.out('%s\n' % s )
 
     def doGlossaryModel(self, glossary):
-        self.outLine('glossary model', lineNo=None)  # TODO: change parser glossary.lineNo)
+        self.outLine('glossary model', lineNo=None, style=Styles.keyword)  # TODO: change parser glossary.lineNo)
         for domain in glossary.domainNamed.values():
             self.domain(domain)
 
     def domain(self, domain):
         self.outLine(
-            'domain %s' % domain.name,
+            '%s %s' % (
+                Styles.keyword.do('domain'),
+                domain.name),
             lineNo=domain.lineNo,
             linesBefore=1)
         for entry in domain.entryNamed.values():
@@ -101,13 +104,13 @@ class GlossarySourcePrinter(SourcePrinter):
             summary=summary,
             displayLineNos=displayLineNos)
 
-    def do(self):
+    def doBody(self):
         self.output=''
         if self.theSource.isValid:
             p=GlossaryModelPrinter(
                 glossaryModel=self.theSource.model,
                 displayLineNos=self.displayLineNos,
-            ).do()
+            ).doBody()
             self.out(p)
         else:
             self._issues()

@@ -57,7 +57,7 @@ from modelscribes.megamodels.sources import ModelSourceFile
 
 from modelscribes.base.issues import (
     Issue,
-    LocalizedIssue,
+    LocalizedSourceIssue,
     Levels,
     FatalError,
 )
@@ -370,7 +370,7 @@ class _SexOrSoilSource(ModelSourceFile):
         def _reqClassModel():
             """ Check that the model is available"""
             if self.classModel is None:
-                LocalizedIssue(
+                LocalizedSourceIssue(
                     sourceFile=self,
                     level=Levels.Fatal,
                     message='No class model imported.',
@@ -578,7 +578,7 @@ class _SexOrSoilSource(ModelSourceFile):
                         continue
 
                     if self.usecaseModel is None:
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Warning,
                             message='No usecase model provided. Directive ignored',
@@ -589,7 +589,7 @@ class _SexOrSoilSource(ModelSourceFile):
                     #--- instance --------
                     iname=m.group('name')
                     if iname in self.scenarioModel.actorInstanceNamed:
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Warning,
                             message='Actor instance "%s" already exist. Directive ignored' % iname,
@@ -600,7 +600,7 @@ class _SexOrSoilSource(ModelSourceFile):
                     #--- actor ----------
                     aname=m.group('actor')
                     if aname not in self.scenarioModel.usecaseModel.actorNamed:
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Error,
                             message='Actor "%s" does not exist. Directive ignored.' % aname,
@@ -640,7 +640,7 @@ class _SexOrSoilSource(ModelSourceFile):
                         # requires some analysis.The problem seems to be
                         # that the order of block could is not enough to
                         # know the order of statement.
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Fatal,
                             message='Context cannot be nested',
@@ -668,7 +668,7 @@ class _SexOrSoilSource(ModelSourceFile):
                             level=Levels.Error):
                         continue
                     if _S.context_block is None:
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Error,
                             message='No context opened. Directive ignored.',
@@ -698,7 +698,7 @@ class _SexOrSoilSource(ModelSourceFile):
                             level=Levels.Error):
                         continue
                     if self.usecaseModel is None:
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Warning,
                             message=
@@ -707,7 +707,7 @@ class _SexOrSoilSource(ModelSourceFile):
                         )
                         continue
                     if _S.context_block is not None:
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Error,
                             message='Context block is not closed. Assume it is',
@@ -716,7 +716,7 @@ class _SexOrSoilSource(ModelSourceFile):
                         _S.context_block = None
                     ainame=m.group('name')
                     if ainame not in self.scenarioModel.actorInstanceNamed:
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Fatal,
                             message=( 'Actor instance "%s" is not defined.'
@@ -727,7 +727,7 @@ class _SexOrSoilSource(ModelSourceFile):
                     a=ai.actor #type: Actor
                     ucname=m.group('usecase')
                     if ucname not in self.scenarioModel.usecaseModel.system.usecaseNamed:
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Fatal,
                             message=( 'Usecase "%s" is not defined.'
@@ -736,7 +736,7 @@ class _SexOrSoilSource(ModelSourceFile):
                         )
                     uc=self.scenarioModel.usecaseModel.system.usecaseNamed[ucname] #type: Usecase
                     if uc not in a.usecases:
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Error,
                             message=(
@@ -770,7 +770,7 @@ class _SexOrSoilSource(ModelSourceFile):
                             level=Levels.Error):
                         continue
                     if self.usecaseModel is None:
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Warning,
                             message=
@@ -779,7 +779,7 @@ class _SexOrSoilSource(ModelSourceFile):
                         )
                         continue
                     if not isinstance(_S.main_block, UsecaseInstanceBlock):
-                        LocalizedIssue(
+                        LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Error,
                             message='No opened usecase instance. Directive ignored.',
@@ -799,7 +799,7 @@ class _SexOrSoilSource(ModelSourceFile):
                     directive=(
                         '' if m.group('name') is None
                         else m.group('name'))
-                    LocalizedIssue(
+                    LocalizedSourceIssue(
                         sourceFile=self,
                         level=Levels.Warning,
                         message=(
@@ -1057,7 +1057,7 @@ class _SexOrSoilSource(ModelSourceFile):
                         variableName=name,
                     )
                     # TODO implement deletion with ripple effect
-                    LocalizedIssue(
+                    LocalizedSourceIssue(
                         sourceFile=self,
                         level=Levels.Fatal,
                         message=(
@@ -1100,7 +1100,7 @@ class _SexOrSoilSource(ModelSourceFile):
                             object_names
                         ))
                     # TODO implement deletion
-                    LocalizedIssue(
+                    LocalizedSourceIssue(
                         sourceFile=self,
                         level=Levels.Fatal,
                         message=(
@@ -1383,7 +1383,7 @@ class _SexOrSoilSource(ModelSourceFile):
                 errcol=(
                     int(m.group('col')) if m.group('col') is not None
                     else None)
-                LocalizedIssue(
+                LocalizedSourceIssue(
                     sourceFile=self,
                     level=Levels.Error,
                     message=m.group('msg'),
@@ -1399,7 +1399,7 @@ class _SexOrSoilSource(ModelSourceFile):
             r = begin + 'Error:? *(?P<msg>.*)' + end
             m = re.match(r, line)
             if m:
-                LocalizedIssue(
+                LocalizedSourceIssue(
                     sourceFile=self,
                     level=Levels.Error,
                     message=m.group('msg'),
@@ -1411,7 +1411,7 @@ class _SexOrSoilSource(ModelSourceFile):
             #---- Unrecognized line
             # ------------------------------------------------------
 
-            LocalizedIssue(
+            LocalizedSourceIssue(
                 sourceFile=self,
                 level=Levels.Fatal,
                 message=('Cannot parse line #%i.'%_S.line_no),

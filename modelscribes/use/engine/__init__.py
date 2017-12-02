@@ -146,7 +146,7 @@ class USEEngine(object):
         cls.command = (commandPattern
                        % (USE_OCL_COMMAND, useSource, soilFile))
         if DEBUG>=3 or Config.realtimeUSE>=1:
-            print('us: USE EXECUTION %s' % cls.command)
+            print('use: USE EXECUTION %s' % cls.command)
         cls.directory = executionDirectory if executionDirectory is not None \
                      else os.getcwd()
         # cls.directory = executionDirectory if executionDirectory is not None \
@@ -297,11 +297,11 @@ class USEEngine(object):
         abs_soil_file=os.path.realpath(soilFile)
         if DEBUG>=3 or Config.realtimeUSE>=1:
             print(
-                'us: executeSoilFileAsSex: '
+                'use: executeSoilFileAsSex: '
                 'Soil file: %s' % abs_soil_file)
             displayFileContent(abs_soil_file)
             print(
-                'us: executeSoilFileAsSex:'
+                'use: executeSoilFileAsSex:'
                 'executeSoilFileAsTrace')
         trace_filename = cls.executeSoilFileAsTrace(
             abs_use_file,
@@ -309,17 +309,17 @@ class USEEngine(object):
 
         if DEBUG>=3 or Config.realtimeUSE>=1:
             print(
-                'us: executeSoilFileAsSex: '
+                'use: executeSoilFileAsSex: '
                 'TRACE RESULT saved in %s' % trace_filename)
-            displayFileContent(trace_filename, prefix='us:    ')
-            print('us: executeSoilFileAsSex: now merging')
+            displayFileContent(trace_filename, prefix='use:    ')
+            print('use: executeSoilFileAsSex: now merging')
         sex_filename=merge(
             abs_soil_file,
             trace_filename,
             sexFileName=sexFile)
         if DEBUG>=3:
             print(
-                'us: executeSoilFileAsSex: '
+                'use: executeSoilFileAsSex: '
                 'TRACE RESULT saved in %s' % sex_filename)
             displayFileContent(sex_filename)
         with open(sex_filename, 'rU') as f:

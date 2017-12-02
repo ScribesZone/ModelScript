@@ -1,7 +1,5 @@
 # coding=utf-8
 
-# TODO:0 improve modelc with option
-#       (use cli + config)
 # TODO:0 error not always printed !
 #        printer must inherit message printing from
 # TODO:0 bind object/evaluation model issuebox with scenario
@@ -13,13 +11,12 @@
 #       is should be enough to first check soil line
 #       if not, just compile /use if imported
 #       otherwise just print comments
-# TODO:0 add [0..1] syntax + constraint   not self.x->isUndefined
-# TODO:1 add / for derived attributes  syntax only /x -> @derived
-# TODO:1 add {a,b,c} -> -- @a @b @c
-# TODO:1 add {id} constratint C.x{id} C.y{id]
+# TODO:1 add tags {a,b,c=t} -> -- @a @b @c=t
+#       add parsing on the parser side + metamodel
+# TODO:1 add {id} semantics -> generation of ocl
+#        constratint C.x{id} C.y{id]
 #        ->  constraint inv none:C: C.allInstance->isUnique(c|Tuple{c.x,c.y})
 # TODO:1 add constraint composition[0..1,1]
-# TODO:1 add Date type -> Integer (20171205)
 # TODO:1 add sex parser to support composition
 # (ScribesEnv)jmfavre@jmfavre-HP-ZBook-15:/D2/ScribesZone/ModelScribes/test/modelscripts/testcases/sex$ use -qv composition.use composition3.soil
 # Warning: Insert has resulted in two aggregates for object `Wheel1'. Object `Wheel1' is already component of another object.
@@ -34,6 +31,8 @@
 # checking invariants...
 # checked 0 invariants in 0.000s, 0 failures.
 
+# TODO:2 full support for frozen, readOnly
+# TODO:1 what to do with unique nonUnique orderted
 # TODO:1  relational class model  checks
 # - pas d'association n-n
 # - pas de classes associatives
@@ -41,23 +40,29 @@
 # - pas d'aggregation
 # - pas de generalisation
 # - pas de classe abstraite
-
+# TODO:1 support for rôle / × > addonly
 # TODO:1 enable glossary in all models
 # TODO:1 add inheritance in cl metamodel
 # TODO:1
 # FIXME:1 display /tmp error in sex/use
 #        for metamodels, since composed metamodels are
 #        important (e.g. permissoion -> usecase)
-# TODO:1 add @assertion
+# TODO:1 add @assertion in .ob .sc
 # TODO:1 import between cl diagram could be very useful
-
+# TODO:2 add syntax enumeration x ... end
+#        easy for first and other lines, but must have context for "end"
 # TODO:2 Installation procedure.
 #       chmod +x for internal model-use
 #       chmox +x for bin/*
-# TODO:2 add check optional attribute 0..1
 #
+# TODO:2 add [0..1] constraint   not self.x->isUndefined
 #
-# TODO:3 disable x : Class in use
+# TODO:3 disable x : Class where Class si not datatype
+# TODO:2 datatype Date < String
+#       this just replace x : Date by x : String
+#       to simplify no "end" keyword
+#       other datatype are in fact not really useful
+#       since their creation is not easy
 # TODO:2 enable 0package
 # TODO:2 check permission analysis
 # TODO:3 re parser

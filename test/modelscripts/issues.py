@@ -70,14 +70,14 @@ def checkValidIssues(reltestfile, metamodel, expectedIssues):
         metamodel.label,
         os.path.basename(reltestfile)
     )
-    print('\nte:'+'=='*10+' testing '+file+'='*35+'\n' )
+    print('\ntes:'+'=='*10+' testing '+file+'='*35+'\n' )
     source = metamodel.sourceClass(getTestFile(reltestfile))
     print('\n'+'--' * 10 + ' printing source '+file+'-'*35+'\n')
     metamodel.sourcePrinterClass(source).display()
     if expectedIssues is None:
         expectedIssues={F: 0, E: 0, W: 0, I: 0, H: 0}
     assertIssueBox(source.fullIssueBox, expectedIssues)
-    print('te:'+'=='*10+' tested '+file+'='*35+'\n' )
+    print('tes:'+'=='*10+' tested '+file+'='*35+'\n' )
 
 def scriptsIterator(m2id, expectedIssues):
     metamodel=Megamodel.metamodel(id=m2id)

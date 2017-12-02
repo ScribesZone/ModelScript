@@ -1,9 +1,15 @@
 # coding=utf-8
 from __future__ import unicode_literals, print_function, absolute_import, division
 
+from typing import Optional
+
 from modelscribes.base.printers import (
-    AbstractPrinter
+    AbstractPrinter,
+    AbstractPrinterConfig,
+    StructuredPrinter,
+    StructuredPrinterConfig
 )
+from modelscribes.base.issues import IssueBox
 from modelscribes.megamodels.dependencies.sources import (
     ImportBox
 )
@@ -16,15 +22,19 @@ __all__=(
     'MegamodelPrinter'
 )
 
+
 class ImportBoxPrinter(AbstractPrinter):
 
-    def __init__(self, importBox, displayLineNos=True):
-        #type: (ImportBox, bool) -> None
+    def __init__(self, importBox, config=None):
+        #type: (ImportBox, Optional[AbstractPrinterConfig]) -> None
         super(ImportBoxPrinter, self).__init__(
-            displayLineNos=displayLineNos)
+            config=config)
         self.importBox=importBox
 
-    def do(self):
+    def getIssueBox(self):
+        return IssueBox()
+
+    def doBody(self):
         super(ImportBoxPrinter, self).do()
         self._importBox(self.importBox)
         return self.output
@@ -53,15 +63,22 @@ class ImportBoxPrinter(AbstractPrinter):
         )
 
 
-class MegamodelPrinter(AbstractPrinter):
-    def __init__(self):
-        #type: () -> ()
+class MegamodelPrinter(StructuredPrinter):
+    def __init__(self,
+                 config=None):
+        if config is None:
+            config=StructuredPrinterConfig()
+        config.title='Megamodel'
         super(MegamodelPrinter, self).__init__(
-            displayLineNos=None
-        )
+            config=config)
 
-    def do(self):
-        super(MegamodelPrinter, self).do()
+    def getIssueBox(self):
+        return IssueBox()
+
+    # def doSummary(self):
+    #     pass
+
+    def doBody(self):
         self._megamodel()
         return self.output
 

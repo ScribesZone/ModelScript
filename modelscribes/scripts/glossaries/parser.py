@@ -15,7 +15,7 @@ from modelscribes.metamodels.glossaries import (
 )
 from modelscribes.base.issues import (
     Issue,
-    LocalizedIssue,
+    LocalizedSourceIssue,
     Levels,
     FatalError,
 )
@@ -195,7 +195,7 @@ class GlossaryModelSource(ModelSourceFile):
             #  error
             #-----------------------------------------------
 
-            LocalizedIssue(
+            LocalizedSourceIssue(
                 sourceFile=self,
                 level=Levels.Error,
                 message='Syntax error',

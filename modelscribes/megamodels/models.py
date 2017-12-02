@@ -8,17 +8,25 @@ import abc
 from typing import Optional, Text, List
 
 from modelscribes.base.issues import WithIssueList
-from modelscribes.base.sources import SourceFile
+from modelscribes.base.metrics import Metrics
 from modelscribes.megamodels.megamodels import (
     Megamodel,
     MegamodelElement
 )
-# from modelscribes.megamodels.dependencies.models import ModelDependency
 from modelscribes.megamodels.metamodels import Metamodel
+# from modelscribes.megamodels.sources import (
+#     ModelSourceFile
+# )
+# from modelscribes.megamodels.dependencies.models import ModelDependency
 # from modelscribes.megamodels.dependencies.metamodels import MetamodelDependency
+ModelSourceFile='ModelSourceFile'
 ModelDependency='ModelDependency'
 MetamodelDependency='MetamodelDependency'
 
+__all__=(
+    'Model',
+    'ModelElement',
+)
 
 class Model(MegamodelElement, WithIssueList):
     """
@@ -46,7 +54,7 @@ class Model(MegamodelElement, WithIssueList):
         # If the model is from a sourceFile
         # then set by parseToFillImportBox
 
-        self.source=None  #type: Optional[SourceFile]
+        self.source=None  #type: Optional[                                 ModelSourceFile]
         # Set later if build from a ModelSourceFile.
         # Set in the constuctor of ModelSourceFile
 
@@ -82,8 +90,57 @@ class Model(MegamodelElement, WithIssueList):
             source)
 
     @property
+    def metrics(self):
+        #type: ()->Metrics
+        return Metrics()
+
+    def check(self):
+        pass
+
+    @property
+    def fullMetrics(self):
+        #type: () -> Metrics
+        ms=self.metrics
+        if self.source is not None:
+            ms.addMetrics(self.source.metrics)
+        return ms
+
+    @property
     def text(self):
         return self.metamodel.modelPrinterClass(self).do()
+
+    def str( self,
+             method='do',
+             title='',
+             issuesMode='top',  # top|bottom|inline
+             displayContent=True,
+             preferStructuredContent=True,
+             displaySummary=False,
+             summaryFirst=False,
+             config=None
+            ):
+        printer_class=self.metamodel.modelPrinterClass
+        printer=printer_class(
+            theModel=self,
+            title=title,
+            issuesMode=issuesMode,
+            displayContent=displayContent,
+            displaySummary=displaySummary,
+            summaryFirst=summaryFirst,
+            preferStructuredContent=preferStructuredContent,
+            config=config,
+        )
+        print('*M'*10,printer_class)
+        try:
+            the_method = getattr(printer_class, method)
+            return the_method(printer)
+        except AttributeError:
+            raise NotImplementedError(
+                "Class `{}` does not implement `{}`".format(
+                    printer_class.__class__.__name__,
+                    method))
+
+
 
     def outDependencies(self, targetMetamodel=None, metamodelDependency=None):
         #type: (Optional[Metamodel]) -> List[ModelDependency]
@@ -179,3 +236,7 @@ class Model(MegamodelElement, WithIssueList):
                     % mm_dep.targetMetamodel)
             else:
                 pass
+
+class ModelElement(object):
+    #TODO2: at the moment empty, but some refactoring could be nice
+    pass

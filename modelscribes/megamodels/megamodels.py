@@ -569,6 +569,24 @@ class Megamodel(
 
 
     @classmethod
-    def displaySource(cls, source):
-        printer=source.metamodel.sourcePrinterClass(source)
+    def displaySource(cls,
+                      theSource,
+                      # config
+                      # title='',
+                      # issuesMode='inline',
+                      # displayContent=True,
+                      # preferStructuredContent=False,
+                      # displaySummary=True,
+                      # summaryFirst=True,
+                      config=None):
+
+        printer=theSource.metamodel.sourcePrinterClass(
+            theSource=theSource,
+            # title=title,
+            # issuesMode=issuesMode,
+            # displayContent=displayContent,
+            # preferStructuredContent=preferStructuredContent,
+            # displaySummary=displaySummary,
+            # summaryFirst=summaryFirst,
+            config=config)
         printer.display()

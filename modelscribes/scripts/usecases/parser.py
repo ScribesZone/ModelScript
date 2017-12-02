@@ -21,7 +21,7 @@ from modelscribes.scripts.usecases.printer import (
 )
 from modelscribes.base.issues import (
     Issue,
-    LocalizedIssue,
+    LocalizedSourceIssue,
     Levels,
     FatalError,
 )
@@ -62,8 +62,8 @@ class UsecaseModelSource(ModelSourceFile):
     def parseToFillModel(self):
 
         def _checkSystemExist(isLast=False):
-            if self.usecaseModel.system is None:
-                LocalizedIssue(
+            if not self.usecaseModel.isSystemDefined:
+                LocalizedSourceIssue(
                     sourceFile=self,
                     level=Levels.Fatal,
                     message='System is not defined %s' %
@@ -104,13 +104,13 @@ class UsecaseModelSource(ModelSourceFile):
             if DEBUG>=2:
                 print ('#%i : %s' % (line_no, original_line))
 
-            #---- blank lines ---------------------------------------------
+            #---- blank lines ---------------------------------------
             r = '^ *$'
             m = re.match(r, line)
             if m:
                 continue
 
-            #---- comments -------------------------------------------------
+            #---- comments ------------------------------------------
             r = '^ *-- *[^@].*$'
             m = re.match(r, line)
             if m:
@@ -131,28 +131,19 @@ class UsecaseModelSource(ModelSourceFile):
             r = begin(0)+r'system +(?P<name>\w+)'+end
             m = re.match(r, line)
             if m:
-                if self.usecaseModel.system is not None:
-                    LocalizedIssue(
+                if self.usecaseModel.isSystemDefined:
+                    LocalizedSourceIssue(
                         sourceFile=self,
                         level=Levels.Warning,
                         message='System defined twice',
                         line=line_no,
                     )
                 name=m.group('name')
-                System(
-                    usecaseModel=self.usecaseModel,
+                self.usecaseModel.system.setInfo(
                     name=name,
                     lineNo=line_no,
                 )
-                if not Symbol.is_CamlCase(name):
-                    LocalizedIssue(
-                        sourceFile=self,
-                        level=Levels.Warning,
-                        message=(
-                            '"%s" should be in CamlCase.'
-                            % name),
-                        line=line_no
-                    )
+
                 continue
 
             #--- actor X --------------------------
@@ -165,15 +156,6 @@ class UsecaseModelSource(ModelSourceFile):
                 current_actor.kind=m.group('kind'),
                 current_actor.lineNo=line_no
                 current_section='actor'
-                if not Symbol.is_CamlCase(name):
-                    LocalizedIssue(
-                        sourceFile=self,
-                        level=Levels.Warning,
-                        message=(
-                            '"%s" should be in CamlCase.'
-                            % name),
-                        line=line_no
-                    )
                 continue
 
             #--- usecase X --------------------------
@@ -184,15 +166,6 @@ class UsecaseModelSource(ModelSourceFile):
                 current_usecase=_ensureUsecase(name)
                 current_usecase.lineNo = line_no
                 current_section='usecase'
-                if not Symbol.is_CamlCase(name):
-                    LocalizedIssue(
-                        sourceFile=self,
-                        level=Levels.Warning,
-                        message=(
-                            '"%s" should be in CamlCase.'
-                            % name),
-                        line=line_no
-                    )
                 continue
 
             if current_actor:
@@ -214,7 +187,7 @@ class UsecaseModelSource(ModelSourceFile):
                     continue
 
 
-            LocalizedIssue(
+            LocalizedSourceIssue(
                 sourceFile=self,
                 level=Levels.Error,
                 message=(
@@ -225,21 +198,5 @@ class UsecaseModelSource(ModelSourceFile):
         # End of file
         line_no=len(self.sourceLines)
         _checkSystemExist(isLast=True)
-
-    # def printStatus(self):
-    #     """
-    #     Print the status of the file:
-    #
-    #     * the list of errors if the file is invalid,
-    #     * a short summary of entities (classes, attributes, etc.) otherwise
-    #     """
-    #
-    #     if self.isValid:
-    #         p=UsecaseModelPrinter(self.usecaseModel, displayLineNos=True)
-    #         print(p.do())
-    #     else:
-    #         print('%s error(s) in the usecase model' % len(self._issueBox))
-    #         for e in self._issueBox:
-    #             print(e)
 
 METAMODEL.registerSource(UsecaseModelSource)

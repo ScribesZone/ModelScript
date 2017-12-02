@@ -13,6 +13,10 @@ from typing import Text, Optional, List, Any
 from abc import ABCMeta, abstractproperty, abstractmethod
 
 from modelscribes.base.sources import SourceFile
+from modelscribes.base.metrics import (
+    Metrics,
+    Metric
+)
 from modelscribes.base.issues import (
     IssueBox,
     FatalError
@@ -151,6 +155,7 @@ class ModelSourceFile(SourceFile):
 
             if not parseFileLater:
                 self.parseToFillModel()
+                self.model.check()
 
         except FatalError:
             pass  # nothing to do, the issue has been registered
@@ -207,10 +212,54 @@ class ModelSourceFile(SourceFile):
         #type: () -> List[SourceImport]
         return Megamodel.sourceDependencies(target=self)
 
+    @property
+    def metrics(self):
+        return Metrics().add(
+            Metric('source line',len(self.sourceLines))
+        )
+
+    @property
+    def fullMetrics(self):
+        #type: () -> Metrics
+        ms=self.metrics
+        if self.model is not None:
+            ms.addMetrics(self.model.metrics)
+        return ms
 
     @property
     def text(self):
         return self.metamodel.sourcePrinterClass(self).do()
+
+
+    def str( self,
+             method='do',
+             title='',
+             issuesMode='top',  # top|bottom|inline
+             displayContent=True,
+             preferStructuredContent=False,
+             displaySummary=False,
+             summaryFirst=False,
+             config=None
+            ):
+        printer_class=self.metamodel.modelPrinterClass
+        printer=printer_class(
+            theModel=self,
+            title=title,
+            issuesMode=issuesMode,
+            displayContent=displayContent,
+            displaySummary=displaySummary,
+            summaryFirst=summaryFirst,
+            preferStructuredContent=preferStructuredContent,
+            config=config,
+        )
+        try:
+            the_method = getattr(printer_class, method)
+            return the_method(printer)
+        except AttributeError:
+            raise NotImplementedError(
+                "Class `{}` does not implement `{}`".format(
+                    printer_class.__class__.__name__,
+                    method))
 
 
     @classmethod

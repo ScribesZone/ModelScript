@@ -2,27 +2,14 @@
 
 from __future__ import print_function
 
-from modelscribes.base.preprocessors import (
-    Preprocessor,
-    RegexpTransfo,
-    PrefixToCommentTransfo
-)
+
 
 from modelscribes.use.use.parser import UseModelSource
 from modelscribes.metamodels.classes import METAMODEL
+from modelscribes.scripts.classes.preprocessor import (
+    ClsToUsePreprocessor
+)
 
-class ClsToUsePreprocessor(Preprocessor):
-    def __init__(self):
-        super(ClsToUsePreprocessor, self).__init__(
-            sourceText='class model',
-            targetText='.use class model',
-            targetExtension='.use'
-        )
-        self.addTransfo(RegexpTransfo(
-            '^ *class +model (?P<rest>.*)',
-            'model {rest}'))
-        self.addTransfo(PrefixToCommentTransfo((
-            'package',)))
 
 
 class ClassModelSource(UseModelSource):

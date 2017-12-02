@@ -19,7 +19,7 @@ from modelscribes.megamodels.megamodels import (
 )
 from modelscribes.base.issues import (
     Issue,
-    LocalizedIssue,
+    LocalizedSourceIssue,
     Level,
     Levels,
     WithIssueList
@@ -155,7 +155,7 @@ class SourceFile(WithIssueList):
             if lineNo is None:
                 Issue(self, level=level, message=message )
             else:
-                LocalizedIssue(
+                LocalizedSourceIssue(
                     sourceFile=self,
                     level=level,
                     message=message,

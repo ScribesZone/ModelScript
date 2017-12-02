@@ -20,14 +20,20 @@ from modelscribes.base.files import (
 class Transfo(object):
     __metaclass__ = ABCMeta
 
+    def __init__(self, stop=False):
+        self.stop=stop
+        """ Indicate if other transformations are applied after this one """
+
     @abstractmethod
     def do(self, line):
         #type: (Text) -> Optional[Text]
         pass
 
 
-class RegexpTransfo(object):
-    def __init__(self, regexp, result):
+class RegexpTransfo(Transfo):
+
+    def __init__(self, regexp, result, stop=False):
+        super(RegexpTransfo, self).__init__(stop=stop)
         self.regexp=regexp
         self.result=result
 
@@ -39,8 +45,9 @@ class RegexpTransfo(object):
         else:
             return None
 
-class PrefixToCommentTransfo(object):
-    def __init__(self, prefixes):
+class PrefixToCommentTransfo(Transfo):
+    def __init__(self, prefixes, stop=False):
+        super(PrefixToCommentTransfo, self).__init__(stop=stop)
         self.prefixes = prefixes
         re_prefix = ( '(%s)' %
                          ('|'.join(prefixes)) )
@@ -75,25 +82,29 @@ class Preprocessor(object):
         self.transfos.append(transfo)
 
     def transformLine(self, line):
+        current=line
         for t in self.transfos:
-            new=t.do(line)
-            if new is not None:
-                return new
-        return line
+            replacement=t.do(current)
+            if replacement is not None:
+                if t.stop:
+                    return replacement
+                else:
+                    current=replacement
+        return current
 
     def preprocessLine(self, line):
         newLine=self.transformLine(line)
         if Config.preprocessorPrint>=1:
             if line==newLine:
-                print('pp:       ', line)
+                print('pre:       ', line)
             else:
-                print('pp: xxxxx ', line)
-                print('pp: >>>>> ', newLine)
+                print('pre: xxxxx ', line)
+                print('pre: >>>>> ', newLine)
         return newLine
 
     def do(self, issueOrigin, filename):
         if Config.preprocessorPrint>=1:
-            print('\npp: '+'='*30+' preprocessing  '+'='*30)
+            print('\npre: '+'='*30+' preprocessing  '+'='*30)
         lines=readFileLines(
             file=filename,
             issueOrigin=issueOrigin,
@@ -102,7 +113,7 @@ class Preprocessor(object):
         new_lines=[
             self.preprocessLine(l) for l in lines ]
         if Config.preprocessorPrint>=1:
-            print('pp: '+'='*30+' end preprocessing '+'='*30)
+            print('pre: '+'='*30+' end preprocessing '+'='*30)
 
         return writeTmpFileLines(
             lines=new_lines,

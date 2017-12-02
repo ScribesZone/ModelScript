@@ -1,42 +1,147 @@
 # coding=utf-8
+"""
+Base classes for printers and string/color utilities.
+"""
 from __future__ import unicode_literals, print_function, absolute_import, division
-from typing import Text, Union, Optional, Dict, List
+from typing import Text, Optional
 from abc import ABCMeta, abstractmethod
+from modelscribes.locallibs.termcolor import colored
+
+
+
+#----------------------------------------------------------------------------
+#    Styling
+#----------------------------------------------------------------------------
+
+class Style(object):
+    def __init__(self, c=None, b=None, a=None):
+        self.color = c
+        self.background = b
+        self.attributes = a
+
+    def do(self, text, styled=True):
+        if styled:
+            return colored(text,
+                           color=self.color,
+                           on_color=self.background,
+                           attrs=self.attributes)
+        else:
+            return text
+
+class Styles(object):
+    bigIssue=Style('red', a=['bold'])
+    smallIssue=Style('magenta', a=['bold'])
+    bigIssueSummary=Style('red', a=['reversed','bold'])
+    smallIssueSummary=Style('magenta', a=['reversed','bold'])
+
+    keyword=Style('blue')
+    comment=Style('white')
+    s3=Style('yellow')
+    s2=Style('green')
+    no=Style()
+    # underline, bold, reverse
+
+
+
+#----------------------------------------------------------------------------
+#    Strings
+#----------------------------------------------------------------------------
+
 
 def indent(prefix, s, suffix='', firstPrefix=None):
+    """
+    Indent a possibily multiline string (s) with a
+    given "prefix". If "firstPrefix" is specified then
+    it is used for the first line.
+    A "suffix" can also be provided.
+    """
+    #type: (Text, Text, Text, Optional[Text]) -> Text
     prefix1=prefix if firstPrefix is None else firstPrefix
     lines=s.split('\n')
     outLines=[prefix1+lines[0]+suffix]
     outLines.extend([prefix+l+suffix for l in lines[1:]])
     return '\n'.join(outLines)
 
+# TODO: add support for multines
+# TODO: improve with surronding lines with padding
+def box(s,
+        length=80, hline='N',
+        fill='*', padding='', around=' ',
+        align='C',   ):
+    """
+    Add a box or a line around a given string.
+    """
+    if align=='C':
+        body=(around+s+around).center(length, fill)
+    elif align=='R':
+        body=(s+around).ljust(length, fill)
+    elif align=='L':
+        body=(around+s).rjust(length, fill)
+    else:
+        raise NotImplementedError(
+            'no alignment mode: "%s"' % align)
+    mainline=padding+body+padding
+    borderline=padding+fill*length+padding
+    if hline=='N':
+        return mainline
+    elif hline=='T':
+        return borderline+'\n'+mainline
+    elif hline=='D':
+        return borderline+'\n'+mainline
+    elif hline=='B':
+        return borderline+'\n'+mainline+'\n'+borderline
+    return padding+body+padding
+
+
+#----------------------------------------------------------------------------
+#    Abstract printers
+#----------------------------------------------------------------------------
+
+class AbstractPrinterConfig(object):
+    def __init__(self,
+                 styled=True,
+                 width=120,
+                 baseIndent=0,
+                 displayLineNos=True,
+                 lineNoPadding=' ',
+                 verbose=0,
+                 quiet=True,
+                ):
+        self.styled=styled
+        self.width=width
+        self.baseIndent=baseIndent
+        self.displayLineNos=displayLineNos
+        self.lineNoPadding=lineNoPadding
+        self.verbose=verbose
+        self.quiet=quiet
+
+class AbstractPrinterConfigs(object):
+    default=AbstractPrinterConfig()
+    
+    
+
+
 class AbstractPrinter(object):
     __metaclass__ = ABCMeta
 
-    def __init__(self,
-                 summary=False,
-                 displayLineNos=True,
-                 baseIndent=0):
-        #type: (bool) -> None
-        self._baseIndent=baseIndent
+    def __init__(self, config=None):
+        #type: (Optional[AbstractPrinterConfig]) -> None
+        if config is None:
+            config=AbstractPrinterConfigs.default
+        self.config=config
+        self._baseIndent=config.baseIndent
+        self.currentLineNoDisplay=True
         self.output = ''
-        self.displayLineNos=displayLineNos
-        self.summary=summary
         # self.eolAtEOF=eolAtEOF
 
     def indent(self, n=1):
         self._baseIndent+=n
 
-    def out(self, s):
+    def out(self, s, style=None):
+        if self.config.styled and style is not None:
+            s=style.do(s)
         self.output += s
-
-    def lineNoString(self, lineNo=None):
-        if not self.displayLineNos:
-            return ''
-        if lineNo is not None:
-            return '% 4i|' % lineNo
-        else:
-            return ' ' * 4 + '|'
+        return self.output
 
     def outLine(self,
                 s,
@@ -47,11 +152,12 @@ class AbstractPrinter(object):
                 linesAfter=0,
                 indent=0,
                 increaseLineNo=False,
+                style=Styles.no,
                 ):
         if linesBefore >= 1:
             for i in range(linesBefore):
-                self.outLine('')
-        # string with multilines should be processes line by line
+                self.outLine('', style=style)
+        # string with multilines should be processed line by line
         lines = s.split('\n')
         current_line_no=lineNo
         for (index, line) in enumerate(lines):
@@ -62,20 +168,36 @@ class AbstractPrinter(object):
             self.out('%s%s%s' % (
                 self._indentPrefix(indent),
                 prefix,
-                line) )
+                style.do(line)) )
             if suffix is not None:
                 self.out(suffix)
 
         if linesAfter >= 1:
             for i in range(linesAfter):
                 self.outLine('')
+        return self.output
+
 
     def _indentPrefix(self, indent=0):
         return ' '*4*(self._baseIndent+indent)
 
+    def lineNoString(self, lineNo=None):
+        """
+        Can be overloaded
+        """
+        if (not self.currentLineNoDisplay
+            or not self.config.displayLineNos):
+            return ''
+        if lineNo is not None:
+            s='% 4i|' % lineNo
+        else:
+            s=(self.config.lineNoPadding * 4) + '|'
+        return Styles.comment.do(s)
+    
     @abstractmethod
     def do(self):
-        pass
+        raise NotImplementedError()
+
 
     def display(self, removeLastEOL=False, addLastEOL=True):
         text=self.do()
@@ -86,97 +208,291 @@ class AbstractPrinter(object):
             text=text+'\n'
         print(text, end='')
 
-# class ErrorsPrinter(object):
-#     __metaclass__ = ABCMeta
-#
-#     def _errors(self):
+    #                 linesBefore=0))
 
 
 
-class ModelPrinter(AbstractPrinter):
-    __metaclass__ = ABCMeta
 
+
+
+class StructuredPrinterConfig(AbstractPrinterConfig):
     def __init__(self,
-                 theModel,
-                 summary=False,
-                 displayLineNos=False):
-        assert theModel is not None
-        super(ModelPrinter, self).__init__(
-            summary=summary,
+                 styled=True,
+                 width=120,
+                 baseIndent=0,
+                 displayLineNos=True,
+                 lineNoPadding=' ',
+                 verbose=0,
+                 quiet=False,
+                 #------------------------
+                 title='',
+                 issuesMode='top'
+                ):
+        super(StructuredPrinterConfig, self).__init__(
+            styled=styled,
+            width=width,
+            baseIndent=baseIndent,
             displayLineNos=displayLineNos,
-        )
-        self.theModel=theModel
+            lineNoPadding=lineNoPadding,
+            verbose=verbose,
+            quiet=quiet)
+        self.title = title
+        self.issuesMode = issuesMode
 
-    def _issues(self):
-        self.out(str(self.theModel.issues))
+class StructuredPrinterConfigs(object):
+    default=StructuredPrinterConfig()
 
-# Not used
-class SourcePrinter(AbstractPrinter):
+
+
+class StructuredPrinter(AbstractPrinter):
+    """
+    A printer with different predefined zone corresponding
+    to methods.
+    
+    doTop
+        doTopTitle
+        doIssueSummary
+        doIssues         if issueMode='top'
+        doTopInner
+    
+    doBody
+    
+    doBottom
+        doBottomInner
+        doIssues         if issueMode='bottom'
+        doBottomTitle
+    """
     __metaclass__ = ABCMeta
 
     def __init__(self,
-                 theSource,
-                 summary=False,
-                 displayLineNos=False):
-        assert theSource is not None
-        super(SourcePrinter, self).__init__(
-            summary=summary,
-            displayLineNos=displayLineNos
+                 config=None):
+        #type: (Optional[StructuredPrinterConfig]) -> None
+        if config is None:
+            config=StructuredPrinterConfigs.default
+        super(StructuredPrinter, self).__init__(
+            config=config
         )
-        self.theSource=theSource
-
-    def _issues(self):
-        self.out(str(self.theSource.fullIssueBox))
+        self.config=config #type: StructuredPrinterConfig
+        self.issueBox=self.getIssueBox()
 
 
+    @abstractmethod
+    def getIssueBox(self):
+        #type: () -> 'IssueBox'
+        """
+        This method must be implemented.
+        """
+        pass
 
-class AnnotatedSourcePrinter(SourcePrinter):
-
-    def __init__(self,
-                 theSource):
-        #type: ('Source') -> None
-
-        assert theSource is not None
-        super(AnnotatedSourcePrinter, self).__init__(
-            theSource=theSource,
-            summary=False,
-            displayLineNos=False,
-        )
 
     def do(self):
-        self.output=''
-
-        self._issueHeader()
-
-        for (index, line) in enumerate(self.theSource.sourceLines):
-            line_no=index+1
-            # self.out(str(line_no))
-            self._line(line_no, line)
-            localized_issues=self.theSource.fullIssueBox.at(line_no)
-            if localized_issues:
-                self._localizedIssues(localized_issues)
+        """
+        Can be overloaded
+        """
+        self.doTop()
+        self.doBody()
+        self.doBottom()
         return self.output
 
-    def _issueHeader(self):
-        self._issuesSummary(self.theSource.fullIssueBox)
-        unlocalized_issues=self.theSource.fullIssueBox.at(0)
-        self._unlocalizedIssues(unlocalized_issues)
+    #---- top ---------------------------------------------------
 
-    def _line(self, line_no, line):
-        self.outLine(line)
+    def doTop(self):
+        """
+        Can be overloaded
+        """
+        self.currentLineNoDisplay=False
+        if self.config.title is not None:
+            self.doTopTitle()
+        if self.hasIssues and not self.config.quiet:
+            self.doIssuesSummary()
+        if self.config.issuesMode=='top':
+            self.doIssues()
+        self.doTopInner()
+        return self.output
 
-    def _issuesSummary(self, issues):
-        s=issues.summaryLine
-        if s!='':
-            self.outLine(issues.summaryLine)
+    def doTopInner(self):
+        pass
 
-    def _unlocalizedIssues(self, issues, pattern='{level}: {message}'):
+
+    def doTopTitle(self):
+        """
+        Can be overloaded
+        """
+        if not self.config.quiet:
+            self.outLine(box(self.config.title))
+        return self.output
+
+    #---- body ---------------------------------------------------
+
+    @abstractmethod
+    def doBody(self):
+        self.currentLineNoDisplay=True
+        return self.output
+
+
+
+
+
+    # def doSummary(self):
+    #     return self.output
+
+
+    #---- bottom --------------------------------------------------
+
+    def doBottom(self):
+        """
+        Can be overloaded
+        """
+        self.currentLineNoDisplay=False
+        self.doBottomInner()
+        if self.config.issuesMode=='bottom':
+            self.doIssues()
+        self.doIssuesSummary()
+        if self.config.title is not None:
+            self.doBottomTitle()
+        return self.output
+
+    def doBottomInner(self):
+        """
+        Can be overloaded
+        """
+        pass
+
+
+    def doBottomTitle(self):
+        if not self.config.quiet:
+            self.outLine(box('end of '+self.config.title))
+        return self.output
+
+
+
+
+
+    #---- bottom --------------------------------------------------
+
+
+    @property
+    def hasIssues(self):
+        return (
+            self.issueBox is not None
+            and self.issueBox.hasIssues)
+
+    # def doIssuesTop(self):
+    #     """
+    #     Can be overloaded
+    #     """
+    #     self.doIssuesSummary()
+    #     unlocalized_issues = self.issueBox.at(0)
+    #     self.doUnlocalizedIssues(unlocalized_issues)
+    #     return self.output
+
+    def doIssuesSummary(self):
+        """
+        Can be overloaded
+        """
+        s = self.issueBox.summaryLine
+        if s != '':
+            if self.config.styled:
+                if self.issueBox.hasBigIssues:
+                    s = Styles.bigIssue.do(
+                        s,
+                        styled=self.config.styled)
+                else:
+                    s = Styles.smallIssue.do(
+                        s,
+                        styled=self.config.styled)
+            self.outLine(s)
+        return self.output
+
+    def doIssues(self, line=None,
+                 pattern=None): # '{level}: {message}'):
+        if line is None:
+            issues=self.issueBox.all
+        else:
+            issues=self.issueBox.at(line)
         for i in issues:
             self.outLine(
-                i.str(pattern=pattern))
+                i.str(
+                    # pattern=pattern,
+                    styled=self.config.styled))
+        return self.output
 
-    def _localizedIssues(self, issues, pattern='{level}: {message}'):
-        for i in issues:
-            self.outLine(
-                i.str(pattern=pattern,
-                    linesBefore=0))
+
+class ContentPrinterConfig(StructuredPrinterConfig):
+    def __init__(self,
+                 styled=True,
+                 width=120,
+                 baseIndent=0,
+                 displayLineNos=True,
+                 lineNoPadding=' ',
+                 verbose=0,
+                 quiet=False,
+                 #------------------------
+                 title='',
+                 issuesMode='top',
+                 #------------------------
+                 contentMode='source', # source | model | no
+                 summaryMode='top', # top | down | no
+                ):
+        super(ContentPrinterConfig, self).__init__(
+            styled=styled,
+            width=width,
+            baseIndent=baseIndent,
+            displayLineNos=displayLineNos,
+            lineNoPadding=lineNoPadding,
+            verbose=verbose,
+            quiet=quiet,
+            title=title,
+            issuesMode=issuesMode)
+        self.contentMode = contentMode
+        self.summaryMode = summaryMode
+
+class ContentPrinterConfigs(object):
+    default=ContentPrinterConfig()
+
+class ContentPrinter(StructuredPrinter):
+    __metaclass__ = ABCMeta
+
+    def __init__(self,
+                 config=None):
+        #type: (Optional[ContentPrinterConfig]) -> None
+        if config is None:
+            config=ContentPrinterConfigs.default
+        super(ContentPrinter, self).__init__(
+            config=config
+        )
+        self.config=config #type: ContentPrinterConfig
+        # self.displayContent=displayContent
+        # self.preferStructuredContent=preferStructuredContent
+        # self.displaySummary=displaySummary
+        # self.summaryFirst=summaryFirst
+
+    def doBody(self):
+        super(ContentPrinter,self).doBody()
+        if self.config.summaryMode=='top':
+            self.doSummaryZone()
+        if self.config.contentMode!='no':
+            self.doContent()
+        if  self.config.summaryMode=='bottom':
+            self.doSummaryZone()
+        return self.output
+
+    def doSummaryZone(self):
+        self.currentLineNoDisplay=False
+        sep_line=Styles.comment.do(
+                    # '---- Summary '+'-'*67,
+                    '-'*80,
+                    styled=self.config.styled)
+        if self.config.summaryMode=='bottom' and self.config.contentMode!='no':
+            self.outLine(sep_line)
+        self.doSummary()
+        if self.config.summaryMode=='top' and self.config.contentMode!='no':
+            self.outLine(sep_line)
+        return self.output
+
+    def doSummary(self):
+        return self.output
+
+    def doContent(self,):
+        self.currentLineNoDisplay=True
+        return self.output
