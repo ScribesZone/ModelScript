@@ -1,13 +1,14 @@
 permission model A1
-import usecase model from "a.uss"
-import class model from "a.cls"
+import usecase model from 'a.uss'
+import class model from 'a.cls'
 
-M,N  CD  C,R
-M   C   D
-M   RU  C.cs
-M   RU  C.ci
-N   R   R.r1
-N   CD  R
-U1  CD  S
-U1  R   S.sa
+-- Note the of both CRUD and plain syntax
 
+M,N  can create,delete  C,R
+M   can create   D
+M   can read,update  C.cs
+M   can RU  C.ci
+N   can read   R.r1
+N   can create,delete  R
+U1  can create,delete  S
+U1  can R   S.sa

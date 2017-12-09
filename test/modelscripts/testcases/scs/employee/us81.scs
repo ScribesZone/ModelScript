@@ -1,6 +1,6 @@
 scenario model US81
-import class model from "main.cls"
-import usecase model from "main.uss"
+import class model from 'main.cls'
+import usecase model from 'main.uss'
 
 actori toufik:CEO
 actori maria:Secretary

@@ -3,44 +3,12 @@
 Base classes for printers and string/color utilities.
 """
 from __future__ import unicode_literals, print_function, absolute_import, division
-from typing import Text, Optional
+
 from abc import ABCMeta, abstractmethod
-from modelscribes.locallibs.termcolor import colored
 
+from typing import Text, Optional
 
-
-#----------------------------------------------------------------------------
-#    Styling
-#----------------------------------------------------------------------------
-
-class Style(object):
-    def __init__(self, c=None, b=None, a=None):
-        self.color = c
-        self.background = b
-        self.attributes = a
-
-    def do(self, text, styled=True):
-        if styled:
-            return colored(text,
-                           color=self.color,
-                           on_color=self.background,
-                           attrs=self.attributes)
-        else:
-            return text
-
-class Styles(object):
-    bigIssue=Style('red', a=['bold'])
-    smallIssue=Style('magenta', a=['bold'])
-    bigIssueSummary=Style('red', a=['reversed','bold'])
-    smallIssueSummary=Style('magenta', a=['reversed','bold'])
-
-    keyword=Style('blue')
-    comment=Style('white')
-    s3=Style('yellow')
-    s2=Style('green')
-    no=Style()
-    # underline, bold, reverse
-
+from modelscribes.base.styles import Styles
 
 
 #----------------------------------------------------------------------------
@@ -134,6 +102,25 @@ class AbstractPrinter(object):
         self.output = ''
         # self.eolAtEOF=eolAtEOF
 
+    def kwd(self, text):
+        return Styles.keyword.do(
+            text,
+            styled=self.config.styled
+        )
+
+    def cmt(self, text):
+        return Styles.comment.do(
+            text,
+            styled=self.config.styled
+        )
+
+    def ann(self, text):
+        return Styles.annotate.do(
+            text,
+            styled=self.config.styled
+        )
+
+
     def indent(self, n=1):
         self._baseIndent+=n
 
@@ -192,7 +179,7 @@ class AbstractPrinter(object):
             s='% 4i|' % lineNo
         else:
             s=(self.config.lineNoPadding * 4) + '|'
-        return Styles.comment.do(s)
+        return self.cmt(s)
     
     @abstractmethod
     def do(self):
@@ -208,7 +195,6 @@ class AbstractPrinter(object):
             text=text+'\n'
         print(text, end='')
 
-    #                 linesBefore=0))
 
 
 
@@ -225,7 +211,7 @@ class StructuredPrinterConfig(AbstractPrinterConfig):
                  verbose=0,
                  quiet=False,
                  #------------------------
-                 title='',
+                 title=None,
                  issuesMode='top'
                 ):
         super(StructuredPrinterConfig, self).__init__(
@@ -428,10 +414,10 @@ class ContentPrinterConfig(StructuredPrinterConfig):
                  verbose=0,
                  quiet=False,
                  #------------------------
-                 title='',
+                 title=None,
                  issuesMode='top',
                  #------------------------
-                 contentMode='source', # source | model | no
+                 contentMode='self', # self|source|model|no
                  summaryMode='top', # top | down | no
                 ):
         super(ContentPrinterConfig, self).__init__(
@@ -479,7 +465,7 @@ class ContentPrinter(StructuredPrinter):
 
     def doSummaryZone(self):
         self.currentLineNoDisplay=False
-        sep_line=Styles.comment.do(
+        sep_line= Styles.comment.do(
                     # '---- Summary '+'-'*67,
                     '-'*80,
                     styled=self.config.styled)

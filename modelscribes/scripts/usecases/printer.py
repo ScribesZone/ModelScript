@@ -1,12 +1,11 @@
 # coding=utf-8
 from __future__ import unicode_literals, print_function, absolute_import, division
+from typing import Optional
 
-from modelscribes.base.printers import (
-    Styles
-)
 from modelscribes.scripts.base.printers import (
     ModelPrinter,
     ModelSourcePrinter,
+    ModelPrinterConfig,
 )
 
 from modelscribes.metamodels.usecases import (
@@ -21,22 +20,10 @@ class UsecaseModelPrinter(ModelPrinter):
 
     def __init__(self,
                  theModel,
-                 title='',
-                 issuesMode='bottom',  # top|bottom|inline
-                 displayContent=True,
-                 preferStructuredContent=True,
-                 displaySummary=False,
-                 summaryFirst=False,
                  config=None):
-        #type: (UsecaseModel, bool) -> None
+        #type: (UsecaseModel, Optional[ModelPrinterConfig]) -> None
         super(UsecaseModelPrinter, self).__init__(
             theModel=theModel,
-            title=title,
-            issuesMode=issuesMode,  # top|bottom|inline
-            displayContent=displayContent,
-            preferStructuredContent=preferStructuredContent,
-            displaySummary=displaySummary,
-            summaryFirst=summaryFirst,
             config=config
         )
 
@@ -45,12 +32,7 @@ class UsecaseModelPrinter(ModelPrinter):
         self.doUsecaseModel(self.theModel)
         return self.output
 
-
     def doUsecaseModel(self, usecaseModel):
-        self.outLine(
-            Styles.keyword.do('usecase model'),
-            lineNo=None, #usecaseModel.lineNo)  # TODO: change parser
-            linesAfter=1  )
 
         for actor in usecaseModel.actorNamed.values():
             self.doActor(actor)
@@ -58,14 +40,14 @@ class UsecaseModelPrinter(ModelPrinter):
         if usecaseModel.isSystemDefined:
             self.outLine(
                 '%s %s ' % (
-                    Styles.keyword.do('system'),
+                    self.kwd('system'),
                     usecaseModel.system.name),
                 lineNo=usecaseModel.system.lineNo,
                 linesBefore=1,
                 linesAfter=1)
 
             for usecase in usecaseModel.system.usecases:
-                self.usecase(usecase)
+                self.doUsecase(usecase)
 
         self.doActorsUsecases(usecaseModel)
         return self.output
@@ -74,17 +56,17 @@ class UsecaseModelPrinter(ModelPrinter):
     def doActor(self, actor):
         self.outLine(
             '%s %s' %(
-                Styles.keyword.do('actor'),
+                self.kwd('actor'),
                 actor.name),
             lineNo=actor.lineNo
         )
         return self.output
 
 
-    def usecase(self, usecase):
+    def doUsecase(self, usecase):
         self.outLine(
            '%s %s' %(
-               Styles.keyword.do('usecase'),
+               self.kwd('usecase'),
                usecase.name ),
             lineNo=usecase.lineNo
         )
@@ -106,9 +88,9 @@ class UsecaseModelPrinter(ModelPrinter):
         return self.output
 
 
-    def doSummary(self):
-        super(UsecaseModelPrinter, self).doSummary()
-        return self.output
+    # def doSummary(self):
+    #     super(UsecaseModelPrinter, self).doSummary()
+    #     return self.output
 
 METAMODEL.registerModelPrinter(UsecaseModelPrinter)
 METAMODEL.registerSourcePrinter(ModelSourcePrinter)

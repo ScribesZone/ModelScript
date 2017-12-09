@@ -27,9 +27,7 @@ from modelscribes.megamodels.megamodels import (
 from modelscribes.megamodels.metamodels import (
     Metamodel
 )
-from modelscribes.scripts.megamodels.printer import (
-    ImportBoxPrinter
-)
+from modelscribes.scripts.megamodels.printer.imports import ImportBoxPrinter
 from modelscribes.config import Config
 
 __all__=(
@@ -72,13 +70,13 @@ class ImportStatement(MegamodelStatement):
         self.absoluteTargetFilename=absoluteTargetFilename
 
     def __str__(self):
-        return 'import %s model from "%s"' % (
+        return "import %s model from '%s'" % (
             self.metamodel.label,
             self.literalTargetFileName
         )
 
     def __repr__(self):
-        return '%s:%i: import %s model from "%s"' % (
+        return "%s:%i: import %s model from '%s'" % (
             self.sourceFile.basename,
             self.lineNo,
             self.metamodel.label,
@@ -164,7 +162,7 @@ def _matchModelImport(
         +r' +(?P<metamodelLabel>\w+)'
         +r' +model'
         +r' +from'
-        +r' +"(?P<target>[\w\./\-]+)" *$')
+        +r' +\'(?P<target>[\w\./\-]+)\' *$')
     line=modelSourceFile.realSourceLines[lineNo - 1]
     m = re.match(re_stmt, line, re.MULTILINE)
 

@@ -1,5 +1,5 @@
 scenario model US90
-import class model from "main.cls"
+import class model from 'main.cls'
 
 actori toufik:CEO
 actori maria:Secretary

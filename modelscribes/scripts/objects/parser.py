@@ -62,6 +62,10 @@ class ObjectModelSource(ScenarioEvaluationModelSource):
         # FIXME:1 AttributeError: 'NoneType' object has no attribute 'state'
         self.model=self._scenarioModel.scenarioEvaluation.state
 
+        # force the source assignation so that the scenario source
+        # as seen as the source of the object model
+        self.model.source=self._scenarioModel.source
+        # self._issueBox=self._scenarioModel.source._issueBox
     @property
     def objectModel(self):
         return self.model

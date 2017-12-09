@@ -1,5 +1,5 @@
 object model OB01
-import class model from "main.cls"
+import class model from 'main.cls'
 
 !djamel := new Employee
 

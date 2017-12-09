@@ -10,15 +10,15 @@ from test.modelscripts import getUseFile
 
 import os
 
-from modelscribes.base.printers import (
-    AnnotatedSourcePrinter
-)
+# from modelscribes.base.printers import (
+#     AnnotatedSourcePrinter
+# )
 from modelscribes.use.use.parser import (
     UseModelSource
 )
-from modelscribes.use.use.printer import (
-    UseSourcePrinter
-)
+# from modelscribes.use.use.printer import (
+#     UseSourcePrinter
+# )
 
 from test.modelscripts import (
     getTestFile,
@@ -91,8 +91,7 @@ def testGenerator_use4Dir():
 
 def check_isValid(reltestfile):
     use_source = UseModelSource(getTestFile(reltestfile))
-    AnnotatedSourcePrinter(use_source).display()
-    print('====='*20)
-    UseSourcePrinter(use_source).display()
+    # AnnotatedSourcePrinter(use_source).display()
+    print('====='*20,'printer disabled')
     assert use_source.isValid
 

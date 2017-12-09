@@ -1,5 +1,5 @@
-object model US90
-import class model from "main.cls"
+object model KO30
+import class model from 'main.cls'
 
 actori toufik:CEO
 actori maria:Secretary

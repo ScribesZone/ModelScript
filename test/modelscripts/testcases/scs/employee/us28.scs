@@ -1,6 +1,6 @@
 scenario model US28
 
-import class model from "main.cls"
+import class model from 'main.cls'
 
 
 actori toufik:CEO

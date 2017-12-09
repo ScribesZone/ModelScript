@@ -26,11 +26,12 @@ class Permission(SAR):
         return _
 
     def __str__(self):
-        return '%s is allowed to %s %s' % (
+        return '%s can %s %s' % (
             self.subject.subjectLabel,
             self.action.actionLabel,
             self.resource.resourceLabel
         )
+
 
 
 class Control(object):
@@ -56,9 +57,11 @@ class Denial(Control):
 
 class PermissionSet(object):
 
-    def __init__(self, permissions=set()):
+    def __init__(self, permissions=None):
         #type: ()->None
-        self.permissions = []
+        if permissions is None:
+            permissions=set()
+        self.permissions = permissions
         self.controls=[]
 
     def control(self, access):

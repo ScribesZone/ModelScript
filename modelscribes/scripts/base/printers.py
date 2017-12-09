@@ -8,8 +8,11 @@ from typing import Optional
 
 from modelscribes.base.printers import (
     ContentPrinter,
-    ContentPrinterConfig,
-    Styles
+    ContentPrinterConfig
+)
+from modelscribes.base.styles import Styles
+from modelscribes.scripts.megamodels.printer.imports import (
+    ImportBoxPrinter
 )
 
 # class AbstractModelOrModelSourcePrinter(AbstractPrinter):
@@ -50,18 +53,50 @@ from modelscribes.base.printers import (
 #     doBody
 #         --> instanciate either de model printer or source printer and call its doBody
 
+class ModelPrinterConfig(ContentPrinterConfig):
+    def __init__(self,
+                 styled=True,
+                 width=120,
+                 baseIndent=0,
+                 displayLineNos=True,
+                 lineNoPadding=' ',
+                 verbose=0,
+                 quiet=False,
+                 #------------------------
+                 title=None,
+                 issuesMode='top',
+                 #------------------------
+                 contentMode='self', #self|source|model|no
+                 summaryMode='top', # top | down | no
+                ):
+        super(ModelPrinterConfig, self).__init__(
+            styled=styled,
+            width=width,
+            baseIndent=baseIndent,
+            displayLineNos=displayLineNos,
+            lineNoPadding=lineNoPadding,
+            verbose=verbose,
+            quiet=quiet,
+            title=title,
+            issuesMode=issuesMode,
+            contentMode=contentMode,
+            summaryMode=summaryMode
+        )
+
+
 class ModelPrinter(ContentPrinter):
     __metaclass__ = ABCMeta
 
     def __init__(self,
                  theModel,
                  config=None):
-        #type: ('Model', Optional[ContentPrinterConfig]) -> None
+        #type: ('Model', Optional[ModelPrinterConfig]) -> None
         assert theModel is not None
         # don't move this line after as getIssueBox
         # is used in __init__
         self.theModel = theModel
-
+        if config is None:
+            config=ModelPrinterConfig()
         # TODO: use abstractView parameter
         super(ModelPrinter, self).__init__(
             config=config,
@@ -72,7 +107,8 @@ class ModelPrinter(ContentPrinter):
 
 
     def doContent(self):
-        if (not self.config.contentMode=='model'
+
+        if (self.config.contentMode=='source'
             and self.theModel.source is not None):
             self.doSourceContent()
         else:
@@ -80,20 +116,69 @@ class ModelPrinter(ContentPrinter):
         return self.output
 
     def doSourceContent(self):
-        #FIXME: the called method is not defined
+        #FIXME: the called method is not defined  (???)
 
         self.out(self.theModel.source.str(
-            method='doSourceContent',
-            displayContent=True,
-            preferStructuredContent=False,
-            displaySummary=self.config.summaryMode!='no',
-            summaryFirst=self.config.summaryMode=='top',
+            # method='doSourceContent',
+            # displayContent=True,
+            # preferStructuredContent=False,
+            # displaySummary=self.config.summaryMode!='no',
+            # summaryFirst=self.config.summaryMode=='top',
             config=self.config
         ))
         return self.output
 
     def doModelContent(self):
+        #FIXME: Change this impl when model has dependency box
+        #       Currently only sources has a import box
+        #       The model do not have this. See the comment
+        #       in the model.py.
+        #       The code below  should be changed when
+        #       dependency box has been implemented
+
+
+        if self.theModel.source is not None:
+            ib=self.theModel.source.importBox
+            p=ImportBoxPrinter(
+                importBox=ib,
+                config=self.config
+            )
+            self.out(p.do())
+
         return self.output
+
+
+class ModelSourcePrinterConfig(ContentPrinterConfig):
+    def __init__(self,
+                 styled=True,
+                 width=120,
+                 baseIndent=0,
+                 displayLineNos=True,
+                 lineNoPadding=' ',
+                 verbose=0,
+                 quiet=False,
+                 #------------------------
+                 title=None,
+                 issuesMode='top',
+                 #------------------------
+                 contentMode='self', #self|source|model|no
+                 summaryMode='top', # top | down | no
+                ):
+        super(ModelSourcePrinterConfig, self).__init__(
+            styled=styled,
+            width=width,
+            baseIndent=baseIndent,
+            displayLineNos=displayLineNos,
+            lineNoPadding=lineNoPadding,
+            verbose=verbose,
+            quiet=quiet,
+            title=title,
+            issuesMode=issuesMode,
+            contentMode=contentMode,
+            summaryMode=summaryMode
+        )
+
+
 
 
 class ModelSourcePrinter(ContentPrinter):
@@ -104,7 +189,8 @@ class ModelSourcePrinter(ContentPrinter):
                  config=None):
         #type: ('ModelSourceFile', Optional[ContentPrinterConfig]) -> None
         assert theSource is not None
-
+        if config is None:
+            config=ModelSourcePrinterConfig()
         # don't move this line after as getIssueBox
         # is used in __init__
         self.theSource = theSource  # don't move
@@ -117,7 +203,7 @@ class ModelSourcePrinter(ContentPrinter):
 
 
     def doContent(self):
-        if (self.config.contentMode=='model'
+        if (self.config.contentMode in 'model'
             and self.theSource.model is not None):
             self.doModelContent()
         else:
@@ -128,10 +214,10 @@ class ModelSourcePrinter(ContentPrinter):
         # call the str method of the model
         self.out(self.theSource.model.str(
             method='doModelContent',
-            displayContent=True,
-            preferStructuredContent=True,
-            displaySummary=self.config.summaryMode!='no',
-            summaryFirst=self.config.summaryMode=='top',
+            # displayContent=True,
+            # preferStructuredContent=True,
+            # displaySummary=self.config.summaryMode!='no',
+            # summaryFirst=self.config.summaryMode=='top',
             config=self.config
         ))
         return self.output

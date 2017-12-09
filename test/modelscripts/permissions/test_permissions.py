@@ -3,9 +3,7 @@ from __future__ import print_function
 from nose.plugins.attrib import attr
 
 import modelscribes.all
-from modelscribes.scripts.megamodels.printer import (
-    MegamodelPrinter
-)
+from modelscribes.scripts.megamodels.printer.megamodels import MegamodelPrinter
 from modelscribes.metamodels import (
     permissions
 )

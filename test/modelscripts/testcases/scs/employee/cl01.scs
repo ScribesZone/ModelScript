@@ -1,5 +1,5 @@
 scenario model CL01
-import class model from "main.cls"
+import class model from 'main.cls'
 
 !create djamel : Employee
 !djamel.name := 'Djamel'

@@ -10,6 +10,7 @@ from modelscribes.megamodels.dependencies.metamodels import (
     MetamodelDependency
 )
 from modelscribes.megamodels.metamodels import Metamodel
+from modelscribes.base.metrics import Metrics
 
 # ---------------------------------------------------------------
 #  Abstract syntax
@@ -93,6 +94,16 @@ class UCPermissionModel(PermissionModel):
         # noinspection PyTypeChecker
         return self._permissionSet
 
+    @property
+    def metrics(self):
+        #type: () -> Metrics
+        ms=super(UCPermissionModel, self).metrics
+        ms.addList((
+            ('rule', len(self.rules)),
+            ('permission', len(self.permissionSet.permissions) ),
+        ))
+        return ms
+
     def _interpret(self):
         #type: ()->None
         self._permissionSet= PermissionSet()
@@ -101,7 +112,7 @@ class UCPermissionModel(PermissionModel):
                 for r in rule.resources:
                     for a in rule.actions:
                         p= Permission(s, a, r, rule)
-                        self._permissionSet.permissions.append(p)
+                        self._permissionSet.permissions.add(p)
                         rule.permissions.append(p)
 
     def __str__(self):

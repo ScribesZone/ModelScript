@@ -1,121 +1,75 @@
 # coding=utf-8
 from __future__ import unicode_literals, print_function, absolute_import, division
-from typing import Text, Union, Optional, Dict, List
+from typing import Optional
 
-from modelscribes.base.printers import (
-    AbstractPrinter,
-    SourcePrinter,
-    Styles,
+from modelscribes.scripts.base.printers import (
+    ModelPrinter,
+    ModelSourcePrinter,
+    ModelPrinterConfig,
+)
+from modelscribes.scripts.textblocks.printer import (
+    TextBlockModelPrinter
 )
 from modelscribes.metamodels.glossaries import (
     GlossaryModel,
     METAMODEL
 )
-from modelscribes.metamodels.texts import (
-    Reference
-)
-from modelscribes.base.issues import (
-    Issue,
-    LocalizedSourceIssue,
-    Levels,
-    FatalError,
+
+__all__=(
+    'GlossaryModelPrinter'
 )
 
-# TODO: separate SourcePrinter and ModelPrinter
-class GlossaryModelPrinter(AbstractPrinter):
+class GlossaryModelPrinter(ModelPrinter):
 
-    # TODO: adapt signature
-    def __init__(self, glossaryModel, displayLineNos=True):
-        #type: (GlossaryModel, bool) -> None
+    def __init__(self,
+                 theModel,
+                 config=None):
+        #type: (GlossaryModel, Optional[ModelPrinterConfig]) -> None
         super(GlossaryModelPrinter, self).__init__(
-            displayLineNos=displayLineNos)
-        self.glossaryModel=glossaryModel
+            theModel=theModel,
+            config=config
+        )
+        self.theModel=theModel
 
-    def doBody(self):
-        super(GlossaryModelPrinter, self).doBody()
-        self.doGlossaryModel(self.glossaryModel)
+    def doModelContent(self):
+        super(GlossaryModelPrinter, self).doModelContent()
+        self.doGlossaryModel(self.theModel)
         return self.output
 
-
-    # def out(self, s):
-    #     self.output += s
-    #
-    # def outLine(self, s, lineNo=None):
-    #     if self.lineNos:
-    #         if lineNo is not None:
-    #             self.out('% 5i|' % lineNo)
-    #         else:
-    #             self.out('     |')
-    #     self.out('%s\n' % s )
-
     def doGlossaryModel(self, glossary):
-        self.outLine('glossary model', lineNo=None, style=Styles.keyword)  # TODO: change parser glossary.lineNo)
-        for domain in glossary.domainNamed.values():
-            self.domain(domain)
 
-    def domain(self, domain):
+        for domain in glossary.domainNamed.values():
+            self.doDomain(domain)
+        return self.output
+
+    def doDomain(self, domain):
         self.outLine(
             '%s %s' % (
-                Styles.keyword.do('domain'),
-                domain.name),
+                self.kwd('domain'),
+                domain.name
+            ),
             lineNo=domain.lineNo,
             linesBefore=1)
         for entry in domain.entryNamed.values():
-            self.entry(entry)
+            self.doEntry(entry)
+        return self.output
 
-    def entry(self, entry):
+    def doEntry(self, entry):
         self.outLine(
             '    %s:' % (
                 ' '.join([entry.mainTerm] + entry.alternativeTerms)),
             lineNo=entry.lineNo,
             linesBefore=1
-         )
-        self.description(entry.description)
+        )
+        self.doDescription(entry.description)
 
-    def description(self, description):
-        # TODO: move this to text printer
-
-        for line in description.lines:
-            self.lines(line)
-
-    def lines(self, line):
-        _='        '
-        for token in line.tokens:
-            if isinstance(token, Reference):
-                _+=('`%s`' % token.string)
-                if token.entry is not None:
-                    _+=('!')
-                else:
-                    _+=('?')
-            else:
-                _+=token.string
-        self.outLine(_,lineNo=line.lineNo)
-
-
-class GlossarySourcePrinter(SourcePrinter):
-
-    def __init__(self,
-                 theSource,
-                 summary=False,
-                 displayLineNos=True,
-                 ):
-        super(GlossarySourcePrinter, self).__init__(
-            theSource=theSource,
-            summary=summary,
-            displayLineNos=displayLineNos)
-
-    def doBody(self):
-        self.output=''
-        if self.theSource.isValid:
-            p=GlossaryModelPrinter(
-                glossaryModel=self.theSource.model,
-                displayLineNos=self.displayLineNos,
-            ).doBody()
-            self.out(p)
-        else:
-            self._issues()
+    def doDescription(self, textBlock):
+        block_text=TextBlockModelPrinter(
+            theModel=textBlock,
+            config=self.config).doModelContent()
+        self.out(block_text)
         return self.output
 
 
 METAMODEL.registerModelPrinter(GlossaryModelPrinter)
-METAMODEL.registerSourcePrinter(GlossarySourcePrinter)
+METAMODEL.registerSourcePrinter(ModelSourcePrinter)

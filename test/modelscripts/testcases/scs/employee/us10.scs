@@ -1,6 +1,6 @@
 scenario model US10
-import class model from "main.cls"
-import usecase model from "main.uss"
+import class model from 'main.cls'
+import usecase model from 'main.uss'
 
 !create djamel : Employee
 !djamel.name := 'Djamel'

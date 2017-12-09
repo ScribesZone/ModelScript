@@ -93,7 +93,8 @@ class SourceImport(SourceFileDependency):
         """
         Create an SourceImport and actually perform the
         actuel import of target source file. If the target
-        source file is not already registered in the megamodel
+        source file is not already registered in
+        the megamodel
         then the target is
         read and a ModelSourceFile is therefore created.
         This possibly could generate some issues but these

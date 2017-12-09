@@ -1,6 +1,6 @@
 permission model A8
-import usecase model from "a.uss"
+import usecase model from 'a.uss'
 
-M,N  CD  C,R
+M,N  can CD  C,R
 
 

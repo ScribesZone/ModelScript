@@ -8,7 +8,7 @@ def setup():
     modelscribes_home=os.path.realpath(
         os.path.join(
             os.path.dirname(__file__),
-            '..'))
+            '..','..'))
     sys.path.insert(0,modelscribes_home)
     #------------------------------------------------------
 
@@ -105,7 +105,7 @@ def updateConfig(args):
 
 
 
-def processSourceFiles(filename, manySourceFiles, args):
+def processSourceFile(filename, manySourceFiles, args):
     try:
         source=Megamodel.loadFile(filename)
     except ValueError as e:
@@ -113,25 +113,17 @@ def processSourceFiles(filename, manySourceFiles, args):
         return str(e)
     if manySourceFiles:
         cprint('#' * 30 + ' ' + filename + ' ' + '#' * 30, 'blue')
-    config=AbstractPrinterConfig(
+    printer_config=ContentPrinterConfig(
         styled=not args.bw,
         verbose=args.verbose,
-        quiet=args.quiet
-    )
-    printer_config=ContentPrinterConfig(
+        quiet=args.quiet,
         title=source.basename,
         issuesMode=args.issues,
         contentMode=args.listing,
         summaryMode=args.summary,
     )
     Megamodel.displaySource(
-        theSource=source,
-        # title=source.basename,
-        # issuesMode=args.issues,
-        # displayContent=args.list!='no',
-        # preferStructuredContent=args.list=='model',
-        # displaySummary=args.summary!='no',
-        # summaryFirst=args.summary=='top',
+        source=source,
         config=printer_config)
     if manySourceFiles:
         cprint(
@@ -146,7 +138,7 @@ updateConfig(args)
 manySourceFiles=len(args.sources)>=2
 
 for filename in args.sources:
-    processSourceFiles(filename, manySourceFiles, args)
+    processSourceFile(filename, manySourceFiles, args)
 
 
 # import sys

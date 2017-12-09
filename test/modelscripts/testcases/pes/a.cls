@@ -1,4 +1,4 @@
-model A
+class model A
 
 class C
 attributes

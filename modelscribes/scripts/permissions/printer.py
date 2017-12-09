@@ -1,11 +1,13 @@
 # coding=utf-8
 from __future__ import unicode_literals, print_function, absolute_import, division
 
-from typing import Text, List
+from typing import Text, List, Optional
 
-from modelscribes.base.printers import (
+from modelscribes.base.styles import Styles
+from modelscribes.scripts.base.printers import (
     ModelPrinter,
-    SourcePrinter
+    ModelSourcePrinter,
+    ModelPrinterConfig,
 )
 from modelscribes.metamodels.permissions import (
     UCPermissionModel,
@@ -14,61 +16,58 @@ from modelscribes.metamodels.permissions import (
 from modelscribes.metamodels.permissions.sar import Action
 
 
-class PermissionModelPrinter(ModelPrinter):  # TODO: check implementation
+class PermissionModelPrinter(ModelPrinter):
 
     def __init__(self,
                  theModel,
-                 summary=False,
-                 displayLineNos=True):
-        #type: (UCPermissionModel, bool, bool) -> None
+                 config=None):
+        #type: (UCPermissionModel, Optional[ModelPrinterConfig]) -> None
         super(PermissionModelPrinter, self).__init__(
             theModel=theModel,
-            summary=summary,
-            displayLineNos=displayLineNos)
-        self.permissionModel=theModel
+            config=config
+        )
+        self.theModel=theModel
 
-    def do(self):
-        super(PermissionModelPrinter, self).do()
-        self._permissionModel(self.permissionModel)
+    def doModelContent(self):
+        super(PermissionModelPrinter, self).doModelContent()
+        self.doPermissionModel(self.theModel)
         return self.output
 
-    def _permissionModel(self, permissionModel):
-        self.outLine(
-            'permission model',
-            lineNo=None, #usecaseModel.lineNo)  # TODO: change parser
-            linesAfter=1 )
-        self.outLine(
-            str(permissionModel),
-            indent=0,
-            lineNo=None)
-    #
-    # def _rule(self, rule):
-    #     self.outLine(str(rule))
+    def doPermissionModel(self, permissionModel):
+        # self.outLine(
+        #     #TODO: improve the parser
+        #     str(permissionModel),
+        #     indent=0,
+        #     lineNo=None)
+        for rule in permissionModel.rules:
+            self.doFactorizedPermissionRule(rule)
 
-# TODO: to be replaced by a generic version
-class PermissionSourcePrinter(SourcePrinter):
+    def doFactorizedPermissionRule(self, rule):
+        separator=self.kwd(',')
+        subjects_str=separator.join([
+            self.getSubject(s)
+            for s in rule.subjects])
+        actions_str=separator.join([
+            self.getAction(s)
+            for s in rule.actions])
+        resources_str = separator.join([
+            self.getResource(s)
+            for s in rule.resources])
+        self.outLine('%s %s %s %s' %(
+            subjects_str,
+            self.kwd('can'),
+            actions_str,
+            resources_str
+        ))
 
-    def __init__(self,
-                 theSource,
-                 summary=False,
-                 displayLineNos=True):
-        super(PermissionSourcePrinter, self).__init__(
-            theSource=theSource,
-            summary=summary,
-            displayLineNos=displayLineNos)
+    def getSubject(self, subject):
+        return subject.subjectLabel
 
-    def do(self):
-        self.output=''
-        if self.theSource.isValid:
-            p=PermissionModelPrinter(
-                theModel=self.theSource.model,
-                summary=self.summary,
-                displayLineNos=self.displayLineNos
-            ).do()
-            self.out(p)
-        else:
-            self._issues()
-        return self.output
+    def getAction(self, action):
+        return action.actionLabel
+
+    def getResource(self, resource):
+        return resource.resourceLabel
 
 
 
@@ -116,4 +115,4 @@ def actionNames(actions):
     )
 
 METAMODEL.registerModelPrinter(PermissionModelPrinter)
-METAMODEL.registerSourcePrinter(PermissionSourcePrinter)
+METAMODEL.registerSourcePrinter(ModelSourcePrinter)

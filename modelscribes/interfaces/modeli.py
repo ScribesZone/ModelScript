@@ -7,7 +7,7 @@ import os
 modelscribes_home=os.path.realpath(
     os.path.join(
         os.path.dirname(__file__),
-        '..'))
+        '..','..'))
 sys.path.insert(0,modelscribes_home)
 # sys.path.append("/home/jmfavre/.config/gedit")
 # sys.path.append("/home/jmfavre/.local/share/gtksourceview-3.0/language-specs")

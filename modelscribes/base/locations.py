@@ -1,5 +1,5 @@
 # coding=utf-8
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 from typing import Optional, Text
 
 class Location(object):
@@ -7,6 +7,11 @@ class Location(object):
 
     def __init__(self):
         pass
+
+    @abstractmethod
+    def str(self):
+        pass
+
 
 class SourceLocation(Location):
 

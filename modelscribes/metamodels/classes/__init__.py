@@ -42,8 +42,8 @@ from typing import Text, Optional, Union, Any, List, Dict
 
 from modelscribes.base.sources import (
     SourceElement,
-    SourceFile
 )
+from modelscribes.base.metrics import Metrics
 from modelscribes.megamodels.metamodels import Metamodel
 from modelscribes.megamodels.dependencies.metamodels import (
     MetamodelDependency
@@ -201,6 +201,19 @@ class ClassModel(Model):
     def basicTypeNames(self):
         return self.basicTypeNamed.keys()
 
+    @property
+    def metrics(self):
+        #type: () -> Metrics
+        ms=super(ClassModel, self).metrics
+        ms.addList((
+            ('enumeration', len(self.enumerations)),
+            ('regularClass', len(self.regularClasses) ),
+            ('regularAssociation',
+                len(self.regularAssociations)),
+            ('associationClass', len(self.associationClasses)),
+            ('simpleType',len(self.simpleTypes))
+        ))
+        return ms
 
 
 

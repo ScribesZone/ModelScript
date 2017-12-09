@@ -4,14 +4,14 @@
 
 import logging
 
-from typing import Union, Text
+from typing import Union, Text, Optional
 
-from modelscribes.base.printers import (
+from modelscribes.base.styles import Styles
+from modelscribes.scripts.base.printers import (
     ModelPrinter,
-    SourcePrinter,
-    indent
+    ModelSourcePrinter,
+    ModelPrinterConfig,
 )
-
 from modelscribes.metamodels.scenarios import (
     ScenarioModel,
     operations,
@@ -24,64 +24,121 @@ from modelscribes.metamodels.scenarios.evaluations import (
 from modelscribes.metamodels.scenarios.evaluations.operations import InvariantValidation, CardinalityViolation
 
 
-__all__ = ['ScenarioModelPrinter']
+__all__ =(
+    'ScenarioModelPrinter',
+    'ScenarioModelPrinterConfig',
+    'ScenarioModelPrinterConfigs'
+)
+
 
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
+class ScenarioModelPrinterConfig(ModelPrinterConfig):
+    def __init__(self,
+                 styled=True,
+                 width=120,
+                 baseIndent=0,
+                 displayLineNos=True,
+                 lineNoPadding=' ',
+                 verbose=0,
+                 quiet=False,
+                 #------------------------
+                 title=None,
+                 issuesMode='top',
+                 #------------------------
+                 contentMode='self',  #self|source|model|no
+                 summaryMode='top',  # top | down | no,
+                 #------------------------
+                 #------------------------
+                 #------------------------
+                 modelHeader='scenario model',
+                 displayBlockSeparators=True,
+                 displayEvaluation=True,
+                 originalOrder=True,
+                 useSyntax=True   #<-- TODO: change to False
+                 ):
+        super(ScenarioModelPrinterConfig, self).__init__(
+            styled=styled,
+            width=width,
+            baseIndent=baseIndent,
+            displayLineNos=displayLineNos,
+            lineNoPadding=lineNoPadding,
+            verbose=verbose,
+            quiet=quiet,
+            title=title,
+            issuesMode=issuesMode,
+            contentMode=contentMode,
+            summaryMode=summaryMode)
+        self.modelHeader=modelHeader
+        self.displayBlockSeparators=displayBlockSeparators
+        self.displayEvaluation=displayEvaluation
+        self.originalOrder=originalOrder
+        self.useSyntax=useSyntax
 
-# def printStatus(self):
-#     """
-#     Print the status of the file:
-#
-#     * the list of errors if the file is invalid,
-#     * a short summary of entities (classes, attributes, etc.) otherwise
-#     """
-#     if self.isValid:
-#         p = ScenarioModelPrinter(
-#             scenario=self.scenario,
-#             displayLineNos=True,
-#             displayBlockSeparators=True,
-#             displayEvaluation=True,
-#             originalOrder=True)
-#         print(p.do())
-#     else:
-#         print('%s error(s) in the model' % len(self.issues))
-#         for e in self.issues:
-#             print(e)
+class ScenarioModelPrinterConfigs(object):
+    default=ScenarioModelPrinterConfig()
 
 class ScenarioModelPrinter(ModelPrinter):
 
     def __init__(self,
                  theModel,
-                 summary=False,
-                 modelHeader='scenario model',
-                 displayLineNos=True,
-                 displayBlockSeparators=True,
-                 displayEvaluation=True,
-                 originalOrder=True):
-        #type: (Union[ScenarioModel, ScenarioEvaluation], bool, Text, bool, bool, bool, bool) -> None
-        # Check if it make sense for ScenarioEvaluation
-        assert isinstance(theModel, ScenarioModel)
+                 config=None):
+        #type: (Union[ScenarioModel, ScenarioEvaluation],  Optional[ScenarioModelPrinterConfig]) -> None
+        if config is None:
+            config=ScenarioModelPrinterConfig()
+        else:
+
+            #----------------------------------------------
+            #TODO: the following code is an adapter that
+            #       must be removed when a solution is found
+            #       to have configuration dependent options
+            #       In that case, the config provide will
+            #       be directly
+            assert(isinstance(config,ModelPrinterConfig))
+            config.modelHeader='scenario model'
+            config.displayBlockSeparators=True
+            config.displayEvaluation=True
+            config.originalOrder=True
+            config.useSyntax=True
+            #----------------------------------------------
+
+
+
+        self.config=config #type: ScenarioModelPrinterConfig
         super(ScenarioModelPrinter, self).__init__(
             theModel=theModel,
-            summary=summary,
-            displayLineNos=displayLineNos
+            config=config
         )
+
+    # def __init__(self,
+    #              theModel,
+    #              summary=False,
+    #              displayLineNos=True,
+    #              displayBlockSeparators=True,
+    #              displayEvaluation=True,
+    #              originalOrder=True):
+    #     #type: (Union[ScenarioModel, ScenarioEvaluation], bool, Text, bool, bool, bool, bool) -> None
+        # Check if it make sense for ScenarioEvaluation
+        assert isinstance(theModel, ScenarioModel)
+        # super(ScenarioModelPrinter, self).__init__(
+        #     theModel=theModel,
+        #     summary=summary,
+        #     displayLineNos=displayLineNos
+        # )
         self.scenario=theModel
         self.scenarioEvaluation=self.scenario.scenarioEvaluation
-        self.modelHeader=modelHeader
-        self.displayBlockSeparators=displayBlockSeparators
-        self.doDisplayEvaluation=(
-            displayEvaluation
-            and self.scenarioEvaluation is not None)
-        self.originalOrder=originalOrder
-        self.output = ''
+        self.modelHeader=self.config.modelHeader
+        self.displayBlockSeparators=self.config.displayBlockSeparators
 
-    def do(self):
-        self.output = ''
-        self._issues()
-        self._model()
+        self.doDisplayEvaluation=(
+            self.config.displayEvaluation
+            and self.scenarioEvaluation is not None)
+        self.originalOrder=self.config.originalOrder
+
+    def doModelContent(self):
+        super(ScenarioModelPrinter, self).doModelContent()
+        self.scenarioModel(self.theModel)
         return self.output
 
     # def docComment(self, source_element, indent):
@@ -97,81 +154,98 @@ class ScenarioModelPrinter(ModelPrinter):
     #     self.out('\n')
 
 
-    def _model(self):
+    def scenarioModel(self, scenario):
+        # super(ScenarioModelPrinter, self).doModelContent()
 
-        if self.scenario.name is not None:
-            self.outLine(
-                '-- @%s %s' % (self.modelHeader, self.scenario.name)
-            )
-
-        for ai in self.scenario.actorInstanceNamed.values():
-            self._actorInstance(ai)
+        for ai in scenario.actorInstanceNamed.values():
+            self.doActorInstance(ai)
 
         if self.doDisplayEvaluation and self.scenario.scenarioEvaluation is not None:
-            self._accessSet(self.scenario.scenarioEvaluation.accessSet)
+            self.doAccessSet(self.scenario.scenarioEvaluation.accessSet)
 
         if self.originalOrder:
             blocks = self.scenario.originalOrderBlocks
         else:
             blocks = self.scenario.logicalOrderBlocks
         for b in blocks:
-            self._block(b)
+            self.doBlock(b)
+        return self.output
 
-    def _actorInstance(self, ai):
-        self.outLine(
-            '-- @actori %s:%s' % (
-                 ai.name,
-                 ai.actor.name),
+
+    def doActorInstance(self, ai):
+        self.outLine('%s%s %s%s%s'%(
+                '' if not self.config.useSyntax else self.cmt('-- @'),
+                self.kwd('actori'),
+                ai.name,
+                self.kwd(':'),
+                ai.actor.name),
             ai.lineNo)
+        return self.output
 
 
     #===================================================
     #  Blocks
     #===================================================
 
-    def _block(self, b):
+    def doBlock(self, b):
         #type:(blocks.Block) -> None
         if self.displayBlockSeparators:
             self.outLine('')
         if isinstance(b, blocks.UsecaseInstanceBlock):
-            self._usecaseInstanceBlock(b)
+            self.doUsecaseInstanceBlock(b)
         elif isinstance(b, blocks.TopLevelBlock):
-            self._topLevelBlock(b)
+            self.doTopLevelBlock(b)
         elif isinstance(b, blocks.ContextBlock):
-            self._contextBlock(b)
+            self.doContextBlock(b)
         else:
             raise NotImplementedError()
 
-    def _blockEvaluation(self, be):
-        self.outLine('---> TODO: block access set ')
-
-    def _contextBlock(self, b):
-        self.outLine('context', b.lineNo)
-        if self.doDisplayEvaluation and b.blockEvaluation is not None:
-            self._blockEvaluation(b.blockEvaluation)
-        for op in b.operations:
-            self._operation(op)
-        self.outLine('end', None) #TODO
-
-    def _usecaseInstanceBlock(self, b):
+    def doBlockEvaluation(self, be):
         self.outLine(
-            'uci %s %s' %(
+            Styles.highlight.do(
+                '---> TODO: block access set ',
+                styled=self.config.styled))
+        return self.output
+
+
+    def doContextBlock(self, b):
+        self.outLine(self.kwd('context'), b.lineNo)
+        self.indent(1)
+        if self.doDisplayEvaluation and b.blockEvaluation is not None:
+            self.doBlockEvaluation(b.blockEvaluation)
+        for op in b.operations:
+            self.doOperation(op)
+        self.indent(-1)
+        self.outLine(self.kwd('end'), None) #TODO
+        return self.output
+
+
+    def doUsecaseInstanceBlock(self, b):
+        self.outLine(
+            '%s %s %s' %(
+                self.kwd('uci'),
                 b.actorInstance.name,
                 b.useCase.name),
             b.lineNo
         )
+        self.indent(1)
         if self.doDisplayEvaluation and b.blockEvaluation is not None:
-            self._blockEvaluation(b.blockEvaluation)
+            self.doBlockEvaluation(b.blockEvaluation)
         for op in b.operations:
-            self._operation(op)
-        self.outLine('end', None) #TODO
+            self.doOperation(op)
+        self.indent(-1)
+        self.outLine(self.kwd('end'), None) #TODO
+        return self.output
 
 
-    def _topLevelBlock(self, b):
+
+    def doTopLevelBlock(self, b):
         if self.doDisplayEvaluation and b.blockEvaluation is not None:
-            self._blockEvaluation(b.blockEvaluation)
+            self.doBlockEvaluation(b.blockEvaluation)
         for op in b.operations:
-            self._operation(op)
+            self.doOperation(op)
+        return self.output
+
 
 
 
@@ -179,114 +253,180 @@ class ScenarioModelPrinter(ModelPrinter):
     #  Operations
     #===================================================
 
-    def _operation(self, op):
+    def doOperation(self, op):
         if isinstance(op, operations.ObjectCreation):
-            self._objectCreation(op)
+            self.doObjectCreation(op)
         elif isinstance(op, operations.ObjectDestruction):
-            self._objectDestruction(op)
+            self.doObjectDestruction(op)
         elif isinstance(op, operations.LinkCreation):
-            self._linkCreation(op)
+            self.doLinkCreation(op)
         elif isinstance(op, operations.LinkDestruction):
-            self._linkDestruction(op)
+            self.doLinkDestruction(op)
         elif isinstance(op, operations.LinkObjectCreation):
-            self._linkObjectCreation(op)
+            self.doLinkObjectCreation(op)
         elif isinstance(op, operations.AttributeAssignment):
-            self._attributeAssignment(op)
+            self.doAttributeAssignment(op)
         elif isinstance(op, operations.Query):
-            self._query(op)
+            self.doQuery(op)
         elif isinstance(op, operations.Check):
-            self._check(op)
+            self.doCheck(op)
         else:
             raise NotImplementedError()
         if op.operationEvaluation is not None:
             e=op.operationEvaluation
-            self._operationAccesses(e.accesses)
+            self.doOperationAccesses(e.accesses)
+        return self.output
 
-    def _operationAccesses(self, accesses):
+    def doOperationAccesses(self, accesses):
         for a in accesses:
-            self._operationAccess(a)
+            self.doOperationAccess(a)
+        return self.output
 
-    def _operationAccess(self, access):
-        self.outLine('---> %s' % str(access))
+
+    def doOperationAccess(self, access):
+        self.outLine(
+            Styles.highlight.do(
+                '---> %s' % str(access),
+                styled=self.config.styled))
+        return self.output
 
 
     #--- update operations --------------------------------
 
-    def _objectCreation(self, op):
-        self.outLine(
-            '! %s := new %s(%s)' % (
-                op.name,
-                op.class_.name,
-                ("'%s'" % op.id) if op.id else ''),
-            lineNo=op.lineNo
-        )
+    def doObjectCreation(self, op):
+        if self.config.useSyntax:
+            self.outLine(
+                '%s %s %s %s %s%s%s%s' % (
+                    self.kwd('!'),
+                    op.name,
+                    self.kwd(':='),
+                    self.kwd('new'),
+                    op.class_.name,
+                    self.kwd('('),
+                    ("'%s'" % op.id) if op.id else '',
+                    self.kwd(')')),
+                lineNo=op.lineNo
+            )
+        else:
+            self.outLine(Styles.highlight.do('TODO doObjectCreation'))
+        return self.output
 
-    def _objectDestruction(self, op):
-        self.outLine(
-            '! destroy %s' % op.name,
-            lineNo=op.lineNo
-        )
+    def doObjectDestruction(self, op):
+        if self.config.useSyntax:
+            self.outLine('%s %s %s' %(
+                self.kwd('!'),
+                self.kwd('destroy'),
+                op.name),
+            lineNo=op.lineNo)
+        else:
+            self.outLine(Styles.highlight.do('TODO doObjectDestruction'))
+        return self.output
 
-    def _linkCreation(self, op):
-        self.outLine(
-            '! insert (%s) into %s' %(
-                ', '.join(op.names),
-                op.association.name),
-            lineNo=op.lineNo
-        )
+    def doLinkCreation(self, op):
+        if self.config.useSyntax:
+            self.outLine(
+                '%s %s %s%s%s %s %s' %(
+                    self.kwd('!'),
+                    self.kwd('insert'),
+                    self.kwd('('),
+                    self.kwd(', ').join(op.names),
+                    self.kwd(')'),
+                    self.kwd('into'),
+                    op.association.name),
+                lineNo=op.lineNo
+            )
+        else:
+            self.outLine(Styles.highlight.do('TODO doLinkCreation'))
+        return self.output
 
-    def _linkDestruction(self, op):
-        self.outLine(
-            'delete (%s) from %s' % (
-                ', '.join(op.names),
-                op.association.name),
-            lineNo = op.lineNo,
-        )
+    def doLinkDestruction(self, op):
+        if self.config.useSyntax:
+            self.outLine(
+                '%s %s %s%s%s %s %s' % (
+                    self.kwd('!'),
+                    self.kwd('delete'),
+                    self.kwd('('),
+                    self.kwd(', ').join(op.names),
+                    self.kwd(')'),
+                    self.kwd('from'),
+                    op.association.name),
+                lineNo = op.lineNo,
+            )
+        else:
+            self.outLine(Styles.highlight.do('TODO doLinkDestruction'))
 
-    def _linkObjectCreation(self, op):
-        self.outLine(
-            '! %s:=new %s(%s) between (%s)' % (
-                op.name,
-                op.associationClass.name,
-                ("'%s'" % op.id) if op.id else '',
-                ', '.join(op.names)),
-            lineNo = op.lineNo,
-        )
+        return self.output
 
-    def _attributeAssignment(self, op):
-        self.outLine(
-            '! %s.%s := %s' % (
-                op.variableName,
-                op.attributeName,
-                op.expression),
-            lineNo=op.lineNo
-        )
+    def doLinkObjectCreation(self, op):
+        if self.config.useSyntax:
+            self.outLine(
+                '%s %s %s %s %s%s%s%s %s %s%s%s' % (
+                    self.kwd('!'),
+                    op.name,
+                    self.kwd(':='),
+                    self.kwd('new'),
+                    op.associationClass.name,
+                    self.kwd('('),
+                    ("'%s'" % op.id) if op.id else '',
+                    self.kwd(')'),
+                    self.kwd('between'),
+                    self.kwd('('),
+                    self.kwd(', ').join(op.names),
+                    self.kwd(')')),
+                lineNo = op.lineNo,
+                )
+        else:
+            self.outLine(Styles.highlight.do('TODO doLinkObjectCreation'))
+        return self.output
+
+    def doAttributeAssignment(self, op):
+        if self.config.useSyntax:
+            self.outLine(
+                '%s %s%s%s %s %s' % (
+                    self.kwd('!'),
+                    op.variableName,
+                    self.kwd('.'),
+                    op.attributeName,
+                    self.kwd(':='),
+                    op.expression),
+                lineNo=op.lineNo
+            )
+        else:
+            self.outLine(Styles.highlight.do('TODO doAttributeAssignment'))
+        return self.output
 
 
 
     #--- queries ------------------------------------------
 
-    def _query(self, op):
-        self.outLine(
-            '%s %s' % (
-                '??' if op.verbose else '?',
-                op.expression,
-            ),
+    def doQuery(self, op):
+        if self.config.useSyntax:
+            self.outLine(
+                '%s %s' % (
+                    self.kwd('??' if op.verbose else '?'),
+                    op.expression,
+                ),
 
-        ),
+            )
+        else:
+            self.outLine(Styles.highlight.do('TODO doQuery'))
         if self.doDisplayEvaluation and op.operationEvaluation is not None:
-            self._queryEvaluation(op.operationEvaluation)
+            self.indent(1)
+            self.doQueryEvaluation(op.operationEvaluation)
             #TODO: check if the output is correct for ??
+            self.indent(-1)
+        return self.output
 
-    def _queryEvaluation(self, qe):
+    def doQueryEvaluation(self, qe):
         for se in qe.subexpressions:
             self.outLine(
-                '  %s' %se
+                self.ann('%s' %se)
             )
-        self.outLine('-> %s : %s\n' % (
+        self.outLine(self.ann('-> %s : %s') % (
             qe.resultValue,
             qe.resultType,
         ))
+        return self.output
 
 
 
@@ -294,135 +434,118 @@ class ScenarioModelPrinter(ModelPrinter):
     #--- check ------------------------------------------
 
 
-    def _check(self, op):
-        self.outLine(
-            'check%s%s%s' % (
-                ' -d' if op.showFaultyObjects else '',
-                ' -v' if op.verbose else '',
-                ' -a' if op.all else ''),
-            lineNo=op.lineNo
-        )
+    def doCheck(self, op):
+        if self.config.useSyntax:
+            self.outLine(
+                '%s%s%s%s' % (
+                    self.kwd('check'),
+                    self.kwd(' -d') if op.showFaultyObjects else '',
+                    self.kwd(' -v') if op.verbose else '',
+                    self.kwd(' -a') if op.all else ''),
+                lineNo=op.lineNo
+            )
+        else:
+            self.outLine(Styles.highlight.do('TODO doCheck'))
         if self.doDisplayEvaluation and op.operationEvaluation is not None:
-            self._checkEvaluation(op.operationEvaluation)
+            self.indent(1)
+            self.doCheckEvaluation(op.operationEvaluation)
+            self.indent(-1)
+        return self.output
 
-    def _checkEvaluation(self, ce):
+    def doCheckEvaluation(self, ce):
         for c in ce.cardinalityEvaluations.values():
             if isinstance(c, CardinalityViolation):
-                self._cardinalityViolation(c)
+                self.doCardinalityViolation(c)
         for (index,ie) in enumerate(ce.invariantEvaluations.values()):
-            self._invariantEvaluation(index+1,ie)
-        self.outLine('checked %i invariants in ?.???s, %i failure.' % (
+            self.doInvariantEvaluation(index + 1, ie)
+        self.outLine(self.ann('checked %i invariants in ?.???s, %i failure.' % (
             len(ce.invariantEvaluations),
             999
-        ))
+        )))
+        return self.output
 
-    def _cardinalityViolation(self, c):
+    def doCardinalityViolation(self, c):
         for vo in c.violatingObjects:
-            self._cardinalityViolatingObject(vo)
+            self.doCardinalityViolatingObject(vo)
+        return self.output
 
-    def _cardinalityViolatingObject(self, vo):
-        r=vo.cardinalityViolation._role
+
+    def doCardinalityViolatingObject(self, vo):
+        r=vo.cardinalityViolation.doRole
         obj_label=vo.violatingObject
         class_name=r.type.name
         target_class_name=r.opposite.type.name
-        assocname=vo.cardinalityViolation._role._association.name
-        self.outLine('Multiplicity constraint violation'
-                 ' in association `%s\':' % assocname)
+        assocname=vo.cardinalityViolation.doRole.doAssociation.name
+        self.outLine(self.ann('Multiplicity constraint violation'
+                 ' in association `%s\':' % assocname))
         self.outLine(
-            "  Object `%s' of class `%s'"
+            self.ann("  Object `%s' of class `%s'"
             " is connected to %i objects of class `%s'" % (
                 obj_label,
                 class_name,
                 vo.actualCardinality,
                 target_class_name,
-            ))
+            )))
         self.outLine(
+            self.ann(
             "  at association end `%s' but the"
             " multiplicity is specified as `%s'." % (
                 r.name,
                 r.cardinalityLabel
-            )
+            ))
         )
-
-    def _invariantEvaluation(self, nth, ie):
-        if isinstance(ie,InvariantValidation):
-            self._invariantValidation(nth, ie)
-        else:
-            self._invariantViolation(nth, ie)
-
-    def _invariantValidation(self, nth, iv):
-        self.outLine(
-            "checking invariant (%i) `%s': OK." % (
-                nth,
-                iv.invariant.invariantLabel
-            ))
-
-    def _invariantViolation(self, nth, iv):
-        self.outLine(
-            "checking invariant (%s) `%s': FAILED." % (
-                nth,
-                iv.invariant.invariantLabel
-            ))
-        self.outLine('  -> %s : %s' % (
-            iv.resultValue,
-            iv.resultType,
-        ))
-        if len(iv.subexpressions) >= 0:
-            self.outLine('Results of subexpressions:')
-            for e in iv.subexpressions:
-                self.outLine('  %s' % e)
-        self.outLine('Instances of %s violating the invariant:' % (
-            iv.violatingObjectType,
-        ))
-        self.outLine('  -> Set{%s} : Set(%s)\n' % (
-            ','.join(iv.violatingObjects),
-            iv.violatingObjectsType,
-        ))
-
-
-    def _accessSet(self, accessSet):
-        self.outLine('->  %i accesses' % len(accessSet.accesses))
-        for a in accessSet.accesses:
-            self._access(a)
-
-    def _access(self, access):
-        self.outLine('   %s %s' % (
-            access.action,
-            access.resource.label ))
-
-
-class ScenarioSourcePrinter(SourcePrinter):
-
-    def __init__(self,
-                 theSource,
-                 summary=False,
-                 displayLineNos=True,
-                 modelHeader='scenario model',
-                 displayBlockSeparators=True,
-                 displayEvaluation=True,
-                 originalOrder=True,
-                 ):
-        super(ScenarioSourcePrinter, self).__init__(
-            theSource=theSource,
-            summary=False,
-            displayLineNos=True)
-
-    def do(self):
-        self.output=''
-        if self.theSource.model is not None:
-            p=ScenarioModelPrinter(
-                theModel=self.theSource.model,
-                summary=self.summary,
-                modelHeader='scenario model',
-                displayLineNos=self.displayLineNos,
-                displayBlockSeparators=True,
-                displayEvaluation=True,
-                originalOrder=True,
-            ).do()
-            self.out(p)
-        else:
-            self._issues()
         return self.output
 
-METAMODEL.registerSourcePrinter(ScenarioSourcePrinter)
+
+    def doInvariantEvaluation(self, nth, ie):
+        if isinstance(ie,InvariantValidation):
+            self.doInvariantValidation(nth, ie)
+        else:
+            self.doInvariantViolation(nth, ie)
+        return self.output
+
+    def doInvariantValidation(self, nth, iv):
+        self.outLine(
+            self.ann("checking invariant (%i) `%s': OK." % (
+                nth,
+                iv.invariant.invariantLabel
+            )))
+        return self.output
+
+    def doInvariantViolation(self, nth, iv):
+        self.outLine(
+            self.ann("checking invariant (%s) `%s': FAILED." % (
+                nth,
+                iv.invariant.invariantLabel
+            )))
+        self.outLine(self.ann('  -> %s : %s' % (
+            iv.resultValue,
+            iv.resultType,
+        )))
+        if len(iv.subexpressions) >= 0:
+            self.outLine(self.ann('Results of subexpressions:'))
+            for e in iv.subexpressions:
+                self.outLine(self.ann('  %s' % e))
+        self.outLine(self.ann('Instances of %s violating the invariant:' % (
+            iv.violatingObjectType,
+        )))
+        self.outLine(self.ann('  -> Set{%s} : Set(%s)\n' % (
+            ','.join(iv.violatingObjects),
+            iv.violatingObjectsType,
+        )))
+
+
+    def doAccessSet(self, accessSet):
+        self.outLine(self.ann('->  %i accesses' % len(accessSet.accesses)))
+        for a in accessSet.accesses:
+            self.doAccess(a)
+        return self.output
+
+    def doAccess(self, access):
+        self.outLine(self.ann('   %s %s' % (
+            access.action,
+            access.resource.label )))
+        return self.output
+
 METAMODEL.registerModelPrinter(ScenarioModelPrinter)
+METAMODEL.registerSourcePrinter(ModelSourcePrinter)

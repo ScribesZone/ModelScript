@@ -21,6 +21,7 @@ from modelscribes.metamodels.objects import (
     Object,
     Link,
     LinkObject,
+    Slot
 )
 from modelscribes.metamodels.permissions import (
     CreateAction,
@@ -304,6 +305,8 @@ class AttributeAssignmentEvaluation(UpdateOperationEvaluation):
         self.attribute=None #type: Optional[Attribute]
         # filled by _eval
 
+        self.slot=None #type: Optional[Slot]
+
         self._eval()
 
     def _eval(self):
@@ -316,11 +319,17 @@ class AttributeAssignmentEvaluation(UpdateOperationEvaluation):
                     op.variableName
                 ))
         self.object = self._env()[op.variableName]
-        self.object.slotNamed[op.attributeName]=(
-            op.expression)
+        # self.object.slotNamed[op.attributeName]=(
+        #     op.expression)
+
         c=self.object.classifier
         #FIXME: add support for inheritance
         self.attribute=c.attributeNamed[op.attributeName]
+        self.object.assign(
+            object=self.object,
+            attribute=self.attribute,
+            value=op.expression
+        )
         self.accesses=[
             Access(
                 op,

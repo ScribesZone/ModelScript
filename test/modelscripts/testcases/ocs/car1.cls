@@ -1,4 +1,4 @@
-model car1
+class model car1
 --@ import constraint model from "car-car-1.ocs"
 --@ import constraint model from "car-person-2.ocs"
 

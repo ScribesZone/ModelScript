@@ -10,11 +10,7 @@ from test.modelscripts.issues import (
     checkFileIssues,
     checkValidIssues
 )
-from modelscribes.scripts.megamodels.printer import (
-    MegamodelPrinter
-)
-
-
+from modelscribes.scripts.megamodels.printer.megamodels import MegamodelPrinter
 
 EXPECTED_ISSUES={
     'us28.scs':         {F: 0, E: 0, W: 11, I: 0, H: 0},

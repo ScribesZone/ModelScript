@@ -19,9 +19,9 @@ import collections
 from typing import Optional, Dict, List, Text
 
 from modelscribes.base.sources import (
-    SourceFile,
     SourceElement
 )
+from modelscribes.base.metrics import Metrics
 from modelscribes.megamodels.metamodels import Metamodel
 from modelscribes.megamodels.models import Model
 from modelscribes.megamodels.dependencies.metamodels import (
@@ -84,6 +84,8 @@ class ScenarioModel(Model, Subject):
         #type: () -> Metamodel
         return METAMODEL
 
+
+
     @property
     def logicalOrderBlocks(self):
         #type: () -> List[Block]
@@ -96,6 +98,17 @@ class ScenarioModel(Model, Subject):
     @property
     def actorInstanceNames(self):
         return self.actorInstanceNamed.keys()
+
+    @property
+    def metrics(self):
+        #type: () -> Metrics
+        ms=super(ScenarioModel, self).metrics
+        ms.addList((
+            ('actorInstance', len(self.actorInstances)),
+            ('contextBlock', len(self.contextBlocks) ),
+            ('mainBlock', len(self.mainBlocks) ),
+        ))
+        return ms
 
     @property
     def isEvaluated(self):

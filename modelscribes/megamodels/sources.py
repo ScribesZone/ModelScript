@@ -233,23 +233,11 @@ class ModelSourceFile(SourceFile):
 
     def str( self,
              method='do',
-             title='',
-             issuesMode='top',  # top|bottom|inline
-             displayContent=True,
-             preferStructuredContent=False,
-             displaySummary=False,
-             summaryFirst=False,
              config=None
             ):
-        printer_class=self.metamodel.modelPrinterClass
+        printer_class=self.metamodel.sourcePrinterClass
         printer=printer_class(
-            theModel=self,
-            title=title,
-            issuesMode=issuesMode,
-            displayContent=displayContent,
-            displaySummary=displaySummary,
-            summaryFirst=summaryFirst,
-            preferStructuredContent=preferStructuredContent,
+            theSource=self,
             config=config,
         )
         try:
@@ -262,14 +250,7 @@ class ModelSourceFile(SourceFile):
                     method))
 
 
-    @classmethod
-    def __dir__(self):
-        # Added from ipython but this not work
-        return [
-            'label',
-            'name']
 
-    # label
     #
     # name
     # basename

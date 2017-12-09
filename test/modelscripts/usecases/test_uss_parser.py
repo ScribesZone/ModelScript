@@ -3,9 +3,7 @@ from __future__ import print_function
 
 import modelscribes.all
 from modelscribes.metamodels import usecases
-from modelscribes.scripts.megamodels.printer import (
-    MegamodelPrinter
-)
+from modelscribes.scripts.megamodels.printer.megamodels import MegamodelPrinter
 
 from test.modelscripts.issues import (
     F, E, W, I, H,

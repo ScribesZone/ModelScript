@@ -35,6 +35,9 @@ class Subject(object):
     def subjectLabel(self):
         return _getNaming(self)
 
+    def __str__(self):
+        return self.subjectLabel
+
 
 class Action(object):
     _actionNamed = {}  # type: Dict[Text, Action]
@@ -52,9 +55,6 @@ class Action(object):
     def actionLabel(self):
         return self.name
 
-    def __str__(self):
-        return self.actionLabel
-
     @property
     def superActions(self):
         """ Direct parents """
@@ -67,6 +67,9 @@ class Action(object):
         # type: () -> List[Action]
         acs = self.superActions
         return [self]+acs+ [a.superActions for a in acs]
+
+    def __str__(self):
+        return self.actionLabel
 
 
 class Resource(object):
@@ -88,6 +91,9 @@ class Resource(object):
         """ All superresources recursively + this one"""
         rs = self.superResources
         return [self] + rs + [r.allSuperResources for r in rs]
+
+    def __str__(self):
+        return self.resourceLabel
 
 
 class SAR(object):

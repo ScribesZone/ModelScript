@@ -44,7 +44,7 @@ class Metamodel(MegamodelElement):
     def modelClass(self):
         if self._modelClass is None:
             raise NotImplementedError(
-                '%s.model not implemented' % self.label)
+                'Modelscribes: %s.model not implemented yet' % self.label)
         else:
             return self._modelClass
 
@@ -52,7 +52,7 @@ class Metamodel(MegamodelElement):
     def sourceClass(self):
         if self._sourceClass is None:
             raise NotImplementedError(
-                '%s.source not implemented' % self.label)
+                'Modelscribes: %s.source not implemented yet' % self.label)
         else:
             return self._sourceClass
 
@@ -60,7 +60,7 @@ class Metamodel(MegamodelElement):
     def modelPrinterClass(self):
         if self._modelPrinterClass is None:
             raise NotImplementedError(
-                '%s.modelPrinter not implemented' % self.label)
+                'Modelscribes: %s.modelPrinter not implemented yet' % self.label)
         else:
             return self._modelPrinterClass
 
@@ -68,7 +68,7 @@ class Metamodel(MegamodelElement):
     def sourcePrinterClass(self):
         if self._sourcePrinterClass is None:
             raise NotImplementedError(
-                '%s.sourcePrinter not implemented' % self.label)
+                'Modelscribes: %s.sourcePrinter not implemented yet' % self.label)
         else:
             return self._sourcePrinterClass
 
@@ -76,7 +76,7 @@ class Metamodel(MegamodelElement):
     def diagramPrinterClass(self):
         if self._diagramPrinterClass is None:
             raise NotImplementedError(
-                '%s.sourcePrinter not implemented' % self.label)
+                'Modelscribes: %s.sourcePrinter not implemented yet' % self.label)
         else:
             return self._diagramPrinterClass
 
@@ -147,14 +147,15 @@ class Metamodel(MegamodelElement):
             return 'None' if cls is None else cls.__name__
 
         return (
-            'metamodel(%s/%s/%s/%s '
-            'new(%s) src(%s) prt(%s) prtSrc(%s) prtDg(%s)' % (
+            'metamodel(%s/%s/%s/%s ' % (
+            # 'new(%s) src(%s) prt(%s) prtSrc(%s) prtDg(%s)' % (
             self.label,
             self.id,
             self.extension,
-            '[%s]' % ','.join(self.modelKinds),
-            name(self._modelClass),
-            name(self._sourceClass),
-            name(self._modelPrinterClass),
-            name(self._sourcePrinterClass),
-            name(self._diagramPrinterClass)))
+            '[%s]' % ','.join(self.modelKinds)
+            # name(self._modelClass),
+            # name(self._sourceClass),
+            # name(self._modelPrinterClass),
+            # name(self._sourcePrinterClass),
+            # name(self._diagramPrinterClass))
+        ))

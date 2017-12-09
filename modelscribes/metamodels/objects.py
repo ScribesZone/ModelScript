@@ -20,10 +20,7 @@ Simple metamodel for object states. Contains definitions for:
 from collections import OrderedDict
 
 from typing import List, Optional, Dict
-
-from modelscribes.metamodels.classes import (
-    Attribute,
-)
+from modelscribes.base.metrics import Metrics
 from modelscribes.megamodels.metamodels import Metamodel
 from modelscribes.megamodels.models import Model
 from modelscribes.megamodels.dependencies.metamodels import (
@@ -43,13 +40,27 @@ class ObjectModel(Model):
         self.linkObjects = []
         # type: List[LinkObject]
 
-    def status(self):
-        return (
-            '%i objects\n%i links\n%i link objects' % (
-            len(self.objects),
-            len(self.links),
-            len(self.linkObjects)
+    # def status(self):
+    #     return (
+    #         '%i objects\n%i links\n%i link objects' % (
+    #         len(self.objects),
+    #         len(self.links),
+    #         len(self.linkObjects)
+    #     ))
+    #
+    @property
+    def metrics(self):
+        #type: () -> Metrics
+        ms=super(ObjectModel, self).metrics
+        ms.addList((
+            ('object', len(self.objects)),
+            ('link', len(self.links)),
+            ('linkObject', len(self.linkObjects)),
+            ('slot',sum(
+                len(o.slots)
+                for o in self.objects)),
         ))
+        return ms
 
     @property
     def metamodel(self):
@@ -115,16 +126,36 @@ class Object(StateElement):
         # type: str
         #: a unique id like  'reslili'  or '_Residence2'
 
-        # The solution below avoid to create a Slot class
-        # Here atribute names are directly
+        # Slot of the object sorted by attribute name
         self.slotNamed = OrderedDict()
-        # type: Dict[str,Attribute]
+        # type: Dict[str, Slot]
+
+    def assign(self, object, attribute, value):
+        #TODO: check that the attribute pertains to the class
+        #       or to a superclass
+        self.slotNamed[attribute.name]=Slot(
+            object=object,
+            attribute=attribute,
+            value=value
+        )
+
+    @property
+    def slots(self):
+        return list(self.slotNamed.values())
 
     def delete(self):
         #TODO:  implement delete operation on objects
 
         raise NotImplementedError('Delete operation on objects is not implemented')
 
+
+class Slot(StateElement):
+
+    def __init__(self, object, attribute, value):
+        super(Slot, self).__init__(object.state)
+        self.object=object
+        self.attribute=attribute
+        self.value=value
 
 
 class Link(StateElement):

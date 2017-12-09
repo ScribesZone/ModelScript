@@ -27,14 +27,18 @@ class ModelElementIssue(Issue):
     def str(self,
             pattern=None,
             mode='fragment',
+            displayOrigin=False,
+            displayLocation=True,
             styled=False):
         if pattern is None:
             pattern=(   Annotations.prefix
-                        +'{kind}:{level}:{message}')
+                        +'{origin}:{kind}:{level}:{location}:{message}')
         text= pattern.format(
+            origin='ORIGIN',
             message=self.message,
             kind=self.kind,
-            level=self.level.str())
+            level=self.level.str(),
+            location='LOCAITON')
         return self.level.style.do(
             text,
             styled=styled,

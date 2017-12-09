@@ -1,5 +1,5 @@
 usecase model US4
-import usecase model from "uc10.ucs"
+import usecase model from 'uc10.ucs'
 
 system UC4
 

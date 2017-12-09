@@ -1,7 +1,6 @@
 # coding=utf-8
 
-# TODO:0 error not always printed !
-#        printer must inherit message printing from
+
 # TODO:0 bind object/evaluation model issuebox with scenario
 #        otherwise there is no error reported when building objects
 # TODO:0 chech error/print for main language
@@ -11,11 +10,23 @@
 #       is should be enough to first check soil line
 #       if not, just compile /use if imported
 #       otherwise just print comments
+# TODO:1 check why empty entries are  ignored in glossary
+#       see domain2.gls
+# TODO:2 improve glossary metrics with ref and word
 # TODO:1 add tags {a,b,c=t} -> -- @a @b @c=t
 #       add parsing on the parser side + metamodel
 # TODO:1 add {id} semantics -> generation of ocl
 #        constratint C.x{id} C.y{id]
 #        ->  constraint inv none:C: C.allInstance->isUnique(c|Tuple{c.x,c.y})
+# TODO:1 find a solution for option variants
+#       currently the modelc interpreter support only general
+#       options independent from models.
+#       The scenario printer configuration has model option
+#       but they are not used since modelc interpeter does not create
+#       a ScenarioPrinterConfiguration.
+#       It is necessary to find a way to change this to support
+#       model specific option. Currently the SecenarioPrinter
+#       add some attributs on the fly. This should be removed.
 # TODO:1 add constraint composition[0..1,1]
 # TODO:1 add sex parser to support composition
 # (ScribesEnv)jmfavre@jmfavre-HP-ZBook-15:/D2/ScribesZone/ModelScribes/test/modelscripts/testcases/sex$ use -qv composition.use composition3.soil

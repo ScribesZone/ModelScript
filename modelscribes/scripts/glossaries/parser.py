@@ -14,15 +14,13 @@ from modelscribes.metamodels.glossaries import (
     METAMODEL,
 )
 from modelscribes.base.issues import (
-    Issue,
     LocalizedSourceIssue,
     Levels,
-    FatalError,
 )
-from modelscribes.metamodels.texts import (
-    TextBlock,
+from modelscribes.metamodels.textblocks import (
+    TextBlockModel,
 )
-from modelscribes.scripts.texts.parser import TextSourceFragment
+from modelscribes.scripts.textblocks.parser import TextBlockSource
 from modelscribes.megamodels.metamodels import Metamodel
 
 DEBUG=0
@@ -31,18 +29,22 @@ class GlossaryModelSource(ModelSourceFile):
     def __init__(self, glossaryFileName):
         #type: (Text) -> None
 
-        self.__descriptionLinesPerEntry={}
-        #type: Optional[Dict[Entry, List[Text]]]
-        """
-        Just used to store during the first step parsing the
-        lines that make the description of the entry.
-        This will be used later as the source of the
-        embedded parser for text. This field will be set
-        to None just after.
-        """
+        self.descriptionBlockSourcePerEntry={}
+        #type:Dict[Entry, TextBlockSource]]
 
-        self.__descriptionFirstLinePerEntry={}
-        #type: Optional[Dict[Entry, List[Text]]]
+
+        # self.__descriptionLinesPerEntry={}
+        # #type: Optional[Dict[Entry, List[Text]]]
+        # """
+        # Just used to store during the first step parsing the
+        # lines that make the description of the entry.
+        # This will be used later as the source of the
+        # embedded parser for text. This field will be set
+        # to None just after.
+        # """
+        #
+        # self.__descriptionFirstLineNoPerEntry={}
+        # #type: Optional[Dict[Entry, List[Text]]]
 
         super(GlossaryModelSource, self).__init__(
             fileName=glossaryFileName)
@@ -66,13 +68,13 @@ class GlossaryModelSource(ModelSourceFile):
     def parseToFillModel(self):
         self._parse_main_body()
         if self.glossaryModel and self.isValid:
-            self._parse_and_resolve_descriptions()
+            self._parseDescriptions()
 
     def _parse_main_body(self):
         """
         Parse everything in the glossary except the description
         of entries. These descriptions are parsed by the
-        subparser for TextBlock.
+        subparser for TextBlockModel.
         In this first phase we just store the information
         as lines (and first line number). This info will
         be used in second phase to feed the embedded parser.
@@ -126,18 +128,24 @@ class GlossaryModelSource(ModelSourceFile):
                 r=r'^domain +(?P<name>\w+) *$'
                 m=re.match(r, line)
                 if m:
-                    #FIXME: don't create a domain if defined before
-                    domain=Domain(
-                        glossaryModel=self.glossaryModel,
-                        name=m.group('name'),
-                        lineNo=line_no,
-                    )
-                    current_context=domain
+                    name=m.group('name')
+                    if name in self.glossaryModel.domainNamed:
+                        # If the domain already exists, reuse it
+                        current_content=(
+                            self.glossaryModel.domainNamed[name])
+                    else:
+                        # Creates a new domain with this name
+                        domain=Domain(
+                            glossaryModel=self.glossaryModel,
+                            name=name,
+                            lineNo=line_no,
+                        )
+                        current_context=domain
                     continue
 
 
             #-----------------------------------------------
-            #  domain
+            #  entry
             #-----------------------------------------------
             if isinstance(current_context, (
                     Domain,
@@ -155,20 +163,38 @@ class GlossaryModelSource(ModelSourceFile):
                         current_context.domain
                         if isinstance(current_context, Entry)
                         else current_context)
-                    #FIXME: error if term already in domain
-                    entry=Entry(
-                        domain=domain,
-                        mainTerm=m.group('word1'),
-                        alternativeTerms=words,
-                        description=None,
-                        lineNo=line_no,
-                    )
-                    self.__descriptionLinesPerEntry[entry]=[]
-                    entry.description=TextBlock(
-                        container=entry,
-                        lineNo=line_no+1,
-                        lines=[],
-                    )
+                    name=m.group('word1')
+                    if name in domain.entryNamed:
+                        # The simplest way deal with the
+                        # multiple definition is to concatenate
+                        # text after existing definition. This
+                        # avoid skipping the next lines.
+                        LocalizedSourceIssue(
+                            sourceFile=self,
+                            level=Levels.Error,
+                            message=
+                                '%s.%s already exist.'
+                                ' Definitions will be appended.' %
+                                (domain.name, name),
+                            line=line_no
+                        )
+                        # do not create an new entry
+                        # reuse instead the old entry
+                        entry=domain.entryNamed[name]
+                    else:
+                        # Create a new entry
+                        entry=Entry(
+                            domain=domain,
+                            mainTerm=name,
+                            alternativeTerms=words,
+                            description=None,
+                            lineNo=line_no,
+                        )
+                        # Create an empty text block for description
+                        descr=TextBlockModel()
+                        entry.description=descr
+                        self.descriptionBlockSourcePerEntry[entry]=(
+                            TextBlockSource())
                     current_context=entry
                     continue
 
@@ -177,18 +203,14 @@ class GlossaryModelSource(ModelSourceFile):
             #-----------------------------------------------
 
             if isinstance(current_context, Entry):
-                r='^        (?P<line>.*)'
+                r='^ *\|(?P<line>.*)'
                 m = re.match(r, line)
                 if m:
                     entry=current_context
-
-                    # store the line number if this the first
-                    # line of description
-                    if entry not in self.__descriptionFirstLinePerEntry:
-                        self.__descriptionFirstLinePerEntry[entry]=line_no
-
-                    self.__descriptionLinesPerEntry[
-                         entry].append(m.group('line'))
+                    self.descriptionBlockSourcePerEntry[entry] \
+                            .addTextLine(
+                                textLine=m.group('line'),
+                                lineNo=line_no)
                     continue
 
             #-----------------------------------------------
@@ -204,26 +226,29 @@ class GlossaryModelSource(ModelSourceFile):
 
 
 
-    def _parse_and_resolve_descriptions(self):
+    def _parseDescriptions(self):
         """
-        For all entry in the glossary parse its description
-        (with the proper line) and resolve the description with
-        this glossary.
+        For all entry description in the glossary
+        resolve the description with this glossary.
         """
         for domain in self.glossaryModel.domainNamed.values():
             for entry in domain.entryNamed.values():
-                desctext='\n'.join(self.__descriptionLinesPerEntry[entry])
-                lno=self.__descriptionFirstLinePerEntry[entry]
-                textParser=TextSourceFragment(
-                    string=desctext,
-                    startLineNo=lno)
-                if not textParser.isValid:
+                description_parser= (
+                    self.descriptionBlockSourcePerEntry[entry])
+                # lno=self.__descriptionFirstLineNoPerEntry[entry]
+                description_parser.parseToFillModel(
+                    container=entry,
+                    glossary=self.model
+                )
+                if not description_parser.isValid:
                     # TODO: check what should be done
                     raise ValueError('Error in parsing Text source')
                 else:
-                    entry.description=textParser.textBlock
-                    self.glossaryModel.resolveTextBlock(entry.description)
-        self.__descriptionFirstLinePerEntry={}
+                    entry.description=description_parser.model
+
+
+
+        # self.__descriptionFirstLineNoPerEntry={}
 
 
 METAMODEL.registerSource(GlossaryModelSource)

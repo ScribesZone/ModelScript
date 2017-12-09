@@ -13,17 +13,11 @@ import collections
 
 from typing import Dict, Text, Optional, List
 
-from modelscribes.metamodels.texts import (
-    TextBlock,
-    Reference,
-
-)
 from modelscribes.megamodels.metamodels import Metamodel
 from modelscribes.megamodels.models import Model
 from modelscribes.base.sources import SourceElement
-from modelscribes.megamodels.dependencies.metamodels import (
-    MetamodelDependency
-)
+from modelscribes.base.metrics import Metrics
+
 
 class GlossaryModel(Model):
     """
@@ -35,6 +29,10 @@ class GlossaryModel(Model):
 
         self.domainNamed=collections.OrderedDict()
         # type: Dict[Text, Domain]
+
+    @property
+    def domains(self):
+        return list(self.domainNamed.values())
 
     @property
     def metamodel(self):
@@ -59,14 +57,25 @@ class GlossaryModel(Model):
         return None
 
 
-    def resolveTextBlock(self, textBlock):
-        for line in textBlock.lines:
-            for token in line.tokens:
-                if isinstance(token, Reference):
-                    reference=token
-                    reference.resolve(self)
+    # def resolveTextBlock(self, textBlock):
+    #     for line in textBlock.lines:
+    #         for token in line.tokens:
+    #             if isinstance(token, Reference):
+    #                 reference=token
+    #                 reference.resolve(self)
 
-
+    @property
+    def metrics(self):
+        #type: () -> Metrics
+        ms=super(GlossaryModel, self).metrics
+        ms.addList((
+            ('domain', len(self.domains)),
+            ('entry', sum(
+                len(d.entries)
+                for d in self.domains
+            ))
+        ))
+        return ms
 
 
 class Domain(SourceElement):
@@ -85,6 +94,10 @@ class Domain(SourceElement):
         self.entryNamed=collections.OrderedDict()
         # type: Dict[Text, Entry]
         # Entries indexed by main term name
+
+    @property
+    def entries(self):
+        return self.entryNamed.values()
 
 
 class Entry(SourceElement):
@@ -115,11 +128,12 @@ class Entry(SourceElement):
         self.alternativeTerms=list(alternativeTerms)
         #type: List[Text]
 
-        self.description=description
-        #type: Optional[TextBlock]
+        self.description=None
+        #type: 'TextBlockModel'
 
-        self.references=[]
-        #type: List[Reference]
+        self.occurrences=[]
+        #type: List['Occurrence']
+
 
 METAMODEL = Metamodel(
     id='gl',

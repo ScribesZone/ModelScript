@@ -74,7 +74,6 @@ class Model(MegamodelElement, WithIssueList):
         # The source contains importBox, but
         # here we should have dependency box
 
-
     @abc.abstractproperty
     def metamodel(self):
         #type: () -> Metamodel
@@ -111,26 +110,13 @@ class Model(MegamodelElement, WithIssueList):
 
     def str( self,
              method='do',
-             title='',
-             issuesMode='top',  # top|bottom|inline
-             displayContent=True,
-             preferStructuredContent=True,
-             displaySummary=False,
-             summaryFirst=False,
              config=None
             ):
         printer_class=self.metamodel.modelPrinterClass
         printer=printer_class(
             theModel=self,
-            title=title,
-            issuesMode=issuesMode,
-            displayContent=displayContent,
-            displaySummary=displaySummary,
-            summaryFirst=summaryFirst,
-            preferStructuredContent=preferStructuredContent,
-            config=config,
+            config=config
         )
-        print('*M'*10,printer_class)
         try:
             the_method = getattr(printer_class, method)
             return the_method(printer)

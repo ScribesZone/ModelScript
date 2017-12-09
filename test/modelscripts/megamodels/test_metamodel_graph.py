@@ -3,7 +3,8 @@
 import modelscribes.all
 
 from modelscribes.megamodels.megamodels import Megamodel
-from modelscribes.scripts.megamodels.printer import MegamodelPrinter
+from modelscribes.scripts.megamodels.printer.megamodels import MegamodelPrinter
+
 
 def test_megamodel_printer():
     MegamodelPrinter().display()

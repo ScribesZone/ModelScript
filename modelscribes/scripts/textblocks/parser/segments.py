@@ -1,13 +1,12 @@
 # coding=utf-8
 """
-This utility module is just used to split a line in
+This utility module is used to split a line in
 multiple segments.
 A segment is either regular piece of text or a reference.
-The module is only used by the parser.
+The module is only used by the text parser.
 """
 from __future__ import unicode_literals, print_function, absolute_import, division
-from typing import Text, List, Optional, Union, Tuple
-import os
+from typing import Text, List, Optional, Tuple
 import re
 
 class Segment(object):
@@ -80,7 +79,7 @@ def segmentsAndErrors(line):
 
     segments= segment_list(line)
     # now check
-    error_positions=[ ]
+    error_positions=[]
     for seg in segments:
         if isinstance(seg, StringSegment):
             pass  # TODO: implement the list of error positions

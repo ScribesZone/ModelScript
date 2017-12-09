@@ -3,9 +3,7 @@ from __future__ import print_function
 from nose.plugins.attrib import attr
 
 import modelscribes.all
-from modelscribes.scripts.megamodels.printer import (
-    MegamodelPrinter
-)
+from modelscribes.scripts.megamodels.printer.megamodels import MegamodelPrinter
 from modelscribes.metamodels import (
     glossaries
 )
@@ -23,7 +21,7 @@ EXPECTED_ISSUES={
     'err3.gls':         {F: 0, E: 1, W: 0, I: 0, H: 0},
     'err4.gls':         {F: 0, E: 2, W: 0, I: 0, H: 0},
     'err5.gls':         {F: 0, E: 1, W: 0, I: 0, H: 0},
-
+    'err6.gls':         {F: 0, E: 1, W: 0, I: 0, H: 0},
 }
 
 

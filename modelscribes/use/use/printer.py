@@ -5,20 +5,20 @@ Generate a USE OCL specification from a modeL.
 This is currently only a preliminary version.
 """
 
-#TODO: to be continued
-
-__all__ = [
-    'UseModelPrinter',
-    'UseSourcePrinter',
-]
+from typing import Optional
 
 import logging
 
 from modelscribes.base.printers import (
-    ModelPrinter,
-    SourcePrinter,
     indent
 )
+from modelscribes.base.styles import Styles
+from modelscribes.scripts.base.printers import (
+    ModelPrinter,
+    ModelSourcePrinter,
+    ModelPrinterConfig,
+)
+
 from modelscribes.metamodels.classes import (
     ClassModel
 )
@@ -31,238 +31,282 @@ from modelscribes.metamodels.classes.expressions import (
 log = logging.getLogger('test.' + __name__)
 
 
-
-
+__all__ = [
+    'UseModelPrinter',
+    'UseSourcePrinter',
+]
 
 class UseModelPrinter(ModelPrinter):
     def __init__(self,
                  theModel,
-                 summary=False,
-                 displayLineNos=True):
-        #type: (ClassModel, bool, bool) -> None
+                 config=None):
+        #type: (ClassModel, Optional[ModelPrinterConfig]) -> None
         assert theModel is not None
         assert isinstance(theModel, ClassModel)
         super(UseModelPrinter, self).__init__(
             theModel=theModel,
-            summary=summary,
-            displayLineNos=displayLineNos
+            config=config
         )
 
-    def do(self):
-        self.output=''
-        self._issues()
-        self._model()
+    # def __init__(self,
+    #              theModel,
+    #              summary=False,
+    #              displayLineNos=True):
+    #     #type: (ClassModel, bool, bool) -> None
+    #
+    #     super(UseModelPrinter, self).__init__(
+    #         theModel=theModel,
+    #         summary=summary,
+    #         displayLineNos=displayLineNos
+    #     )
+
+    # def do(self):
+    #     self.output=''
+    #     self._issues()
+    #     self._model()
+    #     return self.output
+
+    def doModelContent(self):
+        super(UseModelPrinter, self).doModelContent()
+        self.doUseModel(self.theModel)
         return self.output
 
-
-    def _docComment(self, source_element, indent):
+    def doDocComment(self, source_element, indent):
         c = source_element.docComment   # multiple lines
         if c is not None:
             for line in c:
-                self.out(indent+'--'+line+'\n')
+                self.out(indent + self.cmt('--' + line) + '\n')
 
-    def _eolComment(self, source_element):
+    def doEolComment(self, source_element):
         c = source_element.eolComment
         if c is not None:
-            self.out(' --'+c)
-        self.out('\n')
+            self.out(self.cmt(' --' + c))
+        # TODO: this should be arranged if needed
+        # self.out('\n')
 
-
-    def _model(self):
+    def doUseModel(self, model):
 
         if self.theModel.basicTypes is not None:
             for t in self.theModel.basicTypes:
-                self.out('-- basic type : %s \n' % t.name)
+                self.outLine(
+                    self.cmt('-- basic type : %s') % t.name)
 
         #TODO: Add again management of doccomment for model
         # Model does not inherit anymore from doccomment
         # but it still make sense to add comment for them
-        # self._docComment(self.theModel, '')
-        self.out('model %s' % self.theModel.name)
+        # self.doDocComment(self.theModel, '')
+
         #TODO: Add again management of eolcomment for model
         # Model does not inherit anymore from doccomment
         # but it still make sense to add comment for them
-        # self._docComment(self.theModel, '')
-        # self._eolComment(self.theModel)
-        self.out('\n')
+        # self.doDocComment(self.theModel, '')
+        # self.doEolComment(self.theModel)
+        self.outLine('')
 
-        for e in self.theModel.enumerations:
-            self._enumeration(e)
+        for e in model.enumerations:
+            self.doEnumeration(e)
 
-        for c in self.theModel.classes:
-            self._class(c)
+        for c in model.classes:
+            self.doClass(c)
 
-        for a in self.theModel.associations:
-            self._association(a)
+        for a in model.associations:
+            self.doAssociation(a)
 
-        for ac in self.theModel.associationClasses:
-            self._associationClass(ac)
+        for ac in model.associationClasses:
+            self.doAssociationClass(ac)
 
         # TODO: invariants, operationConditions, basicTypes
 
-    def _enumeration(self, enumeration):
-        self._docComment(enumeration, '')
-        self.out('enum %s {' % enumeration.name)
-        self._eolComment(enumeration)
-        self.out(
-            ',\n'.join(
-                ['    %s' % l
-                 for l in enumeration.literals]
-            )
-        )
-        self.out('\n}\n\n')
+    def doEnumeration(self, enumeration):
+        self.doDocComment(enumeration, '')
+        self.outLine('%s %s { %s' % (
+            self.kwd('enum'),
+            enumeration.name,
+            self.doEolComment(enumeration)))
+        for l in enumeration.literals:
+            self.outLine(l, indent=1)
+        self.outLine(self.kwd('}'))
+        # self.out(
+        #     ',\n'.join(
+        #         ['    %s' % l
+        #          for l in enumeration.literals]
+        #     )
+        # )
+        # self.out('\n}\n\n')
 
-    def _class(self, class_):
-        self._docComment(class_, '')
+    def doClass(self, class_):
+        self.doDocComment(class_, '')
         if class_.superclasses:
-            sc = '< '+','.join(map(lambda s:s.name, class_.superclasses))
+            sc = (self.kwd('< ')
+                  +self.kwd(',').join(map(
+                        lambda s:s.name, class_.superclasses)))
         else:
             sc = ''
-        self.out("class %s %s" % (class_.name, sc))
-        self._eolComment(class_)
+        self.outLine("%s %s %s %s" % (
+            self.kwd('class'),
+            class_.name,
+            sc,
+            self.doEolComment(class_)))
 
         if class_.attributes:
-            self.out('attributes\n')
+            self.outLine(self.kwd('attributes'))
             for attribute in class_.attributes:
-                self._attribute(attribute)
+                self.doAttribute(attribute)
 
         if class_.operations:
-            self.out('operations\n')
+            self.outLine(self.kwd('operations'))
             for operation in class_.operations:
-                self._operation(operation)
+                self.doOperation(operation)
 
         if class_.invariants:
             for invariant in class_.invariants:
-                self._invariant(invariant)
+                self.doInvariant(invariant)
 
-        self.out('end\n\n')
+        self.outLine(self.kwd('end'),
+                     linesAfter=1)
 
 
-    def _association(self, association):
-        self._docComment(association, '')
-        self.out('%s %s between' % (association.kind, association.name))
-        self._eolComment(association)
+    def doAssociation(self, association):
+        self.doDocComment(association, '')
+        self.outLine('%s %s %s' % (
+            self.kwd(association.kind),
+            association.name,
+            self.kwd('between'),
+        ))
+        self.doEolComment(association)
         for role in association.roles:
-            self._role(role)
-        self.out('end\n\n')
+            self.doRole(role)
+        self.outLine(self.kwd('end'), linesAfter=1)
 
 
-    def _associationClass(self, associationClass):
-        self._docComment(associationClass, '')
+    def doAssociationClass(self, associationClass):
+        self.doDocComment(associationClass, '')
         if associationClass.superclasses:
             superclass_names = [c.name for c in associationClass.superclasses]
-            sc = ' < ' + ','.join(superclass_names)
+            sc = self.kwd(' < ') + self.kwd(',').join(superclass_names)
         else:
             sc = ''
-        self.out('associationclass %s%s between'
-                 % (associationClass.name, sc))
-        self._eolComment(associationClass)
+        self.out('%s %s%s %s' % (
+            self.kwd('associationclass'),
+            associationClass.name,
+            sc,
+            self.kwd('between')))
+        self.doEolComment(associationClass)
 
 
         for role in associationClass.roles:
-            self._role(role)
+            self.doRole(role)
 
         if associationClass.attributes:
-            self.out('attributes\n')
+            self.outLine(self.kwd('attributes'))
             for attribute in associationClass.attributes:
-                self._attribute(attribute)
+                self.doAttribute(attribute)
 
         if associationClass.operations:
-            self.out('operations\n')
+            self.outLine(self.kwd('operations'))
             for operation in associationClass.operations:
-                self._operation(operation)
+                self.doOperation(operation)
 
-        self.out('end\n\n')
+        self.outLine(self.kwd('end'), linesAfter=1)
 
-
-    def _attribute(self, attribute):
-        self._docComment(attribute, '    ')
-        self.out('    %s : %s' % (attribute.name, attribute.type.name))
-        self._eolComment(attribute)
+    def doAttribute(self, attribute):
+        self.doDocComment(attribute, '    ')
+        self.outLine('%s %s %s' % (
+                attribute.name,
+                self.kwd(':'),
+                attribute.type.name),
+            indent=1)
+        self.doEolComment(attribute)
         if attribute.isDerived:
-            self.out('        derive =')
-            self.out(attribute.expression)
+            self.outLine('%s %s' % (
+                    self.kwd('derive ='),
+                    attribute.expression),
+                indent=2
+            )
 
 
-    def _operation(self, operation):
-        self._docComment(operation, '    ')
-        self.out('    %s%s' % (
-            operation.signature,
-            ' =' if operation.hasImplementation else ''
-        ))
-        self._eolComment(operation)
+    def doOperation(self, operation):
+        self.doDocComment(operation, '    ')
+        self.outLine('%s%s' % (
+                operation.signature,
+                ' =' if operation.hasImplementation
+                    else ''),
+            indent=1
+        )
+        self.doEolComment(operation)
         if operation.hasImplementation:
-            self.out(indent('        ',operation.expression)+'\n')
+            self.outLine(indent('        ',operation.expression)+'\n')
         for condition in operation.conditions:
             self._operationCondition(condition)
 
 
-    def _invariant(self, invariant):
+    def doInvariant(self, invariant):
         if invariant.class_ is None:
             prefix_comment = ''
-            prefix_first = 'context '
+            prefix_first = self.kwd('context ')
             prefix_rest = '    '
         else:
             prefix_comment = '    '
             prefix_first = '    '
             prefix_rest  = '        '
-        self._docComment(invariant, '    ')
-        self.out('%s%sinv %s:' % (
+        self.doDocComment(invariant, '    ')
+        self.outLine('%s%s%s %s:' % (
             prefix_first,
-            'existential ' if invariant.isExistential else '',
+            self.kwd('existential ') if invariant.isExistential else '',
+            self.kwd('inv'),
             invariant.name,
         ))
-        self._eolComment(invariant)
+        self.doEolComment(invariant)
         self.out(indent(prefix_rest, invariant.expression)+'\n')
 
-    def _role(self, role):
-        self._docComment(role, '    ')
+    def doRole(self, role):
+        self.doDocComment(role, '    ')
         if role.name:
-            rn = 'role '+role.name
+            rn = self.kwd('role ') + role.name
         else:
             rn = ''
         max = '*' if role.cardinalityMax is None else role.cardinalityMax
-        self.out('    %s[%s..%s] %s'
+        self.outLine('    %s[%s..%s] %s'
                  % (role.type.name, role.cardinalityMin, max, rn ))
-        self._eolComment(role)
+        self.doEolComment(role)
 
     def _operationCondition(self, condition):
         prefix_first = '        '
         prefix_rest  = '            '
         keyword='pre' if isinstance(condition,PreCondition) else 'post'
-        self._docComment(condition, '    ')
-        self.out('%s%s %s:' % (
+        self.doDocComment(condition, '    ')
+        self.outLine('%s%s %s:' % (
             prefix_first,
-            keyword,
+            self.kwd(keyword),
             condition.name,
         ))
-        self._eolComment(condition)
+        self.doEolComment(condition)
         self.out(indent(prefix_rest,condition.expression)+'\n')
 
-# TODO: to be replaced by a generic version
-class UseSourcePrinter(SourcePrinter):
-
-    def __init__(self,
-                 theSource,
-                 summary=False,
-                 displayLineNos=True):
-        super(UseSourcePrinter, self).__init__(
-            theSource=theSource,
-            summary=summary,
-            displayLineNos=displayLineNos)
-
-    def do(self):
-        self.output=''
-        if self.theSource.isValid:
-            p=UseModelPrinter(
-                theModel=self.theSource.model,
-                summary=self.summary,
-                displayLineNos=self.displayLineNos
-            ).do()
-            self.out(p)
-        else:
-            self._issues()
-        return self.output
+# # TODO: to be replaced by a generic version
+# class UseSourcePrinter(SourcePrinter):
+#
+#     def __init__(self,
+#                  theSource,
+#                  summary=False,
+#                  displayLineNos=True):
+#         super(UseSourcePrinter, self).__init__(
+#             theSource=theSource,
+#             summary=summary,
+#             displayLineNos=displayLineNos)
+#
+#     def do(self):
+#         self.output=''
+#         if self.theSource.isValid:
+#             p=UseModelPrinter(
+#                 theModel=self.theSource.model,
+#                 summary=self.summary,
+#                 displayLineNos=self.displayLineNos
+#             ).do()
+#             self.out(p)
+#         else:
+#             self._issues()
+#         return self.output
 
 
 

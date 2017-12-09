@@ -1,6 +1,6 @@
     scenario model CL25
 
-    import class model from "main.cls"
+    import class model from 'main.cls'
 
     !create computing : Department
     !computing.name := 'Computing departement'

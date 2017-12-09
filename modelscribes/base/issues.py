@@ -16,9 +16,7 @@ from modelscribes.base.locations import (
 from modelscribes.config import Config
 
 #TODO:4 it should be better to remove the printer dependency
-from modelscribes.base.printers import (
-    Styles
-)
+from modelscribes.base.styles import Styles
 
 DEBUG=1
 
@@ -122,6 +120,8 @@ class Issue(object):
     def str(self,
             pattern=None,
             mode='fragment',
+            displayOrigin=False,
+            displayLocation=True,
             styled=False): # not used, but in subclasses
 
         """
@@ -135,15 +135,15 @@ class Issue(object):
         # return pattern.format(
         #     message=self.message,
         #     level=l)
-
-
         if pattern is None:
             pattern=(
                 Annotations.prefix
-                + '{kind}:{level}:{message}')
+                + '{origin}:{kind}:{level}:{location}:{message}')
         text=pattern.format(
+            origin='ORIGIN',
             level=self.level.str(),
             kind=self.kind,
+            location='LOCATION',
             message=self.message
         )
         return self.level.style.do(
@@ -266,16 +266,18 @@ class LocalizedSourceIssue(Issue):
     def str(self,
             pattern=None,
             mode='fragment',
-            styled=False,
-            ):
+            displayOrigin=False,
+            displayLocation=True,
+            styled=False):
         if pattern is None:
             pattern=(
                 Annotations.prefix
-                + '{kind}:{level}:{location}:{message}')
+                + '{kind}:{level}:{origin}:{line}:{message}')
         text=pattern.format(
-            level=self.level,
+            origin=self.location.sourceFile.basename,
+            level=self.level.str(),
             kind=self.kind,
-            location=self.level.str(),
+            line=str(self.location.line),
             message=self.message
         )
         return self.level.style.do(

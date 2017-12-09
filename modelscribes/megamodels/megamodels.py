@@ -19,7 +19,6 @@ from collections import OrderedDict
 # from modelscribes.megamodels.metamodels import Metamodel
 
 from modelscribes.megamodels.dependencies import Dependency
-
 Metamodel= 'Metamodel'
 MetamodelDependency='MetamodelDepndency'
 
@@ -562,31 +561,21 @@ class Megamodel(
                 return factory(filename)
 
     @classmethod
-    def displayModel(cls, model):
-        printer=model.metamodel.modelPrinterClass(model)
+    def displayModel(cls,
+                     model,
+                     config=None):
+        printer=model.metamodel.modelPrinterClass(
+            theModel=model,
+            config=config)
         printer.display()
 
 
 
     @classmethod
     def displaySource(cls,
-                      theSource,
-                      # config
-                      # title='',
-                      # issuesMode='inline',
-                      # displayContent=True,
-                      # preferStructuredContent=False,
-                      # displaySummary=True,
-                      # summaryFirst=True,
+                      source,
                       config=None):
-
-        printer=theSource.metamodel.sourcePrinterClass(
-            theSource=theSource,
-            # title=title,
-            # issuesMode=issuesMode,
-            # displayContent=displayContent,
-            # preferStructuredContent=preferStructuredContent,
-            # displaySummary=displaySummary,
-            # summaryFirst=summaryFirst,
+        printer=source.metamodel.sourcePrinterClass(
+            theSource=source,
             config=config)
         printer.display()

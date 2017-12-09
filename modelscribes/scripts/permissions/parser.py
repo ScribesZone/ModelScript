@@ -78,7 +78,7 @@ class PermissionModelSource(ModelSourceFile):
             line = line.replace('\t',' ')
             line_no = line_index+1
 
-            print(original_line)
+            # print(original_line)
 
             if DEBUG>=2:
                 print ('#%i : %s' % (line_no, original_line))
@@ -108,9 +108,21 @@ class PermissionModelSource(ModelSourceFile):
 
 
             #--- permission statement ------------------
+            full_op_regexpr='create|read|update|delete|execute'
+            full_ops_regexpr='(?P<action_names>(%s)(,(%s))*)' % (
+                full_op_regexpr,
+                full_op_regexpr)
+            short_op_regexpr='C|R|U|D|X'
+            short_ops_regexpr='(?P<action_letters>(%s)(%s)*)' % (
+                short_op_regexpr,
+                short_op_regexpr)
+            ops_regexpr='((%s)|(%s))' % (
+                full_ops_regexpr,
+                short_ops_regexpr)
             r = (begin(0)
                  +r' *(?P<subjects>[\w,]+)'
-                 +r' +(?P<actions>C?R?U?D?X?)'
+                 +r' *can'
+                 +(r' +'+ops_regexpr)
                  +r' +(?P<resources>[\w,\.]+)$')
             m = re.match(r, line)
             if m:
@@ -128,8 +140,16 @@ class PermissionModelSource(ModelSourceFile):
 
                 #---- ops
                 actions=[]
-                for action_name in m.group('actions'):
-                    action=Action.named(action_name)
+                if m.group('action_letters'):
+                    action_letters=m.group('action_letters')
+                else:
+                    action_letters=[
+                        'X' if n=='execute' else n[0].upper()
+                        for n in m.group('action_names').split(',')
+                    ]
+
+                for action_letter in action_letters:
+                    action=Action.named(action_letter)
                     if action not in actions:
                         actions.append(action)
                 if len(actions)==0 :
@@ -158,8 +178,7 @@ class PermissionModelSource(ModelSourceFile):
                     resources=resources
                 )
                 self.permissionModel.rules.append(rule)
-                # print ('******************',rule)
-                # print (len(self.permissionModel.rules))
+
 
                 continue
 
@@ -286,4 +305,3 @@ def _resolve_resource(classModel, expr):
         return None
 
 METAMODEL.registerSource(PermissionModelSource)
-#print('/'*150+'\n',METAMODEL.sourceClass)

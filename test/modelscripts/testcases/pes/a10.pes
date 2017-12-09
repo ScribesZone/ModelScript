@@ -1,7 +1,7 @@
 permission model A10
-import usecase model from "ae1.uss"
-import class model from "a.cls"
+import usecase model from 'ae1.uss'
+import class model from 'a.cls'
 
-M,N  CD  C,R
+M,N  can CD  C,R
 
 

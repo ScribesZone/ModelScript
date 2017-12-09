@@ -1,4 +1,4 @@
 scenario model NO03
-import class model from "main.cls"
+import class model from 'main.cls'
 
 ! check

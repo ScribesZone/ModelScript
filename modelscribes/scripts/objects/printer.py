@@ -1,9 +1,11 @@
 # coding=utf-8
 from __future__ import unicode_literals, print_function, absolute_import, division
+from typing import Optional
 
-from modelscribes.base.printers import (
-    AbstractPrinter,
-    SourcePrinter
+from modelscribes.scripts.base.printers import (
+    ModelPrinter,
+    ModelSourcePrinter,
+    ModelPrinterConfig,
 )
 
 from modelscribes.metamodels.objects import (
@@ -16,64 +18,68 @@ from modelscribes.metamodels.objects import (
 
 
 
-class ObjectModelPrinter(AbstractPrinter):
+class ObjectModelPrinter(ModelPrinter):
 
-    def __init__(self, theModel, displayLineNos=True):
-        #type: (ObjectModel, bool) -> None
-        super(ObjectModelPrinter, self).__init__(
-            displayLineNos=displayLineNos)
-        self.objectModel=theModel
-
-    def do(self):
-        super(ObjectModelPrinter, self).do()
-        self._ObjectModel(self.objectModel)
-        self._objects()
-        self._links()
-        return self.output
-
-    def _ObjectModel(self, objectModel):
-        self.outLine(
-            'object model',
-            lineNo=None, #objectModel.lineNo)  # TODO: change parser
-            linesAfter=1  )
-
-    def _objects(self):
-        for o in self.objectModel.objects:
-            self.outLine('    %s is a %s' % (
-                         o.name,
-                         o.classifier.name))
-
-    def _links(self):
-        for l in self.objectModel.links:
-            self.outLine('    %s %s %s' % (
-                         l.roles[0].name,
-                         l.classifier.name,
-                         l.roles[1].name))
-
-    # FIXME:1 add object links
-
-class ObjectSourcePrinter(SourcePrinter):
     def __init__(self,
-                 theSource,
-                 summary=False,
-                 displayLineNos=True,
-                 ):
-        super(ObjectSourcePrinter, self).__init__(
-            theSource=theSource,
-            summary=False,
-            displayLineNos=True)
+                 theModel,
+                 config=None):
+        #type: (ObjectModel, Optional[ModelPrinterConfig]) -> None
+        super(ObjectModelPrinter, self).__init__(
+            theModel=theModel,
+            config=config
+        )
 
-    def do(self):
-        self.output=''
-        if self.theSource.model is not None:
-            p=ObjectModelPrinter(
-                theModel=self.theSource.model,
-                displayLineNos=self.displayLineNos
-            ).do()
-            self.out(p)
-        else:
-            self._issues()
+    def doModelContent(self):
+        super(ObjectModelPrinter, self).doModelContent()
+        self.doObjectModel(self.theModel)
         return self.output
 
-METAMODEL.registerSourcePrinter(ObjectSourcePrinter)
+    def doObjectModel(self, objectModel):
+        for o in objectModel.objects:
+            self.doObject(o)
+        for l in objectModel.links:
+            self.doLink(l)
+        return self.output
+
+
+    def doObject(self, o):
+        self.outLine('%s %s %s %s' % (
+                 o.name,
+                 self.kwd('is'),
+                 self.kwd('a'),
+                 o.classifier.name))
+        for s in o.slots:
+            self.doSlot(s)
+
+        return self.output
+
+    def doSlot(self, slot):
+        if self.config.verbose:
+            self.outLine('%s %s %s %s %s' % (
+                    slot.attribute.name,
+                    self.kwd('of'),
+                    slot.object.name,
+                    self.kwd('is'),
+                    str(slot.value)),
+                indent=0)
+        else:
+            self.outLine('%s %s %s' % (
+                    slot.attribute.name,
+                    self.kwd('is'),
+                    str(slot.value)),
+                indent=1)
+        return self.output
+
+
+    def doLink(self, l):
+        self.outLine('%s %s %s' % (
+                     l.roles[0].name,
+                     l.classifier.name,
+                     l.roles[1].name))
+        return self.output
+
+        # FIXME:1 add object links
+
+
 METAMODEL.registerModelPrinter(ObjectModelPrinter)
+METAMODEL.registerSourcePrinter(ModelSourcePrinter)
