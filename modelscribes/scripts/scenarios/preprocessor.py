@@ -18,7 +18,9 @@ class ScsToSoilPreprocessor(Preprocessor):
             targetText='.soil scenario model',
             targetExtension='.soil'
         )
-
+        self.addTransfo(RegexpTransfo(
+            '^(?P<before> *)\|(?P<rest>.*)',
+            '{before}--|{rest}'))
         self.addTransfo(RegexpTransfo(
             '^ *! *check *',
             'check -v -d -a' ))

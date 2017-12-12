@@ -1,20 +1,30 @@
 # coding=utf-8
 
-
+# TODO:0 create a scenario for valence/cci/pi
+# TODO:0 convert check results to errors
+# TODO:0 add "begin" "end" for scenario --@begin --@end -> check
+# TODO:0 add text block to (require analysis)
+#        object
+#        scenario
 # TODO:0 bind object/evaluation model issuebox with scenario
 #        otherwise there is no error reported when building objects
-# TODO:0 chech error/print for main language
 # TODO:0 handle use message 'Nothing to do, because file' in merge
 #       check with us01scs  without ?0
 #       currently the merger generate an empty file
 #       is should be enough to first check soil line
 #       if not, just compile /use if imported
 #       otherwise just print comments
+# FIXME:0 display /tmp error in sex/use
+#        for metamodels, since composed metamodels are
+#        important (e.g. permissoion -> usecase)
+# FIXME:0 strange printing for models
+# TODO:1 model --usegui to enter use after compilation
 # TODO:1 check why empty entries are  ignored in glossary
 #       see domain2.gls
-# TODO:2 improve glossary metrics with ref and word
-# TODO:1 add tags {a,b,c=t} -> -- @a @b @c=t
-#       add parsing on the parser side + metamodel
+# TODO:1 improve text block metrics with ref and word
+# TODO:1 add hierachyca metrics
+# TODO:1 add tags {a,b,c=t} -> --@a --@b --@c=t
+#       add parsingprepoc+parser+metamodel+printer
 # TODO:1 add {id} semantics -> generation of ocl
 #        constratint C.x{id} C.y{id]
 #        ->  constraint inv none:C: C.allInstance->isUnique(c|Tuple{c.x,c.y})
@@ -42,9 +52,9 @@
 # checking invariants...
 # checked 0 invariants in 0.000s, 0 failures.
 
-# TODO:2 full support for frozen, readOnly
+# TODO:2 full support for addOnly, readOnly
 # TODO:1 what to do with unique nonUnique orderted
-# TODO:1  relational class model  checks
+# TODO:1  relational class model checks
 # - pas d'association n-n
 # - pas de classes associatives
 # - pas de composition avec 0..1 du coté du composite
@@ -52,12 +62,8 @@
 # - pas de generalisation
 # - pas de classe abstraite
 # TODO:1 support for rôle / × > addonly
-# TODO:1 enable glossary in all models
 # TODO:1 add inheritance in cl metamodel
-# TODO:1
-# FIXME:1 display /tmp error in sex/use
-#        for metamodels, since composed metamodels are
-#        important (e.g. permissoion -> usecase)
+
 # TODO:1 add @assertion in .ob .sc
 # TODO:1 import between cl diagram could be very useful
 # TODO:2 add syntax enumeration x ... end
@@ -88,7 +94,7 @@
 
 #TODO: check what to do with  (link)object destruction
 
-#TODO: check plantuml generation
+#TODO3: check plantuml generation
 
 #TODO: add support for @assert inv / query
 #TODO: add support for 'include x.obm' in scenarios

@@ -32,7 +32,7 @@ def testGenerator_Issues():
         ['.scs'],
         EXPECTED_ISSUES)
     for (file , ex) in res:
-        # if file.endswith('us01.scs'):
+        if file.endswith('descr1.scs'):
             yield (
                 checkValidIssues,
                 file,

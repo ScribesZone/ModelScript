@@ -1,0 +1,40 @@
+usecase model Main2
+    | This is a nice usecase model.
+    | It contains three actors and four usecases
+
+system Main
+    | The system is also nice
+    | The system do not contains the actors
+    | altough the syntax does not makes this explicit
+
+actor CEO
+    | The CEO is someone important in the company
+    | He or she is not employed by the company but
+    | he or she interacts with the Main system.
+
+    usecases
+        OpenNewDepartment
+            | A CEO can open a new department if he
+            | or she want to do so
+
+        CloseDepartment
+            | A CEO can close a departement but this
+            | is usually not fun for the employee.
+
+actor Secretary
+    | The Secretary can register new employee.
+    | This is however whe she receive an order to do
+    | so by the CEO.
+    usecases
+        RegisterNewEmployee
+
+actor Manager
+    usecases
+        CreateNewProject
+
+actor Secretary
+    | This new definition.
+
+usecase CloseDepartment
+    | Only the CEO can close a departement.
+    | This is a new sentence.

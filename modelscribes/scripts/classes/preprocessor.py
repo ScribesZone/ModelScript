@@ -17,6 +17,10 @@ class ClsToUsePreprocessor(Preprocessor):
             '^ *class +model (?P<rest>.*)',
             'model {rest}'))
 
+        self.addTransfo(RegexpTransfo(
+            '^(?P<before> *)\|(?P<rest>.*)',
+            '{before}--|{rest}'))
+
         self.addTransfo(PrefixToCommentTransfo((
             'package',)))
 

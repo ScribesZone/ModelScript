@@ -8,9 +8,10 @@ from typing import Dict, Text
 from modelscribes.base.issues import Issue, Levels
 from modelscribes.base.symbols import Symbol
 from modelscribes.megamodels.issues import ModelElementIssue
-from modelscribes.base.sources import SourceElement
+from modelscribes.megamodels.elements import SourceModelElement
 from modelscribes.base.metrics import Metrics
 from modelscribes.megamodels.metamodels import Metamodel
+from modelscribes.megamodels.elements import ModelElement
 from modelscribes.megamodels.dependencies.metamodels import (
     MetamodelDependency
 )
@@ -21,6 +22,7 @@ from modelscribes.metamodels.permissions.sar import Subject
 class UsecaseModel(Model):
     def __init__(self):
         super(UsecaseModel, self).__init__()
+
         self.system=System(self)
         """
         The system of the usecase model.
@@ -78,9 +80,9 @@ class UsecaseModel(Model):
                 self.system.check()
 
 
-class System(SourceElement):
+class System(SourceModelElement):
     def __init__(self, usecaseModel):
-        super(System, self).__init__(
+        SourceModelElement.__init__(self,
             name='*unknown*',
             code=None,
             lineNo=None,
@@ -126,12 +128,12 @@ class System(SourceElement):
                 u.check()
 
 
-class Actor(SourceElement, Subject):
+class Actor(SourceModelElement, Subject):
     def __init__(self,
                  usModel, name, kind='human',
                  code=None, lineNo=None,
                  docComment=None, eolComment=None):
-        super(Actor, self).__init__(name, code, lineNo, docComment, eolComment)
+        SourceModelElement.__init__(self, name, code, lineNo, docComment, eolComment)
 
         self.usecaseModel = usModel
         self.usecaseModel.actorNamed[name]=self
@@ -173,13 +175,14 @@ class Actor(SourceElement, Subject):
             )
 
 
-class Usecase(SourceElement, Subject):
+class Usecase(SourceModelElement, Subject):
     def __init__(self,
                  system, name,
         code=None, lineNo=None, docComment=None, eolComment=None):
 
-        super(Usecase, self).__init__(
+        SourceModelElement.__init__(self,
             name, code, lineNo, docComment, eolComment)
+        ModelElement.__init__(self)
 
         self.system = system
         self.system.usecaseNamed[name]=self

@@ -22,6 +22,7 @@ class ReferenceSegment(Segment):
 
     @property
     def body(self):
+        # remove the quote `abc`
         return self.string[1:-1]
 
 

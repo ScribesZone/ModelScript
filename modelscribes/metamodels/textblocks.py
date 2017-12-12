@@ -5,7 +5,7 @@ a entries in a glossary.
 
 The structure of the meta elemens
 
-    TextBlockModel
+    TextBlock
         <>--* Line
                 <>--* Token
                         <|-- Reference
@@ -16,17 +16,31 @@ The structure of the meta elemens
 """
 from __future__ import print_function
 from typing import (
-    Text, Optional, List, Any,
+    Text, Optional, List, Any, Union
 )
-
+from abc import ABCMeta
 from modelscribes.base.metrics import Metrics
 from modelscribes.base.sources import SourceElement
 from modelscribes.metamodels.glossaries import GlossaryModel
-from modelscribes.megamodels.models import Model
-from modelscribes.megamodels.metamodels import Metamodel
-from modelscribes.megamodels.dependencies.metamodels import MetamodelDependency
+from modelscribes.scripts.textblocks.parser.segments import (
+    segmentsAndErrors,
 
-class TextBlockModel(Model):
+    ReferenceSegment,
+)
+
+__all__ = (
+    'TextBlock',
+    'Line',
+    'Token',
+    'PlainToken',
+    'Reference',
+    'UnresolvedReference',
+    'BrokenReference',
+    'Occurrence'
+)
+
+
+class TextBlock(SourceElement):
     _empty=None
 
     @classmethod
@@ -37,21 +51,25 @@ class TextBlockModel(Model):
         instead of none.
         """
         if cls._empty is None:
-            cls._empty=TextBlockModel()
+            cls._empty=TextBlock()
         return cls._empty
 
     def __init__(self,
                  glossary=None,
                  container=None,
                  lines=()):
-        super(TextBlockModel, self).__init__()
+        super(TextBlock, self).__init__()
+
         self.container=container
         # type: Optional[Any]
+
         self.lines = list(lines)
         # type: List[Line]
+
         self.glossary=glossary
         # type: Optional[GlossaryModel]
 
+        self.isResolved=False
 
     # def resolve(self):
     #     for line in self.lines:
@@ -62,15 +80,20 @@ class TextBlockModel(Model):
     #
     #             reference.resolve(self.glossary)
 
-    def metamodel(self):
-        #type: () -> Metamodel
-        raise NotImplementedError()
+    # def metamodel(self):
+    #     #type: () -> Metamodel
+    #     raise NotImplementedError()
 
+    def resolve(self):
+        if self.glossary is not None:
+            for l in self.lines:
+                l.resolve()
+            self.isResolved=True
 
     @property
     def metrics(self):
         #type: () -> Metrics
-        ms=super(TextBlockModel, self).metrics
+        ms=super(TextBlock, self).metrics
         ms.addList((
             ('line', len(self.lines)),
             ('token', sum(len(l.token) for l in self.lines) ),
@@ -83,48 +106,126 @@ class TextBlockModel(Model):
         ))
         return ms
 
-class Line(SourceElement):
+    def addNewLine(self, stringLine, lineNo=None):
+        line=Line(
+            textBlock=self,
+            lineNo=lineNo,
+            stringLine=stringLine
+        )
+        self.lines.append(line)
 
-    def __init__(self, textBlock, lineNo=None, tokens=()):
+
+
+
+
+class Line(SourceElement):
+    """
+    Represents either a line to be parsed or a parsed line.
+    In the first case there is only one token containing
+    the whole line. In the second case the line contains
+    various tokens, these tokens are either PlainToken
+    or UnresolvedToken.
+    """
+
+    def __init__(self,
+                 textBlock,
+                 lineNo=None,
+                 tokens=None,
+                 stringLine=None):
+        #type: (TextBlock, Optional[int], Optional[List[Token]], Optional[Text]) -> None
+        """
+        Create a Line either with a list of tokens or with a
+        stringLine. Parameters tokens and stringLine are
+        exclusive if none of them is provided then the line
+        will have no token. If stringLine is given then
+        the string is parsed and token are converted from
+        that.
+        """
+
+        def _stringLineToLineTokens(stringLine, line):
+            #type: (Text, Line) -> None
+            """
+            Segment the string line and create tokens in the
+            given line.
+            """
+            (segments, errors) = segmentsAndErrors(stringLine)
+            for segment in segments:
+                if isinstance(segment, ReferenceSegment):
+                    x = UnresolvedReference(
+                        line=line,
+                        pos=segment.pos,
+                        string=segment.string
+                    )
+                else:
+                    x = PlainToken(
+                        line=line,
+                        pos=segment.pos,
+                        string=segment.string,
+                    )
+                line.tokens.append(x)
+
+        assert tokens is None or stringLine is None
         super(Line, self).__init__(
             name=None,
             lineNo=lineNo
         )
+        self.isResolved=False
 
         self.textBlock = textBlock
-        #type: TextBlockModel
+        #type: TextBlock
 
-        self.tokens = list(tokens)
-        #type: List[Token]
+        self.tokens=[]
+        # type: List[Token]
+        # Value will be set below
+
+        if tokens is not None:
+            self.tokens=list(tokens)
+        elif stringLine is not None:
+            _stringLineToLineTokens(stringLine, self)
+        else:
+            pass
+
+    def resolve(self):
+        if self.textBlock.glossary is not None:
+            for (i, token) in enumerate(self.tokens):
+                if isinstance(token, UnresolvedReference):
+                    # replace the UnresolvedReference by a new
+                    # token, either BrokenReference or Occurrence
+                    self.tokens[i]=token.resolve()
+
+
+    def _selectByType(self, t):
+        return [
+            x for x in self.tokens
+            if isinstance(x, t)
+        ]
 
     @property
     def references(self):
         #type: () -> List[Reference]
-        return [
-            t for t in self.tokens
-                if isinstance(t, Reference)
-        ]
+        # noinspection PyTypeChecker
+        return self._selectByType(Reference)
+
+    # @property
+    # def unresolvedReferences(self):
+    #     #type: () -> List[UnresolvedReference]
+    #     return self._selectByType(UnresolvedReference)
 
     @property
     def brokenReferences(self):
         #type: () -> List[BrokenReference]
-        return [
-            t for t in self.tokens
-                if isinstance(t, BrokenReference)
-        ]
-
+        # noinspection PyTypeChecker
+        return self._selectByType(BrokenReference)
 
     @property
     def occurrences(self):
         #type: () -> List[Occurrence]
-        return [
-            t for t in self.tokens
-                if isinstance(t, Occurrence)
-        ]
-
+        # noinspection PyTypeChecker
+        return self._selectByType(Occurrence)
 
 
 class Token(object):
+    __metaclass__ = ABCMeta
 
     def __init__(self, line, pos, string):
         #type: (Line, int, Text) -> None
@@ -138,6 +239,7 @@ class Token(object):
         self.pos=pos
         #type: int
 
+
 class PlainToken(Token):
 
     def __init__(self, line, pos, string):
@@ -145,7 +247,9 @@ class PlainToken(Token):
         super(PlainToken, self).__init__(
             line=line, pos=pos, string=string)
 
+
 class Reference(Token):
+    __metaclass__ = ABCMeta
 
     def __init__(self, line, pos, string):
         #type: (Line, int, Text) -> None
@@ -173,10 +277,45 @@ class Reference(Token):
     #         return entryOrNone
 
 
+class UnresolvedReference(Reference):
+    def __init__(self, line, pos, string):
+        #type: (Line, int, Text) -> None
+        super(UnresolvedReference, self).__init__(
+            line, pos, string)
+
+    def resolve(self):
+        #type: () -> Union[BrokenReference, Occurrence]
+        """
+        Resolve the token with the glossary defined
+        in the text block. Return a new token:
+        - a BrokenReference if no entry is found
+        - an Occurrence if an entry is not found
+        If no glossary was provided then the token
+        is left untouched.
+        """
+        g = self.line.textBlock.glossary
+        if g is not None:
+            entry_or_none=g.findEntry(self.string)
+            if entry_or_none is None:
+                new_entry=BrokenReference(
+                    line=self.line,
+                    pos=self.pos,
+                    string=self.string)
+            else:
+                new_entry=Occurrence(
+                    line=self.line,
+                    pos=self.pos,
+                    string=self.string,
+                    entry=entry_or_none)
+        else:
+            new_enty=self
+        return new_entry
+
+
 class BrokenReference(Reference):
 
     def __init__(self, line, pos, string):
-        #type: (Line, int, Text, Optional['Term']) -> None
+        #type: (Line, int, Text) -> None
         super(BrokenReference, self).__init__(line, pos, string)
 
     @property
@@ -200,16 +339,16 @@ class Occurrence(Reference):
         return False
 
 
-METAMODEL = Metamodel(
-    id='tx',
-    label='text',
-    extension='.txs',
-    modelClass=TextBlockModel,
-    modelKinds=()
-)
-MetamodelDependency(
-    sourceId='tx',
-    targetId='gl',
-    optional=True,
-    multiple=True,
-)
+# METAMODEL = Metamodel(
+#     id='tx',
+#     label='text',
+#     extension='.txs',
+#     modelClass=TextBlock,
+#     modelKinds=()
+# )
+# MetamodelDependency(
+#     sourceId='tx',
+#     targetId='gl',
+#     optional=True,
+#     multiple=True,
+# )

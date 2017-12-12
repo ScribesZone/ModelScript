@@ -23,7 +23,6 @@ from modelscribes.use.use.parser import (
 from test.modelscripts import (
     getTestFile,
     getTestFiles,
-    getTestDir
 )
 
 # TODO: add this again

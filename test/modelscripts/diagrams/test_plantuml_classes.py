@@ -3,10 +3,7 @@
 import logging
 
 from nose.plugins.attrib import attr
-
-logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('test.'+__name__)
-
+from distutils.dir_util import mkpath
 from test.modelscripts import (
     TEST_CASES_DIRECTORY,
     BUILD_DIRECTORY,
@@ -14,12 +11,16 @@ from test.modelscripts import (
 
 import os
 import modelscribes.use.use.parser
-from modelscribes.use.use.printer import (
-    UseSourcePrinter
+from modelscribes.scripts.base.printers import (
+    ModelSourcePrinter
 )
 import modelscribes.scripts.classes.plantuml
 import modelscribes.diagrams.plantuml.engine
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('test.'+__name__)
 
+CLASSES_DIR=os.path.join(BUILD_DIRECTORY, 'classes')
+mkpath(CLASSES_DIR)
 
 # TODO: add this again
 # def test_UseOclModel_Simple():
@@ -88,10 +89,10 @@ def check_isValid(testFile, plantUMLengine):
     use_file = modelscribes.use.use.parser.UseModelSource(
         TEST_CASES_DIRECTORY + os.sep + testFile)
     puml_file_path = os.path.join(
-        BUILD_DIRECTORY,
+        CLASSES_DIR,
         os.path.splitext(os.path.basename(testFile))[0]+'.puml'
     )
-    UseSourcePrinter(use_file).display()
+    ModelSourcePrinter(use_file).display()
     assert use_file.isValid
     print('\n'*2+'='*80)
     print('Generating '+puml_file_path)

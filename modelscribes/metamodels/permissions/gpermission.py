@@ -5,6 +5,7 @@ from typing import List
 from modelscribes.base.sources import SourceElement
 from modelscribes.megamodels.models import Model
 from modelscribes.metamodels.permissions.sar import SAR
+from modelscribes.megamodels.elements import SourceModelElement
 
 class Permission(SAR):
 
@@ -84,7 +85,7 @@ class PermissionModel(Model):
     pass
 
 
-class PermissionRule(SourceElement):
+class PermissionRule(SourceModelElement):
     __metaclass__ = ABCMeta
 
     def __init__(self, lineNo, model):

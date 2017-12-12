@@ -18,10 +18,8 @@ import collections
 
 from typing import Optional, Dict, List, Text
 
-from modelscribes.base.sources import (
-    SourceElement
-)
 from modelscribes.base.metrics import Metrics
+from modelscribes.megamodels.elements import SourceModelElement
 from modelscribes.megamodels.metamodels import Metamodel
 from modelscribes.megamodels.models import Model
 from modelscribes.megamodels.dependencies.metamodels import (
@@ -35,7 +33,6 @@ from modelscribes.metamodels.scenarios.evaluations import (
 )
 from modelscribes.metamodels.permissions import (
     UCPermissionModel)
-from modelscribes.metamodels.permissions.gpermission import PermissionModel
 from modelscribes.metamodels.permissions.sar import Subject
 from modelscribes.metamodels.scenarios.blocks import (
     Block,
@@ -48,6 +45,11 @@ from modelscribes.metamodels.scenarios.operations import (
 from modelscribes.metamodels.usecases import (
     Actor,
     UsecaseModel,
+)
+
+__all__=(
+    'ScenarioModel',
+    'ActorInstance',
 )
 
 DEBUG=3
@@ -118,14 +120,10 @@ class ScenarioModel(Model, Subject):
         self.scenarioEvaluation.evaluate(originalOrder)
 
 
-
-
-
-class ActorInstance(SourceElement, Subject):
+class ActorInstance(SourceModelElement, Subject):
     def __init__(self, scenario, name, actor,
                  code=None, lineNo=None, docComment=None, eolComment=None):
-
-        super(ActorInstance, self).__init__(name, code, lineNo, docComment, eolComment)
+        SourceModelElement.__init__(self, name, code, lineNo, docComment, eolComment)
         self.scenario=scenario
         #type: ScenarioModel
 

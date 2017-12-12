@@ -3,15 +3,11 @@ from __future__  import print_function
 import logging
 import modelscribes.scripts.classes.parser
 import modelscribes.scripts.classes.printer
-logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('test.'+__name__)
-
-
 from modelscribes.use.use.parser import (
     UseModelSource
 )
-from modelscribes.use.use.printer import (
-    UseSourcePrinter
+from modelscribes.scripts.base.printers import (
+    ModelSourcePrinter
 )
 
 from modelscribes.metamodels import (
@@ -29,6 +25,8 @@ from test.modelscripts.issues import (
     checkValidIssues
 )
 
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('test.'+__name__)
 
 EXPECTED_ISSUES={
     'card1.use':        {F: 0, E: 1, W: 0, I: 0, H: 0},
@@ -56,9 +54,9 @@ def testGenerator_Issues():
 
 def testNoFile():
     use_source=UseModelSource('nofile.use')
-    UseSourcePrinter(use_source).display()
+    ModelSourcePrinter(use_source).display()
     assertIssueBox(use_source.fullIssueBox,
-                   {F: 1, E: 1, W: 1, I: 0, H: 0})
+                   {F: 2, E: 0, W: 1, I: 0, H: 0})
     assert use_source.hasIssues
     assert not use_source.isValid
 
@@ -75,7 +73,7 @@ def testBrokenUSEEngine():
             'use/issues/frozen/card1.use')
         use_source = UseModelSource(an_existing_file)
         print('Model parsed.')
-        UseSourcePrinter(use_source).display()
+        ModelSourcePrinter(use_source).display()
         assertIssueBox(use_source.fullIssueBox,
                        {F: 0, E: 1, W: 0, I: 0, H: 0})
         assert use_source.hasIssues

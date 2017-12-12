@@ -8,7 +8,7 @@ from modelscribes.scripts.base.printers import (
     ModelPrinterConfig,
 )
 from modelscribes.scripts.textblocks.printer import (
-    TextBlockModelPrinter
+    TextBlockPrinter
 )
 from modelscribes.metamodels.glossaries import (
     GlossaryModel,
@@ -61,12 +61,12 @@ class GlossaryModelPrinter(ModelPrinter):
             lineNo=entry.lineNo,
             linesBefore=1
         )
-        self.doDescription(entry.description)
+        self.doModelTextBlock(entry.description)
 
     def doDescription(self, textBlock):
-        block_text=TextBlockModelPrinter(
-            theModel=textBlock,
-            config=self.config).doModelContent()
+        block_text=TextBlockPrinter(
+            textBlock=textBlock,
+            config=self.config).do()
         self.out(block_text)
         return self.output
 

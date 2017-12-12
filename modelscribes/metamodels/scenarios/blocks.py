@@ -8,14 +8,22 @@ from abc import ABCMeta
 
 from typing import Optional, List
 
-from modelscribes.base.sources import SourceElement
 from modelscribes.metamodels.permissions.sar import Subject
 from modelscribes.metamodels.scenarios.operations import (
     Operation,
 )
+from modelscribes.megamodels.elements import SourceModelElement
+
+__all__=(
+    'Block',
+    'ContextBlock',
+    'MainBlock',
+    'TopLevelBlock',
+    'UsecaseInstanceBlock'
+)
 
 
-class Block(SourceElement, Subject):
+class Block(SourceModelElement, Subject):
     __metaclass__ = ABCMeta
 
     def __init__(self, scenario, lineNo=None):
@@ -34,8 +42,6 @@ class Block(SourceElement, Subject):
     @property
     def superSubjects(self):
         return [self.scenario]
-
-
 
 
 class ContextBlock(Block, Subject):

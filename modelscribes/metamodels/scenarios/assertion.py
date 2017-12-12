@@ -35,9 +35,10 @@ This module is to be used with the 'tester' module.
 """
 
 import re
+from modelscribes.megamodels.elements import SourceModelElement
 
 
-class InvariantAssertionEvaluation(object):
+class InvariantAssertionEvaluation(SourceModelElement):
     """
     The evaluation of an InvariantAssertion against a model if thr
     assertion is correct. If the assertion is incorrect then the evaluation

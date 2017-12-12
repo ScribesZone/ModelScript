@@ -13,6 +13,7 @@ from modelscribes.megamodels.megamodels import (
     Megamodel,
     MegamodelElement
 )
+from modelscribes.megamodels.elements import ModelElement
 from modelscribes.megamodels.metamodels import Metamodel
 # from modelscribes.megamodels.sources import (
 #     ModelSourceFile
@@ -28,7 +29,7 @@ __all__=(
     'ModelElement',
 )
 
-class Model(MegamodelElement, WithIssueList):
+class Model(MegamodelElement, ModelElement, WithIssueList):
     """
     The root class for all models.
 
@@ -58,8 +59,13 @@ class Model(MegamodelElement, WithIssueList):
         # Set later if build from a ModelSourceFile.
         # Set in the constuctor of ModelSourceFile
 
-        super(Model, self).__init__(parents=[])
+        MegamodelElement.__init__(self)
+
+        WithIssueList.__init__(self, parents=[])
         # Parents set at the same time as source
+
+        ModelElement.__init__(self)
+
 
         self.kind='' #type: Text
         # Set later.
@@ -222,7 +228,3 @@ class Model(MegamodelElement, WithIssueList):
                     % mm_dep.targetMetamodel)
             else:
                 pass
-
-class ModelElement(object):
-    #TODO2: at the moment empty, but some refactoring could be nice
-    pass

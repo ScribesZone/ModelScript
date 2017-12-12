@@ -7,31 +7,23 @@ from __future__ import unicode_literals, print_function, absolute_import, divisi
 from typing import Text
 import re
 
-from modelscribes.base.symbols import (
-    Symbol
-)
-
 from modelscribes.megamodels.sources import ModelSourceFile
 
 from modelscribes.scripts.megamodels.parser import (
     isMegamodelStatement
 )
-from modelscribes.scripts.usecases.printer import (
-    UsecaseModelPrinter
-)
+
 from modelscribes.base.issues import (
-    Issue,
     LocalizedSourceIssue,
     Levels,
-    FatalError,
 )
 from modelscribes.metamodels.usecases import (
     UsecaseModel,
-    System,
     Actor,
     Usecase,
     METAMODEL
 )
+
 
 
 __all__=(
@@ -80,10 +72,13 @@ class UsecaseModelSource(ModelSourceFile):
 
         def _ensureUsecase(name):
             _checkSystemExist(isLast=False)
-            if name in self.usecaseModel.system.usecaseNamed:
-                return self.usecaseModel.system.usecaseNamed[name]
+            if name in (
+                    self.usecaseModel.system.usecaseNamed):
+                return self.usecaseModel.system.usecaseNamed[
+                    name]
             else:
-                return Usecase(self.usecaseModel.system, name)
+                return Usecase(
+                    self.usecaseModel.system, name)
 
         def begin(n): return '^'+'    '*n
         end = ' *$'
@@ -93,7 +88,10 @@ class UsecaseModelSource(ModelSourceFile):
 
         current_actor=None
         current_usecase=None
-        current_section=None
+        #FIXME: use doc-for in all the parser
+        current_element=self.usecaseModel
+        current_scope='model'
+# model | system | actor | usecase | actor.usecases
 
         for (line_index, line) in enumerate(self.sourceLines):
             original_line = line
@@ -104,20 +102,30 @@ class UsecaseModelSource(ModelSourceFile):
             if DEBUG>=2:
                 print ('#%i : %s' % (line_no, original_line))
 
-            #---- blank lines ---------------------------------------
+            #---- blank lines ---------------------------------
             r = '^ *$'
             m = re.match(r, line)
             if m:
                 continue
 
-            #---- comments ------------------------------------------
-            r = '^ *-- *[^@].*$'
+            #---- comments -------------------------------------
+            r = '^ *--.*$'
             m = re.match(r, line)
             if m:
                 continue
-            # TODO: add proper comment management
 
-            #--- megamodel statements -------------
+            #---- description ----------------------------------
+            r = '^ *\|(?P<line>.*)$'
+            m = re.match(r, line)
+            if m:
+                current_element.description.addNewLine(
+                    stringLine=m.group('line'),
+                    lineNo=line_no,
+                )
+                continue
+
+
+            #---- megamodel statements -------------
             is_mms=isMegamodelStatement(
                 lineNo=line_no,
                 modelSourceFile=self)
@@ -143,11 +151,14 @@ class UsecaseModelSource(ModelSourceFile):
                     name=name,
                     lineNo=line_no,
                 )
-
+                current_element=self.usecaseModel.system
+                current_scope='system'
                 continue
 
             #--- actor X --------------------------
-            r = begin(0)+r'(?P<kind>(human|system))? *actor +(?P<name>\w+)'+end
+            r =(begin(0)
+                +r'(?P<kind>(human|system))?'
+                +' *actor +(?P<name>\w+)'+end)
             m = re.match(r, line)
             if m:
                 current_usecase=None
@@ -155,36 +166,40 @@ class UsecaseModelSource(ModelSourceFile):
                 current_actor=_ensureActor(name)
                 current_actor.kind=m.group('kind'),
                 current_actor.lineNo=line_no
-                current_section='actor'
+                current_element=current_actor
+                current_scope='actor'
                 continue
 
             #--- usecase X --------------------------
             r = begin(0)+r'usecase +(?P<name>\w+)'+end
             m = re.match(r, line)
             if m:
+                current_actor=None
                 name=m.group('name')
                 current_usecase=_ensureUsecase(name)
                 current_usecase.lineNo = line_no
-                current_section='usecase'
+                current_element=current_usecase
+                current_scope='usecase'
                 continue
 
-            if current_actor:
+            if current_scope=='actor':
 
                 # --- ....usecases ------------------------
                 r = begin(1)+r'usecases'+end
                 m = re.match(r, line)
                 if m:
-                    current_section='actor.usecases'
+                    current_scope='actor.usecases'
                     continue
 
-                if current_section=='actor.usecases':
-                    r = begin(2)+r'(?P<name>\w+)'+end
-                    m = re.match(r, line)
-                    if m:
-                        uc=_ensureUsecase(m.group('name'))
-                        current_actor.addUsecase(uc)
-                        uc.lineNo=line_no
-                    continue
+            if current_scope=='actor.usecases':
+                r = begin(2)+r'(?P<name>\w+)'+end
+                m = re.match(r, line)
+                if m:
+                    uc=_ensureUsecase(m.group('name'))
+                    current_actor.addUsecase(uc)
+                    current_element=uc
+                    uc.lineNo=line_no
+                continue
 
 
             LocalizedSourceIssue(

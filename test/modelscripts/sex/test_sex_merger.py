@@ -1,8 +1,8 @@
 # coding=utf-8
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('test.'+__name__)
+from distutils.dir_util import mkpath
+
 
 from test.modelscripts import (
     TEST_CASES_DIRECTORY,
@@ -11,6 +11,13 @@ from test.modelscripts import (
 
 import os
 import modelscribes.use.engine.merger
+
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('test.'+__name__)
+
+
+SEX_DIR=os.path.join(BUILD_DIRECTORY, 'sex')
+mkpath(SEX_DIR)
 
 
 # TODO:add this again
@@ -28,8 +35,7 @@ def testGenerator_UseOclModel_full():
         soilfile=os.path.join(test_dir,'%s.soil'%test)
         tracefile=os.path.join(test_dir,'%s.stc'%test)
         sexfile=os.path.join(
-            BUILD_DIRECTORY,
-            'sex',
+            SEX_DIR,
             '%s.sex'%test
         )
         yield check_isValid, soilfile, tracefile, sexfile

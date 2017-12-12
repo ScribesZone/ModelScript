@@ -14,44 +14,19 @@ from modelscribes.base.styles import Styles
 from modelscribes.scripts.megamodels.printer.imports import (
     ImportBoxPrinter
 )
+from modelscribes.metamodels.textblocks import (
+    TextBlock
+)
+from modelscribes.scripts.textblocks.printer import (
+    TextBlockPrinter
+)
 
-# class AbstractModelOrModelSourcePrinter(AbstractPrinter):
-#     def __init__(self,
-#                  modelOrModelSource,
-#                  fullContent=True,
-#                  summary=False,
-#                  abstractBody=True,
-#                  config=BasicPrinterConfigs.default):
-#         assert modelOrModelSource is not None
-#         self.modelOrModelSource = modelOrModelSource
-#         super(AbstractModelOrModelSourcePrinter, self).__init__(
-#             fullContent=fullContent,
-#             summary=summary,
-#             config=config
-#         )
-#         self.abstractBody = abstractBody
-#
-#     @property
-#     def isModelSource(self):
-#         return isinstance(
-#             self.modelOrModelSource,
-#             ModelSourceFile)
-#
-#     @property
-#     def theModelSource(self):
-#         if self.isModelSource:
-#             return self
-#
-#
-#     @property
-#     def theModel(self):
-#         if model
-#
-#
-#     xxx terminate this
-#
-#     doBody
-#         --> instanciate either de model printer or source printer and call its doBody
+__all__ = (
+    'ModelPrinterConfig',
+    'ModelPrinter',
+    'ModelSourcePrinterConfig',
+    'ModelSourcePrinter'
+)
 
 class ModelPrinterConfig(ContentPrinterConfig):
     def __init__(self,
@@ -147,6 +122,12 @@ class ModelPrinter(ContentPrinter):
 
         return self.output
 
+    def doModelTextBlock(self, textBlock):
+        assert isinstance(textBlock, TextBlock)
+        s = TextBlockPrinter(textBlock).do()
+        self.outLine(s)
+        return self.output
+
 
 class ModelSourcePrinterConfig(ContentPrinterConfig):
     def __init__(self,
@@ -177,8 +158,6 @@ class ModelSourcePrinterConfig(ContentPrinterConfig):
             contentMode=contentMode,
             summaryMode=summaryMode
         )
-
-
 
 
 class ModelSourcePrinter(ContentPrinter):
@@ -249,52 +228,3 @@ class ModelSourcePrinter(ContentPrinter):
                 self.config.styled)
         )
         return self.output
-
-# class AnnotatedSourcePrinter(SourcePrinter):
-#     def __init__(self,
-#                  theSource):
-#         # type: ('Source') -> None
-#
-#         assert theSource is not None
-#         super(AnnotatedSourcePrinter, self).__init__(
-#             theSource=theSource,
-#             summary=False,
-#             displayLineNos=False,
-#         )
-#
-#     def do(self):
-#         self.output = ''
-#
-#         self._issueHeader()
-#
-#         for (index, line) in enumerate(self.theSource.sourceLines):
-#             line_no = index + 1
-#             # self.out(str(line_no))
-#             self.out(line_no, line)
-#             localized_issues = self.theSource.fullIssueBox.at(line_no)
-#             if localized_issues:
-#                 self._localizedIssues(localized_issues)
-#         return self.output
-#
-#         # def _issueHeader(self):
-#         #     self._issuesSummary(self.theSource.fullIssueBox)
-#         #     unlocalized_issues=self.theSource.fullIssueBox.at(0)
-#         #     self._unlocalizedIssues(unlocalized_issues)
-#         #
-#         # def _line(self, line_no, line):
-#         #     self.outLine(line)
-#         #
-#         # def _issuesSummary(self, issues):
-#         #     s=issues.summaryLine
-#         #     if s!='':
-#         #         self.outLine(issues.summaryLine)
-#         #
-#         # def _unlocalizedIssues(self, issues, pattern='{level}: {message}'):
-#         #     for i in issues:
-#         #         self.outLine(
-#         #             i.str(pattern=pattern))
-#         #
-#         # def _localizedIssues(self, issues, pattern='{level}: {message}'):
-#         #     for i in issues:
-#         #         self.outLine(
-#         #             i.str(pattern=pattern,

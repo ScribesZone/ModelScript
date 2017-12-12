@@ -44,6 +44,26 @@ from modelscribes.metamodels.scenarios.operations import (
     Check,
 )
 
+__all__=(
+    'evaluateOperation',
+    'OperationEvaluation',
+    'UpdateOperationEvaluation',
+    'ObjectCreationEvaluation',
+    'ObjectDestructionEvaluation',
+    'LinkCreationEvaluation',
+    'LinkDestructionEvaluation',
+    'LinkObjectCreationEvaluation',
+    'AttributeAssignmentEvaluation',
+    'ReadOperationEvaluation',
+    'CheckEvaluation',
+    'InvariantEvaluation',
+    'InvariantValidation',
+    'InvariantViolation',
+    'CardinalityEvaluation',
+    'CardinalityViolation',
+    'CardinalityViolationObject',
+    'QueryEvaluation',
+)
 
 def evaluateOperation(blockEvaluation, op):
     #type: ('BlockEvaluation', Operation) -> OperationEvaluation
@@ -124,8 +144,6 @@ class OperationEvaluation(Subject):
     def _accessSet(self):
         # convenience method
         return self.blockEvaluation.accessSet
-
-
 
 
 #################################################################
@@ -339,14 +357,9 @@ class AttributeAssignmentEvaluation(UpdateOperationEvaluation):
 
 
 
-
-
-
 #################################################################
 # Read operations
 ##################################################################
-
-
 
 class ReadOperationEvaluation(OperationEvaluation):
     __metaclass__ = ABCMeta
@@ -354,8 +367,6 @@ class ReadOperationEvaluation(OperationEvaluation):
     def __init__(self, blockEvaluation, op):
         super(ReadOperationEvaluation, self).__init__(
             blockEvaluation, op)
-
-
 
 
 
@@ -460,6 +471,7 @@ class InvariantEvaluation(object):
     def _eval(self):
         # currently we have no mean to extract ReadAction
         self.accesses = []
+
 
 class InvariantValidation(InvariantEvaluation):
     """

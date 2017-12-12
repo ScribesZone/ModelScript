@@ -50,7 +50,9 @@ from modelscribes.metamodels.permissions.accesses import (
     AccessSet
 )
 
-
+__all__=(
+    'ScenarioEvaluation',
+)
 # TODO: Change comment, remove dead code, etc.
 #       This should lead to a general metamodel (conformance ?)
 

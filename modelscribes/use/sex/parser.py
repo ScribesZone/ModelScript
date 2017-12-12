@@ -398,8 +398,10 @@ class _SexOrSoilSource(ModelSourceFile):
         current_invariant_violation=None
         current_query_evaluation=None
         last_doc_comment = DocCommentLines()
+        last_text_block_lines = []
         in_block_comment = False
         current_eol_comment=None
+        current_element=self.model
 
         for (line_index, line) in enumerate(self.realSourceLines):
 
@@ -441,9 +443,9 @@ class _SexOrSoilSource(ModelSourceFile):
                         _S.original_line,
                     ))
 
-            # --------------------------------------------------
+            # ----------------------------------
             # Single and multi line /* */
-            # --------------------------------------------------
+            # ----------------------------------
 
             # replace inline /* */ by spaces
             line = re.sub(r'(/\*.*?\*/)', ' ', line)
@@ -480,10 +482,28 @@ class _SexOrSoilSource(ModelSourceFile):
                 last_doc_comment.clean()
                 continue
 
+            # ------------------------------------------
+            # Description
+            # ------------------------------------------
+
+
+            r = prefix+'--\|(?P<line>.*)'+end
+            m = re.match(r, line)
+            if m:
+                _line = m.group('line')
+                print('JJ'*10, _line, type(current_element))
+                # if current_element is not None:
+                #     current_element.description.addNewLine(
+                #         stringLine=_line,
+                #         lineNo=_S.line_no,
+                #     )
+                last_text_block_lines+=_line
+                continue
+
     # TODO: to restore
-            # #--------------------------------------------------
+            # #---------------------------------
             # # Line comment --
-            # #--------------------------------------------------
+            # #---------------------------------
             #
             # # TODO: check comment processing appiled in use parser
             # Full line comment

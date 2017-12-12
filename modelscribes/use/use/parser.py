@@ -280,6 +280,7 @@ class UseModelSource(ModelSourceFile):
         is_in_doc_comment = False
         last_doc_comment = DocCommentLines()
         current_eol_comment = None
+        current_element=self.classModel
         current_enumeration = None
         current_class = None
         current_attribute = None    # could be also in association class
@@ -352,6 +353,22 @@ class UseModelSource(ModelSourceFile):
                 continue
 
             #--------------------------------------------------
+            # Description
+            #--------------------------------------------------
+
+            r = '^ *--\|(?P<line>.*)$'
+            m = re.match(r, line)
+            if m:
+                _line=m.group('line')
+                print('OO'*10, _line, type(current_element))
+                if current_element is not None:
+                    current_element.description.addNewLine(
+                        stringLine=_line,
+                        lineNo=line_no,
+                    )
+                continue
+
+            #--------------------------------------------------
             # Line comment --
             #--------------------------------------------------
 
@@ -410,6 +427,7 @@ class UseModelSource(ModelSourceFile):
                 current_operation = None
                 current_condition = None
                 current_operation_condition = None
+                current_element = None
                 continue
 
             r = r'^ *attributes *$'
@@ -421,6 +439,7 @@ class UseModelSource(ModelSourceFile):
                 current_operation = None
                 current_condition = None
                 current_operation_condition = None
+                current_element = None
                 continue
 
             r = r'^ *between *$'
@@ -428,6 +447,7 @@ class UseModelSource(ModelSourceFile):
             if m:
                 last_doc_comment.clean()
                 current_enumeration = None
+                current_element = None
                 continue
 
             r = r'^ *operations *$'
@@ -439,6 +459,7 @@ class UseModelSource(ModelSourceFile):
                 current_operation = None
                 current_condition = None
                 current_operation_condition = None
+                current_element = None
                 continue
 
             #--------------------------------------------------
@@ -516,8 +537,10 @@ class UseModelSource(ModelSourceFile):
 
                 if m.group('end'):
                     current_enumeration = None
+                    current_element=None
                 else:
                     current_enumeration = enumeration
+                    current_element=enumeration
                 continue
 
             #---- enumeration literals, may be with end ------------
@@ -548,8 +571,10 @@ class UseModelSource(ModelSourceFile):
                                     line=line_no
                                 )  # TODO: add column
                             current_enumeration.addLiteral(literal)
+                            current_element=literal
                     if m.group('end'):
                         current_enumeration = None
+                        current_element=None
                     continue
 
             #---- class --------------------------------------------------
@@ -585,8 +610,10 @@ class UseModelSource(ModelSourceFile):
                         docComment=last_doc_comment.consume(),
                         eolComment=current_eol_comment,
                     )
+                current_element=current_class
                 if m.group('end') is not None:
                     current_class = None
+                    current_element = None
                 else:
                     current_context = {
                         'variables': None,
@@ -639,6 +666,7 @@ class UseModelSource(ModelSourceFile):
                     )
                 current_class = ac
                 current_association = ac
+                current_element=ac
                 continue
 
             #---- attribute ----------------------------------------------
@@ -682,6 +710,7 @@ class UseModelSource(ModelSourceFile):
                         eolComment=current_eol_comment,
                     )
                     current_attribute = attribute
+                    current_element=attribute
                     continue
 
             #---- operation ----------------------------------------------
@@ -741,6 +770,7 @@ class UseModelSource(ModelSourceFile):
                         'classname': current_class.name,
                         'signature': signature,
                     }
+                    current_element=operation
                     continue
 
 
@@ -773,6 +803,7 @@ class UseModelSource(ModelSourceFile):
                         docComment=last_doc_comment.consume(),
                         eolComment=current_eol_comment,
                     )
+                current_element=current_association
                 continue
 
             r = r'^ *(?P<type>\w+) *\[(?P<cardinality>[^\]]+)\]' \
@@ -849,7 +880,7 @@ class UseModelSource(ModelSourceFile):
                             line=line_no
                         )  # TODO: add column
 
-                    Role(
+                    role=Role(
                         name=m.group('name'), # could be None, but will get default
                         association=current_association,
                         type=m.group('type'),
@@ -864,6 +895,7 @@ class UseModelSource(ModelSourceFile):
                         docComment=last_doc_comment.consume(),
                         eolComment=current_eol_comment,
                     )
+                    current_element=role
                     continue
 
             rcontext=(
@@ -937,6 +969,7 @@ class UseModelSource(ModelSourceFile):
                                 docComment=last_doc_comment.consume(),
                                 eolComment=current_eol_comment,
                             )
+                            current_element = current_condition
                         elif m.group('cond') == 'pre':
                             if not self.checkAllowed(
                                     feature='pre/post',
@@ -956,6 +989,7 @@ class UseModelSource(ModelSourceFile):
                                 docComment=last_doc_comment.consume(),
                                 eolComment=current_eol_comment,
                             )
+                            current_element = current_condition
                         elif m.group('cond') == 'post':
                             if not self.checkAllowed(
                                     feature='pre/post',
@@ -975,6 +1009,7 @@ class UseModelSource(ModelSourceFile):
                                 docComment=last_doc_comment.consume(),
                                 eolComment=current_eol_comment,
                             )
+                            current_element = current_condition
                     continue
 
 
@@ -1046,6 +1081,7 @@ class UseModelSource(ModelSourceFile):
                 current_operation = None
                 current_association = None
                 current_condition = None
+                current_element = None
                 continue
 
             #---- a line has not been processed.

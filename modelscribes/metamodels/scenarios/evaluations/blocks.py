@@ -15,6 +15,14 @@ from modelscribes.metamodels.scenarios.evaluations.operations import (
     evaluateOperation,
 )
 
+__all__=(
+    'evaluateBlock',
+    'BlockEvaluation',
+    'ContextBlockEvaluation',
+    'MainBlockEvaluation',
+    'UsecaseInstanceBlockEvaluation',
+    'TopLevelBlockEvaluation'
+)
 
 # TODO: check how to create nested AccessSet so that block can have their own access set
 def evaluateBlock(scenarioEvaluation, block):

@@ -34,11 +34,7 @@ class PermissionModelPrinter(ModelPrinter):
         return self.output
 
     def doPermissionModel(self, permissionModel):
-        # self.outLine(
-        #     #TODO: improve the parser
-        #     str(permissionModel),
-        #     indent=0,
-        #     lineNo=None)
+        self.doModelTextBlock(permissionModel.description)
         for rule in permissionModel.rules:
             self.doFactorizedPermissionRule(rule)
 
@@ -59,6 +55,8 @@ class PermissionModelPrinter(ModelPrinter):
             actions_str,
             resources_str
         ))
+        self.doModelTextBlock(rule.description)
+
 
     def getSubject(self, subject):
         return subject.subjectLabel

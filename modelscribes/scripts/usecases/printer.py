@@ -33,24 +33,29 @@ class UsecaseModelPrinter(ModelPrinter):
         return self.output
 
     def doUsecaseModel(self, usecaseModel):
+        self.doModelTextBlock(usecaseModel.description)
+
+        if usecaseModel.isSystemDefined:
+            self.doSystem(usecaseModel.system)
 
         for actor in usecaseModel.actorNamed.values():
             self.doActor(actor)
 
-        if usecaseModel.isSystemDefined:
+        self.doActorsUsecases(usecaseModel)
+        return self.output
+
+    def doSystem(self, system):
             self.outLine(
                 '%s %s ' % (
                     self.kwd('system'),
-                    usecaseModel.system.name),
-                lineNo=usecaseModel.system.lineNo,
+                    system.name),
+                lineNo=system.lineNo,
                 linesBefore=1,
                 linesAfter=1)
+            self.doModelTextBlock(system.description)
 
-            for usecase in usecaseModel.system.usecases:
+            for usecase in system.usecases:
                 self.doUsecase(usecase)
-
-        self.doActorsUsecases(usecaseModel)
-        return self.output
 
 
     def doActor(self, actor):
@@ -60,6 +65,7 @@ class UsecaseModelPrinter(ModelPrinter):
                 actor.name),
             lineNo=actor.lineNo
         )
+        self.doModelTextBlock(actor.description)
         return self.output
 
 
@@ -70,13 +76,14 @@ class UsecaseModelPrinter(ModelPrinter):
                usecase.name ),
             lineNo=usecase.lineNo
         )
+        self.doModelTextBlock(usecase.description)
         return self.output
 
 
     def doActorsUsecases(self, usecaseModel):
         for a in usecaseModel.actors:
             for u in a.usecases:
-                self.outLine('%s %s' % (a.name, u.name))
+                self.outLine('A %s can %s.' % (a.name, u.name))
         # if usecaseModel.system.name == '*unknown*':
         #     self.outLine('-- NO SYSTEM DEFINED !')
         # else:

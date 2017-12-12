@@ -1,6 +1,5 @@
+class model Employee
 
-
-model Employee
 
 -- classes
 

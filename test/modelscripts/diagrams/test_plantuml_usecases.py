@@ -1,11 +1,10 @@
 # coding=utf-8
 
 import logging
+from distutils.dir_util import mkpath
 
 from nose.plugins.attrib import attr
 
-logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('test.'+__name__)
 
 from test.modelscripts import (
     TEST_CASES_DIRECTORY,
@@ -16,6 +15,12 @@ import os
 import modelscribes.scripts.usecases.parser
 import modelscribes.scripts.usecases.plantuml
 import modelscribes.diagrams.plantuml.engine
+
+logging.basicConfig(level=logging.DEBUG)
+log = logging.getLogger('test.'+__name__)
+
+USD_DIR=os.path.join(BUILD_DIRECTORY, 'usd')
+mkpath(USD_DIR)
 
 # TODO: add this again
 # def test_UseOclModel_Simple():
@@ -51,8 +56,7 @@ def doGraph(filename, puml_engine):
         #--- diag generation: system -> .puml --------------
 
         puml_file_path = os.path.join(
-            BUILD_DIRECTORY,
-            'usd',
+            USD_DIR,
             os.path.splitext(
                 os.path.basename(filename)) [0]+'.usd.puml'
         )
@@ -67,3 +71,4 @@ def doGraph(filename, puml_engine):
         puml_engine.generate(puml_file_path)
         print('=====')
 
+from distutils.dir_util import mkpath

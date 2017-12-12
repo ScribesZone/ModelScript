@@ -2,48 +2,46 @@
 from __future__ import unicode_literals, print_function, absolute_import, division
 from typing import Optional
 
-from modelscribes.scripts.base.printers import (
-    ModelPrinter,
-    ModelPrinterConfig,
-    ModelSourcePrinter,
+from modelscribes.base.printers import (
+    AbstractPrinter,
+    AbstractPrinterConfig,
     Styles
 )
+
 from modelscribes.metamodels.textblocks import (
-    METAMODEL
-)
-from modelscribes.metamodels.textblocks import (
-    TextBlockModel,
+    TextBlock,
     BrokenReference,
     Occurrence
 )
 
 __all__=(
-    'TextBlockModelPrinter'
+    'TextBlockPrinter'
 )
 
-class TextBlockModelPrinter(ModelPrinter):
+class TextBlockPrinter(AbstractPrinter):
 
     def __init__(self,
-                 theModel,
+                 textBlock,
                  config=None):
-        #type: (TextBlockModel, Optional[ModelPrinterConfig]) -> None
-        super(TextBlockModelPrinter, self).__init__(
-            theModel=theModel,
+        #type: (TextBlock, Optional[AbstractPrinterConfig]) -> None
+        super(TextBlockPrinter, self).__init__(
             config=config
         )
+        self.textBlock=textBlock
 
-    def doModelContent(self):
-        super(TextBlockModelPrinter, self).doModelContent()
-        self.doTextBlockModel(self.theModel)
+    def do(self):
+        if len(self.textBlock.lines)>=1:
+            self.doTextBlock(self.textBlock)
         return self.output
 
-    def doTextBlockModel(self, textBlock):
+    def doTextBlock(self, textBlock):
         for line in textBlock.lines:
             self.doLine(line)
         return self.output
 
     def doLine(self, line):
-        _= '        | '
+        _= '    %s' % (
+            Styles.comment.do('|', self.config.styled))
         for token in line.tokens:
             if isinstance(token, Occurrence):
                 x= Styles.bold.do(
@@ -54,11 +52,9 @@ class TextBlockModelPrinter(ModelPrinter):
                     '`%s`?' % token.string,
                     styled=self.config.styled)
             else:
-                x=token . string
+                x=Styles.comment.do(
+                    token.string,
+                    styled=self.config.styled)
             _+=x
         self.outLine(_,lineNo=line.lineNo)
         return self.output
-
-
-METAMODEL.registerModelPrinter(TextBlockModelPrinter)
-METAMODEL.registerSourcePrinter(ModelSourcePrinter)

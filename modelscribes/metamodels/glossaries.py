@@ -15,6 +15,7 @@ from typing import Dict, Text, Optional, List
 
 from modelscribes.megamodels.metamodels import Metamodel
 from modelscribes.megamodels.models import Model
+from modelscribes.megamodels.elements import SourceModelElement
 from modelscribes.base.sources import SourceElement
 from modelscribes.base.metrics import Metrics
 
@@ -78,7 +79,7 @@ class GlossaryModel(Model):
         return ms
 
 
-class Domain(SourceElement):
+class Domain(SourceModelElement):
     """
     A collection of entry indexed by the main term.
     """
@@ -100,7 +101,7 @@ class Domain(SourceElement):
         return self.entryNamed.values()
 
 
-class Entry(SourceElement):
+class Entry(SourceModelElement):
     """
     A main term with alternative terms, description
     and references
@@ -110,7 +111,6 @@ class Entry(SourceElement):
                  domain,
                  mainTerm,
                  alternativeTerms=(),
-                 description=None,
                  lineNo=None):
         super(Entry, self).__init__(
             name=None,
@@ -127,9 +127,6 @@ class Entry(SourceElement):
 
         self.alternativeTerms=list(alternativeTerms)
         #type: List[Text]
-
-        self.description=None
-        #type: 'TextBlockModel'
 
         self.occurrences=[]
         #type: List['Occurrence']

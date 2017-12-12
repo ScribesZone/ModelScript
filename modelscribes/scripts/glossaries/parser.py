@@ -18,9 +18,9 @@ from modelscribes.base.issues import (
     Levels,
 )
 from modelscribes.metamodels.textblocks import (
-    TextBlockModel,
+    TextBlock,
 )
-from modelscribes.scripts.textblocks.parser import TextBlockSource
+# from modelscribes.scripts.textblocks.parser import TextBlockSource
 from modelscribes.megamodels.metamodels import Metamodel
 
 DEBUG=0
@@ -29,22 +29,22 @@ class GlossaryModelSource(ModelSourceFile):
     def __init__(self, glossaryFileName):
         #type: (Text) -> None
 
-        self.descriptionBlockSourcePerEntry={}
-        #type:Dict[Entry, TextBlockSource]]
-
-
-        # self.__descriptionLinesPerEntry={}
-        # #type: Optional[Dict[Entry, List[Text]]]
-        # """
-        # Just used to store during the first step parsing the
-        # lines that make the description of the entry.
-        # This will be used later as the source of the
-        # embedded parser for text. This field will be set
-        # to None just after.
-        # """
+        # self.descriptionBlockSourcePerEntry={}
+        # #type:Dict[Entry, TextBlockSource]]
         #
-        # self.__descriptionFirstLineNoPerEntry={}
-        # #type: Optional[Dict[Entry, List[Text]]]
+        #
+        # # self.__descriptionLinesPerEntry={}
+        # # #type: Optional[Dict[Entry, List[Text]]]
+        # # """
+        # # Just used to store during the first step parsing the
+        # # lines that make the description of the entry.
+        # # This will be used later as the source of the
+        # # embedded parser for text. This field will be set
+        # # to None just after.
+        # # """
+        # #
+        # # self.__descriptionFirstLineNoPerEntry={}
+        # # #type: Optional[Dict[Entry, List[Text]]]
 
         super(GlossaryModelSource, self).__init__(
             fileName=glossaryFileName)
@@ -68,13 +68,13 @@ class GlossaryModelSource(ModelSourceFile):
     def parseToFillModel(self):
         self._parse_main_body()
         if self.glossaryModel and self.isValid:
-            self._parseDescriptions()
+            self._resolve()
 
     def _parse_main_body(self):
         """
         Parse everything in the glossary except the description
         of entries. These descriptions are parsed by the
-        subparser for TextBlockModel.
+        subparser for TextBlock.
         In this first phase we just store the information
         as lines (and first line number). This info will
         be used in second phase to feed the embedded parser.
@@ -187,14 +187,10 @@ class GlossaryModelSource(ModelSourceFile):
                             domain=domain,
                             mainTerm=name,
                             alternativeTerms=words,
-                            description=None,
                             lineNo=line_no,
                         )
-                        # Create an empty text block for description
-                        descr=TextBlockModel()
-                        entry.description=descr
-                        self.descriptionBlockSourcePerEntry[entry]=(
-                            TextBlockSource())
+                        # Set the glossary of the description
+                        entry.description.glossary=self.glossaryModel
                     current_context=entry
                     continue
 
@@ -207,10 +203,13 @@ class GlossaryModelSource(ModelSourceFile):
                 m = re.match(r, line)
                 if m:
                     entry=current_context
-                    self.descriptionBlockSourcePerEntry[entry] \
-                            .addTextLine(
-                                textLine=m.group('line'),
-                                lineNo=line_no)
+                    entry.description.addNewLine(
+                        stringLine=m.group('line'),
+                        lineNo=line_no)
+                    # .descriptionBlockSourcePerEntry[entry] \
+                    #         .addTextLine(
+                    #             textLine=m.group('line'),
+                    #             lineNo=line_no)
                     continue
 
             #-----------------------------------------------
@@ -226,25 +225,26 @@ class GlossaryModelSource(ModelSourceFile):
 
 
 
-    def _parseDescriptions(self):
+    def _resolve(self):
         """
         For all entry description in the glossary
         resolve the description with this glossary.
         """
         for domain in self.glossaryModel.domainNamed.values():
             for entry in domain.entryNamed.values():
-                description_parser= (
-                    self.descriptionBlockSourcePerEntry[entry])
-                # lno=self.__descriptionFirstLineNoPerEntry[entry]
-                description_parser.parseToFillModel(
-                    container=entry,
-                    glossary=self.model
-                )
-                if not description_parser.isValid:
-                    # TODO: check what should be done
-                    raise ValueError('Error in parsing Text source')
-                else:
-                    entry.description=description_parser.model
+                entry.description.resolve()
+                # description_parser= (
+                #     self.descriptionBlockSourcePerEntry[entry])
+                # # lno=self.__descriptionFirstLineNoPerEntry[entry]
+                # description_parser.parseToFillModel(
+                #     container=entry,
+                #     glossary=self.model
+                # )
+                # if not description_parser.isValid:
+                #     # TODO: check what should be done
+                #     raise ValueError('Error in parsing Text source')
+                # else:
+                #     entry.description=description_parser.model
 
 
 

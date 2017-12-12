@@ -68,9 +68,12 @@ class PermissionModelSource(ModelSourceFile):
         def begin(n): return '^'
         end = ' *$'
 
+
         if DEBUG>=1:
             print('\nParsing %s\n' % self.fileName)
 
+        current_element=self.permissionModel
+        current_scope='model' # model | permission
 
         for (line_index, line) in enumerate(self.sourceLines):
             original_line = line
@@ -94,13 +97,21 @@ class PermissionModelSource(ModelSourceFile):
             m = re.match(r, line)
             if m:
                 continue
-            # TODO: add proper comment management
+
+            #---- description ----------------------------------
+            r = '^ *\|(?P<line>.*)$'
+            m = re.match(r, line)
+            if m:
+                current_element.description.addNewLine(
+                    stringLine=m.group('line'),
+                    lineNo=line_no,
+                )
+                continue
 
             #--- megamodel statements -------------
             is_mms=isMegamodelStatement(
                 lineNo=line_no,
                 modelSourceFile=self)
-            # print('OOO',line,is_mms)
             if is_mms:
                 # megamodel statements have already been
                 # parse so silently ignore them
@@ -178,7 +189,8 @@ class PermissionModelSource(ModelSourceFile):
                     resources=resources
                 )
                 self.permissionModel.rules.append(rule)
-
+                current_element=rule
+                current_scope='permission'
 
                 continue
 

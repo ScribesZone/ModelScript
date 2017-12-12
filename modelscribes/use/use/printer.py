@@ -33,7 +33,6 @@ log = logging.getLogger('test.' + __name__)
 
 __all__ = [
     'UseModelPrinter',
-    'UseSourcePrinter',
 ]
 
 class UseModelPrinter(ModelPrinter):
@@ -48,24 +47,6 @@ class UseModelPrinter(ModelPrinter):
             config=config
         )
 
-    # def __init__(self,
-    #              theModel,
-    #              summary=False,
-    #              displayLineNos=True):
-    #     #type: (ClassModel, bool, bool) -> None
-    #
-    #     super(UseModelPrinter, self).__init__(
-    #         theModel=theModel,
-    #         summary=summary,
-    #         displayLineNos=displayLineNos
-    #     )
-
-    # def do(self):
-    #     self.output=''
-    #     self._issues()
-    #     self._model()
-    #     return self.output
-
     def doModelContent(self):
         super(UseModelPrinter, self).doModelContent()
         self.doUseModel(self.theModel)
@@ -76,15 +57,20 @@ class UseModelPrinter(ModelPrinter):
         if c is not None:
             for line in c:
                 self.out(indent + self.cmt('--' + line) + '\n')
+        return self.output
 
     def doEolComment(self, source_element):
-        c = source_element.eolComment
+        c=source_element.eolComment
         if c is not None:
             self.out(self.cmt(' --' + c))
+            print('PP'*10+c)
+
         # TODO: this should be arranged if needed
         # self.out('\n')
+        return self.output
 
     def doUseModel(self, model):
+        self.doModelTextBlock(model.description)
 
         if self.theModel.basicTypes is not None:
             for t in self.theModel.basicTypes:
@@ -101,7 +87,7 @@ class UseModelPrinter(ModelPrinter):
         # but it still make sense to add comment for them
         # self.doDocComment(self.theModel, '')
         # self.doEolComment(self.theModel)
-        self.outLine('')
+        # self.outLine('')
 
         for e in model.enumerations:
             self.doEnumeration(e)
@@ -116,6 +102,7 @@ class UseModelPrinter(ModelPrinter):
             self.doAssociationClass(ac)
 
         # TODO: invariants, operationConditions, basicTypes
+        return self.output
 
     def doEnumeration(self, enumeration):
         self.doDocComment(enumeration, '')
@@ -123,6 +110,7 @@ class UseModelPrinter(ModelPrinter):
             self.kwd('enum'),
             enumeration.name,
             self.doEolComment(enumeration)))
+        self.doModelTextBlock(enumeration.description)
         for l in enumeration.literals:
             self.outLine(l, indent=1)
         self.outLine(self.kwd('}'))
@@ -133,6 +121,7 @@ class UseModelPrinter(ModelPrinter):
         #     )
         # )
         # self.out('\n}\n\n')
+        return self.output
 
     def doClass(self, class_):
         self.doDocComment(class_, '')
@@ -142,12 +131,17 @@ class UseModelPrinter(ModelPrinter):
                         lambda s:s.name, class_.superclasses)))
         else:
             sc = ''
-        self.outLine("%s %s %s %s" % (
+        self.outLine("%s %s %s " % (
             self.kwd('class'),
             class_.name,
             sc,
-            self.doEolComment(class_)))
-
+            ))
+        # self.outLine("%s %s %s %s" % (
+        #     self.kwd('class'),
+        #     class_.name,
+        #     sc,
+        #     self.doEolComment(class_)))
+        self.doModelTextBlock(class_.description)
         if class_.attributes:
             self.outLine(self.kwd('attributes'))
             for attribute in class_.attributes:
@@ -164,7 +158,7 @@ class UseModelPrinter(ModelPrinter):
 
         self.outLine(self.kwd('end'),
                      linesAfter=1)
-
+        return self.output
 
     def doAssociation(self, association):
         self.doDocComment(association, '')
@@ -173,11 +167,12 @@ class UseModelPrinter(ModelPrinter):
             association.name,
             self.kwd('between'),
         ))
+        self.doModelTextBlock(association.description)
         self.doEolComment(association)
         for role in association.roles:
             self.doRole(role)
         self.outLine(self.kwd('end'), linesAfter=1)
-
+        return self.output
 
     def doAssociationClass(self, associationClass):
         self.doDocComment(associationClass, '')
@@ -192,6 +187,7 @@ class UseModelPrinter(ModelPrinter):
             sc,
             self.kwd('between')))
         self.doEolComment(associationClass)
+        self.doModelTextBlock(associationClass.description)
 
 
         for role in associationClass.roles:
@@ -208,6 +204,7 @@ class UseModelPrinter(ModelPrinter):
                 self.doOperation(operation)
 
         self.outLine(self.kwd('end'), linesAfter=1)
+        return self.output
 
     def doAttribute(self, attribute):
         self.doDocComment(attribute, '    ')
@@ -216,6 +213,7 @@ class UseModelPrinter(ModelPrinter):
                 self.kwd(':'),
                 attribute.type.name),
             indent=1)
+        self.doModelTextBlock(attribute.description)
         self.doEolComment(attribute)
         if attribute.isDerived:
             self.outLine('%s %s' % (
@@ -223,7 +221,7 @@ class UseModelPrinter(ModelPrinter):
                     attribute.expression),
                 indent=2
             )
-
+        return self.output
 
     def doOperation(self, operation):
         self.doDocComment(operation, '    ')
@@ -236,9 +234,11 @@ class UseModelPrinter(ModelPrinter):
         self.doEolComment(operation)
         if operation.hasImplementation:
             self.outLine(indent('        ',operation.expression)+'\n')
-        for condition in operation.conditions:
-            self._operationCondition(condition)
+        self.doModelTextBlock(operation.description)
 
+        for condition in operation.conditions:
+            self.doOperationCondition(condition)
+        return self.output
 
     def doInvariant(self, invariant):
         if invariant.class_ is None:
@@ -256,8 +256,10 @@ class UseModelPrinter(ModelPrinter):
             self.kwd('inv'),
             invariant.name,
         ))
+        self.doModelTextBlock(invariant.description)
         self.doEolComment(invariant)
         self.out(indent(prefix_rest, invariant.expression)+'\n')
+        return self.output
 
     def doRole(self, role):
         self.doDocComment(role, '    ')
@@ -268,9 +270,11 @@ class UseModelPrinter(ModelPrinter):
         max = '*' if role.cardinalityMax is None else role.cardinalityMax
         self.outLine('    %s[%s..%s] %s'
                  % (role.type.name, role.cardinalityMin, max, rn ))
+        self.doModelTextBlock(role.description)
         self.doEolComment(role)
+        return self.output
 
-    def _operationCondition(self, condition):
+    def doOperationCondition(self, condition):
         prefix_first = '        '
         prefix_rest  = '            '
         keyword='pre' if isinstance(condition,PreCondition) else 'post'
@@ -281,33 +285,8 @@ class UseModelPrinter(ModelPrinter):
             condition.name,
         ))
         self.doEolComment(condition)
+        self.doModelTextBlock(condition.description)
         self.out(indent(prefix_rest,condition.expression)+'\n')
-
-# # TODO: to be replaced by a generic version
-# class UseSourcePrinter(SourcePrinter):
-#
-#     def __init__(self,
-#                  theSource,
-#                  summary=False,
-#                  displayLineNos=True):
-#         super(UseSourcePrinter, self).__init__(
-#             theSource=theSource,
-#             summary=summary,
-#             displayLineNos=displayLineNos)
-#
-#     def do(self):
-#         self.output=''
-#         if self.theSource.isValid:
-#             p=UseModelPrinter(
-#                 theModel=self.theSource.model,
-#                 summary=self.summary,
-#                 displayLineNos=self.displayLineNos
-#             ).do()
-#             self.out(p)
-#         else:
-#             self._issues()
-#         return self.output
-
-
+        return self.output
 
 

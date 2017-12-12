@@ -38,11 +38,12 @@ import abc
 import collections
 import logging
 
-from typing import Text, Optional, Union, Any, List, Dict
+from typing import Text, Optional, Union, List, Dict
 
 from modelscribes.base.sources import (
     SourceElement,
 )
+from modelscribes.megamodels.elements import SourceModelElement
 from modelscribes.base.metrics import Metrics
 from modelscribes.megamodels.metamodels import Metamodel
 from modelscribes.megamodels.dependencies.metamodels import (
@@ -297,9 +298,7 @@ class ClassModel(Model):
         return  '\n'.join(lines)
 
 
-
-
-class TopLevelElement(SourceElement):
+class TopLevelElement(SourceModelElement):
     """
     Top level element.
     """
@@ -413,14 +412,14 @@ class Class(TopLevelElement, Entity):
         return self.invariantNamed.keys()
 
 
-class Attribute(SourceElement, Member):
+class Attribute(SourceModelElement, Member):
     """
     Attributes.
     """
     def __init__(self, name, class_, code=None, type=None,
                  isDerived=False, isInit=False, expression=None,
                  lineNo=None, docComment=None, eolComment=None):
-        SourceElement.__init__(
+        SourceModelElement.__init__(
             self,
             name, code=code,
             lineNo=lineNo, docComment=docComment, eolComment=eolComment)
@@ -437,14 +436,14 @@ class Attribute(SourceElement, Member):
 
 # class Parameter
 
-class Operation(SourceElement, Member):
+class Operation(SourceModelElement, Member):
     """
     Operations.
     """
     def __init__(self, name,  class_, signature, code=None,
                  expression=None,
                  lineNo=None, docComment=None, eolComment=None):
-        SourceElement.__init__(
+        SourceModelElement.__init__(
             self,
             name, code,
             lineNo=lineNo, docComment=docComment, eolComment=eolComment)
@@ -572,7 +571,7 @@ class Association(TopLevelElement, Entity):
 
 
 
-class Role(SourceElement, Member):
+class Role(SourceModelElement, Member):
     """
     Roles.
     """
@@ -586,7 +585,7 @@ class Role(SourceElement, Member):
         if name=='' or name is None:
             if type is not None:
                 name = type[:1].lower() + type[1:]
-        SourceElement.__init__(
+        SourceModelElement.__init__(
             self,
             name, code=code,
             lineNo=lineNo, docComment=docComment, eolComment=eolComment)

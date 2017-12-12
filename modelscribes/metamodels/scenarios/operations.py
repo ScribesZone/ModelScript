@@ -23,7 +23,7 @@ from abc import ABCMeta
 
 from typing import Optional, List, Text
 
-from modelscribes.base.sources import SourceElement
+from modelscribes.megamodels.elements import SourceModelElement
 from modelscribes.metamodels.classes import (
     Class,
     Association,
@@ -32,12 +32,24 @@ from modelscribes.metamodels.classes import (
 )
 from modelscribes.metamodels.permissions.sar import Subject
 
-
+__all__=(
+    'Operation',
+    'ReadOperation',
+    'UpdateOperation',
+    'ObjectCreation',
+    'ObjectDestruction',
+    'LinkCreation',
+    'LinkDestruction',
+    'LinkObjectCreation',
+    'AttributeAssignment',
+    'Query',
+    'Check'
+)
 #--------------------------------------------------------------
 #   Abstract classes
 #--------------------------------------------------------------
 
-class Operation(SourceElement, Subject):
+class Operation(SourceModelElement, Subject):
     __metaclass__ = ABCMeta
 
     def __init__(self,
@@ -78,7 +90,6 @@ class UpdateOperation(Operation):
         block, name=None,
         code=None, lineNo=None, docComment=None, eolComment=None):
         super(UpdateOperation, self).__init__(block, name, code, lineNo, docComment, eolComment)
-
 
 
 #--------------------------------------------------------------
