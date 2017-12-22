@@ -1,6 +1,6 @@
 # coding=utf-8
 
-import modelscribes.all
+import modelscribes
 
 from modelscribes.megamodels.megamodels import Megamodel
 from modelscribes.scripts.megamodels.printer.megamodels import MegamodelPrinter

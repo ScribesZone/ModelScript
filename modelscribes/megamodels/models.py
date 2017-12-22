@@ -55,7 +55,7 @@ class Model(MegamodelElement, ModelElement, WithIssueList):
         # If the model is from a sourceFile
         # then set by parseToFillImportBox
 
-        self.source=None  #type: Optional[                                 ModelSourceFile]
+        self.source=None  #type: Optional[ModelSourceFile]
         # Set later if build from a ModelSourceFile.
         # Set in the constuctor of ModelSourceFile
 
@@ -64,7 +64,7 @@ class Model(MegamodelElement, ModelElement, WithIssueList):
         WithIssueList.__init__(self, parents=[])
         # Parents set at the same time as source
 
-        ModelElement.__init__(self)
+        ModelElement.__init__(self, self)
 
 
         self.kind='' #type: Text
@@ -85,6 +85,7 @@ class Model(MegamodelElement, ModelElement, WithIssueList):
         #type: () -> Metamodel
         raise NotImplementedError()
 
+
     @property
     def label(self):
         name="''" if self.name=='' else self.name
@@ -99,9 +100,6 @@ class Model(MegamodelElement, ModelElement, WithIssueList):
         #type: ()->Metrics
         return Metrics()
 
-    def check(self):
-        pass
-
     @property
     def fullMetrics(self):
         #type: () -> Metrics
@@ -113,6 +111,10 @@ class Model(MegamodelElement, ModelElement, WithIssueList):
     @property
     def text(self):
         return self.metamodel.modelPrinterClass(self).do()
+
+    def finalize(self):
+        print('EE'*100+' finalize model')
+        self.check()
 
     def str( self,
              method='do',

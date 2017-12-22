@@ -15,6 +15,10 @@ import os
 import tempfile
 import re
 from modelscribes.config import Config
+from modelscribes.interfaces.environment import Environment
+from modelscribes.base.files import (
+    replaceExtension
+)
 __all__ = [
     'USEEngine',
 ]
@@ -89,9 +93,14 @@ class USEEngine(object):
 
 
     @classmethod
-    def _execute(cls, useSource, soilFile, errWithOut=False,
-                  executionDirectory=None):
-        #type: (Text,Text,bool,Text) -> int
+    def _execute(cls,
+                 useSource,
+                 soilSource,
+                 basicFileName,
+                 workerSpace=None,
+                 errWithOut=False,
+                 executionDirectory=None):
+        #type: (Text, Text, Text, Text, bool, Text) -> int
 
         """
         Execute use command with the given model and given soil file.
@@ -107,6 +116,23 @@ class USEEngine(object):
         #    This is in particular the case of 'open file.soil' rules.
         """
 
+        # def getWorkerFileLabel():
+        #     if workerFileLabel is not None:
+        #         worker_file_label=workerFileLabel
+        #     else:
+        #
+        #         use_source_label=Environment.pathToLabel(
+        #             originalUseSource if originalUseSource is not None
+        #             else useSource)
+        #         soil_source_label=Environment.pathToLabel(
+        #             originalSoilSource if originalSoilSource is not None
+        #             else soilSource)
+        #         worker_file_label= '%s___%s' % (use_source_label, soil_source_label)
+        #         # print('JJ' * 10 +(' %s - %s' % (useSource, soilSource)))
+        #         print('JJ' * 10 +(' ==> %s' % (worker_file_label)))
+        #     return worker_file_label
+
+
         def readAndRemove(filename):
             with open(filename, 'r') as f:
                 _ = f.read()
@@ -120,33 +146,49 @@ class USEEngine(object):
         # if not os.path.isfile(soilFile):
         #     raise IOError('File %s not found' % soilFile)
 
+        # worker_file_label=getWorkerFileLabel()
+
         if errWithOut:
             #-- one unique output file for output and errors
-            try:
-                (f, output_filename) = tempfile.mkstemp(suffix='.txt', text=True)
-                os.close(f)
-            except Exception:
-                raise IOError('Cannot create temporary file')
+            output_filename=Environment.getWorkerFileName(
+                basicFileName=basicFileName+'.out',
+                workerSpace=workerSpace)
+            #
+            # try:
+            #     os.path.expanduser()
+            #     (f, output_filename) = tempfile.mkstemp(suffix='.txt', text=True)
+            #     os.close(f)
+            # except Exception:
+            #     raise IOError('Cannot create temporary file')
             errors_filename = None
             redirection = '>%s 2>&1' % output_filename
             cls.out = None
             cls.err = None
         else:
             # -- two temporary files for output and errors
-            (f, output_filename) = tempfile.mkstemp(suffix='.use', text=True)
-            os.close(f)
+            # (f, output_filename) = tempfile.mkstemp(suffix='.use', text=True)
+            # os.close(f)
+            output_filename = Environment.getWorkerFileName(
+                basicFileName=basicFileName + '.utc',
+                workerSpace=workerSpace)
+            # output_filename=Environment.getWorkerFile(name=worker_file_label + '.use')
             # prepare temporary file for errors
-            (f, errors_filename) = tempfile.mkstemp(suffix='.err', text=True)
-            os.close(f)
+            # (f, errors_filename) = tempfile.mkstemp(suffix='.err', text=True)
+            # os.close(f)
+            # errors_filename=Environment.getWorkerFile(name=worker_file_label + '.err')
+            errors_filename = Environment.getWorkerFileName(
+                basicFileName=basicFileName + '.err',
+                workerSpace=workerSpace)
+
             redirection = '>%s 2>%s' % (output_filename, errors_filename)
             cls.outAndErr = None
 
 
         commandPattern = '%s -nogui -nr %s %s '+ redirection
         cls.command = (commandPattern
-                       % (USE_OCL_COMMAND, useSource, soilFile))
+                       % (USE_OCL_COMMAND, useSource, soilSource))
         if DEBUG>=3 or Config.realtimeUSE>=1:
-            print('use: USE EXECUTION %s' % cls.command)
+            print('    use: USE EXECUTION %s' % cls.command)
         cls.directory = executionDirectory if executionDirectory is not None \
                      else os.getcwd()
         # cls.directory = executionDirectory if executionDirectory is not None \
@@ -154,20 +196,32 @@ class USEEngine(object):
         previousDirectory = os.getcwd()
 
         # Execute the command
-        log.info('Execute USE OCL in %s: %s', cls.directory, cls.command)
+        # log.info('Execute USE OCL in %s: %s', cls.directory, cls.command)
+        if DEBUG>=2 or Config.realtimeUSE>=1:
+            print('    Execute USE OCL')
+            print('        working dir: %s' % cls.directory)
+            print('        use file   : %s' % useSource)
+            print('        soil file  : %s' % soilSource)
+            print('        errWithOut : %s' % errWithOut)
+            print('        output     : %s' % output_filename)
+            if cls.outAndErr:
+                print('        output     : %s' % errors_filename)
+
         os.chdir(cls.directory)
         cls.commandExitCode = os.system(cls.command)
         os.chdir(previousDirectory)
-        log.info('        execution returned %s exit code', cls.commandExitCode)
-
+        if DEBUG>=2 or Config.realtimeUSE>=1:
+            print('        exit code  : %s' % cls.commandExitCode)
         if errWithOut:
-             if cls.commandExitCode != 0:
+             if cls.commandExitCode != 0:   #FIXME: was != 0 but  with a bug
                  cls.outAndErr = None
              else:
                  cls.outAndErr = readAndRemove(output_filename)
         else:
             cls.out = readAndRemove(output_filename)
-            log.info ('        with output of %s lines',
+            if DEBUG >= 2 or Config.realtimeUSE >= 1:
+                print('        '
+                      'output of %s lines' %
                       len(cls.out.split('\n')))
             # log.debug('----- output -----')
             # log.debug(cls.out)
@@ -175,17 +229,19 @@ class USEEngine(object):
 
             cls.err = readAndRemove(errors_filename)
             if len(cls.err) > 0:
-                log.info(
-                    '        WITH ERRORS of %s lines: (first lines below)',
-                    len(cls.err.split('\n'))   )
+                if DEBUG >= 2 or Config.realtimeUSE >= 1:
+                    print(
+                        '        WITH ERRORS of %s lines: (first lines below)' %
+                        len(cls.err.split('\n'))   )
                 LINE_COUNT = 3
                 for err_line in cls.err.split('\n')[:LINE_COUNT]:
                     if err_line != '':
-                        log.debug('         ERROR: %s',err_line)
+                        if DEBUG >= 2 or Config.realtimeUSE >= 1:
+                            print('         ERROR: %s' % err_line)
             else:
-                log.info(
-                    '        without anything in stderr'
-                )
+                if DEBUG >= 2 or Config.realtimeUSE >= 1:
+                    print(
+                        '        without anything in stderr')
 
             # log.debug('----- errors -----')
             # log.debug(cls.err)
@@ -202,9 +258,13 @@ class USEEngine(object):
 
         Returns (str): The version number.
         """
+        use=cls._soilHelper('emptyModel.use')
+        soil=cls._soilHelper('quit.soil')
         cls._execute(
-            cls._soilHelper('emptyModel.use'),
-            cls._soilHelper('quit.soil'))
+            use,
+            soil,
+            basicFileName='useVersion',
+            workerSpace='home')
         first_line = cls.out.split('\n')[0]
         m = re.match( r'(use|USE) version (?P<version>[0-9\.]+),', first_line)
         if m:
@@ -228,7 +288,7 @@ class USEEngine(object):
             return True
 
     @classmethod
-    def analyzeUSEModel(cls, useFileName):
+    def analyzeUSEModel(cls, useFileName, prequelFileName=None):
         #type: (Text) -> int
         """
         Submit a ``.use`` model to use and indicates
@@ -241,25 +301,36 @@ class USEEngine(object):
         Returns (int):
             use command exit code.
         """
+        if prequelFileName is None:
+            prequelFileName=useFileName
         soil=cls._soilHelper('infoModelAndQuit.soil')
         cls._execute(
             useFileName,
-            soil)
+            soil,
+            basicFileName=prequelFileName)
         return cls.commandExitCode
 
 
     @classmethod
-    def executeSoilFileAsTrace(cls, useFile, soilFile):
+    def executeSoilFileAsTrace(cls, useFile, soilFile, prequelFileName=None):
         """
         Standard execution of a .soil file with a .use file.
         The result is saved in a temp .stc file whose name is returned
         """
+        if prequelFileName is None:
+            prequelFileName=soilFile
+        abs_prequel_file=os.path.realpath(prequelFileName)
         abs_use_file=os.path.realpath(useFile)
         abs_soil_file=os.path.realpath(soilFile)
+        # worker_file_label=Environment.pathToLabel(abs_soil_file)
+
         # create the driver file
         driver_sequence = "open '%s' \nquit\n" % abs_soil_file
-        (f, driver_filename) = tempfile.mkstemp(suffix='.soil', text=True)
-        os.close(f)
+        # (f, driver_filename) = tempfile.mkstemp(suffix='.soil', text=True)
+        # os.close(f)
+        driver_filename=Environment.getWorkerFileName(
+            basicFileName=replaceExtension(abs_prequel_file,'.driver.soil'))
+
         with open(driver_filename, 'w') as f:
             f.write(driver_sequence)
 
@@ -267,18 +338,23 @@ class USEEngine(object):
         cls._execute(
             abs_use_file,
             driver_filename,
+            basicFileName=replaceExtension(abs_prequel_file,'.use'),
             errWithOut=True)
 
+
         # save the result in a temp file
-        (f, trace_filename) = tempfile.mkstemp(suffix='.stc', text=True)
-        os.close(f)
+        # (f, trace_filename) = tempfile.mkstemp(suffix='.stc', text=True)
+        # os.close(f)
+        trace_filename=Environment.getWorkerFileName(
+            basicFileName=replaceExtension(abs_prequel_file,'.stc'))
+        # print('NN'*10, type(cls.outAndErr))
         with open(trace_filename, 'w') as f:
             f.write(cls.outAndErr)
         return trace_filename
 
 
     @classmethod
-    def executeSoilFileAsSex(cls, useFile, soilFile, sexFile=None):
+    def executeSoilFileAsSex(cls, useFile, soilFile, prequelFileName=None):
         #type: (Text, Text, Optional[Text]) -> Text
         """
         Execute a .soil file with a .use file and get the result
@@ -290,6 +366,9 @@ class USEEngine(object):
         1. first create the trace (.stc) with executeSoilFileAsTrace
         2. merge the soil file and trace file with merge
         """
+        if prequelFileName is None:
+            prequelFileName=soilFile
+
 
         from modelscribes.use.engine.merger import merge
 
@@ -305,8 +384,9 @@ class USEEngine(object):
                 'executeSoilFileAsTrace')
         trace_filename = cls.executeSoilFileAsTrace(
             abs_use_file,
-            abs_soil_file)
-
+            abs_soil_file,
+            prequelFileName=prequelFileName)
+        # print('HH'*10, trace_filename)
         if DEBUG>=3 or Config.realtimeUSE>=1:
             print(
                 'use: executeSoilFileAsSex: '
@@ -316,11 +396,11 @@ class USEEngine(object):
         sex_filename=merge(
             abs_soil_file,
             trace_filename,
-            sexFileName=sexFile)
+            prequelFileName=prequelFileName)
         if DEBUG>=3:
             print(
                 'use: executeSoilFileAsSex: '
-                'TRACE RESULT saved in %s' % sex_filename)
+                'SEX FILE saved in %s' % sex_filename)
             displayFileContent(sex_filename)
         with open(sex_filename, 'rU') as f:
             cls.outAndErr=f.read()

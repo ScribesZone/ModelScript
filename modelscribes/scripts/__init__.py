@@ -1,3 +1,10 @@
 # coding=utf-8
-# import modelscribes.scripts.parsers
-# import modelscribes.scripts.printers
+import modelscribes.scripts.accesses.all
+import modelscribes.scripts.classes.all
+import modelscribes.scripts.glossaries.all
+import modelscribes.scripts.megamodels.all
+import modelscribes.scripts.metamodels.all
+import modelscribes.scripts.objects.all
+import modelscribes.scripts.permissions.all
+import modelscribes.scripts.scenarios.all
+import modelscribes.scripts.usecases.all

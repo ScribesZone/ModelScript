@@ -24,16 +24,26 @@ class ScsToSoilPreprocessor(Preprocessor):
         self.addTransfo(RegexpTransfo(
             '^ *! *check *',
             'check -v -d -a' ))
-
+        self.addTransfo(RegexpTransfo(
+            '^(?P<before> *)assert *(?P<expr>.*)',
+            '{before}?? {expr} --@assertexpr'))
         # Remove the megammodel statement (import, model)
         # These statements are removed during
         # preprocessing since they are not useful after.
         self.addTransfo(RegexpTransfo(
             '^ *(scenario|import|object)', # remove mega
             '' ))
+        # self.addTransfo(RegexpTransfo(
+        #     '^(?P<before> *)enduci(?P<rest>.*)',
+        #     '{before}check -v -d -a --@enduci{rest}'))
+        #
+        # self.addTransfo(RegexpTransfo(
+        #     '^(?P<before> *)endcontext(?P<rest>.*)',
+        #     '{before}check -v -d -a --@endcontext{rest}'))
 
         self.addTransfo(PrefixToCommentTransfo((
             'actor',
+            'system',
             'uci',
             'usecase',
             'end',

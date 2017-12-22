@@ -5,8 +5,8 @@ from distutils.dir_util import mkpath
 
 
 from test.modelscripts import (
-    TEST_CASES_DIRECTORY,
-    BUILD_DIRECTORY,
+    getBuildDir,
+    getTestDir,
 )
 
 import os
@@ -16,8 +16,7 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
 
 
-SEX_DIR=os.path.join(BUILD_DIRECTORY, 'sex')
-mkpath(SEX_DIR)
+SEX_DIR=getBuildDir(os.path.join('gen','sex'))
 
 
 # TODO:add this again
@@ -27,8 +26,7 @@ mkpath(SEX_DIR)
 
 
 def testGenerator_UseOclModel_full():
-    test_dir=os.path.join(
-        TEST_CASES_DIRECTORY,'sex')
+    test_dir=getTestDir('sex')
 
     for test in ['Demo6','Demo666.5']:
 

@@ -2,7 +2,7 @@
 from __future__ import print_function
 from nose.plugins.attrib import attr
 
-import modelscribes.all
+import modelscribes
 from modelscribes.scripts.megamodels.printer.megamodels import MegamodelPrinter
 from modelscribes.metamodels import (
     glossaries

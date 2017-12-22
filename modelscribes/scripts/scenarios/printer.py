@@ -95,7 +95,8 @@ class ScenarioModelPrinter(ModelPrinter):
             #       to have configuration dependent options
             #       In that case, the config provide will
             #       be directly
-            assert(isinstance(config,ModelPrinterConfig))
+            print('AA'*10,type(config))
+            assert(isinstance(config, ModelPrinterConfig))
             config.modelHeader='scenario model'
             config.displayBlockSeparators=True
             config.displayEvaluation=True

@@ -1,5 +1,6 @@
 # coding=utf-8
 from typing import Text, List, Optional
+
 class DocCommentLines(object):
     def __init__(self):
         self.lines = []

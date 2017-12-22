@@ -106,21 +106,20 @@ class UseModelPrinter(ModelPrinter):
 
     def doEnumeration(self, enumeration):
         self.doDocComment(enumeration, '')
-        self.outLine('%s %s { %s' % (
+        self.out('%s %s {' % (
             self.kwd('enum'),
-            enumeration.name,
-            self.doEolComment(enumeration)))
+            enumeration.name))
+        self.doEolComment(enumeration)
         self.doModelTextBlock(enumeration.description)
-        for l in enumeration.literals:
-            self.outLine(l, indent=1)
+        for (i,el) in enumerate(enumeration.literals):
+            self.doEnumerationLiteral(el)
+            if i+1< len(enumeration.literals):
+                self.outLine(',')
         self.outLine(self.kwd('}'))
-        # self.out(
-        #     ',\n'.join(
-        #         ['    %s' % l
-        #          for l in enumeration.literals]
-        #     )
-        # )
-        # self.out('\n}\n\n')
+        return self.output
+
+    def doEnumerationLiteral(self, enumerationLiteral):
+        self.out(enumerationLiteral.name)
         return self.output
 
     def doClass(self, class_):

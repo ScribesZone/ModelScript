@@ -1,9 +1,2 @@
 typing
-abc
-codecs
-fragments
-logging
-tempfile
-
-# grep -R import | grep -v 'docs/' | grep .py: | grep -v 'modelscribes'  | sed -e 's/.*://' -e 's/^ *//' | egrep '^(import|from) +' | sed -e 's/ import .*//' |  sed -e 's/^from /import /' | sort | uniq
 

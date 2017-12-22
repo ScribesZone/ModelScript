@@ -9,7 +9,7 @@ from modelscribes.megamodels.models import Model
 from modelscribes.metamodels.permissions import (
     PermissionSet
 )
-from modelscribes.metamodels.permissions.gpermission import Control, Authorisation, Denial
+from modelscribes.metamodels.permissions.gpermissions import Control, Authorisation, Denial
 from modelscribes.metamodels.permissions.sar import Subject, Action, Resource, SAR
 
 
@@ -58,11 +58,8 @@ class Access(SAR):
 
 class AccessModel(Model):
 
-    def __init__(self, permissionSet=None, source=None):
-        super(AccessModel, self).__init__(
-            metamodel=METAMODEL,
-            source=source
-        )
+    def __init__(self, permissionSet=None):
+        super(AccessModel, self).__init__()
         self.accessSet=AccessSet(permissionSet=permissionSet) #type:AccessSet
 
 

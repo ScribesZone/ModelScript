@@ -2,13 +2,43 @@
 
 from typing import Callable, Any
 import io
-import tempfile
 import os
+from distutils.dir_util import mkpath
 
 from modelscribes.base.issues import (
     Levels,
     Issue
 )
+
+__all__=(
+    'ensureDir',
+    'extension',
+    'withoutExtension',
+    'replaceExtension',
+    'raiseIssueOrException',
+    'readFileLines',
+    'writeFile',
+    'writeFileLines'
+)
+
+def ensureDir(dir):
+    if not os.path.isdir(dir):
+        try:
+            mkpath(dir)
+        except:
+            raise IOError('Cannot create directory %s' % dir)
+
+def extension(path):
+    filename, file_extension =os.path.splitext(os.path.basename(path))
+    return file_extension
+
+def withoutExtension(path):
+    filename, file_extension =os.path.splitext(path)
+    return filename
+
+def replaceExtension(path, ext):
+    return withoutExtension(path)+ext
+
 
 def raiseIssueOrException(exception, message, issueOrigin):
     if issueOrigin is None:
@@ -39,34 +69,37 @@ def readFileLines(
 
 
 
-def writeTmpFile(
+def writeFile(
         text,
-        extension='.txt',
+        filename,
+        # extension='.txt',
         issueOrigin=None,
-        message='Cannot write tmp file'):
+        message='Cannot write file'):
     try:
-        (f, tmp_filename) = (
-            tempfile.mkstemp(
-                suffix=extension,
-                text=True))
-        os.close(f)
+        # if outputFileName is not None:
+        # else:
+        #     (f, filename) = (
+        #         tempfile.mkstemp(
+        #             suffix=extension,
+        #             text=True))
+        #     os.close(f)
         import codecs
-        with codecs.open(tmp_filename, "w", "utf-8") as f:
+        with codecs.open(filename, "w", "utf-8") as f:
             f.write(text)
-        return tmp_filename
+        return filename
     except Exception as e:
         raiseIssueOrException(
             exception=e,
             message=message,
             issueOrigin=issueOrigin)
 
-def writeTmpFileLines(
+def writeFileLines(
         lines,
-        extension='.txt',
+        filename,
         issueOrigin=None,
-        message='Cannot write tmp file'):
-    return writeTmpFile(
+        message='Cannot write file'):
+    return writeFile(
         text='\n'.join(lines),
-        extension=extension,
+        filename=filename,
         issueOrigin=issueOrigin,
         message=message)

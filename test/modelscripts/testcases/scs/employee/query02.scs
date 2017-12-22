@@ -1,0 +1,12 @@
+scenario model Query02
+import class model from 'main.cls'
+
+!djamel := new Employee
+!djamel.name := 'Djamel'
+!djamel.salary := 2600
+? 2+3=4
+
+!marie := new Employee('m')
+
+?? Employee.allInstances->size
+

@@ -14,7 +14,7 @@ sys.path.insert(0,modelscribes_home)
 #------------------------------------------------------
 
 
-import modelscribes.all
+import modelscribes
 from modelscribes.megamodels.megamodels import Megamodel
 
 def source(filename):

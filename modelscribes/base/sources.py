@@ -14,9 +14,6 @@ import modelscribes.base.fragments
 from modelscribes.base.files import (
     readFileLines
 )
-from modelscribes.megamodels.megamodels import (
-    Megamodel
-)
 from modelscribes.base.issues import (
     Issue,
     LocalizedSourceIssue,
@@ -31,10 +28,10 @@ class SourceElement(object):
     Element of a source file.
     """
     __metaclass__ = ABCMeta
-    def __init__(self, name=None, code=None, lineNo=None, docComment=None, eolComment=None):
+    def __init__(self, name=None, lineNo=None, code=None, docComment=None, eolComment=None):
         self.name = name
-        self.code=code
         self.lineNo = lineNo
+        self.code=code
         self.docComment = docComment
         self.eolComment = eolComment
 
@@ -50,10 +47,11 @@ class SourceFile(WithIssueList):
     def __init__(self,
                  fileName,
                  realFileName=None,
+                 prequelFileName=None,
                  preErrorMessages=(), # Type to be checked
                  doNotReadFiles=False,
                  allowedFeatures=()):
-        #type: (Text, Optional[Text], List[Any], bool, List[Text]) -> None
+        #type: (Text, Optional[Text], Optional[Text], List[Any], bool, List[Text]) -> None
         """
         Create a source by parsing a given file. It is possible
         to have a 'logical' file that is what the user see, and
@@ -83,6 +81,15 @@ class SourceFile(WithIssueList):
 
         self.fileName=fileName #type: Text
         """ The filename as given when creating the source file"""
+
+        self.prequelFileName=(
+            fileName if prequelFileName is None
+            else prequelFileName
+        )
+        """ 
+        The named of the unprocessed file or the filename.
+        This is useful when a preprocessor is used. 
+        """
 
         self.realFileName=(
             None if doNotReadFiles  # filled later

@@ -15,7 +15,7 @@ from modelscribes.base.metrics import Metrics
 # ---------------------------------------------------------------
 #  Abstract syntax
 # ---------------------------------------------------------------
-from modelscribes.metamodels.permissions.gpermission import (
+from modelscribes.metamodels.permissions.gpermissions import (
     Permission,
     PermissionSet,
     PermissionModel,
@@ -52,8 +52,8 @@ class FactorizedPermissionRule(PermissionRule):
     def __init__(self, model, subjects, actions, resources, lineNo=None):
         #type: (UCPermissionModel, List[Subject], List[Action], List[Resource])->None
         super(FactorizedPermissionRule, self).__init__(
-            lineNo=lineNo,
-            model=model)
+            model=model,
+            lineNo=lineNo)
         self.subjects=subjects      #type: List[Subject]
         self.actions=actions        #type: List[Action]
         self.resources=resources    #type: List[Resource]

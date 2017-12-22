@@ -1,7 +1,7 @@
 # coding=utf-8
 
 
-import modelscribes.all
+import modelscribes
 from modelscribes.scripts.megamodels.printer.megamodels import MegamodelPrinter
 from modelscribes.metamodels import (
     classes
@@ -15,7 +15,9 @@ from test.modelscripts.issues import (
 
 
 EXPECTED_ISSUES={
-    'ko-employee.cls':    {F: 0, E: 1, W: 0, I: 0, H: 0},
+    'ko-employee.cls':      {F: 0, E: 1, W: 0, I: 0, H: 0},
+    'enum1KO.cls':          {F: 0, E: 0, W: 2, I: 0, H: 0}
+
 }
 
 

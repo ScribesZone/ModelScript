@@ -34,7 +34,6 @@ __all__ = (
     'Token',
     'PlainToken',
     'Reference',
-    'UnresolvedReference',
     'BrokenReference',
     'Occurrence'
 )
@@ -55,13 +54,14 @@ class TextBlock(SourceElement):
         return cls._empty
 
     def __init__(self,
-                 glossary=None,
                  container=None,
+                 glossary=None,
                  lines=()):
         super(TextBlock, self).__init__()
 
         self.container=container
         # type: Optional[Any]
+        # Could be typically a ModelElement
 
         self.lines = list(lines)
         # type: List[Line]
@@ -308,7 +308,7 @@ class UnresolvedReference(Reference):
                     string=self.string,
                     entry=entry_or_none)
         else:
-            new_enty=self
+            new_entry=self
         return new_entry
 
 

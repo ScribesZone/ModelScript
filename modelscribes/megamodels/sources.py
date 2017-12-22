@@ -9,8 +9,9 @@ contains:
 *   an _issueBox containing all import statements.
 *   the model declaration statement.
 """
-from typing import Text, Optional, List, Any
+from typing import Text, Optional, List, Any, Union, Dict
 from abc import ABCMeta, abstractproperty, abstractmethod
+import collections
 
 from modelscribes.base.sources import SourceFile
 from modelscribes.base.metrics import (
@@ -34,10 +35,17 @@ from modelscribes.megamodels.dependencies.sources import (
     ImportBox,
     SourceImport
 )
+from modelscribes.megamodels.elements import (
+    SourceModelElement
+)
 from modelscribes.scripts.megamodels.parser import (
     parseToFillImportBox
 )
 
+__all__=(
+    'ModelSourceFile',
+    'ModelSourceMapping',
+)
 
 class ModelSourceFile(SourceFile):
 
@@ -53,6 +61,7 @@ class ModelSourceFile(SourceFile):
     def __init__(self,
                  fileName,
                  realFileName=None,
+                 prequelFileName=None,
                  preErrorMessages=(),  #TODO: check the type
                  readFileLater=False,
                  fillImportBoxLater=False,
@@ -60,7 +69,7 @@ class ModelSourceFile(SourceFile):
                  noSymbolChecking=False,
                  allowedFeatures=(),
                  recognizeUSEOCLNativeModelDefinition=False):
-        #type: (Text, Optional[Text], List[Any], bool, bool, bool, bool, List[Text], bool) -> None
+        #type: (Text, Optional[Text], Optional[Text], List[Any], bool, bool, bool, bool, List[Text], bool) -> None
         """
         An empty model is created automatically and it
         is associated with this source file.
@@ -109,6 +118,10 @@ class ModelSourceFile(SourceFile):
 
         """
 
+
+        # if readFileLater or fillImportBoxLater or parseFileLater:
+        #     assert finalizeLater
+
         # Create an empty model
         # Not to be moved after super
         # This should be done in all case so that
@@ -126,6 +139,7 @@ class ModelSourceFile(SourceFile):
             super(ModelSourceFile, self).__init__(
                 fileName=fileName,
                 realFileName=realFileName,
+                prequelFileName=prequelFileName,
                 preErrorMessages=preErrorMessages,
                 doNotReadFiles=readFileLater,
                 allowedFeatures=allowedFeatures
@@ -137,15 +151,21 @@ class ModelSourceFile(SourceFile):
         Megamodel.registerModel(self.model)
 
 
-        # Backward link & issue box linking
+        # Backward link
         self.model.source=self
+
+        # Link issue box
         self.model._issueBox.addParent(self._issueBox)
+
+        # Source to ModelElement Mapping
+        self._modelMapping=_ModelSourceMapping()
 
 
         # Create first an empty ImportBox.
+        self.importBox=ImportBox(self)
+
         # Then fill it by reading megamodel statements,
         # unless specified.
-        self.importBox=ImportBox(self)
         try:
             if not fillImportBoxLater:
                parseToFillImportBox(
@@ -155,10 +175,29 @@ class ModelSourceFile(SourceFile):
 
             if not parseFileLater:
                 self.parseToFillModel()
-                self.model.check()
+                self.finalize()
 
         except FatalError:
             pass  # nothing to do, the issue has been registered
+
+    def finalize(self):
+        self.model.finalize()
+
+    def _addSourceModelElement(self, sme):
+        #type: (SourceModelElement) -> None
+        self._modelMapping.add(sme)
+
+    def atLine(self, line, unique=True):
+        #type: (Optional[int], bool) -> Union[Optional[SourceModelElement], List[SourceModelElement]]
+        """
+        Return the source model element(s) at line S.
+        Because most of the time 1 element at most is
+        expected the parameter unique return only one
+        element or None with an exception otherwise.
+        Since it is normal to have various elements
+        at line 0/None, then always return a list.
+        """
+        return self._modelMapping.atLine(line, unique)
 
 
     @property
@@ -248,6 +287,57 @@ class ModelSourceFile(SourceFile):
                 "Class `{}` does not implement `{}`".format(
                     printer_class.__class__.__name__,
                     method))
+
+
+
+class _ModelSourceMapping(object):
+
+    def __init__(self):
+        self._sourceModelElementsAtLine=(
+            collections.OrderedDict())
+        #type: Dict[int, List[SourceModelElement]]
+
+    def add(self, sourceModelElement):
+        # Line 0 serve as elements with no lineNo specified
+        line=sourceModelElement.lineNo
+        if line is None or line==0:
+            line=0
+        if not line in self._sourceModelElementsAtLine:
+            self._sourceModelElementsAtLine[line]=[]
+        self._sourceModelElementsAtLine[line].append(
+            sourceModelElement
+        )
+
+    def atLine(self, line, unique=True):
+        #type: (Optional[int], bool) -> Union[Optional[SourceModelElement], List[SourceModelElement]]
+        """
+        Return the source model element(s) at line S.
+        Because most of the time 1 element at most is
+        expected the parameter unique return only one
+        element or None with an exception otherwise.
+        Since it is execpted to have various elements
+        at line 0/None, then always return a list.
+        """
+        # Line 0 serve as elements with no lineNo specifiecd
+        if line is None or line==0:
+            line=0
+        if line not in self._sourceModelElementsAtLine:
+            elems=[]
+        else:
+            elems=self._sourceModelElementsAtLine[line]
+        if unique and line!=0:
+            assert(len(elems)<=1)
+            return None if len(elems)==0 else elems[0]
+        else:
+            return elems
+
+        # if line not in self._sourceModelElementsAtLine:
+        #     return None if unique else []
+        # if line==0:
+        #     # return always a list
+        #     return list(self._sourceModelElementsAtLine[0])
+        # elems=self._sourceModelElementsAtLine[line]
+
 
 
 

@@ -3,6 +3,7 @@ scenario model DescrUS90
     | test descriptions.
 
 import class model from 'main.cls'
+import usecase model from 'main.uss'
 
 actori toufik:CEO
     | Toufik is a VIP.
@@ -41,6 +42,8 @@ enduci
 
 ??2+3*5=3
 
+assert 2+3 = 6
+
 !turbo := new Project
 !turbo.name := 'Maxi turbo project'
 !turbo.budget := 5000
@@ -48,12 +51,10 @@ enduci
 ! c1.frequence:=15
 
 uci maria IncreaseSalary
-    context
-        !sandrine := new Employee
-        !sandrine.name := 'Sandrine'
-        !sandrine.salary := 2000
-        !insert (sandrine, computing) into WorksIn
-    endcontext
+    !sandrine := new Employee
+    !sandrine.name := 'Sandrine'
+    !sandrine.salary := 2000
+    !insert (sandrine, computing) into WorksIn
     !sandrine.salary := 2600
 enduci
 

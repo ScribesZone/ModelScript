@@ -27,6 +27,14 @@ from modelscribes.megamodels.dependencies.metamodels import (
     MetamodelDependency
 )
 
+__all__=(
+    'ObjectModel',
+    'StateElement',
+    'Object',
+    'Slot',
+    'Link',
+    'LinkObject',
+)
 
 class ObjectModel(Model):
     def __init__(self):

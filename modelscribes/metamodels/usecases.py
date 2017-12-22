@@ -18,6 +18,12 @@ from modelscribes.megamodels.dependencies.metamodels import (
 from modelscribes.megamodels.models import Model
 from modelscribes.metamodels.permissions.sar import Subject
 
+__all__=(
+    'UsecaseModel',
+    'Usecase',
+    'System',
+    'Actor'
+)
 
 class UsecaseModel(Model):
     def __init__(self):
@@ -83,6 +89,7 @@ class UsecaseModel(Model):
 class System(SourceModelElement):
     def __init__(self, usecaseModel):
         SourceModelElement.__init__(self,
+            model=usecaseModel,
             name='*unknown*',
             code=None,
             lineNo=None,
@@ -98,6 +105,7 @@ class System(SourceModelElement):
                 docComment=None, eolComment=None
                 ):
         super(System, self).__init__(
+            model=self.usecaseModel,
             name=name,
             code=code,
             lineNo=lineNo,
@@ -130,12 +138,22 @@ class System(SourceModelElement):
 
 class Actor(SourceModelElement, Subject):
     def __init__(self,
-                 usModel, name, kind='human',
-                 code=None, lineNo=None,
-                 docComment=None, eolComment=None):
-        SourceModelElement.__init__(self, name, code, lineNo, docComment, eolComment)
+                 usecaseModel,
+                 name,
+                 kind='human',
+                 code=None,
+                 lineNo=None,
+                 docComment=None,
+                 eolComment=None):
+        SourceModelElement.__init__(self,
+            model=usecaseModel,
+            name=name,
+            code=code,
+            lineNo=lineNo,
+            docComment=docComment,
+            eolComment=eolComment)
 
-        self.usecaseModel = usModel
+        self.usecaseModel = usecaseModel
         self.usecaseModel.actorNamed[name]=self
         self.kind=kind # system|human
         self.superActors=[]
@@ -177,13 +195,17 @@ class Actor(SourceModelElement, Subject):
 
 class Usecase(SourceModelElement, Subject):
     def __init__(self,
-                 system, name,
-        code=None, lineNo=None, docComment=None, eolComment=None):
+                 system,
+                 name,
+                 code=None, lineNo=None, docComment=None, eolComment=None):
 
         SourceModelElement.__init__(self,
-            name, code, lineNo, docComment, eolComment)
-        ModelElement.__init__(self)
-
+            model=system.model,
+            name=name,
+            code=code,
+            lineNo=lineNo,
+            docComment=docComment,
+            eolComment=eolComment)
         self.system = system
         self.system.usecaseNamed[name]=self
         self.actors=[]
@@ -232,3 +254,4 @@ MetamodelDependency(
     optional=True,
     multiple=True,
 )
+

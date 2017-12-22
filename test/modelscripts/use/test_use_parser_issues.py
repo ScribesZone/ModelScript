@@ -33,7 +33,7 @@ EXPECTED_ISSUES={
     'card2.use':        {F: 0, E: 3, W: 0, I: 0, H: 0},
     'card3.use':        {F: 0, E: 0, W: 1, I: 0, H: 0},
     'empty.use':        {F: 0, E: 1, W: 1, I: 0, H: 0},
-    # 'enum1.use':        {F: 0, E: 0, W: 0, I: 0, H: 0},
+    'enum1.use':        {F: 0, E: 0, W: 1, I: 0, H: 0},
     'enum1.clm':        {F: 0, E: 0, W: 2, I: 0, H: 0},
     'enum2.use':        {F: 0, E: 1, W: 0, I: 0, H: 0},
     'inheritance1.use': {F: 0, E: 1, W: 0, I: 0, H: 0},

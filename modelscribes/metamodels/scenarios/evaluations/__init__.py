@@ -44,7 +44,7 @@ from modelscribes.metamodels.scenarios.evaluations.blocks import (
 from modelscribes.metamodels.scenarios.evaluations.operations import (
     OperationEvaluation,
 )
-from modelscribes.metamodels.permissions.gpermission import PermissionSet
+from modelscribes.metamodels.permissions.gpermissions import PermissionSet
 
 from modelscribes.metamodels.permissions.accesses import (
     AccessSet

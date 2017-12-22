@@ -1,7 +1,7 @@
 # coding=utf-8
 
 
-import modelscribes.all
+import modelscribes
 from modelscribes.metamodels import (
     scenarios
 )
@@ -32,7 +32,7 @@ def testGenerator_Issues():
         ['.scs'],
         EXPECTED_ISSUES)
     for (file , ex) in res:
-        if file.endswith('descr1.scs'):
+        if file.endswith('.scs'):
             yield (
                 checkValidIssues,
                 file,

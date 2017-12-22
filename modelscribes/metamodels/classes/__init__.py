@@ -24,7 +24,7 @@ The structure of this package is::
     Association, Class
     <|--  AssociationClass
 
-    TopLevelElement
+    ClassTopLevelElement
     <|-- Enumeration
 
     SimpleType
@@ -40,8 +40,11 @@ import logging
 
 from typing import Text, Optional, Union, List, Dict
 
-from modelscribes.base.sources import (
-    SourceElement,
+# TODO: to be continued
+from modelscribes.megamodels.py import (
+    MComposition,
+    MReference,
+    MAttribute
 )
 from modelscribes.megamodels.elements import SourceModelElement
 from modelscribes.base.metrics import Metrics
@@ -51,6 +54,26 @@ from modelscribes.megamodels.dependencies.metamodels import (
 )
 from modelscribes.megamodels.models import Model
 from modelscribes.metamodels.permissions.sar import Resource
+
+META_CLASSES=( # could be in __all__ (not used by PyParse)
+    'ClassModel',
+    'ClassTopLevelElement',
+    'Entity',
+    'Member',
+    'SimpleType',
+    'BasicType',
+    'Enumeration',
+    'EnumerationLiteral',
+    'Class',
+    'Attribute',
+    'Operation',
+    'Association',
+    'Role',
+    'AssociationClass',
+)
+
+__all__= META_CLASSES
+
 
 
 #TODO: make associationclass class and assoc + property
@@ -66,13 +89,28 @@ from modelscribes.metamodels.permissions.sar import Resource
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
-
-
-
 class ClassModel(Model):
     """
     Class model.
     """
+    # metaMembers = [
+    #       MComposition('enumerations : Enumeration[*] inv model'),
+    #       MComposition('regularClasses : Class [*] inv model'),
+    #       MComposition(
+    #           'associationsClasses : Association[*] inv model'),
+    #       MComposition('basicTypes : BasicType[*] inv model'),
+    # ]
+
+
+    #TODO: convert this to MComposition when ready
+    META_COMPOSITIONS=[
+        'enumerations',
+        'regularClasses',
+        'regularAssociations',
+        'associationClasses',
+        'basicTypes',
+
+    ]
     def __init__(self):
         #type: () -> None
         super(ClassModel, self).__init__()
@@ -113,12 +151,7 @@ class ClassModel(Model):
         return METAMODEL
 
 
-    # UUU
-    # @property
-    # def label(self):
-    #     return self.name
-
-    @property
+    @MComposition('Enumeration[*] inv model')
     def enumerations(self):
         return self.enumerationNamed.values()
 
@@ -126,7 +159,7 @@ class ClassModel(Model):
     def enumerationNames(self):
         return self.enumerationNamed.keys()
 
-    @property
+    @MReference('Class[*] inv model')
     def classes(self):
         """
         All classes or association classes.
@@ -140,7 +173,7 @@ class ClassModel(Model):
     def classNames(self):
         return self.classNamed.keys()
 
-    @property
+    @MComposition('Class[*] inv model')
     def regularClasses(self):
         return [
             class_ for class_ in self.classes
@@ -151,7 +184,7 @@ class ClassModel(Model):
     def regularClassNames(self):
         return [class_.name for class_ in self.regularClasses]
 
-    @property
+    @MReference('Association[*] inv model')
     def associations(self):
         return self.associationNamed.values()
 
@@ -159,7 +192,7 @@ class ClassModel(Model):
     def associationNames(self):
         return self.associationNamed.keys()
 
-    @property
+    @MComposition('Association[*] inv model')
     def regularAssociations(self):
         return [
             association for association in self.associations
@@ -170,7 +203,7 @@ class ClassModel(Model):
     def regularAssociationNames(self):
         return [a.name for a in self.regularAssociations]
 
-    @property
+    @MComposition('AssociationClass[*] inv model')
     def associationClasses(self):
         return self.associationClassNamed.values()
 
@@ -194,7 +227,7 @@ class ClassModel(Model):
 
 
 
-    @property
+    @MComposition('BasicType[*] inv model')
     def basicTypes(self):
         return self.basicTypeNamed.values()
 
@@ -216,64 +249,11 @@ class ClassModel(Model):
         ))
         return ms
 
-
-
-    def findAssociationOrAssociationClass(self, name):
-        # TODO: check this implementation
-        # should be most probably changed into
-        # associationNamed property
-        log.debug('findAssociationOrAssociationClass:%s', name)
-        if name in self.associationNamed:
-            return self.associationNamed[name]
-        elif name in self.associationClassNamed:
-            return self.associationClassNamed[name]
-        else:
-            raise Exception('ERROR - %s : No association or association class'
-                            % name )
-
-    def findClassOrAssociationClass(self, name):
-        #type: (Text) -> Union[Class, AssociationClass]
-        # TODO: see findAssociationOrAssociationClass
-        if name in self.classNamed:
-            return self.classNamed[name]
-        elif name in self.associationNamed:
-            return self.associationNamed[name]
-        else:
-            raise Exception('ERROR - %s : No class or association class'
-                            % name)
-
-    def findRole(self, associationOrAssociationClassName, roleName):
-        # TODO: see findAssociationOrAssociationClass
-        # though there are two parmeters here
-        log.debug('findRole: %s::%s',
-                  associationOrAssociationClassName, roleName)
-        a = self.findAssociationOrAssociationClass(
-                    associationOrAssociationClassName)
-
-        log.debug('findRole:  %s ',a)
-        log.debug('findRole:  %s ',a.roles)
-        if roleName in a.roleNamed:
-            return a.roleNamed[roleName]
-        else:
-            raise Exception('ERROR - No "%s" role on association(class) %s' %
-                            (roleName, associationOrAssociationClassName)  )
-
-
-
-
-    def findInvariant(self, classOrAssociationClassName, invariantName):
-        #type: (Text, Text) -> 'Invariant'
-        c = self.findClassOrAssociationClass(
-                    classOrAssociationClassName)
-        if invariantName in c.invariantNamed:
-            return c.invariantNamed[invariantName]
-        else:
-            raise Exception('ERROR - No "%s" invariant on class %s' %
-                            (invariantName, classOrAssociationClassName))
-
     def __str__(self):
         # TODO: move this to printer
         def category_line(label,elems):
+            print(label)
+            print(elems)
             n = len(list(elems))
             return '% 3d %s: %s' % (
                 n,
@@ -294,20 +274,79 @@ class ClassModel(Model):
         for (label, items) in categories:
             lines.append(category_line(label, items))
             total += len(list(items))
+        print(lines)
         lines.append('% 3d' % total)
         return  '\n'.join(lines)
 
 
-class TopLevelElement(SourceModelElement):
+    def _findAssociationOrAssociationClass(self, name):
+        # TODO: check this implementation
+        # should be most probably changed into
+        # associationNamed property
+        log.debug('_findAssociationOrAssociationClass:%s', name)
+        if name in self.associationNamed:
+            return self.associationNamed[name]
+        elif name in self.associationClassNamed:
+            return self.associationClassNamed[name]
+        else:
+            raise Exception('ERROR - %s : No association or association class'
+                            % name )
+
+    def _findClassOrAssociationClass(self, name):
+        #type: (Text) -> Union[Class, AssociationClass]
+        # TODO: see _findAssociationOrAssociationClass
+        if name in self.classNamed:
+            return self.classNamed[name]
+        elif name in self.associationNamed:
+            return self.associationNamed[name]
+        else:
+            raise Exception('ERROR - %s : No class or association class'
+                            % name)
+
+    def _findRole(self, associationOrAssociationClassName, roleName):
+        # TODO: see _findAssociationOrAssociationClass
+        # though there are two parmeters here
+        log.debug('_findRole: %s::%s',
+                  associationOrAssociationClassName, roleName)
+        a = self._findAssociationOrAssociationClass(
+                    associationOrAssociationClassName)
+
+        log.debug('_findRole:  %s ',a)
+        log.debug('_findRole:  %s ',a.roles)
+        if roleName in a.roleNamed:
+            return a.roleNamed[roleName]
+        else:
+            raise Exception('ERROR - No "%s" role on association(class) %s' %
+                            (roleName, associationOrAssociationClassName)  )
+
+
+
+
+    def _findInvariant(self, classOrAssociationClassName, invariantName):
+        #type: (Text, Text) -> 'Invariant'
+        c = self._findClassOrAssociationClass(
+                    classOrAssociationClassName)
+        if invariantName in c.invariantNamed:
+            return c.invariantNamed[invariantName]
+        else:
+            raise Exception('ERROR - No "%s" invariant on class %s' %
+                            (invariantName, classOrAssociationClassName))
+
+
+class ClassTopLevelElement(SourceModelElement):
     """
     Top level element.
     """
     __metaclass__ = abc.ABCMeta
-    def __init__(self, name, model, code=None, lineNo=None, docComment=None, eolComment=None):
-        super(TopLevelElement,self).__init__(name, code=code, lineNo=lineNo, docComment=docComment, eolComment=eolComment)
-        self.model = model
 
-    @property
+    def __init__(self,
+                 name, model, code=None, lineNo=None, docComment=None, eolComment=None):
+        super(ClassTopLevelElement, self).__init__(
+            model=model,
+            name=name,
+            code=code, lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+
+    @MAttribute('String')
     def label(self):
         return self.name
 
@@ -324,13 +363,13 @@ class SimpleType(object):
     """
     __metaclass__ = abc.ABCMeta
 
-    @property
+    @MAttribute('String')
     def label(self):
         return self.name
 
 
 
-class BasicType(SimpleType):
+class BasicType(SourceModelElement, SimpleType):
     """
     Basic types such as integer.
     Basic types are not explicitly defined in the source
@@ -339,7 +378,10 @@ class BasicType(SimpleType):
     # not in sources, but used created during symbol resolution
     type = 'BasicType'
 
-    def __init__(self, name):
+    def __init__(self, model, name):
+        SourceModelElement.__init__(self,
+            model=model,
+            name=name)
         self.name = name
 
     def __repr__(self):
@@ -347,36 +389,69 @@ class BasicType(SimpleType):
 
 
 
-class Enumeration(TopLevelElement, SimpleType):
+class Enumeration(ClassTopLevelElement, SimpleType):
     """
     Enumerations.
     """
+    META_COMPOSITIONS = [
+        'literals',
+    ]
     type = 'Enumeration'
 
-    def __init__(self, name, model, code=None, literals=(), lineNo=None, docComment=None, eolComment=None):
+    # metaMembers = [
+    #       Reference('model : Model inv enumerations'),
+    # ]
+
+    def __init__(self, name, model, code=None, lineNo=None, docComment=None, eolComment=None):
         super(Enumeration, self).__init__(name, model, code, lineNo=lineNo, docComment=docComment, eolComment=eolComment)
         self.model.enumerationNamed[name] = self
-        self.literals = list(literals)
+        self._literals=[]
 
-    #TODO check if the literals should be a object as well
-    #it seems that this could help for model transformation
+    @MComposition('EnumerationLiteral[*] inv enumeration')
+    def literals(self):
+        return self._literals
 
-    def addLiteral(self, name):
-        self.literals.append(name)
+    # def addLiteral(self, name):
+    #     self.literals.append(name)
+
+
 
     def __repr__(self):
         return '%s(%s)' % (self.name, repr(self.literals))
 
+class EnumerationLiteral(SourceModelElement):
 
-class Class(TopLevelElement, Entity):
+    def __init__(self, name, enumeration, code=None, lineNo=None, docComment=None, eolComment=None):
+        SourceModelElement.__init__(
+            self,
+            model=enumeration.model,
+            name=name,
+            code=code,
+            lineNo=lineNo, docComment=docComment,
+            eolComment=eolComment)
+        self.enumeration=enumeration
+        self.enumeration._literals.append(self)
+
+
+class Class(ClassTopLevelElement, Entity):
     """
     Classes.
     """
+
+    META_COMPOSITIONS = [
+        'attributes',
+        'operations',
+        'invariants',
+    ]
+
     def __init__(self, name, model, isAbstract=False, superclasses=(),
                  lineNo=None, docComment=None, eolComment=None):
         super(Class, self).__init__(
-            name, model,
-            lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+            name=name,
+            model=model,
+            lineNo=lineNo,
+            docComment=docComment,
+            eolComment=eolComment)
         self.model.classNamed[name] = self
         self.isAbstract = isAbstract
         self.superclasses = superclasses  # strings resolved as classes
@@ -416,19 +491,31 @@ class Attribute(SourceModelElement, Member):
     """
     Attributes.
     """
+
     def __init__(self, name, class_, code=None, type=None,
                  isDerived=False, isInit=False, expression=None,
                  lineNo=None, docComment=None, eolComment=None):
         SourceModelElement.__init__(
             self,
-            name, code=code,
-            lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+            model=class_.model,
+            name=name,
+            code=code,
+            lineNo=lineNo, docComment=docComment,
+            eolComment=eolComment)
         self.class_ = class_
         self.class_.attributeNamed[name] = self
-        self.type = type # string resolved as SimpleType
-        self.isDerived = isDerived
+        self.type = type # string later resolved as SimpleType
+        self._isDerived = isDerived
         self.isInit = isInit
         self.expression = expression
+
+    @MAttribute('Boolean')
+    def isDerived(self):
+        return self._isDerived
+
+    @isDerived.setter
+    def isDerived(self,isDerived):
+        self._isDerived=isDerived
 
     @property
     def label(self):
@@ -440,12 +527,18 @@ class Operation(SourceModelElement, Member):
     """
     Operations.
     """
+    META_COMPOSITIONS = [
+        'conditions',
+    ]
+
     def __init__(self, name,  class_, signature, code=None,
                  expression=None,
                  lineNo=None, docComment=None, eolComment=None):
         SourceModelElement.__init__(
             self,
-            name, code,
+            model=class_.model,
+            name=name,
+            code=code,
             lineNo=lineNo, docComment=docComment, eolComment=eolComment)
         self.class_ = class_
         self.signature = signature
@@ -464,7 +557,7 @@ class Operation(SourceModelElement, Member):
     def label(self):
         return '%s.%s' % (self.class_.label, self.name)
 
-    @property
+    @MComposition('Condition[*]')
     def conditions(self):
         return self.conditionNamed.values()
 
@@ -472,30 +565,33 @@ class Operation(SourceModelElement, Member):
         return self.conditionNamed.keys()
 
 
-    @property
+    @MAttribute('Boolean')
     def hasImplementation(self):
         return self.expression is not None
 
 
-
-
-class Association(TopLevelElement, Entity):
+class Association(ClassTopLevelElement, Entity):
     """
     Associations.
     """
+    META_COMPOSITIONS = [
+        'roles',
+    ]
+
     def __init__(self,
                  name, model, kind=None,
                  lineNo=None, docComment=None, eolComment=None):
         # type: (Text,ClassModel,Optional[Text],Optional[int],Optional[Text],Optional[Text]) -> None
         super(Association, self).__init__(
-            name, model,
+            name=name,
+            model=model,
             lineNo=lineNo, docComment=docComment, eolComment=eolComment)
         self.model.associationNamed[name] = self
         self.kind = kind   # association|composition|aggregation|associationclass  # TODO:should associationclass be
         # there?
         self.roleNamed = collections.OrderedDict() # indexed by name
 
-    @property
+    @MComposition('Role[*]')
     def roles(self):
         return self.roleNamed.values()
 
@@ -503,19 +599,19 @@ class Association(TopLevelElement, Entity):
     def roleNames(self):
         return self.roleNamed.values()
 
-    @property
+    @MAttribute('Integer')
     def arity(self):
         return len(self.roles)
 
-    @property
+    @MAttribute('Boolean')
     def isBinary(self):
         return self.arity == 2
 
-    @property
+    @MAttribute('Boolean')
     def isNAry(self):
         return self.arity >= 3
 
-    @property
+    @MReference('Role')
     def sourceRole(self):
         if not self.isBinary:
             raise ValueError(
@@ -524,7 +620,7 @@ class Association(TopLevelElement, Entity):
                 ))
         return self.roles[0]
 
-    @property
+    @MReference('Role')
     def targetRole(self):
         if not self.isBinary:
             raise ValueError(
@@ -533,7 +629,7 @@ class Association(TopLevelElement, Entity):
                 ))
         return self.roles[1]
 
-    @property
+    @MAttribute('Boolean')
     def isManyToMany(self):
         return (
             self.isBinary
@@ -541,7 +637,7 @@ class Association(TopLevelElement, Entity):
             and self.roles[1].isMany
         )
 
-    @property
+    @MAttribute('Boolean')
     def isOneToOne(self):
         return (
             self.isBinary
@@ -549,7 +645,7 @@ class Association(TopLevelElement, Entity):
             and self.roles[1].isOne
         )
 
-    @property
+    @MAttribute('Boolean')
     def isForwardOneToMany(self):
         return (
             self.isBinary
@@ -557,7 +653,7 @@ class Association(TopLevelElement, Entity):
             and self.roles[1].isMany
         )
 
-    @property
+    @MAttribute('Boolean')
     def isBackwardOneToMany(self):
         return (
             self.isBinary
@@ -565,16 +661,16 @@ class Association(TopLevelElement, Entity):
             and self.roles[1].isOne
         )
 
-    @property
+    @MAttribute('Boolean')
     def isOneToMany(self):
         return self.isForwardOneToMany or self.isBackwardOneToMany
-
 
 
 class Role(SourceModelElement, Member):
     """
     Roles.
     """
+
     def __init__(self, name, association, code=None,
                  cardMin=None, cardMax=None, type=None, isOrdered=False,
                  qualifiers=None, subsets=None, isUnion=False,
@@ -587,7 +683,9 @@ class Role(SourceModelElement, Member):
                 name = type[:1].lower() + type[1:]
         SourceModelElement.__init__(
             self,
-            name, code=code,
+            model=association.model,
+            name=name,
+            code=code,
             lineNo=lineNo, docComment=docComment, eolComment=eolComment)
         self.association = association
         self.association.roleNamed[name] = self
@@ -663,8 +761,6 @@ class Role(SourceModelElement, Member):
         return '%s::%s' % (self.association.name, self.name)
 
 
-
-
 class AssociationClass(Class, Association):
     """
     Association classes.
@@ -674,16 +770,24 @@ class AssociationClass(Class, Association):
                  lineNo=None, docComment=None, eolComment=None):
         # Use multi-inheritance to initialize the association class
         Class.__init__(self,
-                       name, model, isAbstract, superclasses,
-                       lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+            name=name,
+            model=model,
+            isAbstract=isAbstract,
+            superclasses=superclasses,
+            lineNo=lineNo,
+            docComment=docComment, eolComment=eolComment)
         Association.__init__(self,
-                             name, model, 'associationclass',
-                             lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+            name=name,
+            model=model,
+            kind='associationclass',
+            lineNo=lineNo,
+            docComment=docComment, eolComment=eolComment)
         # But register the association class apart and only once, to avoid
         # confusion and the duplicate in the associations and classes lists
         del self.model.classNamed[name]
         del self.model.associationNamed[name]
         self.model.associationClassNamed[name] = self
+
 
 METAMODEL = Metamodel(
     id='cl',

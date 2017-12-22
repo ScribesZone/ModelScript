@@ -16,7 +16,6 @@ from typing import Dict, Text, Optional, List
 from modelscribes.megamodels.metamodels import Metamodel
 from modelscribes.megamodels.models import Model
 from modelscribes.megamodels.elements import SourceModelElement
-from modelscribes.base.sources import SourceElement
 from modelscribes.base.metrics import Metrics
 
 
@@ -87,6 +86,7 @@ class Domain(SourceModelElement):
 
     def __init__(self, glossaryModel, name, lineNo=None):
         super(Domain, self).__init__(
+            model=glossaryModel,
             name=name,
             lineNo=lineNo
         )
@@ -113,6 +113,7 @@ class Entry(SourceModelElement):
                  alternativeTerms=(),
                  lineNo=None):
         super(Entry, self).__init__(
+            model=domain.glossaryModel,
             name=None,
             lineNo=lineNo
         )
@@ -144,3 +145,4 @@ METAMODEL = Metamodel(
 #     optional=True,
 #     multiple=True,
 # )
+

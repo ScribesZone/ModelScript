@@ -30,11 +30,12 @@ This merger aims to take execution results from the trace
 # TODO: add support for errors as well as corresponding test cases
 
 from __future__ import  print_function
-from typing import Text, List, Optional, Union
+from typing import Text, Optional
 import re
 import os
 import tempfile
-
+from modelscribes.interfaces.environment import Environment
+from modelscribes.base.files import replaceExtension
 
 __all__=(
     'merge'
@@ -78,16 +79,15 @@ class _SexFile(object):
     def __init__(self,
                  soilNumberedFile,
                  traceNumberedFile,
-                 sexFileName=None):
-
+                 prequelFileName):
         self.soil=soilNumberedFile
         self.trace=traceNumberedFile
+        self.prequelFileName=prequelFileName
         self.sexLines=[]
-
-        if sexFileName is None:
-            (f, sexFileName) = tempfile.mkstemp(suffix='.sex', text=True)
-            os.close(f)
-        self.sexFileName=sexFileName
+        self.sexFileName=Environment.getWorkerFileName(
+                basicFileName=replaceExtension(prequelFileName, '.sex'))
+            # (f, sexFileName) = tempfile.mkstemp(suffix='.sex', text=True)
+            # os.close(f)
         self.sexFileHandler=open(self.sexFileName, 'w')
 
 
@@ -126,7 +126,7 @@ class _SexFile(object):
         self.sexFileHandler.close()
 
 
-def merge(soilFile, traceFile, sexFileName=None):
+def merge(soilFile, traceFile, prequelFileName):
     #type: (Text, Text, Optional[Text])->Text
 
     if DEBUG:
@@ -137,7 +137,11 @@ def merge(soilFile, traceFile, sexFileName=None):
 
     soil=_NumberedFile(soilFile)
     trace=_NumberedFile(traceFile)
-    merged=_SexFile(soil, trace, sexFileName)
+    merged=_SexFile(
+        soilNumberedFile=soil,
+        traceNumberedFile=trace,
+        prequelFileName=prequelFileName)
+
 
     prefixSoil=os.path.basename(soilFile)
     in_check_result=False
@@ -156,7 +160,7 @@ def merge(soilFile, traceFile, sexFileName=None):
                 print(' ' * 10 + 'skip')
             continue
 
-        if re.match('^\w+\.soil> open \'.*\' *$',line):
+        if re.match('^[^>]*\.soil> open \'.*\' *$',line):
             if DEBUG>=2:
                 print(' ' * 10 + 'skip')
             continue

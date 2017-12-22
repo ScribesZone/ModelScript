@@ -3,7 +3,6 @@ from __future__ import unicode_literals, print_function, absolute_import, divisi
 
 from typing import Text, List, Optional
 
-from modelscribes.base.styles import Styles
 from modelscribes.scripts.base.printers import (
     ModelPrinter,
     ModelSourcePrinter,
@@ -113,4 +112,6 @@ def actionNames(actions):
     )
 
 METAMODEL.registerModelPrinter(PermissionModelPrinter)
+print('LL'*
+      100)
 METAMODEL.registerSourcePrinter(ModelSourcePrinter)

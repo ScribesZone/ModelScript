@@ -3,10 +3,10 @@
 import logging
 
 from nose.plugins.attrib import attr
-from distutils.dir_util import mkpath
 from test.modelscripts import (
     TEST_CASES_DIRECTORY,
-    BUILD_DIRECTORY,
+    getTestDir,
+    getBuildDir,
 )
 
 import os
@@ -19,8 +19,7 @@ import modelscribes.diagrams.plantuml.engine
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
 
-CLASSES_DIR=os.path.join(BUILD_DIRECTORY, 'classes')
-mkpath(CLASSES_DIR)
+BUILD_CLASSES_DIR=getBuildDir(os.path.join('gen/diagrams/classes'))
 
 # TODO: add this again
 # def test_UseOclModel_Simple():
@@ -72,7 +71,7 @@ def testGenerator_UseOclModel_full():
     ]
     test_files1=[os.path.join('use',f) for f in test_file_names1]
     use4subdir = os.path.join('use','use4','test')
-    test_dir_2 = os.path.join(TEST_CASES_DIRECTORY,use4subdir)
+    test_dir_2 = getTestDir(use4subdir)
     # print test_dir_2
     test_files2 = [use4subdir + os.sep + f
                    for f in os.listdir(test_dir_2) if f.endswith('.use')]
@@ -89,7 +88,7 @@ def check_isValid(testFile, plantUMLengine):
     use_file = modelscribes.use.use.parser.UseModelSource(
         TEST_CASES_DIRECTORY + os.sep + testFile)
     puml_file_path = os.path.join(
-        CLASSES_DIR,
+        BUILD_CLASSES_DIR,
         os.path.splitext(os.path.basename(testFile))[0]+'.puml'
     )
     ModelSourcePrinter(use_file).display()

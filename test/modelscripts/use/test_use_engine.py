@@ -48,13 +48,13 @@ def test_USEEngine_executeSoilFile():
                             'useengine', sf)
 
         print('=== asTrace %s '%soilfile)
-        USEEngine.executeSoilFileAsTrace(usefile, soilfile)
+        USEEngine.executeSoilFileAsTrace(usefile, soilfile, prequelFileName=usefile)
         print('= '+sf+'='*60)
         print(USEEngine.outAndErr)
         assert USEEngine.commandExitCode == 0
 
         print('=== asSex %s '%soilfile)
-        USEEngine.executeSoilFileAsSex(usefile, soilfile)
+        USEEngine.executeSoilFileAsSex(usefile, soilfile, prequelFileName=usefile)
         print('= '+sf+'='*60)
         print(USEEngine.outAndErr)
         assert USEEngine.commandExitCode == 0
@@ -82,7 +82,9 @@ def test_USEEngine_noUSEBinary():
     print(modelscribes.use.engine.USE_OCL_COMMAND)
     USEEngine._execute(
         useSource=anyusefile,
-        soilFile=USEEngine._soilHelper('infoModelAndQuit.soil'))
+        soilSource=USEEngine._soilHelper('infoModelAndQuit.soil'),
+        basicFileName=anyusefile
+    )
     try:
         assert USEEngine.commandExitCode != 0
     finally:

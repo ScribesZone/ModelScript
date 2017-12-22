@@ -7,6 +7,10 @@ from collections import OrderedDict
 
 from typing import Dict, Text, List, Optional
 
+from modelscribes.base.issues import (
+    Issue,
+    Levels
+)
 from modelscribes.metamodels.classes import (
     Class,
     Association,
@@ -41,6 +45,7 @@ from modelscribes.metamodels.scenarios.operations import (
     LinkObjectCreation,
     AttributeAssignment,
     Query,
+    AssertQuery,
     Check,
 )
 
@@ -63,6 +68,7 @@ __all__=(
     'CardinalityViolation',
     'CardinalityViolationObject',
     'QueryEvaluation',
+    'AssertQueryEvaluation'
 )
 
 def evaluateOperation(blockEvaluation, op):
@@ -132,6 +138,10 @@ class OperationEvaluation(Subject):
     def _eval(self):
         pass
 
+    # @abstractmethod
+    # def check(self):
+    #     pass
+
     def _env(self):
         # convenience method
         return self.blockEvaluation._env()
@@ -144,6 +154,11 @@ class OperationEvaluation(Subject):
     def _accessSet(self):
         # convenience method
         return self.blockEvaluation.accessSet
+
+    @property
+    def model(self):
+        return self.operation.model
+
 
 
 #################################################################
@@ -174,6 +189,7 @@ class ObjectCreationEvaluation(UpdateOperationEvaluation):
         self._eval()
 
     def _eval(self):
+        print('ZZ'*10+str(self.operation))
         op=self.operation #type: ObjectCreation
         self.createdObject=Object(
             self._state(),
@@ -273,6 +289,9 @@ class LinkDestructionEvaluation(UpdateOperationEvaluation):
             self.association,
             self._accessSet)]
 
+    # def check(self):
+    #     Issue()
+
         raise NotImplementedError()  # TODO: implement link destruction
 
 
@@ -329,6 +348,7 @@ class AttributeAssignmentEvaluation(UpdateOperationEvaluation):
 
     def _eval(self):
         op=self.operation #type: AttributeAssignment
+        print('MM'*10+str(self._env()))
         if op.variableName not in self._env():
             raise ValueError(
                 'Execution error %s: variable "%s" is undefined' % (
@@ -623,6 +643,28 @@ class QueryEvaluation(ReadOperationEvaluation):
         self.accesses = []
 
 
+class AssertQueryEvaluation(QueryEvaluation):
+    """
+    Result of AssertQuery evaluation.
+    """
+    __metaclass__ = ABCMeta
+
+    @abstractmethod
+    def __init__(self,
+                 blockEvaluation,
+                 op):
+        #type: (Optional['BlockEvaluation'], AssertQuery) -> None
+        QueryEvaluation.__init__(self, blockEvaluation, op)
+
+    @property
+    def status(self):
+        if self.resultType!='Boolean':
+            return 'Failed'
+        elif self.resultType=='false':
+            return 'KO'
+        elif self.resultType=='true':
+            return 'OK'
+
 
 class _NotImplementedQueryEvaluation(QueryEvaluation):
     def __init__(self,
@@ -636,6 +678,7 @@ class _NotImplementedQueryEvaluation(QueryEvaluation):
         # Nothing can be done
         pass
 
+
 class _USEImplementedQueryEvaluation(QueryEvaluation):
     def __init__(self,
                  blockEvaluation,
@@ -648,6 +691,20 @@ class _USEImplementedQueryEvaluation(QueryEvaluation):
         # Do nothing as USE parsing is already filling
         # the different fields
         pass
+
+class _USEImplementedAsserQueryEvaluation(AssertQueryEvaluation):
+    def __init__(self,
+                 blockEvaluation,
+                 op):
+        # type: (Optional['BlockEvaluation'], AssertQuery) -> None
+        super(_USEImplementedAsserQueryEvaluation, self).__init__(blockEvaluation, op)
+        self.isNotImplemented = False
+
+    def _eval(self):
+        # Do nothing as USE parsing is already filling
+        # the different fields
+        pass
+
 
 
 # # This implementation comes from regulat operation evaluation

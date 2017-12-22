@@ -1,12 +1,28 @@
 # coding=utf-8
 import os
 import glob
-from typing import Text, Union, List, Dict
+from typing import Text, Union, List
+from distutils.dir_util import mkpath
 
 TEST_CASES_DIRECTORY = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'testcases')
 BUILD_DIRECTORY = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'build')
+
+def _getDir(absolutePath, relDir, ensure=True):
+    dir=os.path.join(absolutePath, relDir)
+    if not os.path.exists(dir):
+        if ensure:
+            mkpath(dir)
+        else:
+            raise IOError('Directory %s does not exist.' % dir)
+    return dir
+
+def getBuildDir(relDir, ensure=True):
+    return _getDir(BUILD_DIRECTORY, relDir, ensure)
+
+def getTestDir(relDir, ensure=True):
+    return _getDir(TEST_CASES_DIRECTORY, relDir, ensure)
 
 
 def getFile(name, prefixes):
@@ -14,6 +30,16 @@ def getFile(name, prefixes):
         return name
     else:
         return os.path.join(*[TEST_CASES_DIRECTORY] + prefixes + [name])
+
+def getTestFile(relativeFileName, checkExist=True):
+    f=os.path.join(
+        TEST_CASES_DIRECTORY,
+        relativeFileName
+    )
+    if checkExist:
+        if not os.path.isfile(f):
+            raise IOError('Test file %s not found' % relativeFileName)
+    return f
 
 def getTestFiles(relativeDirectory, relative=True, extension=''):
     #type: (Text, bool, Union[Text, List[Text]]) -> List[Text]
@@ -40,25 +66,9 @@ def getTestFiles(relativeDirectory, relative=True, extension=''):
         if accept(simplename) ]
     return rel_files
 
-def getTestFile(relativeFileName, checkExist=True):
-    f=os.path.join(
-        TEST_CASES_DIRECTORY,
-        relativeFileName
-    )
-    if checkExist:
-        if not os.path.isfile(f):
-            raise IOError('Test file %s not found' % relativeFileName)
-    return f
 
-def getTestDir(relativeDir, exist=True):
-    d=os.path.join(
-        TEST_CASES_DIRECTORY,
-        relativeDir
-    )
-    if exist:
-        if not os.path.isdir(d):
-            raise IOError('Test directory %s not found' % relativeDir)
-    return d
+
+
 
 
 #----------- testing issues ------------------------------

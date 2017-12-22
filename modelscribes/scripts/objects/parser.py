@@ -54,6 +54,7 @@ class ObjectModelSource(ScenarioEvaluationModelSource):
 
         super(ObjectModelSource, self).__init__(
             originalFileName
+            #TODO: select only allowed features
         )
 
         # save the model build by scenario (superclass)

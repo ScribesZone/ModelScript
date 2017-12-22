@@ -53,10 +53,14 @@ class Operation(SourceModelElement, Subject):
     __metaclass__ = ABCMeta
 
     def __init__(self,
-        block, name=None,
+        block,
+        name=None,
         code=None, lineNo=None, docComment=None, eolComment=None):
-
-        super(Operation, self).__init__(name, code, lineNo, docComment, eolComment)
+        SourceModelElement.__init__(self,
+            model=block.model,
+            name=name,
+            code=code, lineNo=lineNo,
+            docComment=docComment, eolComment=eolComment)
         self.block=block
         self.block.operations.append(self)
 
@@ -188,6 +192,14 @@ class Query(ReadOperation):
 
         self.expression = expression
         self.verbose = verbose
+
+class AssertQuery(Query):
+    def __init__(self, block,
+                 expression,
+                 verbose=False,
+                 code=None, lineNo=None, docComment=None, eolComment=None):
+        super(AssertQuery, self).__init__(block, None, code, lineNo, docComment, eolComment)
+
 
 
 class Check(ReadOperation):

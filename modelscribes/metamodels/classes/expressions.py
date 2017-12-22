@@ -22,7 +22,7 @@ import logging
 log = logging.getLogger('test.' + __name__)
 
 from modelscribes.metamodels.classes import (
-    TopLevelElement
+    ClassTopLevelElement
 )
 from modelscribes.base.sources import SourceElement
 from modelscribes.metamodels.classes import (
@@ -31,7 +31,7 @@ from modelscribes.metamodels.classes import (
     Operation
 )
 
-class Condition(TopLevelElement):
+class Condition(ClassTopLevelElement):
     """
     Invariant, precondition or postcondition
     """

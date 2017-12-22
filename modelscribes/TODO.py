@@ -1,9 +1,13 @@
 # coding=utf-8
 
-# TODO:0 create a scenario for valence/cci/pi
+# TODO:0 add .model to all modelElement
 # TODO:0 convert check results to errors
+# TODO:0 add check() on all model element
+# TODO:0 add test for enumeration parsing in cls + new syntax?
+# TODO:0 create a scenario for valence/cci/pi
+# TODO:0 test and test error display + error detection among files
 # TODO:0 add "begin" "end" for scenario --@begin --@end -> check
-# TODO:0 add text block to (require analysis)
+# TODO:0 add | text block to : (require analysis because before)
 #        object
 #        scenario
 # TODO:0 bind object/evaluation model issuebox with scenario
@@ -17,12 +21,17 @@
 # FIXME:0 display /tmp error in sex/use
 #        for metamodels, since composed metamodels are
 #        important (e.g. permissoion -> usecase)
+
 # FIXME:0 strange printing for models
-# TODO:1 model --usegui to enter use after compilation
-# TODO:1 check why empty entries are  ignored in glossary
+# TODO:0 check why empty entries are  ignored in glossary
 #       see domain2.gls
+# TODO:0 add inheritance in cl metamodel
 # TODO:1 improve text block metrics with ref and word
 # TODO:1 add hierachyca metrics
+# TODO:1 refactor SourceElement and SourceModelElement
+#        a SourceElement should be a location within SourceModelFile
+#        a SourceModelElement a pair for a mapping stored
+#        in SourceModelFile. Review as well the notion of Location
 # TODO:1 add tags {a,b,c=t} -> --@a --@b --@c=t
 #       add parsingprepoc+parser+metamodel+printer
 # TODO:1 add {id} semantics -> generation of ocl
@@ -52,8 +61,6 @@
 # checking invariants...
 # checked 0 invariants in 0.000s, 0 failures.
 
-# TODO:2 full support for addOnly, readOnly
-# TODO:1 what to do with unique nonUnique orderted
 # TODO:1  relational class model checks
 # - pas d'association n-n
 # - pas de classes associatives
@@ -61,8 +68,9 @@
 # - pas d'aggregation
 # - pas de generalisation
 # - pas de classe abstraite
+# #TODO: add support for diagram generation (-d ?)
+# #TODO: add support for code generation/transformation
 # TODO:1 support for rôle / × > addonly
-# TODO:1 add inheritance in cl metamodel
 
 # TODO:1 add @assertion in .ob .sc
 # TODO:1 import between cl diagram could be very useful
@@ -71,15 +79,25 @@
 # TODO:2 Installation procedure.
 #       chmod +x for internal model-use
 #       chmox +x for bin/*
-#
+# TODO:2 continue metametamodel
+# - py.py contains element for annotation
+# - metamodels/classes.py contains first examples
+# - metamodels/parser.py contains first version of extractiing metamodel
+# - megamodels/metametamodels contains first version of metaelements
+# - modelscribes/metamodels.py start the parsing of metapackage
+# TODO:2 full support for addOnly, readOnly
 # TODO:2 add [0..1] constraint   not self.x->isUndefined
-#
 # TODO:3 disable x : Class where Class si not datatype
 # TODO:2 datatype Date < String
 #       this just replace x : Date by x : String
 #       to simplify no "end" keyword
 #       other datatype are in fact not really useful
 #       since their creation is not easy
+# TODO:3 support for taskmodel / kxml
+# TODO:2 support for quality models
+# TODO:3 support for abstract gui models
+# TODO:2 support for timetracking
+# TODO:1 what to do with unique nonUnique orderted
 # TODO:2 enable 0package
 # TODO:2 check permission analysis
 # TODO:3 re parser

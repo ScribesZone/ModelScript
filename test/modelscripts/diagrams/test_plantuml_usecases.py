@@ -8,7 +8,7 @@ from nose.plugins.attrib import attr
 
 from test.modelscripts import (
     TEST_CASES_DIRECTORY,
-    BUILD_DIRECTORY,
+    getBuildDir,
 )
 
 import os
@@ -19,8 +19,7 @@ import modelscribes.diagrams.plantuml.engine
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
 
-USD_DIR=os.path.join(BUILD_DIRECTORY, 'usd')
-mkpath(USD_DIR)
+USD_DIR=getBuildDir('gen/diagrams/usecases')
 
 # TODO: add this again
 # def test_UseOclModel_Simple():
@@ -71,4 +70,3 @@ def doGraph(filename, puml_engine):
         puml_engine.generate(puml_file_path)
         print('=====')
 
-from distutils.dir_util import mkpath

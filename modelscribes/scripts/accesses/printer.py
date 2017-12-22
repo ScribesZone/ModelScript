@@ -8,10 +8,10 @@ from modelscribes.metamodels.permissions.accesses import (
     METAMODEL,
     AccessModel,
 )
-from modelscribes.scripts.permissions.printer import (
-    opString,  # FIXME: check where is this stuff
-    resourceString
-)
+# from modelscribes.scripts.permissions.printer import (
+#     opString,  # FIXME: check where is this stuff
+#     resourceString
+# )
 
 
 class AccessModelPrinter(AbstractPrinter): # TODO: check this

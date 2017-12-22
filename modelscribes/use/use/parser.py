@@ -49,6 +49,7 @@ from modelscribes.metamodels.classes import (
     SimpleType,
     BasicType,
     Enumeration,
+    EnumerationLiteral,
     Class,
     Attribute,
     Operation,
@@ -120,6 +121,7 @@ class UseModelSource(ModelSourceFile):
 
         super(UseModelSource, self).__init__(
             fileName=originalFileName,
+            prequelFileName=originalFileName,
             realFileName=None,  # will be set later
             readFileLater=False,
             fillImportBoxLater=False,
@@ -145,6 +147,7 @@ class UseModelSource(ModelSourceFile):
 
             # ---- (3) parsing sex to model ------------------------------
             self.parseToFillModel()
+            self.finalize()
 
         except FatalError as e:
             # The fatal error has already registered. Do nothing
@@ -197,7 +200,6 @@ class UseModelSource(ModelSourceFile):
             self.__parseLinesAndCreateModel()
             self.__resolveModel()
 
-
     def __executeUSEToExtractErrors(self):
         """
         Execute USE to first check if there are syntax errors.
@@ -210,7 +212,8 @@ class UseModelSource(ModelSourceFile):
         engine = modelscribes.use.engine.USEEngine
         try:
             self.commandExitCode = engine.analyzeUSEModel(
-                self.realFileName)
+                self.realFileName,
+                prequelFileName=self.prequelFileName)
         except Exception as e:
             Issue(
                 origin=self,
@@ -501,20 +504,11 @@ class UseModelSource(ModelSourceFile):
                 current_class = None
                 current_attribute = None
                 current_operation = None
-                literals=[ l
+                literal_values=[ l
                     for l in m.group('literals').replace(' ','').split(',')
                     if l != ''
                 ]
-                for literal in literals:
-                    if not self.isOldUSEFile and not Symbol.is_camlCase(literal):
-                        LocalizedSourceIssue(
-                            sourceFile=self,
-                            level=Levels.Warning,
-                            message=(
-                                '"%s" should start with an lowercase.'
-                                % literal),
-                            line=line_no
-                        )  # TODO: add column
+
                 if not self.isOldUSEFile and not Symbol.is_CamlCase(m.group('name')):
                     LocalizedSourceIssue(
                         sourceFile=self,
@@ -528,11 +522,17 @@ class UseModelSource(ModelSourceFile):
                     name=m.group('name'),
                     model=self.classModel,
                     code=line,
-                    literals=literals,
                     lineNo=line_no,
                     docComment=last_doc_comment.consume(),
                     eolComment=current_eol_comment,
                 )
+                for literal_value in literal_values:
+                    EnumerationLiteral(
+                        name=literal_value,
+                        enumeration=enumeration,
+                        lineNo=line_no
+                    )
+
                 self.classModel.enumerationNamed[m.group('name')] = enumeration
 
                 if m.group('end'):
@@ -556,22 +556,26 @@ class UseModelSource(ModelSourceFile):
                 m = re.match(r, line)
                 if m:
                     if m.group('literals') is not None:
-                        literals = [l
+                        literal_values = [l
                                     for l in m.group('literals').replace(' ', '').split(',')
                                     if l != ''
                                     ]
-                        for literal in literals:
-                            if not self.isOldUSEFile and not Symbol.is_camlCase(literal):
-                                LocalizedSourceIssue(
-                                    sourceFile=self,
-                                    level=Levels.Warning,
-                                    message=(
-                                        '"%s" should start with an lowercase.'
-                                        % literal),
-                                    line=line_no
-                                )  # TODO: add column
-                            current_enumeration.addLiteral(literal)
-                            current_element=literal
+                        for literal_value in literal_values:
+                            # if not self.isOldUSEFile and not Symbol.is_camlCase(literal_value):
+                            #     LocalizedSourceIssue(
+                            #         sourceFile=self,
+                            #         level=Levels.Warning,
+                            #         message=(
+                            #             '"%s" should start with an lowercase.'
+                            #             % literal_value),
+                            #         line=line_no
+                            #     )  # TODO: add column
+                            EnumerationLiteral(
+                                name=literal_value,
+                                enumeration=current_enumeration,
+                                lineNo=line_no
+                            )
+                            current_element=literal_value
                     if m.group('end'):
                         current_enumeration = None
                         current_element=None
@@ -1106,7 +1110,7 @@ class UseModelSource(ModelSourceFile):
                 return self.classModel.simpleTypeNamed[name]
             else:
                 self.classModel.basicTypeNamed[name] = \
-                    BasicType(name)
+                    BasicType(self.model, name)
                 return self.classModel.basicTypeNamed[name]
 
         def __resolveClassType(name):

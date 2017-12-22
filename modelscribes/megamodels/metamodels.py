@@ -44,7 +44,8 @@ class Metamodel(MegamodelElement):
     def modelClass(self):
         if self._modelClass is None:
             raise NotImplementedError(
-                'Modelscribes: %s.model not implemented yet' % self.label)
+                'Modelscribes: %s.model not implemented yet'
+                % self.label)
         else:
             return self._modelClass
 
@@ -52,7 +53,8 @@ class Metamodel(MegamodelElement):
     def sourceClass(self):
         if self._sourceClass is None:
             raise NotImplementedError(
-                'Modelscribes: %s.source not implemented yet' % self.label)
+                'Modelscribes: %s.source not implemented yet'
+                % self.label)
         else:
             return self._sourceClass
 

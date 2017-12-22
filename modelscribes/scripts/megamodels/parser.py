@@ -27,7 +27,7 @@ from modelscribes.megamodels.megamodels import (
 from modelscribes.megamodels.metamodels import (
     Metamodel
 )
-from modelscribes.scripts.megamodels.printer.imports import ImportBoxPrinter
+
 from modelscribes.config import Config
 
 __all__=(
@@ -458,6 +458,7 @@ def parseToFillImportBox(modelSource,
 
 
                 if DEBUG>=1 or Config.realtimeImportPrint >=1:
+                    from modelscribes.scripts.megamodels.printer.imports import ImportBoxPrinter
                     ImportBoxPrinter(modelSource.importBox).display()
                     print('imp: <<<<<<<< '+repr(mi)+'\n')
                 continue

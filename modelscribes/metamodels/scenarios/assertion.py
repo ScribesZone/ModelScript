@@ -40,7 +40,8 @@ from modelscribes.megamodels.elements import SourceModelElement
 
 class InvariantAssertionEvaluation(SourceModelElement):
     """
-    The evaluation of an InvariantAssertion against a model if thr
+    The evaluation of an InvariantAssertion against a model if
+    the
     assertion is correct. If the assertion is incorrect then the evaluation
     is a failure. The status can therefore have three values:
 
@@ -89,7 +90,7 @@ class InvariantAssertion(object):
         self.useModel = useModel
         try:
             # TODO: improve to support None as class name
-            self.invariant = useModel.findInvariant(className, invariantName)
+            self.invariant = useModel._findInvariant(className, invariantName)
         except:
             self.invariant = None
         self.isCorrect = self.invariant is not None

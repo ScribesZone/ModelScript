@@ -10,8 +10,13 @@ import re
 from modelscribes.config import Config
 from modelscribes.base.files import (
     readFileLines,
-    writeTmpFileLines
+    replaceExtension
 )
+from modelscribes.interfaces.environment import (
+    Environment
+)
+
+DEBUG=0
 
 #-----------------------------------------------------
 #  Line transfos
@@ -94,7 +99,7 @@ class Preprocessor(object):
 
     def preprocessLine(self, line):
         newLine=self.transformLine(line)
-        if Config.preprocessorPrint>=1:
+        if Config.preprocessorPrint>=1 or DEBUG>=2:
             if line==newLine:
                 print('pre:       ', line)
             else:
@@ -103,8 +108,8 @@ class Preprocessor(object):
         return newLine
 
     def do(self, issueOrigin, filename):
-        if Config.preprocessorPrint>=1:
-            print('\npre: '+'='*30+' preprocessing  '+'='*30)
+        if Config.preprocessorPrint>=1 or DEBUG>=1:
+            print('\npre: '+'='*30+' preprocessing'+'='*30)
         lines=readFileLines(
             file=filename,
             issueOrigin=issueOrigin,
@@ -112,11 +117,10 @@ class Preprocessor(object):
                 'Cannot read '+self.sourceText+' %s.')
         new_lines=[
             self.preprocessLine(l) for l in lines ]
-        if Config.preprocessorPrint>=1:
-            print('pre: '+'='*30+' end preprocessing '+'='*30)
 
-        return writeTmpFileLines(
+        if Config.preprocessorPrint>=1 or DEBUG>=1:
+            print('pre: ' + '=' * 30 + ' end preprocessing ' + '=' * 30)
+        return Environment.writeWorkerFileLines(
             lines=new_lines,
-            extension=self.targetExtension,
-            message=
-                'Cannot write '+self.targetText+' %s.')
+            basicFileName=replaceExtension(filename, self.targetExtension),
+            issueOrigin=issueOrigin)

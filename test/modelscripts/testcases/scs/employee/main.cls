@@ -1,4 +1,4 @@
-model Demo1
+class model Demo1
 
 class Employee
 attributes

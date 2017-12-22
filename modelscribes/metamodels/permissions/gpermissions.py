@@ -90,6 +90,8 @@ class PermissionRule(SourceModelElement):
 
     def __init__(self, lineNo, model):
         #type: (int, PermissionModel) -> None
-        super(PermissionRule, self).__init__(lineNo=lineNo)
-        self.model=model
+        super(PermissionRule, self).__init__(
+            model=model,
+            name=None,
+            lineNo=lineNo)
         self.permissions=[] #type: List[Permission]

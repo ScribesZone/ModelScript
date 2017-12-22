@@ -17,6 +17,7 @@ The structure of this module is::
 import collections
 
 from typing import Optional, Dict, List, Text
+from abc import ABCMeta
 
 from modelscribes.base.metrics import Metrics
 from modelscribes.megamodels.elements import SourceModelElement
@@ -34,27 +35,32 @@ from modelscribes.metamodels.scenarios.evaluations import (
 from modelscribes.metamodels.permissions import (
     UCPermissionModel)
 from modelscribes.metamodels.permissions.sar import Subject
-from modelscribes.metamodels.scenarios.blocks import (
-    Block,
-    MainBlock,
-    ContextBlock
-)
-from modelscribes.metamodels.scenarios.operations import (
-    Operation
-)
 from modelscribes.metamodels.usecases import (
     Actor,
+    System,
     UsecaseModel,
 )
 
-__all__=(
+META_CLASSES=(
     'ScenarioModel',
     'ActorInstance',
+    'SystemInstance',
 )
+
+__all__=META_CLASSES
 
 DEBUG=3
 
+Block='Block'
+MainBlock='MainBlock'
+ContextBlock='ContextBlock'
+
 class ScenarioModel(Model, Subject):
+    META_COMPOSITIONS=[
+        'actorInstances',
+        'systemInstance',
+    ]
+
     def __init__(self):
         #type: () -> None
 
@@ -71,6 +77,9 @@ class ScenarioModel(Model, Subject):
 
         self.actorInstanceNamed = collections.OrderedDict()
         #type: Dict[Text, ActorInstance]
+
+        self.systemInstance=None
+        #type: Optional[System]
 
         self.contextBlocks=[] #type: List[ContextBlock]
         self.mainBlocks=[] #type: List[MainBlock]
@@ -120,14 +129,33 @@ class ScenarioModel(Model, Subject):
         self.scenarioEvaluation.evaluate(originalOrder)
 
 
-class ActorInstance(SourceModelElement, Subject):
-    def __init__(self, scenario, name, actor,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
-        SourceModelElement.__init__(self, name, code, lineNo, docComment, eolComment)
-        self.scenario=scenario
-        #type: ScenarioModel
+class ScenarioTopLevelElement(SourceModelElement):
+    __metaclass__ = ABCMeta
 
-        self.name=name
+    def __init__(self, model, name,
+                 code=None, lineNo=None,
+                 docComment=None, eolComment=None):
+        self.scenario=model
+        #type: ScenarioModel
+        SourceModelElement.__init__(self,
+            model=self.scenario,
+            name=name,
+            code=code,
+            lineNo=lineNo,
+            docComment=docComment,
+            eolComment=eolComment)
+
+
+class ActorInstance(ScenarioTopLevelElement, Subject):
+    def __init__(self, model, name, actor,
+                 code=None, lineNo=None, docComment=None, eolComment=None):
+        ScenarioTopLevelElement.__init__(self,
+            model=model,
+            name=name,
+            code=code,
+            lineNo=lineNo,
+            docComment=docComment,
+            eolComment=eolComment)
 
         self.actor=actor
         # type: Actor
@@ -136,6 +164,23 @@ class ActorInstance(SourceModelElement, Subject):
     @property
     def superSubjects(self):
         return [self.actor]
+
+
+class SystemInstance(ScenarioTopLevelElement): #TODO: check if Resource
+    def __init__(self, model, name, system,
+                 code=None, lineNo=None,
+                 docComment=None, eolComment=None):
+        ScenarioTopLevelElement.__init__(self,
+            model=model,
+            name=name,
+            code=code,
+            lineNo=lineNo,
+            docComment=docComment,
+            eolComment=eolComment)
+
+        self.system = system
+        # type: System
+        self.scenario.systemInstance = self
 
 
 METAMODEL = Metamodel(
