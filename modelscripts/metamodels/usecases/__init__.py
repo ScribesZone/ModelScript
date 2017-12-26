@@ -11,21 +11,29 @@ from modelscripts.megamodels.issues import ModelElementIssue
 from modelscripts.megamodels.elements import SourceModelElement
 from modelscripts.base.metrics import Metrics
 from modelscripts.megamodels.metamodels import Metamodel
-from modelscripts.megamodels.elements import ModelElement
 from modelscripts.megamodels.dependencies.metamodels import (
     MetamodelDependency
 )
 from modelscripts.megamodels.models import Model
 from modelscripts.metamodels.permissions.sar import Subject
 
-__all__=(
+META_CLASSES=(
     'UsecaseModel',
     'Usecase',
     'System',
     'Actor'
 )
 
+__all__= META_CLASSES
+
+
 class UsecaseModel(Model):
+
+    META_COMPOSITIONS=[
+        'actors',
+        'system',
+    ]
+
     def __init__(self):
         super(UsecaseModel, self).__init__()
 
@@ -56,6 +64,13 @@ class UsecaseModel(Model):
         return self.actorNamed.values()
 
     @property
+    def nbOfInteractions(self):
+        n=0
+        for a in self.actors:
+            n += len(a.usecases)
+            return n
+
+    @property
     def metrics(self):
         #type: () -> Metrics
         ms=super(UsecaseModel, self).metrics
@@ -66,27 +81,15 @@ class UsecaseModel(Model):
         ))
         return ms
 
-    def check(self):
-        if not self.isSystemDefined:
-            Issue(
-                origin=self,
-                level=Levels.Error,
-                message=('No system defined')
-            )
-        else:
-            if len(self.actors)==0:
-                Issue(
-                    origin=self,
-                    level=Levels.Warning,
-                    message=('No actor defined.')
-                )
-            else:
-                for a in self.actors:
-                    a.check()
-                self.system.check()
+
 
 
 class System(SourceModelElement):
+
+    META_COMPOSITIONS = [
+        'usecases',
+    ]
+
     def __init__(self, usecaseModel):
         SourceModelElement.__init__(self,
             model=usecaseModel,
@@ -115,25 +118,24 @@ class System(SourceModelElement):
     def usecases(self):
         return self.usecaseNamed.values()
 
-    def check(self):
-        if not Symbol.is_CamlCase(self.name):
-            ModelElementIssue(
-                model=self.usecaseModel,
-                modelElement=self,
-                level=Levels.Warning,
-                message=(
-                    '"%s" should be in CamlCase.'
-                    % self.name))
-        if len(self.usecases)==0:
-            Issue(
-                origin=self.usecaseModel,
-                level=Levels.Warning,
-                message=('No usecases defined in system "%s".' %
-                         self.name)
-            )
-        else:
-            for u in self.usecases:
-                u.check()
+    # def check(self):
+    #     # if not Symbol.is_CamlCase(self.name):
+    #     #     ModelElementIssue(
+    #     #         modelElement=self,
+    #     #         level=Levels.Warning,
+    #     #         message=(
+    #     #             '"%s" should be in CamlCase.'
+    #     #             % self.name))
+    #     if len(self.usecases)==0:
+    #         Issue(
+    #             origin=self.usecaseModel,
+    #             level=Levels.Warning,
+    #             message=('No usecases defined in system "%s".' %
+    #                      self.name)
+    #         )
+    #     else:
+    #         for u in self.usecases:
+    #             u.check()
 
 
 class Actor(SourceModelElement, Subject):
@@ -174,23 +176,21 @@ class Actor(SourceModelElement, Subject):
             actor.subActors.append(self)
             self.superActors.append(actor)
 
-    def check(self):
-        if not Symbol.is_CamlCase(self.name):
-            ModelElementIssue(
-                model=self.usecaseModel,
-                modelElement=self,
-                level=Levels.Warning,
-                message=(
-                    '"%s" should be in CamlCase.'
-                    % self.name))
-        if len(self.usecases)==0:
-            ModelElementIssue(
-                model=self.usecaseModel,
-                modelElement=self,
-                level=Levels.Warning,
-                message='"%s" does not perform any usecase.' %
-                    self.name
-            )
+    # def check(self):
+        # if not Symbol.is_CamlCase(self.name):
+        #     ModelElementIssue(
+        #         modelElement=self,
+        #         level=Levels.Warning,
+        #         message=(
+        #             '"%s" should be in CamlCase.'
+        #             % self.name))
+        # if len(self.usecases)==0:
+        #     ModelElementIssue(
+        #         modelElement=self,
+        #         level=Levels.Warning,
+        #         message='"%s" does not perform any usecase.' %
+        #             self.name
+        #     )
 
 
 class Usecase(SourceModelElement, Subject):
@@ -221,23 +221,21 @@ class Usecase(SourceModelElement, Subject):
             actor.usecases.append(self)
             self.actors.append(actor)
 
-    def check(self):
-        if not Symbol.is_CamlCase(self.name):
-            ModelElementIssue(
-                model=self.system.usecaseModel,
-                modelElement=self,
-                level=Levels.Warning,
-                message=(
-                    '"%s" should be in CamlCase.'
-                    % self.name))
-        if len(self.actors)==0:
-            ModelElementIssue(
-                model=self.system.usecaseModel,
-                modelElement=self,
-                level=Levels.Warning,
-                message='No actor performs "%s".' %
-                        self.name
-            )
+    # def check(self):
+    #     if not Symbol.is_CamlCase(self.name):
+    #         ModelElementIssue(
+    #             modelElement=self,
+    #             level=Levels.Warning,
+    #             message=(
+    #                 '"%s" should be in CamlCase.'
+    #                 % self.name))
+    #     if len(self.actors)==0:
+    #         ModelElementIssue(
+    #             modelElement=self,
+    #             level=Levels.Warning,
+    #             message='No actor performs "%s".' %
+    #                     self.name
+    #         )
 
 
 

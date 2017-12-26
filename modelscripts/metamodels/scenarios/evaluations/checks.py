@@ -1,6 +1,6 @@
 # coding=utf-8
 from typing import Text, Optional
-from modelscripts.megamodels.checks import Checker
+from modelscripts.megamodels.checkers import Checker
 from modelscripts.base.issues import (
     Levels
 )
@@ -11,12 +11,10 @@ from modelscripts.metamodels.scenarios.evaluations.operations import (
 
 class QueryAssertChecker(Checker):
 
-    def __init__(self, level, params=None):
+    def __init__(self,**params):
         super(QueryAssertChecker, self).__init__(
-            classes=[_USEImplementedAssertQueryEvaluation ],
-            name='QueryAssertChecker',
-            level=level,
-            params=params
+            metaclasses=[_USEImplementedAssertQueryEvaluation],
+            **params
         )
 
 
@@ -44,12 +42,10 @@ from modelscripts.metamodels.scenarios.evaluations.operations import (
 
 class InvariantViolationChecker(Checker):
 
-    def __init__(self, level, params=None):
+    def __init__(self, **params):
         super(InvariantViolationChecker, self).__init__(
-            classes=[InvariantViolation ],
-            name='InvariantViolationChecker',
-            level=level,
-            params=params
+            metaclasses=[InvariantViolation ],
+            **params
         )
 
 
@@ -72,12 +68,10 @@ from modelscripts.metamodels.scenarios.evaluations.operations import (
 
 class CardinalityViolationCheckerObject(Checker):
 
-    def __init__(self, level, params=None):
+    def __init__(self, **params):
         super(CardinalityViolationCheckerObject, self).__init__(
-            classes=[CardinalityViolationObject],
-            name='CardinalityViolationCheckerObject',
-            level=level,
-            params=params
+            metaclasses=[CardinalityViolationObject],
+            **params
         )
 
 

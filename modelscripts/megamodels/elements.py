@@ -10,7 +10,7 @@ __all__=(
 )
 
 from modelscripts.base import py
-from modelscripts.megamodels.checks import (
+from modelscripts.megamodels.checkers import (
     CheckList
 )
 

@@ -41,7 +41,7 @@ class UsecaseModelPrinter(ModelPrinter):
         for actor in usecaseModel.actorNamed.values():
             self.doActor(actor)
 
-        self.doActorsUsecases(usecaseModel)
+        self.doInteractions(usecaseModel)
         return self.output
 
     def doSystem(self, system):
@@ -80,10 +80,15 @@ class UsecaseModelPrinter(ModelPrinter):
         return self.output
 
 
-    def doActorsUsecases(self, usecaseModel):
+    def doInteractions(self, usecaseModel):
+        if usecaseModel.nbOfInteractions==0:
+            self.out('no ')
+        self.outLine(self.kwd('interactions'))
         for a in usecaseModel.actors:
             for u in a.usecases:
-                self.outLine('A %s can %s.' % (a.name, u.name))
+                self.outLine(
+                    'A %s can %s.' % (a.name, u.name,),
+                    indent=1)
         # if usecaseModel.system.name == '*unknown*':
         #     self.outLine('-- NO SYSTEM DEFINED !')
         # else:

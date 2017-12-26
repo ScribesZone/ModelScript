@@ -23,6 +23,7 @@ META_PACKAGES=(
 )
 
 import modelscripts.metamodels.classes.checks
+import modelscripts.metamodels.usecases.checks
 import modelscripts.metamodels.scenarios.evaluations.checks
 
 

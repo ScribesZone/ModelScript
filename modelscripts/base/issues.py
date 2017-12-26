@@ -25,6 +25,7 @@ class FatalError(Exception):
         super(FatalError, self).__init__()
         self.sourceError=SourceError
 
+
 class Level(object):
     def __init__(self, label, rank, style):
         self.label=label
@@ -75,8 +76,8 @@ class Issue(object):
     """
     An issue in a given entity with issue list (WithIssueList).
     Direct instances of Issue are not localized.
-    The class LocalizedSourceIssue must be used if the error line
-    is known.
+    The class LocalizedSourceIssue must be used instead
+    if the error line is known.
     """
     def __init__(self, origin, level, message):
         #type: (WithIssueList, Level, 'Text') -> None
@@ -91,7 +92,7 @@ class Issue(object):
         """ A source file or a model. """
 
         self.message = message
-        """ The error message. """
+        """ The issue message. """
 
         self.level=level  #type:Level
 
@@ -119,7 +120,6 @@ class Issue(object):
 
     def str(self,
             pattern=None,
-            mode='fragment',
             displayOrigin=False,
             displayLocation=True,
             styled=False): # not used, but in subclasses
@@ -143,7 +143,7 @@ class Issue(object):
             origin='ORIGIN',
             level=self.level.str(),
             kind=self.kind,
-            location='LOCATION',
+            location='?',
             message=self.message
         )
         return self.level.style.do(
@@ -265,7 +265,6 @@ class LocalizedSourceIssue(Issue):
 
     def str(self,
             pattern=None,
-            mode='fragment',
             displayOrigin=False,
             displayLocation=True,
             styled=False):
@@ -284,11 +283,6 @@ class LocalizedSourceIssue(Issue):
             text,
             styled=styled)
 
-        # l=self.level.style.do(self.level.str(styled=styled))
-        # return pattern.format(
-        #     message=self.message,
-        #     level=l)
-
     def __str__(self):
         return self.str()
 
@@ -298,14 +292,25 @@ class LocalizedSourceIssue(Issue):
 
 class IssueBox(object):
     """
-    A collection of issues. It allows to have nested issues box
-    and have some query mecanisms.
+    A collection of issues for a 'WithIssueList'
+    element (so far a Model or SourceFile).
+    IssueBoxes can be nested following the import
+    graphs. Issue boxes also provide some query mecanisms.
     """
 
     def __init__(self, parents=()):
         #type: (List[IssueBox]) -> None
         self._issueList=[] #type: List[Issue]
+        """ 
+        The list of issue directly in this box.
+        This list is populated by the 'Issue' class.
+        """
+
         self.parents=list(parents) #type:List[IssueBox]
+        """
+        List of parent issue boxes. These boxes will
+        apprear in this one.
+        """
 
         self._issuesAtLine=OrderedDict()
         #type: Dict[Optional[int], List[Issue]]

@@ -16,17 +16,16 @@ from modelscripts.base.annotations import (
 
 class ModelElementIssue(Issue):
 
-    def __init__(self, model, modelElement, level, message):
+    def __init__(self, modelElement, level, message):
         #type: ('Model', 'ModelElement', Level, Text) -> None
         self.modelElement=modelElement
         super(ModelElementIssue, self).__init__(
-            origin=model,
+            origin=modelElement.model,
             level=level,
             message=message)
 
     def str(self,
             pattern=None,
-            mode='fragment',
             displayOrigin=False,
             displayLocation=True,
             styled=False):
