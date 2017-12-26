@@ -1,0 +1,6 @@
+scenario model Koinv03
+import class model from 'main.cls'
+
+! toufik := new Employee
+! check
+-- cardinality WorksIn must fail

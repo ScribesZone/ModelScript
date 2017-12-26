@@ -1,9 +1,9 @@
 # coding=utf-8
 from __future__ import print_function
 
-import modelscribes
-from modelscribes.metamodels import usecases
-from modelscribes.scripts.megamodels.printer.megamodels import MegamodelPrinter
+import modelscripts
+from modelscripts.metamodels import usecases
+from modelscripts.scripts.megamodels.printer.megamodels import MegamodelPrinter
 
 from test.modelscripts.issues import (
     F, E, W, I, H,

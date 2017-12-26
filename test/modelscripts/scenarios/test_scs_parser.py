@@ -1,8 +1,8 @@
 # coding=utf-8
 
 
-import modelscribes
-from modelscribes.metamodels import (
+import modelscripts
+from modelscripts.metamodels import (
     scenarios
 )
 from test.modelscripts.issues import (
@@ -10,9 +10,10 @@ from test.modelscripts.issues import (
     checkFileIssues,
     checkValidIssues
 )
-from modelscribes.scripts.megamodels.printer.megamodels import MegamodelPrinter
+from modelscripts.scripts.megamodels.printer.megamodels import MegamodelPrinter
 
 EXPECTED_ISSUES={
+    'koquery01.scs':{F: 0, E: 2, W: 0, I: 0, H: 0},
     'us28.scs':         {F: 0, E: 0, W: 11, I: 0, H: 0},
     'us90.scs':         {F: 0, E: 0, W: 9, I: 0, H: 0},
     'empty01.scs':      {F: 1, E: 0, W: 1, I: 0, H: 0},

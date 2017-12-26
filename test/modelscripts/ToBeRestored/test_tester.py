@@ -17,8 +17,8 @@ from test.modelscripts \
     import getSoilFile, getSoilFileList, getUseFile, getZipFile
 
 import os
-import modelscribes.use.eval.tester
-import modelscribes.use.use.parser
+import modelscripts.use.eval.tester
+import modelscripts.use.use.parser
 import pytesthelpers
 
 from pytesthelpers.datadriven import DataTestCase, DataTestSuite
@@ -27,11 +27,11 @@ class Test_UseEvaluationAndAssertionResult(DataTestSuite):
     class DataTest(DataTestCase):
         def caseSetup(self):
             self.modelFile = getUseFile(self._case['model'])
-            self.useModel = modelscribes.use.use.parser.UseModelSource(
+            self.useModel = modelscripts.use.use.parser.UseModelSource(
                 self.modelFile)
             assert self.useModel.isValid  # we assume that this is ok
             self.stateFiles = getSoilFileList(self._case['states'])
-            self._ = modelscribes.use.eval.tester.UseEvaluationAndAssertionResults(
+            self._ = modelscripts.use.eval.tester.UseEvaluationAndAssertionResults(
                 self.useModel, self.stateFiles)
             #print repr(self._.assertionEvaluationsByStatus['KO'])
             #print repr(self._.assertionEvaluationsByStateFile[stateFile])
@@ -83,7 +83,7 @@ class Test_ZipTestSuite(DataTestSuite):
             else:
                 self.main = None
             self.zipFileId = getZipFile(self._case['zip'])
-            self._ = modelscribes.use.eval.tester.ZipTestSuite(
+            self._ = modelscripts.use.eval.tester.ZipTestSuite(
                 self.zipFileId,
                 useFileShortName=self.main)
 

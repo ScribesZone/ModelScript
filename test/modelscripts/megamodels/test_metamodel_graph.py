@@ -1,9 +1,9 @@
 # coding=utf-8
 
-import modelscribes
+import modelscripts
 
-from modelscribes.megamodels.megamodels import Megamodel
-from modelscribes.scripts.megamodels.printer.megamodels import MegamodelPrinter
+from modelscripts.megamodels.megamodels import Megamodel
+from modelscripts.scripts.megamodels.printer.megamodels import MegamodelPrinter
 
 
 def test_megamodel_printer():

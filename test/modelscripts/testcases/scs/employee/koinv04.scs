@@ -1,0 +1,8 @@
+scenario model Koinv04
+import class model from 'main.cls'
+
+! toufik := new Employee
+! havefun2 := new Project
+! check
+-- cardinality: 'toufik' WorksIn must fail
+-- cardinality: 'havefun2' ~Controls must fail

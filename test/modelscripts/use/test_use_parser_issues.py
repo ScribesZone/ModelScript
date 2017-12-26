@@ -1,16 +1,16 @@
 # coding=utf-8
 from __future__  import print_function
 import logging
-import modelscribes.scripts.classes.parser
-import modelscribes.scripts.classes.printer
-from modelscribes.use.use.parser import (
+import modelscripts.scripts.classes.parser
+import modelscripts.scripts.classes.printer
+from modelscripts.use.use.parser import (
     UseModelSource
 )
-from modelscribes.scripts.base.printers import (
+from modelscripts.scripts.base.printers import (
     ModelSourcePrinter
 )
 
-from modelscribes.metamodels import (
+from modelscripts.metamodels import (
     classes
 )
 
@@ -61,14 +61,14 @@ def testNoFile():
     assert not use_source.isValid
 
 
-import modelscribes.use.engine
+import modelscripts.use.engine
 
 def testBrokenUSEEngine():
     tmp_USE_OCL_COMMAND = \
-        modelscribes.use.engine.USE_OCL_COMMAND
+        modelscripts.use.engine.USE_OCL_COMMAND
     try:
         print('Change to useabc to broken use engine')
-        modelscribes.use.engine.USE_OCL_COMMAND = 'useabc'
+        modelscripts.use.engine.USE_OCL_COMMAND = 'useabc'
         an_existing_file=getTestFile(
             'use/issues/frozen/card1.use')
         use_source = UseModelSource(an_existing_file)
@@ -81,7 +81,7 @@ def testBrokenUSEEngine():
     except:
         raise
     finally:
-        modelscribes.use.engine.USE_OCL_COMMAND = \
+        modelscripts.use.engine.USE_OCL_COMMAND = \
             tmp_USE_OCL_COMMAND
 
 

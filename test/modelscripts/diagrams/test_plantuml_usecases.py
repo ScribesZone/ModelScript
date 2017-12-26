@@ -12,9 +12,9 @@ from test.modelscripts import (
 )
 
 import os
-import modelscribes.scripts.usecases.parser
-import modelscribes.scripts.usecases.plantuml
-import modelscribes.diagrams.plantuml.engine
+import modelscripts.scripts.usecases.parser
+import modelscripts.scripts.usecases.plantuml
+import modelscripts.diagrams.plantuml.engine
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
@@ -36,7 +36,7 @@ def testGenerator_UseOclModel_full():
             for f in os.listdir(test_dir)
             if f.endswith('.uss')]
 
-    puml_engine = modelscribes.diagrams.plantuml.engine.PlantUMLEngine()
+    puml_engine = modelscripts.diagrams.plantuml.engine.PlantUMLEngine()
     for filename in files:
         yield doGraph, filename, puml_engine
 
@@ -44,7 +44,7 @@ def testGenerator_UseOclModel_full():
 def doGraph(filename, puml_engine):
 
     #--- parser: .uss -> system -------------------
-    source = modelscribes.scripts.usecases.parser.UsecaseModelSource(
+    source = modelscripts.scripts.usecases.parser.UsecaseModelSource(
         usecaseFileName=filename,
     )
     if not source.isValid:
@@ -61,7 +61,7 @@ def doGraph(filename, puml_engine):
         )
         print('\n'*2+'='*80)
         print('Generating '+puml_file_path)
-        gen = modelscribes.scripts.usecases.plantuml.UsecaseDiagramPrinter(usm)
+        gen = modelscripts.scripts.usecases.plantuml.UsecaseDiagramPrinter(usm)
         print(gen.do(outputFile=puml_file_path))
         print('\n'*2+'.'*80)
 

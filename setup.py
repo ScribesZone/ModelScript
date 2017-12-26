@@ -9,7 +9,7 @@ import os
 import sys
 import re
 
-name = 'modelscript'
+name = 'modelscripts'
 
 here = os.path.abspath(os.path.dirname(__file__))
 

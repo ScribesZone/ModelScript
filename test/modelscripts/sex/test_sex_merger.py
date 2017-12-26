@@ -10,7 +10,7 @@ from test.modelscripts import (
 )
 
 import os
-import modelscribes.use.engine.merger
+import modelscripts.use.engine.merger
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
@@ -41,5 +41,5 @@ def testGenerator_UseOclModel_full():
 
 
 def check_isValid(soilfile, tracefile, sexfile):
-    modelscribes.use.engine.merger.merge(soilfile, tracefile, sexfile)
+    modelscripts.use.engine.merger.merge(soilfile, tracefile, sexfile)
 

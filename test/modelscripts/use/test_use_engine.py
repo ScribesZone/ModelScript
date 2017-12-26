@@ -4,21 +4,21 @@ from __future__ import print_function
 import os.path
 
 from test.modelscripts import TEST_CASES_DIRECTORY
-from  modelscribes.use.engine import (
+from  modelscripts.use.engine import (
     USEEngine,
 )
-import modelscribes.use.engine
+import modelscripts.use.engine
 
 def test_USEEngine_withUseOCL():
     assert USEEngine.withUseOCL()
 
 def test_USEEngine_withoutUseOCL():
-    tmp_USE_OCL_COMMAND= modelscribes.use.engine.USE_OCL_COMMAND
-    modelscribes.use.engine.USE_OCL_COMMAND = 'xyz'
+    tmp_USE_OCL_COMMAND= modelscripts.use.engine.USE_OCL_COMMAND
+    modelscripts.use.engine.USE_OCL_COMMAND = 'xyz'
     try:
         assert not USEEngine.withUseOCL()
     finally:
-        modelscribes.use.engine.USE_OCL_COMMAND=tmp_USE_OCL_COMMAND
+        modelscripts.use.engine.USE_OCL_COMMAND=tmp_USE_OCL_COMMAND
 
 def test_USEEngine_useVersion():
     version = USEEngine.useVersion()
@@ -75,11 +75,11 @@ def test_USEEngine_executeSoilFileAsTrace_KO():
             or '<input>:1:' in USEEngine.outAndErr )
 
 def test_USEEngine_noUSEBinary():
-    tmp_USE_OCL_COMMAND= modelscribes.use.engine.USE_OCL_COMMAND
-    modelscribes.use.engine.USE_OCL_COMMAND= 'useabc'
+    tmp_USE_OCL_COMMAND= modelscripts.use.engine.USE_OCL_COMMAND
+    modelscripts.use.engine.USE_OCL_COMMAND= 'useabc'
     anyusefile = os.path.join(TEST_CASES_DIRECTORY,
                         'soil','main.cls')
-    print(modelscribes.use.engine.USE_OCL_COMMAND)
+    print(modelscripts.use.engine.USE_OCL_COMMAND)
     USEEngine._execute(
         useSource=anyusefile,
         soilSource=USEEngine._soilHelper('infoModelAndQuit.soil'),
@@ -88,4 +88,4 @@ def test_USEEngine_noUSEBinary():
     try:
         assert USEEngine.commandExitCode != 0
     finally:
-        modelscribes.use.engine.USE_OCL_COMMAND=tmp_USE_OCL_COMMAND
+        modelscripts.use.engine.USE_OCL_COMMAND=tmp_USE_OCL_COMMAND

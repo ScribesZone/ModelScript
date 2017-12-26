@@ -1,12 +1,12 @@
 # coding=utf-8
 from __future__  import print_function
-import modelscribes.metamodels
-import modelscribes.scripts
+import modelscripts.metamodels
+import modelscripts.scripts
 
 from typing import Text, Dict, Optional
 import os
 
-from modelscribes.base.issues import (
+from modelscripts.base.issues import (
     IssueBox,
     Level,
     Levels,
@@ -16,7 +16,7 @@ from test.modelscripts import (
     getTestFiles,
     getTestFile
 )
-from modelscribes.megamodels.megamodels import Megamodel
+from modelscripts.megamodels.megamodels import Megamodel
 
 F=Levels.Fatal
 E=Levels.Error
@@ -26,7 +26,7 @@ H=Levels.Hint
 
 ExpectedIssueDict=Optional[Dict[Level, int]]
 
-from modelscribes.megamodels.metamodels import Metamodel
+from modelscripts.megamodels.metamodels import Metamodel
 
 def assertIssueBox(issues, expected=None):
     #type: (IssueBox, ExpectedIssueDict) -> None
