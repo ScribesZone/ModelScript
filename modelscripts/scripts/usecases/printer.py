@@ -24,8 +24,7 @@ class UsecaseModelPrinter(ModelPrinter):
         #type: (UsecaseModel, Optional[ModelPrinterConfig]) -> None
         super(UsecaseModelPrinter, self).__init__(
             theModel=theModel,
-            config=config
-        )
+            config=config)
 
     def doModelContent(self):
         super(UsecaseModelPrinter, self).doModelContent()

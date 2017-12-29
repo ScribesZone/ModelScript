@@ -1,15 +1,18 @@
 # coding=utf-8
 
 # TODO:0 create a scenario for valence/cci/pi
-# TODO:0 convert check results to errors
-# TODO:0 add test for enumeration parsing in cls + new syntax?
-# TODO:0 test and test error display + error detection among files
-# TODO:0 add "begin" "end" for scenario --@begin --@end -> check
+# TODO:0 bind object/evaluation model issuebox with scenario
+#        otherwise there is no error reported when building objects
 # TODO:0 add | text block to : (require analysis because before)
 #        object
 #        scenario
-# TODO:0 bind object/evaluation model issuebox with scenario
-#        otherwise there is no error reported when building objects
+# TODO:0 add inheritance in cl metamodel
+# TODO:0 add check for optional attributes in check
+# TODO:0 add check for id attributes in check
+# TODO:0 test and test error display + error detection among files
+# TODO:0 add "begin" "end" for scenario --@begin --@end -> check
+#        this mean adding state within preprocessor or parser
+#        parser would be best
 # TODO:0 handle use message 'Nothing to do, because file' in merge
 #       check with us01scs  without ?0
 #       currently the merger generate an empty file
@@ -23,7 +26,8 @@
 # FIXME:0 strange printing for models
 # TODO:0 check why empty entries are  ignored in glossary
 #       see domain2.gls
-# TODO:0 add inheritance in cl metamodel
+# TODO:1 datatype: definition + replacement
+# TODO:1 package: hierachy + tests
 # TODO:1 improve text block metrics with ref and word
 # TODO:1 add hierachyca metrics
 # TODO:1 refactor SourceElement and SourceModelElement
@@ -45,6 +49,7 @@
 #       model specific option. Currently the SecenarioPrinter
 #       add some attributs on the fly. This should be removed.
 # TODO:1 add constraint composition[0..1,1]
+
 # TODO:1 add sex parser to support composition
 # (ScribesEnv)jmfavre@jmfavre-HP-ZBook-15:/D2/ScribesZone/ModelScripts/test/modelscripts/testcases/sex$ use -qv composition.use composition3.soil
 # Warning: Insert has resulted in two aggregates for object `Wheel1'. Object `Wheel1' is already component of another object.
@@ -58,6 +63,73 @@
 # checked structure in 1ms.
 # checking invariants...
 # checked 0 invariants in 0.000s, 0 failures.
+
+"""
+Warning: Operation call ...
+This may lead to unexpected behavior.
+You can change this check using the -oclAnyCollectionsChecks switch.
+You can change this check using the -extendedTypeSystemChecks switch.
+
+Expression " + StringUtil.inQuotes(this.stringRep(args, "")) +
+					 " can never evaluate to more than an empty bag, " + StringUtil.NEWLINE +
+					 "because the element types " + StringUtil.inQuotes(elemType1) +
+					 " and " + StringUtil.inQuotes(elemType2) + " are unrelated.";
+		}
+
+			return "Expression " + StringUtil.inQuotes(this.stringRep(args, "")) +
+					 " will always evaluate to false, " + StringUtil.NEWLINE +
+					 "because the element type " + StringUtil.inQuotes(col.elemType()) +
+					 " and the parameter type " + StringUtil.inQuotes(args[1].type()) + " are unrelated.";
+
+*<input>:1:3: Warning: application of `oclIsKindOf' to a single value should be done with `.' instead of `->'.
+*Warning: Insert has resulted in a cycle in the part-whole hierarchy. Object `y' is a direct or indirect part of `x'.
+*Warning: Insert has resulted in two aggregates for object `z'. Object `z' is already component of another object.
+*Warning: Object `x' cannot be a part of itself.
+
+			return "Expression " + StringUtil.inQuotes(this.stringRep(args, "")) +
+					 " will always evaluate to the same ordered set, " + StringUtil.NEWLINE +
+					 "because the element type " + StringUtil.inQuotes(col.elemType()) +
+					 " and the parameter type " + StringUtil.inQuotes(args[1].type()) + " are unrelated.";
+
+
+?a1->selectByKind(B)
+* <input>:1:4: Warning: application of `selectByKind' to a single value should be done with `.' instead of `->'.
+The operation `selectByKind' is only applicable on collections.
+
+"""
+"""
+Warning: Operation call ...
+This may lead to unexpected behavior.
+You can change this check using the -oclAnyCollectionsChecks switch.
+You can change this check using the -extendedTypeSystemChecks switch.
+
+Expression " + StringUtil.inQuotes(this.stringRep(args, "")) + 
+					 " can never evaluate to more than an empty bag, " + StringUtil.NEWLINE +
+					 "because the element types " + StringUtil.inQuotes(elemType1) + 
+					 " and " + StringUtil.inQuotes(elemType2) + " are unrelated.";
+		}
+
+			return "Expression " + StringUtil.inQuotes(this.stringRep(args, "")) + 
+					 " will always evaluate to false, " + StringUtil.NEWLINE +
+					 "because the element type " + StringUtil.inQuotes(col.elemType()) + 
+					 " and the parameter type " + StringUtil.inQuotes(args[1].type()) + " are unrelated.";
+
+*<input>:1:3: Warning: application of `oclIsKindOf' to a single value should be done with `.' instead of `->'.
+*Warning: Insert has resulted in a cycle in the part-whole hierarchy. Object `y' is a direct or indirect part of `x'.
+*Warning: Insert has resulted in two aggregates for object `z'. Object `z' is already component of another object.
+*Warning: Object `x' cannot be a part of itself.
+
+			return "Expression " + StringUtil.inQuotes(this.stringRep(args, "")) + 
+					 " will always evaluate to the same ordered set, " + StringUtil.NEWLINE +
+					 "because the element type " + StringUtil.inQuotes(col.elemType()) + 
+					 " and the parameter type " + StringUtil.inQuotes(args[1].type()) + " are unrelated.";
+
+
+?a1->selectByKind(B)
+* <input>:1:4: Warning: application of `selectByKind' to a single value should be done with `.' instead of `->'.
+The operation `selectByKind' is only applicable on collections.
+
+"""
 
 # TODO:1  relational class model checks
 # - pas d'association n-n
@@ -74,6 +146,7 @@
 # TODO:1 import between cl diagram could be very useful
 # TODO:2 add syntax enumeration x ... end
 #        easy for first and other lines, but must have context for "end"
+
 # TODO:2 Installation procedure.
 #       chmod +x for internal model-use
 #       chmox +x for bin/*

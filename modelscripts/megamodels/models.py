@@ -7,19 +7,19 @@ import abc
 
 from typing import Optional, Text, List
 
-from modelscripts.base.issues import WithIssueList
+from modelscripts.megamodels.issues import WithIssueModel
 from modelscripts.base.metrics import Metrics
 from modelscripts.megamodels.megamodels import (
-    Megamodel,
     MegamodelElement
 )
 from modelscripts.megamodels.elements import ModelElement
-from modelscripts.megamodels.metamodels import Metamodel
+# from modelscripts.megamodels.metamodels import Metamodel
 # from modelscripts.megamodels.sources import (
 #     ModelSourceFile
 # )
 # from modelscripts.megamodels.dependencies.models import ModelDependency
 # from modelscripts.megamodels.dependencies.metamodels import MetamodelDependency
+Metamodel='Metamodel'
 ModelSourceFile='ModelSourceFile'
 ModelDependency='ModelDependency'
 MetamodelDependency='MetamodelDependency'
@@ -29,7 +29,9 @@ __all__=(
     'ModelElement',
 )
 
-class Model(MegamodelElement, ModelElement, WithIssueList):
+DEBUG=1
+
+class Model(MegamodelElement, ModelElement, WithIssueModel):
     """
     The root class for all models.
 
@@ -58,10 +60,9 @@ class Model(MegamodelElement, ModelElement, WithIssueList):
         self.source=None  #type: Optional[ModelSourceFile]
         # Set later if build from a ModelSourceFile.
         # Set in the constuctor of ModelSourceFile
-
         MegamodelElement.__init__(self)
 
-        WithIssueList.__init__(self, parents=[])
+        WithIssueModel.__init__(self, parents=[])
         # Parents set at the same time as source
 
         ModelElement.__init__(self, self)
@@ -88,12 +89,20 @@ class Model(MegamodelElement, ModelElement, WithIssueList):
 
     @property
     def label(self):
-        name="''" if self.name=='' else self.name
-        source='' if self.source is None else self.source.label
-        return '%s:%s[%s]' % (
-            name,
-            self.metamodel.id,
-            source)
+        name='_' if self.name=='' else self.name
+        if self.source is None:
+            return '%s:%s()' % (
+                name,
+                self.metamodel.id)
+        else:
+            return '%s:%s(%s)' % (
+                name,
+                self.metamodel.id,
+                self.source.label)
+
+    # @property
+    # def originLabel(self):
+    #     return self.label
 
     @property
     def metrics(self):
@@ -113,7 +122,9 @@ class Model(MegamodelElement, ModelElement, WithIssueList):
         return self.metamodel.modelPrinterClass(self).do()
 
     def finalize(self):
-        print('EE'*100+' finalize model')
+        if DEBUG>=1:
+            _=(' finalize '+self.label+' ').center(70, '.')
+            print('MOD: '+_)
         self.check()
 
     def str( self,
@@ -134,7 +145,21 @@ class Model(MegamodelElement, ModelElement, WithIssueList):
                     printer_class.__class__.__name__,
                     method))
 
+    def usedModels(self,
+                   targetMetamodel=None,
+                   metamodelDependency=None):
+        outdeps=self.outDependencies(
+            targetMetamodel=targetMetamodel,
+            metamodelDependency=metamodelDependency)
+        return [ dep.targetModel for dep in outdeps]
 
+    def clientModels(self,
+                     targetMetamodel=None,
+                     metamodelDependency=None):
+        indeps=self.outDependencies(
+            targetMetamodel=targetMetamodel,
+            metamodelDependency=metamodelDependency)
+        return [ dep.targetModel for dep in indeps]
 
     def outDependencies(self, targetMetamodel=None, metamodelDependency=None):
         #type: (Optional[Metamodel]) -> List[ModelDependency]
@@ -145,6 +170,7 @@ class Model(MegamodelElement, ModelElement, WithIssueList):
         """
 
         # select all out dependencies from self
+        from modelscripts.megamodels import Megamodel
         all_deps=Megamodel.modelDependencies(source=self)
         if targetMetamodel is None:
             deps=all_deps
@@ -177,6 +203,7 @@ class Model(MegamodelElement, ModelElement, WithIssueList):
         dependency filtered either by targetMetamodel,
         or by metamodelDependency.
         """
+        from modelscripts.megamodels import Megamodel
         deps=Megamodel.modelDependencies(target=self)
         if sourceMetamodel is None:
             return deps
@@ -206,6 +233,7 @@ class Model(MegamodelElement, ModelElement, WithIssueList):
         """
 
         #-- metamodels dependencies to be check against
+        from modelscripts.megamodels import Megamodel
         if metamodelDependencies is None:
             mm_deps=Megamodel.metamodelDependencies(
                 source=self.metamodel)

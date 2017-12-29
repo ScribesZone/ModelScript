@@ -18,6 +18,7 @@ class ModelElement(object):
     __metaclass__ = ABCMeta
 
     def __init__(self, model):
+        assert model is not None
         self._model=model
         self.stereotypes=[]
         self.tags=[]
@@ -29,6 +30,7 @@ class ModelElement(object):
 
     @property
     def model(self):
+        #type: () -> 'Model'
         return self._model
 
     @model.setter

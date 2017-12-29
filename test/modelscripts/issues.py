@@ -1,7 +1,5 @@
 # coding=utf-8
 from __future__  import print_function
-import modelscripts.metamodels
-import modelscripts.scripts
 
 from typing import Text, Dict, Optional
 import os
@@ -16,7 +14,7 @@ from test.modelscripts import (
     getTestFiles,
     getTestFile
 )
-from modelscripts.megamodels.megamodels import Megamodel
+from modelscripts.megamodels import Megamodel
 
 F=Levels.Fatal
 E=Levels.Error
@@ -83,7 +81,7 @@ def checkValidIssues(reltestfile, metamodel, expectedIssues):
     print('tes:'+'=='*10+' tested '+file+'='*35+'\n' )
 
 def scriptsIterator(m2id, expectedIssues):
-    metamodel=Megamodel.metamodel(id=m2id)
+    metamodel=Megamodel.theMetamodel(id=m2id)
     res = checkFileIssues(
         metamodel.extension[1:],
         [metamodel.extension],

@@ -97,8 +97,6 @@ class ScenarioModel(Model, Subject):
         #type: () -> Metamodel
         return METAMODEL
 
-
-
     @property
     def logicalOrderBlocks(self):
         #type: () -> List[Block]
@@ -140,7 +138,7 @@ class ScenarioTopLevelElement(SourceModelElement):
         self.scenario=model
         #type: ScenarioModel
         SourceModelElement.__init__(self,
-            model=self.scenario,
+            model=model,
             name=name,
             code=code,
             lineNo=lineNo,

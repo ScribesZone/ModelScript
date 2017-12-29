@@ -46,8 +46,9 @@ from modelscripts.base.issues import (
 import modelscripts.use.engine
 from modelscripts.metamodels.classes import (
     ClassModel,
+    Package,
     SimpleType,
-    BasicType,
+    DataType,
     Enumeration,
     EnumerationLiteral,
     Class,
@@ -284,6 +285,7 @@ class UseModelSource(ModelSourceFile):
         last_doc_comment = DocCommentLines()
         current_eol_comment = None
         current_element=self.classModel
+        current_package= None
         current_enumeration = None
         current_class = None
         current_attribute = None    # could be also in association class
@@ -379,9 +381,10 @@ class UseModelSource(ModelSourceFile):
 
             # Full line comment
             # r = r'^ *--(?P<comment> *([^@].*)?)$'  <--- without @
-            r = r'^ *--(?P<comment>.*)$'
+            r = r'^ *--(?P<comment>|[^@].*)$'
             m = re.match(r, line)
             if m:
+                print('UU'*100)
                 c=m.group('comment')
                 last_doc_comment.add(c)
                 continue
@@ -389,11 +392,13 @@ class UseModelSource(ModelSourceFile):
             # Everything that follow is not part of a full line comment
             is_in_doc_comment = False
 
-
+            #--------------------------------------------------
+            # End of line comment --
+            #--------------------------------------------------
 
             # End of line (EOL comment)
             # r = r'^(?P<content>.*?)--(?P<comment> *([^@].*)?)$'  iwthout @
-            r = r'^(?P<content>.*?)--(?P<comment>.*)$'
+            r = r'^(?P<content>.+)--(?P<comment>.*)$'
             m = re.match(r, line)
             if m:
                 # There is a eol comment on this line
@@ -477,6 +482,25 @@ class UseModelSource(ModelSourceFile):
                 c.lineNo = line_no
                 c.docComment = last_doc_comment.consume()
                 c.eolComment = current_eol_comment
+                continue
+
+            #--------------------------------------------------
+            # package --
+            #--------------------------------------------------
+            r = r'^ *--@package +(?P<name>[\w\.]+)' \
+                r' *$'
+            m = re.match(r, line)
+            if m:
+                print('OO'*100)
+                package=Package(
+                    name=m.group('name'),
+                    model=self.classModel,
+                    package=None,
+                    lineNo=line_no,
+                    docComment=last_doc_comment.consume(),
+                    eolComment=current_eol_comment
+                )
+                current_package=package
                 continue
 
 
@@ -1091,7 +1115,7 @@ class UseModelSource(ModelSourceFile):
             LocalizedSourceIssue(
                 sourceFile=self,
                 level=Levels.Fatal,
-                message=('Cannot process "%s"' % line),
+                message=('Cannot process line "%s"' % original_line),
                 line=line_no
             )
 
@@ -1103,14 +1127,14 @@ class UseModelSource(ModelSourceFile):
             #type: (Text)-> SimpleType
             """
             Search the name in enumeration of basic type
-            or create a new BasicType.
+            or create a new DataType.
             """
             if name in self.classModel.simpleTypeNamed:
                 return self.classModel.simpleTypeNamed[name]
             else:
-                self.classModel.basicTypeNamed[name] = \
-                    BasicType(self.model, name)
-                return self.classModel.basicTypeNamed[name]
+                self.classModel.dataTypeNamed[name] = \
+                    DataType(self.model, name)
+                return self.classModel.dataTypeNamed[name]
 
         def __resolveClassType(name):
             """

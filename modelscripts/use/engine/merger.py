@@ -267,7 +267,10 @@ def merge(soilFile, traceFile, prequelFileName):
             merged.out('trace')
             continue
 
-        if re.match('^(Error|<input>)(?P<error>.*)$', line):
+
+        #---- errors / warning
+
+        if re.match('^(Error|Warning|<input>)(?P<error>.*)$', line):
             if DEBUG>=2:
                 print(' ' * 10 + 'ERROR')
             merged.out('trace')
@@ -278,10 +281,15 @@ def merge(soilFile, traceFile, prequelFileName):
                 print('')
             break
 
-        raise ValueError('Error: cannot parse line #%i of trace:\n"%s"' %(
+
+
+
+        raise ValueError('Unexpected line (#%i) in use trace:\n"%s"' %(
             trace.lineno,
             trace.line()
         ))
 
     merged.close()
     return merged.sexFileName
+
+

@@ -22,9 +22,9 @@ from modelscripts.base.issues import (
     IssueBox,
     FatalError
 )
-from modelscripts.megamodels.megamodels import (
-    Megamodel
-)
+# from modelscripts.megamodels import (
+#     Megamodel
+# )
 from modelscripts.megamodels.metamodels import (
     Metamodel
 )
@@ -147,6 +147,7 @@ class ModelSourceFile(SourceFile):
         except FatalError:
             pass   # an error as already been registered
 
+        from modelscripts.megamodels import Megamodel
         Megamodel.registerSource(self)
         Megamodel.registerModel(self.model)
 

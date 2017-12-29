@@ -3,7 +3,7 @@ from collections import OrderedDict
 from typing import List, Dict, Optional
 
 __all__=(
-    '_SourceRegistery'
+    '_SourceRegistry'
 )
 
 
@@ -17,7 +17,7 @@ ModelSourceFile='ModelSourceFile'
 SourceFileDependency='SourceFileDependency'
 OptSource=Optional[ModelSourceFile]
 
-class _SourceRegistery(object):
+class _SourceRegistry(object):
     """
     Part of the megamodel dealing with source files
     """
@@ -67,7 +67,7 @@ class _SourceRegistery(object):
 
             # Register model
             if source.model is not None:
-                from modelscripts.megamodels.megamodels import Megamodel
+                from modelscripts.megamodels import Megamodel
                 Megamodel.registerModel(source.model)
 
     @classmethod
@@ -84,7 +84,7 @@ class _SourceRegistery(object):
         # Element registration
         cls.registerSource(source)
         cls.registerSource(target)
-        from modelscripts.megamodels.megamodels import Megamodel
+        from modelscripts.megamodels import Megamodel
         Megamodel.registerModel(source.model)
         Megamodel.registerModel(target.model)
 

@@ -12,32 +12,28 @@ from abc import ABCMeta, abstractproperty
 from typing import List, Optional
 
 from modelscripts.megamodels.dependencies import Dependency
-from modelscripts.megamodels.megamodels._registeries.metamodels import _MetamodelRegistery
+from modelscripts.megamodels.megamodels._registries.metamodels import _MetamodelRegistry
 # from modelscripts.megamodels.dependencies.metamodels import MetamodelDependency
 # from modelscripts.megamodels.dependencies.models import ModelDependency
 # To avoid circular dependencies
 # from modelscripts.megamodels.models import Model
 # from modelscripts.megamodels.metamodels import Metamodel
-from modelscripts.megamodels.megamodels._registeries.models import _ModelRegistery
-from modelscripts.megamodels.megamodels._registeries.sources import _SourceRegistery
+from modelscripts.megamodels.megamodels._registries.models import _ModelRegistry
+from modelscripts.megamodels.megamodels._registries.sources import _SourceRegistry
 
 __all__=(
     'MegamodelElement',
-    'Megamodel'
 )
 
 Metamodel= 'Metamodel'
 MetamodelDependency='MetamodelDepndency'
 
-Model='Model'
+# Model='Model'
 ModelDependency='ModelDependency'
 
 ModelSourceFile='ModelSourceFile'
 SourceFileDependency='SourceFileDependency'
 OptSource=Optional[ModelSourceFile]
-
-# TODO:1 Make a printer for megamodel
-
 
 
 class MegamodelElement(object):
@@ -61,73 +57,3 @@ class MegamodelElement(object):
         #type: () -> List[MegamodelElement]
         return [d.source for d in self.incomingDependencies]
 
-
-import os
-class Megamodel(
-    _MetamodelRegistery,
-    _ModelRegistery,
-    _SourceRegistery):
-    """
-    Static class containing a global registry
-    of metamodels
-    and models and corresponding dependencies.
-    """
-
-    @classmethod
-    def fileMetamodel(cls, filename):
-        try:
-            extension=os.path.splitext(filename)[1]
-            return cls.metamodel(ext=extension)
-        except:
-            return None
-
-    @classmethod
-    def loadFile(cls, filename):
-        if not os.path.exists(filename):
-            raise ValueError('File not found: %s' % filename)
-        try:
-            path = os.path.realpath(filename)
-            # check if already registered
-            return cls.source(path=path)
-        except:
-            # source not registered, so builf it
-            mm=cls.fileMetamodel(filename)
-            if mm is None:
-                b=os.path.basename(filename)
-                raise ValueError(
-                    'No metamodel available for %s' % b)
-            try:
-                factory=mm.sourceClass
-            except NotImplementedError:
-                raise ValueError(
-                    'No parser available for %s' %
-                                 mm.name )
-            else:
-                return factory(filename)
-
-    @classmethod
-    def displayModel(cls,
-                     model,
-                     config=None):
-        printer=model.metamodel.modelPrinterClass(
-            theModel=model,
-            config=config)
-        printer.display()
-
-
-
-    @classmethod
-    def displaySource(cls,
-                      source,
-                      config=None):
-        printer=source.metamodel.sourcePrinterClass(
-            theSource=source,
-            config=config)
-        printer.display()
-
-    @classmethod
-    def displayModelDiagram(
-            cls,
-            model,
-            config=None):
-        raise NotImplementedError()

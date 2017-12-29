@@ -29,7 +29,7 @@ from modelscripts.base.issues import (
     Levels,
     Issue
 )
-from modelscripts.megamodels.megamodels import Megamodel
+# from modelscripts.megamodels import Megamodel
 
 DEBUG=1
 
@@ -60,6 +60,7 @@ class SourceFileDependency(Dependency):
         #type: ModelSourceFile
         """ Imported source file. The target of the import"""
 
+        from modelscripts.megamodels import Megamodel
         Megamodel.registerSourceDependency(self)
 
         # register model dependency if not already there
@@ -112,6 +113,7 @@ class SourceImport(SourceFileDependency):
         # filled in ImportBox.addImport
         try:
             # already registered
+            from modelscripts.megamodels import Megamodel
             importedSourceFile=Megamodel.source(
                 importStmt.absoluteTargetFilename)
         except:
@@ -318,7 +320,8 @@ class ImportBox(ModelDescriptor):
         If there is more than one sourceImport then an issue
         is added.
         """
-        metamodel_label = Megamodel.metamodel(id=id).label
+        from modelscripts.megamodels import Megamodel
+        metamodel_label = Megamodel.theMetamodel(id=id).label
         if id not in self._importsByMetamodelId:
             if optional:
                 return None

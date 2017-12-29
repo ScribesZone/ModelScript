@@ -21,9 +21,9 @@ from modelscripts.base.symbols import (
     Symbol
 )
 from modelscripts.megamodels.dependencies.sources import SourceImport
-from modelscripts.megamodels.megamodels import (
-    Megamodel
-)
+# from modelscripts.megamodels import (
+#     Megamodel
+# )
 from modelscripts.megamodels.metamodels import (
     Metamodel
 )
@@ -178,7 +178,8 @@ def _matchModelImport(
             metamodel_label=m.group('metamodelLabel')
             try:
                 # could raise ValueError
-                metamodel=Megamodel.metamodel(
+                from modelscripts.megamodels import Megamodel
+                metamodel=Megamodel.theMetamodel(
                     label=metamodel_label) #type: Metamodel
             except ValueError as e:
                 LocalizedSourceIssue(
@@ -317,7 +318,8 @@ def _matchModelDefinition(
         metamodel_label=m['metamodelLabel']
         try:
             # could raise ValueError
-            metamodel=Megamodel.metamodel(
+            from modelscripts.megamodels import Megamodel
+            metamodel=Megamodel.theMetamodel(
                 label=metamodel_label) #type: Metamodel
         except ValueError as e:
             LocalizedSourceIssue(

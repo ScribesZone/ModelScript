@@ -1,8 +1,9 @@
 class model Employee
 
-datatype Date < String --
+datatype Date < Integer --
 
 package x.b
+
 class Person
 attributes
   /name : String -- @Date

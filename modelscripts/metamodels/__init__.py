@@ -1,6 +1,7 @@
 # coding=utf-8
 
 from modelscripts.megamodels.metametamodel import MetaPackage
+from modelscripts.megamodels.metametamodel import MetaCheckerPackage
 from modelscripts.scripts.metamodels.parser import PyMetamodelParser
 META_PACKAGES=(
     'glossaries',
@@ -12,7 +13,7 @@ META_PACKAGES=(
     'permissions.gpermissions',
     'permissions.sar',
     'scenarios',
-    # 'scenarios.assertions'
+    # 'scenarios.assertions'  not yet
     'scenarios.blocks',
     'scenarios.operations',
     'scenarios.evaluations',
@@ -20,15 +21,25 @@ META_PACKAGES=(
     'scenarios.evaluations.operations',
     'textblocks',
     'usecases',
+    'megamodels',
 )
 
-import modelscripts.metamodels.classes.checks
-import modelscripts.metamodels.usecases.checks
-import modelscripts.metamodels.scenarios.evaluations.checks
+META_CHECKER_PACKAGES=(
+    'classes.checkers',
+    'usecases.checkers',
+    'scenarios.evaluations.checkers'
+)
+
+def loadMetaPackages():
+    for name in META_PACKAGES:
+        mp=MetaPackage(name)
+        # PyMetamodelParser().parsePyModule(mp.pyModule)
+
+def loadMetaCheckerPackages():
+    for name in META_CHECKER_PACKAGES:
+        mp=MetaCheckerPackage(name)
 
 
 
-for m_name in META_PACKAGES:
-    mp=MetaPackage(m_name)
-    # PyMetamodelParser().parsePyModule(mp.pyModule)
-
+loadMetaPackages()
+loadMetaCheckerPackages()

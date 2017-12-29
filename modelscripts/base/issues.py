@@ -3,8 +3,9 @@
 """
 Model errors in source files either localized or not.
 """
+from abc import ABCMeta, abstractproperty
 from collections import OrderedDict
-from typing import Optional, List, Text, Dict, Tuple
+from typing import Optional, List, Text, Dict, Tuple, Any, Union
 
 from modelscripts.base.annotations import (
     Annotations
@@ -12,6 +13,7 @@ from modelscripts.base.annotations import (
 from modelscripts.base.locations import (
     SourceLocation,
 )
+
 
 from modelscripts.config import Config
 
@@ -99,7 +101,11 @@ class Issue(object):
         self.origin._issueBox._add(self)
 
         if DEBUG>=1 or Config.realtimeIssuePrint>=1:
-            print('iss: Issue: ' + str(self))
+            print('ISS: ****NEW %s IN %s **** -> %s'  % (
+                type(self).__name__,
+                self.origin._issueBox.label,
+                str(self)
+            ))
 
         if level==Levels.Fatal:
             raise FatalError(self)
@@ -298,8 +304,18 @@ class IssueBox(object):
     graphs. Issue boxes also provide some query mecanisms.
     """
 
-    def __init__(self, parents=()):
-        #type: (List[IssueBox]) -> None
+    def __init__(self, origin, parents=()):
+        #type: (Any, List[IssueBox]) -> None
+
+
+        self.origin=origin #type: Union['SourceFile', 'Model']
+        """
+        The container of the issue box, typically a 
+        source file or a model.
+        """
+
+        self.label=self.origin.label
+
         self._issueList=[] #type: List[Issue]
         """ 
         The list of issue directly in this box.
@@ -320,6 +336,12 @@ class IssueBox(object):
         _issuesAtLine[0] are for unlocalized issues.
         """
 
+
+        if DEBUG>=1:
+            print('ISS: New issue box for %s -> %s' % (
+                type(self.origin).__name__,
+                self.label))
+
     def _add(self, issue):
         #type: (Issue) -> None
         # called by the issue constructor
@@ -333,14 +355,19 @@ class IssueBox(object):
             self._issuesAtLine[index]=[]
         self._issuesAtLine[index].append(issue)
 
-    def addParent(self, issues):
+    def addParent(self, issueBox):
         #type: (IssueBox) -> None
         """
         Add the issue box as the last parents.
         If it is already in the list, do nothing.
         """
-        if not issues in self.parents:
-            self.parents.append(issues)
+        if not issueBox in self.parents:
+            self.parents.append(issueBox)
+            if DEBUG >= 1:
+                print('ISS: Add parent "%s" -> "%s"' % (
+                        self.label,
+                        issueBox.label))
+
 
 
 
@@ -481,7 +508,6 @@ class IssueBox(object):
     def str(self,
             level=None,
             op='=',
-            mode='fragment',
             summary=True,
             styled=False):
         if not self.hasIssues:
@@ -493,7 +519,7 @@ class IssueBox(object):
         return '\n'.join(
             [header]
             + [
-                i.str(mode=mode, styled=styled)
+                i.str(styled=styled)
                 for i in self.select(level,op)]
             + [Annotations.full+'\n' ])
 
@@ -505,15 +531,25 @@ class IssueBox(object):
 
 
 
+
+
 class WithIssueList(object):
+    __metaclass__ = ABCMeta
+
     def __init__(self, parents=()):
         #type: (List[IssueBox]) -> None
         assert(isinstance(parents, list))
-        self._issueBox=IssueBox(parents=parents)
+        self._issueBox=IssueBox(
+            origin=self,
+            parents=parents)
 
     @property
     def issues(self):
         return self._issueBox
+
+    @abstractproperty
+    def label(self):
+        raise NotImplementedError('ISS: originLabel not defined')
 
     @property
     def isValid(self):
@@ -526,3 +562,5 @@ class WithIssueList(object):
 
     def addIssue(self, sourceError):
         self._issueBox._add(sourceError)
+
+

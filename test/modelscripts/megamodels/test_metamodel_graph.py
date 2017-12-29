@@ -2,7 +2,7 @@
 
 import modelscripts
 
-from modelscripts.megamodels.megamodels import Megamodel
+from modelscripts.megamodels import Megamodel
 from modelscripts.scripts.megamodels.printer.megamodels import MegamodelPrinter
 
 

@@ -13,10 +13,10 @@ SourceFileDependency='SourceFileDependency'
 OptSource=Optional[ModelSourceFile]
 
 __all__=(
-    '_MetamodelRegistery'
+    '_MetamodelRegistry'
 )
 
-class _MetamodelRegistery(object):
+class _MetamodelRegistry(object):
     """
     Part of the megamodel dealing with metamodels
     """
@@ -45,7 +45,7 @@ class _MetamodelRegistery(object):
         """
         Register a metamodel.
         """
-        from modelscripts.megamodels.megamodels import Megamodel
+        from modelscripts.megamodels import Megamodel
         Megamodel._metamodelById[metamodel.id] = metamodel
         Megamodel._metamodelByLabel[metamodel.label] = metamodel
         Megamodel._metamodelByExtension[metamodel.extension] = metamodel
@@ -73,7 +73,7 @@ class _MetamodelRegistery(object):
         return cls._metamodelById.values()
 
     @classmethod
-    def metamodel(cls, id=None, label=None, ext=None):
+    def theMetamodel(cls, id=None, label=None, ext=None):
         #type: () -> Metamodel
         """
         Return a metamodel given either

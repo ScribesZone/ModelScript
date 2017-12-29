@@ -498,7 +498,8 @@ class InvariantEvaluation(ModelElement):
                  invariant,
                  result=True):
         #type: (CheckEvaluation, Invariant, bool) -> None
-        ModelElement.__init__(self, invariant.model)
+        ModelElement.__init__(self,
+            checkEvaluation.model)
         self.checkEvaluation = checkEvaluation
         self.invariant = invariant
         self.checkEvaluation.invariantEvaluationByInvariant[invariant] = self
@@ -583,7 +584,8 @@ class CardinalityEvaluation(ModelElement):
     def __init__(self, checkEvaluation, role):
         #type: (CheckEvaluation, Role) -> None
 
-        ModelElement.__init__(self, model=role.model)
+        ModelElement.__init__(self,
+            model=checkEvaluation.model)
 
         self.checkEvaluation=checkEvaluation
         #type: CheckEvaluation

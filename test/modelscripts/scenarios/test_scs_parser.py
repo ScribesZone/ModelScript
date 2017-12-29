@@ -13,7 +13,6 @@ from test.modelscripts.issues import (
 from modelscripts.scripts.megamodels.printer.megamodels import MegamodelPrinter
 
 EXPECTED_ISSUES={
-    'koquery01.scs':{F: 0, E: 2, W: 0, I: 0, H: 0},
     'us28.scs':         {F: 0, E: 0, W: 11, I: 0, H: 0},
     'us90.scs':         {F: 0, E: 0, W: 9, I: 0, H: 0},
     'empty01.scs':      {F: 1, E: 0, W: 1, I: 0, H: 0},
@@ -24,6 +23,14 @@ EXPECTED_ISSUES={
     'ko04.scs':         {F: 1, E: 0, W: 1, I: 0, H: 0},
     'ko05.scs':         {F: 1, E: 0, W: 1, I: 0, H: 0},
     'ko06.scs':         {F: 1, E: 0, W: 1, I: 0, H: 0},
+
+    'koinv02.scs': {F: 0, E: 1, W: 0, I: 0, H: 0},
+    'koinv03.scs':      {F: 0, E: 2, W: 0, I: 0, H: 0},
+    'koinv04.scs':      {F: 0, E: 6, W: 0, I: 0, H: 0},
+
+    'koquery01.scs': {F: 0, E: 2, W: 0, I: 0, H: 0},
+    'koquery02.scs': {F: 0, E: 1, W: 0, I: 0, H: 0},
+
 }
 
 

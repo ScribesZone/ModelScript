@@ -48,14 +48,6 @@ class ObjectModel(Model):
         self.linkObjects = []
         # type: List[LinkObject]
 
-    # def status(self):
-    #     return (
-    #         '%i objects\n%i links\n%i link objects' % (
-    #         len(self.objects),
-    #         len(self.links),
-    #         len(self.linkObjects)
-    #     ))
-    #
     @property
     def metrics(self):
         #type: () -> Metrics

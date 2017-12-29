@@ -72,8 +72,8 @@ class UseModelPrinter(ModelPrinter):
     def doUseModel(self, model):
         self.doModelTextBlock(model.description)
 
-        if self.theModel.basicTypes is not None:
-            for t in self.theModel.basicTypes:
+        if self.theModel.dataTypes is not None:
+            for t in self.theModel.dataTypes:
                 self.outLine(
                     self.cmt('-- basic type : %s') % t.name)
 
@@ -101,7 +101,7 @@ class UseModelPrinter(ModelPrinter):
         for ac in model.associationClasses:
             self.doAssociationClass(ac)
 
-        # TODO: invariants, operationConditions, basicTypes
+        # TODO: invariants, operationConditions, dataTypes
         return self.output
 
     def doEnumeration(self, enumeration):

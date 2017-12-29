@@ -3,3 +3,13 @@
 
 import modelscripts.metamodels
 import modelscripts.scripts
+
+
+def finishMegamodel():
+    from modelscripts.megamodels import (Megamodel, METAMODEL)
+    Megamodel.model=Megamodel()
+    Megamodel.model.name='megamodel'
+    from modelscripts.metamodels.megamodels import _setMetaModel
+    _setMetaModel(METAMODEL)
+
+finishMegamodel()

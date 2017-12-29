@@ -11,9 +11,7 @@ from modelscripts.base.printers import (
     ContentPrinterConfig
 )
 from modelscripts.base.styles import Styles
-from modelscripts.scripts.megamodels.printer.imports import (
-    ImportBoxPrinter
-)
+
 from modelscripts.metamodels.textblocks import (
     TextBlock
 )
@@ -110,7 +108,9 @@ class ModelPrinter(ContentPrinter):
         #       in the model.py.
         #       The code below  should be changed when
         #       dependency box has been implemented
-
+        from modelscripts.scripts.megamodels.printer.imports import (
+            ImportBoxPrinter
+        )
 
         if self.theModel.source is not None:
             ib=self.theModel.source.importBox

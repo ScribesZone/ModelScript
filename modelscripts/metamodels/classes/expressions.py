@@ -22,7 +22,7 @@ import logging
 log = logging.getLogger('test.' + __name__)
 
 from modelscripts.metamodels.classes import (
-    ClassTopLevelElement
+    PackagableElement
 )
 from modelscripts.base.sources import SourceElement
 from modelscripts.metamodels.classes import (
@@ -31,7 +31,7 @@ from modelscripts.metamodels.classes import (
     Operation
 )
 
-class Condition(ClassTopLevelElement):
+class Condition(PackagableElement):
     """
     Invariant, precondition or postcondition
     """

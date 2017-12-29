@@ -11,9 +11,6 @@ from modelscripts.megamodels.dependencies import Dependency
 # M='SourceElement'
 ModelDependency='ModelDependency'
 
-from modelscripts.megamodels.megamodels import Megamodel
-
-
 class MetamodelDependency(Dependency):
     """
     A metamodel dependency is based on a source metamodel
@@ -39,6 +36,7 @@ class MetamodelDependency(Dependency):
         self.targetId=targetId #type: Text
         self.optional=optional #type: bool
         self.multiple=multiple #type: bool
+        from modelscripts.megamodels import Megamodel
         Megamodel.registerMetamodelDependency(self)
 
     @property
@@ -49,7 +47,8 @@ class MetamodelDependency(Dependency):
         is not registered yet (which should not happen).
         """
         try:
-            return Megamodel.metamodel(id=self.sourceId)
+            from modelscripts.megamodels import Megamodel
+            return Megamodel.theMetamodel(id=self.sourceId)
         except:
             raise ValueError(
                 'No target "%s" metamodel registered from %s' % (
@@ -69,7 +68,9 @@ class MetamodelDependency(Dependency):
         is not registered yet (which should not happen).
         """
         try:
-            return Megamodel.metamodel(id=self.targetId)
+            from modelscripts.megamodels import Megamodel
+
+            return Megamodel.theMetamodel(id=self.targetId)
         except:
             raise ValueError(
                 'From "%s" metamodel not registered to %s' % (
@@ -90,6 +91,7 @@ class MetamodelDependency(Dependency):
         This could raise a ValueError.
         """
         # could raise a ValueError
+        from modelscripts.megamodels import Megamodel
         return Megamodel.modelDependencies(
             metamodelDependency=self)
 

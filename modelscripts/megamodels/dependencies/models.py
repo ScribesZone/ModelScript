@@ -5,7 +5,7 @@ Define dependencies between model.
 
 from typing import Optional
 from modelscripts.megamodels.models import Model
-from modelscripts.megamodels.megamodels import Megamodel
+# from modelscripts.megamodels import Megamodel
 from modelscripts.megamodels.dependencies.metamodels import (
     MetamodelDependency
 )
@@ -28,6 +28,7 @@ class ModelDependency(Dependency):
         self.sourceModel=sourceModel
         self.targetModel=targetModel
         self.sourceElement=sourceElement
+        from modelscripts.megamodels import Megamodel
         Megamodel.registerModelDependency(self)
 
     @property
@@ -49,6 +50,7 @@ class ModelDependency(Dependency):
         occur unless the metamodels are not built with care.
         """
         # could raise a ValueError, but should not
+        from modelscripts.megamodels import Megamodel
         return Megamodel.metamodelDependency(
             source=self.sourceModel.metamodel,
             target=self.targetModel.metamodel)

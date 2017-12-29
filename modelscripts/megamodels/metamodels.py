@@ -7,7 +7,6 @@ from typing import Text, Callable, Optional, List
 from collections import OrderedDict
 
 from modelscripts.megamodels.megamodels import (
-    Megamodel,
     MegamodelElement
 )
 Cls=Callable
@@ -38,6 +37,7 @@ class Metamodel(MegamodelElement):
         self._modelPrinterClass=modelPrinterClass
         self._sourcePrinterClass=sourcePrinterClass
         self._diagramPrinterClass=diagramPrinterClass
+        from modelscripts.megamodels import Megamodel
         Megamodel.registerMetamodel(self)
 
     @property
@@ -101,6 +101,7 @@ class Metamodel(MegamodelElement):
         """
         Return all models for the current metamodel.
         """
+        from modelscripts.megamodels import Megamodel
         return Megamodel.models(metamodel=self)
 
     @property
@@ -109,6 +110,7 @@ class Metamodel(MegamodelElement):
         Return all metamodel dependencies from the current
         metamodel.
         """
+        from modelscripts.megamodels import Megamodel
         return Megamodel.metamodelDependencies(
             source=self
         )
@@ -119,6 +121,7 @@ class Metamodel(MegamodelElement):
 
     @property
     def incomingDependencies(self):
+        from modelscripts.megamodels import Megamodel
         return Megamodel.metamodelDependencies(target=self)
 
     @property

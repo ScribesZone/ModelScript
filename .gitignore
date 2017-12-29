@@ -1,4 +1,4 @@
-venv/
+.venv/
 .mdls/
 
 # Python / Jython

@@ -6,29 +6,30 @@ Class metamodel.
 The structure of this package is::
 
     ClassModel
-    <>--* Enumeration
-    <>--* Class
-          <>--* Attribute
-          <>--* Operation
-                <>--* OperationCondition
-          <>--* Invariant
-    <>--* Association
-          <>--2 Role
-    <>--* AssociationClass
-          <>--2 Role
-          <>--* Attribute
-          <>--* Operation
-                <>--* OperationCondition
-    <>--* BasicType
+    <>--* Package
+        <>--* Enumeration
+        <>--* Class
+              <>--* Attribute
+              <>--* Operation
+                    <>--* OperationCondition
+              <>--* Invariant
+        <>--* Association
+              <>--2 Role
+        <>--* AssociationClass
+              <>--2 Role
+              <>--* Attribute
+              <>--* Operation
+                    <>--* OperationCondition
+        <>--* DataType
 
     Association, Class
     <|--  AssociationClass
 
-    ClassTopLevelElement
+    PackagableElement
     <|-- Enumeration
 
     SimpleType
-    <|--  BasicType
+    <|--  DataType
     <|--  Enumeration
 
 """
@@ -57,11 +58,11 @@ from modelscripts.metamodels.permissions.sar import Resource
 
 META_CLASSES=( # could be in __all__ (not used by PyParse)
     'ClassModel',
-    'ClassTopLevelElement',
+    'PackagableElement',
     'Entity',
     'Member',
     'SimpleType',
-    'BasicType',
+    'DataType',
     'Enumeration',
     'EnumerationLiteral',
     'Class',
@@ -98,7 +99,7 @@ class ClassModel(Model):
     #       MComposition('regularClasses : Class [*] inv model'),
     #       MComposition(
     #           'associationsClasses : Association[*] inv model'),
-    #       MComposition('basicTypes : BasicType[*] inv model'),
+    #       MComposition('dataTypes : DataType[*] inv model'),
     # ]
 
 
@@ -108,8 +109,8 @@ class ClassModel(Model):
         'regularClasses',
         'regularAssociations',
         'associationClasses',
-        'basicTypes',
-
+        'dataTypes',
+        'packages',
     ]
     def __init__(self):
         #type: () -> None
@@ -120,9 +121,9 @@ class ClassModel(Model):
         self.enumerationNamed=collections.OrderedDict() #type: Dict[Text, Enumeration]
         #: Map of enumerations, indexed by name.
 
-        #: Map of basic types. Indexed by type names/
+        #: Map of data types. Indexed by type names/
         #: populated during the resolution phase
-        self.basicTypeNamed=collections.OrderedDict()  #type: Dict[Text, BasicType]
+        self.dataTypeNamed=collections.OrderedDict()  #type: Dict[Text, DataType]
 
         self.classNamed = collections.OrderedDict()  #type: Dict[Text, Class]
         #: Map of classes (including association classes), indexed by name.
@@ -133,11 +134,14 @@ class ClassModel(Model):
         #: Use regularClassNamed to get only classes
 
         #: Map of association classes, indexed by name.
-        self.associationClassNamed = collections.OrderedDict()  #type: Dict[Text, Association]
+        self.associationClassNamed = collections.OrderedDict()  #type: Dict[Text, AssociationClass]
 
         # #: Map of operations, indexed by operation full signatures.
         # #: e.g. 'Person::raiseSalary(rate : Real) : Real
         self.operationWithFullSignature = collections.OrderedDict()  #type: Dict[Text, Operation]
+
+        # ALL packages, not only the top level ones
+        self.packageNamed=collections.OrderedDict() #type: Dict[Text, Package]
 
         #: List of all conditions (inv/pre/post).
         #  Both those that are declared within a class
@@ -150,6 +154,13 @@ class ClassModel(Model):
     def metamodel(self):
         return METAMODEL
 
+    @MComposition('Package[*] inv model')
+    def packages(self):
+        return self.packageNamed.values()
+
+    @property
+    def packageNames(self):
+        return self.packageNamed.keys()
 
     @MComposition('Enumeration[*] inv model')
     def enumerations(self):
@@ -213,7 +224,7 @@ class ClassModel(Model):
 
     @property
     def simpleTypeNamed(self):
-        _ = self.basicTypeNamed.copy()
+        _ = self.dataTypeNamed.copy()
         _.update(self.enumerationNamed)
         return _
 
@@ -225,27 +236,26 @@ class ClassModel(Model):
     def simpleTypeNames(self):
         return self.simpleTypeNamed.keys()
 
-
-
-    @MComposition('BasicType[*] inv model')
-    def basicTypes(self):
-        return self.basicTypeNamed.values()
+    @MComposition('DataType[*] inv model')
+    def dataTypes(self):
+        return self.dataTypeNamed.values()
 
     @property
-    def basicTypeNames(self):
-        return self.basicTypeNamed.keys()
+    def dataTypeNames(self):
+        return self.dataTypeNamed.keys()
 
     @property
     def metrics(self):
         #type: () -> Metrics
         ms=super(ClassModel, self).metrics
         ms.addList((
+            ('package', len(self.packages)),
+            ('dat   Type', len(self.dataTypes)),
             ('enumeration', len(self.enumerations)),
             ('regularClass', len(self.regularClasses) ),
             ('regularAssociation',
                 len(self.regularAssociations)),
             ('associationClass', len(self.associationClasses)),
-            ('simpleType',len(self.simpleTypes))
         ))
         return ms
 
@@ -261,13 +271,14 @@ class ClassModel(Model):
                 ','.join(elems)
             )
         categories = [
+            ('packages', self.packageNames),
+            ('data types', self.dataTypeNames),
             ('enumerations', self.enumerationNames),
             ('regular classes', self.regularClassNames),
             ('regular associations', self.associationNames),
             ('association classes', self.associationClassNames),
             ('operations', self.operationWithFullSignature.keys()),
             # ('invariants'           ,[i.name for i in self.invariants]),  FIXME: should be replaced
-            ('basic types', self.basicTypeNames),
         ]
         total = 0
         lines = [ 'class model '+self.name ]
@@ -297,8 +308,8 @@ class ClassModel(Model):
         # TODO: see _findAssociationOrAssociationClass
         if name in self.classNamed:
             return self.classNamed[name]
-        elif name in self.associationNamed:
-            return self.associationNamed[name]
+        elif name in self.associationClassNamed:
+            return self.associationClassNamed[name]
         else:
             raise Exception('ERROR - %s : No class or association class'
                             % name)
@@ -333,23 +344,33 @@ class ClassModel(Model):
                             (invariantName, classOrAssociationClassName))
 
 
-class ClassTopLevelElement(SourceModelElement):
+class PackagableElement(SourceModelElement):
     """
     Top level element.
     """
     __metaclass__ = abc.ABCMeta
 
     def __init__(self,
-                 name, model, code=None, lineNo=None, docComment=None, eolComment=None):
-        super(ClassTopLevelElement, self).__init__(
+                 name,
+                 model,
+                 package=None,
+                 code=None, lineNo=None, docComment=None, eolComment=None):
+        super(PackagableElement, self).__init__(
             model=model,
             name=name,
             code=code, lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+        self.package=package
+        if self.package is not None:
+            self.package.addElement(self)
 
     @MAttribute('String')
     def label(self):
-        return self.name
-
+        if self.package is not None:
+            return '%s.%s' % (
+                self.package.label,
+                self.name)
+        else:
+            return self.name
 
 class Entity(Resource):
     __metaclass__ = abc.ABCMeta
@@ -357,11 +378,23 @@ class Entity(Resource):
 class Member(Resource):
     __metaclass__ = abc.ABCMeta
 
-class SimpleType(object):
+class SimpleType(PackagableElement):
     """
     Simple types.
     """
     __metaclass__ = abc.ABCMeta
+
+    def __init__(self,
+                 name,
+                 model,
+                 package=None,
+                 code=None, lineNo=None, docComment=None, eolComment=None):
+        super(SimpleType, self).__init__(
+            model=model,
+            name=name,
+            package=package,
+            code=code, lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+
 
     @MAttribute('String')
     def label(self):
@@ -369,27 +402,59 @@ class SimpleType(object):
 
 
 
-class BasicType(SourceModelElement, SimpleType):
+class DataType(SimpleType):
     """
-    Basic types such as integer.
-    Basic types are not explicitly defined in the source
+    Data types such as integer.
+    Data types are not explicitly defined in the source
     file, but they are used after after symbol resolution.
     """
     # not in sources, but used created during symbol resolution
-    type = 'BasicType'
+    type = 'DataType'
 
-    def __init__(self, model, name):
-        SourceModelElement.__init__(self,
+    def __init__(self, model, name, package=None):
+        super(DataType, self).__init__(
             model=model,
-            name=name)
-        self.name = name
+            name=name,
+            package=package)
+        self.model.dataTypeNamed[name]=self
+
 
     def __repr__(self):
         return self.name
 
 
+class Package(PackagableElement, Entity):
+    """
+    Packages.
+    """
+    def __init__(self,
+                 name,
+                 model,
+                 package=None,
+                 code=None, lineNo=None, docComment=None, eolComment=None):
+        super(Package, self).__init__(
+            name=name,
+            model=model,
+            package=package,
+            code=code,
+            lineNo=lineNo, docComment=docComment,
+            eolComment=eolComment)
+        self._elememts=[]
+        self.model.packageNamed[name]=self
 
-class Enumeration(ClassTopLevelElement, SimpleType):
+
+    @property
+    def elements(self):
+        return self._elememts
+
+    def addElement(self, element):
+        assert element is not None
+        if element not in self._elememts:
+            self._elememts.append(element)
+            element.package=self
+
+
+class Enumeration(SimpleType):
     """
     Enumerations.
     """
@@ -402,8 +467,17 @@ class Enumeration(ClassTopLevelElement, SimpleType):
     #       Reference('model : Model inv enumerations'),
     # ]
 
-    def __init__(self, name, model, code=None, lineNo=None, docComment=None, eolComment=None):
-        super(Enumeration, self).__init__(name, model, code, lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+    def __init__(self,
+                 name,
+                 model,
+                 package=None,
+                 code=None, lineNo=None, docComment=None, eolComment=None):
+        super(Enumeration, self).__init__(
+            name,
+            model,
+            package=package,
+            code=code, lineNo=lineNo,
+            docComment=docComment, eolComment=eolComment)
         self.model.enumerationNamed[name] = self
         self._literals=[]
 
@@ -433,7 +507,7 @@ class EnumerationLiteral(SourceModelElement):
         self.enumeration._literals.append(self)
 
 
-class Class(ClassTopLevelElement, Entity):
+class Class(PackagableElement, Entity):
     """
     Classes.
     """
@@ -570,7 +644,7 @@ class Operation(SourceModelElement, Member):
         return self.expression is not None
 
 
-class Association(ClassTopLevelElement, Entity):
+class Association(PackagableElement, Entity):
     """
     Associations.
     """

@@ -123,7 +123,7 @@ from modelscripts.scripts.megamodels.parser import (
     isMegamodelStatement
 )
 
-DEBUG=0
+DEBUG=2
 #DEBUG=0
 
 
@@ -226,7 +226,7 @@ class _SexOrSoilSource(ModelSourceFile):
         # - parsing will be done later
         if DEBUG>=2:
             print(
-                'sxp: reading/parsing the file %s for imports' %
+                "SXP: processing imports from  '%s' for imports" %
                 originalFileName)
         super(_SexOrSoilSource, self).__init__(
             fileName=originalFileName,
@@ -240,8 +240,8 @@ class _SexOrSoilSource(ModelSourceFile):
             prequelFileName=originalFileName,
             recognizeUSEOCLNativeModelDefinition=False)
         if DEBUG>=2:
-            print(
-                'sxp: reading/parsing file for imports done')
+            print('SXP: import processing done for %s ' %
+                  originalFileName)
 
         self.scenarioModel.usecaseModel=self.usecaseModel
         self.scenarioModel.classModel=self.classModel
@@ -306,6 +306,9 @@ class _SexOrSoilSource(ModelSourceFile):
             self._parse(self._parsePrefix)
             if self.isValid:
                 if not self.scenarioModel.isEvaluated:  # .model. but typing
+                    if DEBUG >= 2:
+                        print('SXP: evaluating scenario for')
+
                     self.model.evaluate()
 
         # else:
@@ -394,7 +397,7 @@ class _SexOrSoilSource(ModelSourceFile):
         end = ' *$'
 
         if DEBUG>=1:
-            print('\nsxp: Parsing %s with %s usecase model\n' % (
+            print('\nSXP: Parsing %s with %s usecase model\n' % (
                 self.soilFileName,
                 'no' if self.usecaseModel is None else 'a'
             ))
@@ -438,13 +441,13 @@ class _SexOrSoilSource(ModelSourceFile):
 
             if DEBUG>=2:
                 if self.evaluateScenario: #'sex':
-                    print ('sxp: #%05i <- %05i : %s' % (
+                    print ('SXP: #%05i <- %05i : %s' % (
                         _S.line_no,
                         _S.sex_line_no,
                         _S.original_line,
                     ))
                 else:
-                    print('sxp: #%05i : %s' % (
+                    print('SXP: #%05i : %s' % (
                         _S.line_no,
                         _S.original_line,
                     ))
@@ -544,11 +547,9 @@ class _SexOrSoilSource(ModelSourceFile):
             #--------------------------------------------------
             # assert query
             #--------------------------------------------------
-            print('KK'*10+' '+line)
             r = begin+'(?P<kind>\?\??) *(?P<expr>.*) *(?P<assert>--@assertquery) *'+end
             m = re.match(r, line)
             if m:
-                print('22' * 10 + ' ' + line)
 
                 if not self.checkAllowed(
                         feature='assertQuery',
@@ -929,7 +930,7 @@ class _SexOrSoilSource(ModelSourceFile):
                             level=Levels.Warning)
                     id=None
                     if DEBUG:
-                        print('sxp: %s := new %s' % (variable,classname))
+                        print('SXP: %s := new %s' % (variable,classname))
 
                     ObjectCreation(
                         block=_get_block(),
@@ -956,7 +957,7 @@ class _SexOrSoilSource(ModelSourceFile):
                     classname=m.group('className')
                     id=m.group('id')
                     if DEBUG:
-                        print('sxp: %s := new %s : %s' % (variable,id,classname))
+                        print('SXP: %s := new %s : %s' % (variable,id,classname))
 
                     ObjectCreation(
                         block=_get_block(),
@@ -982,7 +983,7 @@ class _SexOrSoilSource(ModelSourceFile):
                     attribute=m.group('attribute')
                     expression=m.group('expr')
                     if DEBUG:
-                        print ('sxp: %s.%s := %s' % (
+                        print ('SXP: %s.%s := %s' % (
                             variable, attribute, expression))
                     AttributeAssignment(
                         block=_get_block(),
@@ -1017,7 +1018,7 @@ class _SexOrSoilSource(ModelSourceFile):
                     assoc=_reqClassModel().associationNamed[
                         m.group('associationName')]
                     if DEBUG:
-                        print('sxp: new (%s) : %s' % (
+                        print('SXP: new (%s) : %s' % (
                             ','.join(names),
                             assoc.name ))
                     LinkCreation(
@@ -1054,7 +1055,7 @@ class _SexOrSoilSource(ModelSourceFile):
                                 ' Deprecated syntax.'),
                             level=Levels.Warning)
                     if DEBUG:
-                        print(('sxp: new %s between (%s)' % (
+                        print(('SXP: new %s between (%s)' % (
                             assoc_class_name,
                             ','.join(names))
                         ))
@@ -1093,7 +1094,7 @@ class _SexOrSoilSource(ModelSourceFile):
                     names = m.group('objectList').replace(' ','').split(',')
                     ac = _reqClassModel().associationClassNamed[assoc_class_name]
                     if DEBUG:
-                        print(("sxp: new %s('%s') between (%s)" % (
+                        print(("SXP: new %s('%s') between (%s)" % (
                             assoc_class_name,
                             id,
                             ','.join(names)
@@ -1124,7 +1125,7 @@ class _SexOrSoilSource(ModelSourceFile):
                         continue
                     name = m.group('name')
                     if DEBUG:
-                        print( 'sxp: delete object %s' % name )
+                        print( 'SXP: delete object %s' % name )
                     ObjectDestruction(
                         block=_get_block(),
                         variableName=name,
@@ -1168,7 +1169,7 @@ class _SexOrSoilSource(ModelSourceFile):
                     # link_name = '_'.join(object_names)
                     # del self.state.links[link_name]
                     if DEBUG:
-                        print( 'sxp: delete link from %s between %s' % (
+                        print( 'SXP: delete link from %s between %s' % (
                             association_name,
                             object_names
                         ))
@@ -1481,6 +1482,22 @@ class _SexOrSoilSource(ModelSourceFile):
                 continue
 
             # ------------------------------------------------------
+            # ---- USE warning type2
+            # ------------------------------------------------------
+
+            r = begin + 'Warning:? *(?P<msg>.*)' + end
+            m = re.match(r, line)
+            if m:
+                LocalizedSourceIssue(
+                    sourceFile=self,
+                    level=Levels.Warning,
+                    message=m.group('msg'),
+                    line=_S.line_no
+                )
+                continue
+
+
+            # ------------------------------------------------------
             #---- Unrecognized line
             # ------------------------------------------------------
 
@@ -1634,13 +1651,9 @@ class SexSource(_SexOrSoilSource):
         #             level=Levels.Fatal,
         #             message='Class model is invalid' % self.fileName))
         if DEBUG>=2:
-            print((
-                'sxp: generating sex file from:\n'
-                '    use=%s\n'
-                '    soil=%s\n' ) % (
-                    useFileName,
-                    soilFileName
-                    ))
+            print('SXP: generating sex file from:')
+            print('SXP:    use=%s' % useFileName)
+            print('SXP:    soil=%s'% soilFileName )
 
         # Check that the soil file exists
         if not os.path.isfile(soilFileName):
@@ -1667,7 +1680,7 @@ class SexSource(_SexOrSoilSource):
                 prequelFileName=self.prequelFileName)
 
             if DEBUG >= 2:
-                print('sxp: sex file generation done (%s)' %
+                print('SXP: sex file generation done (%s)' %
                       sex_file)
                 print('       ')
             return sex_file
@@ -1676,34 +1689,11 @@ class SexSource(_SexOrSoilSource):
             m='Error during USE execution: %s' % str(e)
             if DEBUG>=1:
                 import traceback
-                print('spx: '+'*'*40+'Exception')
+                print('SXP: '+'*'*40+'Exception')
                 traceback.print_exc()
             Issue(
                 origin=self,
                 level=Levels.Fatal,
                 message=m)
 
-
-# class SoilSource(_SexOrSoilSource):
-#     """
-#     Source corresponding directly to the raw .soil source given
-#     as the parameter.
-#     WARNING: USE is *NOT* executed so some errors may
-#     be left undiscovered. Moreover, there is no cardinality check,
-#     no invariant checking, etc.
-#     From this soil source, one can get an object model.
-#     """
-#     def __init__(
-#             self,
-#             soilFileName):
-#             # classModel,
-#             # usecaseModel=None):
-#         #type: (Text, ClassModel) -> None
-#         super(SoilSource, self).__init__(
-#             evaluateScenario=False,
-#             soilFileName=soilFileName,
-#             parsePrefix='^',
-#             preIssueMessages=[])
-#         self.doParse(soilFileName)
-#
 

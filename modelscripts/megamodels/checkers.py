@@ -1,11 +1,11 @@
 # coding=utf-8
-from typing import Text, Dict, List, Any, Optional
+from __future__ import print_function
+from typing import Dict, List
 import collections
 from abc import ABCMeta, abstractmethod
 
 
 from modelscripts.base.issues import (
-    Level,
     Levels
 )
 from modelscripts.megamodels.issues import (
@@ -22,7 +22,7 @@ class CheckList(object):
     @classmethod
     def registerChecker(cls, checker):
         if DEBUG >= 1:
-            print('ckk: register %s [%s]' % (
+            print('CKK: register %s [%s]' % (
                   checker.name,
                   ', '.join(
                       [mc.__name__ for mc in checker.metaclasses])
@@ -38,13 +38,11 @@ class CheckList(object):
     def check(cls, element):
         c=type(element)
         if DEBUG>=3:
-            print('ckk: Checking element')
-            print('ckk:     metaclass is: %s' % c.__name__ )
-            # print('ckk:     element is  : '+str(element))
+            print('CKK: CHECKING %25s' % c.__name__, end='')
         if c in CheckList.checkersForClass:
             checkers=CheckList.checkersForClass[c]
             if DEBUG>=3:
-                print('ckk:     checkers: %s' % (
+                print('-> [%s]' % (
                     ','.join([c.name for c in checkers])))
             for checker in checkers:
                 msg=checker.doCheck(element)
@@ -56,7 +54,7 @@ class CheckList(object):
                     )
         else:
             if DEBUG>=3:
-                print('ckk:     no checker found.')
+                print('-> []')
 
 
 class Checker(object):
@@ -76,7 +74,7 @@ class Checker(object):
 
     def doCheck(self, e):
         raise NotImplementedError(
-            'Checker %s on %s is not implemented ' % (
+            'CKK: Checker %s on %s is not implemented ' % (
                 self.name,
                 type(e).__name__
             ))
@@ -106,8 +104,6 @@ class LimitsChecker(Checker):
         self.label=label
         self.min=self.params['min']
         self.max=self.params['max']
-        print('UUUUUUUUUUUUUUUUU')
-        print self.min
 
     @abstractmethod
     def size(self, e):

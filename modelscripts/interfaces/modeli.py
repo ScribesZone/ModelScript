@@ -15,22 +15,27 @@ sys.path.insert(0,modelscribes_home)
 
 
 import modelscripts
-from modelscripts.megamodels.megamodels import Megamodel
+from modelscripts.megamodels import Megamodel
 
 def source(filename):
     return Megamodel.loadFile(filename)
+
 s=source
 
 M=Megamodel
 
-gl=Megamodel.metamodel(id='gl')
-cl=Megamodel.metamodel(id='cl')
-us=Megamodel.metamodel(id='us')
-ob=Megamodel.metamodel(id='ob')
-pe=Megamodel.metamodel(id='pe')
-sc=Megamodel.metamodel(id='sc')
+gl=Megamodel.theMetamodel(id='gl')
+cl=Megamodel.theMetamodel(id='cl')
+us=Megamodel.theMetamodel(id='us')
+ob=Megamodel.theMetamodel(id='ob')
+pe=Megamodel.theMetamodel(id='pe')
+sc=Megamodel.theMetamodel(id='sc')
+mg=Megamodel.theMetamodel(id='mg')
 
 
 
 print('ModelScripts Interpreter')
 print('========================')
+print("source('foo.cls')   to load the file 'foo.cls'")
+print('quit()              to quit this session')
+print('M                   to get the megamodel')

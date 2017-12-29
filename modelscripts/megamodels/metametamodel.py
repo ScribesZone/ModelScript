@@ -5,6 +5,11 @@ import types
 import abc
 import importlib
 from typing import List
+from modelscripts.megamodels import Megamodel
+
+DEBUG=1
+
+#TODO: merge metamodelelements in the megamodel
 
 class MetaModelElement(object):
     def __init__(self, qname):
@@ -19,12 +24,30 @@ class MetaPackage(MetaModelElement):
     def __init__(self, qname):
         super(MetaPackage, self).__init__(qname=qname)
         self.pyPackageName = 'modelscripts.metamodels.' + qname
-        print('import metapackage %s' % self.pyPackageName)
+        if DEBUG>=1:
+            print('MM3: import metapackage %s' % self.pyPackageName)
         self.pyModule=importlib.import_module(
             self.pyPackageName)
         #type: types.ModuleType
         self.metaClassNamed=collections.OrderedDict()
         #type: List[MetaClass]
+
+        Megamodel.registerMetaPackage(self)
+
+class MetaCheckerPackage(MetaModelElement):
+    """
+    Create a MetaCheckerPackage and import the corresponding pyModule
+    """
+    def __init__(self, qname):
+        super(MetaCheckerPackage, self).__init__(qname=qname)
+        self.pyPackageName = 'modelscripts.metamodels.' + qname
+        if DEBUG>=1:
+            print('MM3: import metacheckerpackage %s' % self.pyPackageName)
+        self.pyModule=importlib.import_module(
+            self.pyPackageName)
+        #type: types.ModuleType
+
+        Megamodel.registerMetaCheckerPackage(self)
 
 class MetaClass(MetaModelElement):
 

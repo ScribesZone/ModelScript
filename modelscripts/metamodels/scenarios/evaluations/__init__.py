@@ -88,7 +88,7 @@ class ScenarioEvaluation(ModelElement):
 
         ModelElement.__init__(
             self,
-            model=scenario.model
+            model=scenario
         )
         self.isEvaluated = False
         self.scenario = scenario  #type: 'ScenarioModel'

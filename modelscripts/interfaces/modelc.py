@@ -24,7 +24,7 @@ from modelscripts.base.files import (
 from modelscripts.interfaces.environment import Environment
 from modelscripts.locallibs.termcolor import cprint
 from modelscripts.scripts.base.printers import ModelPrinterConfig
-from modelscripts.megamodels.megamodels import Megamodel
+from modelscripts.megamodels import Megamodel
 from modelscripts.config import Config
 from modelscripts.use.engine import (
     USEEngine

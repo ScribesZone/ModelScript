@@ -4,7 +4,7 @@ from collections import OrderedDict
 from typing import Dict,  List, Optional
 
 __all__=(
-    '_ModelRegistery'
+    '_ModelRegistry'
 )
 
 Metamodel= 'Metamodel'
@@ -17,9 +17,9 @@ ModelSourceFile='ModelSourceFile'
 SourceFileDependency='SourceFileDependency'
 OptSource=Optional[ModelSourceFile]
 
-class _MetaPackageRegistery(object):
+class _ModelRegistry(object):
     """
-    Part of the megamodel dealing with metapackages
+    Part of the megamodel dealing with models
     """
 
     _allModels = []
@@ -45,7 +45,7 @@ class _MetaPackageRegistery(object):
         Register a model. Register the metamodel as well
         if not already done.
         """
-        from modelscripts.megamodels.megamodels import Megamodel
+        from modelscripts.megamodels import Megamodel
         if model not in cls._allModels:
             cls._allModels.append(model)
             metamodel = model.metamodel
@@ -71,7 +71,7 @@ class _MetaPackageRegistery(object):
         if d is not None:
             return d
         else:
-            from modelscripts.megamodels.megamodels import Megamodel
+            from modelscripts.megamodels import Megamodel
             if s not in Megamodel._modelDependenciesBySource:
                 Megamodel._modelDependenciesBySource[s] = []
             Megamodel._modelDependenciesBySource[

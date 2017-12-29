@@ -19,8 +19,13 @@ from modelscripts.base.issues import (
     LocalizedSourceIssue,
     Level,
     Levels,
-    WithIssueList
 )
+
+#TODO:3 This dependency should be removed
+# With inheritance this is not so easy because
+# the __init__ method would call WithIssueList wihch
+# do not register the issue box in the megamodel
+from modelscripts.megamodels.issues import WithIssueModel
 
 
 class SourceElement(object):
@@ -37,7 +42,7 @@ class SourceElement(object):
 
 
 
-class SourceFile(WithIssueList):
+class SourceFile(WithIssueModel):  # TODO: should be WithIssueList
     """
     A source file seen as as sequence of lines.
     The source file may contains some list of errors.
@@ -77,8 +82,6 @@ class SourceFile(WithIssueList):
 
         assert fileName is not None
 
-        WithIssueList.__init__(self, parents=[])
-
         self.fileName=fileName #type: Text
         """ The filename as given when creating the source file"""
 
@@ -101,6 +104,12 @@ class SourceFile(WithIssueList):
         This is almost never used so don't use it unless
         you know what you are doing. 
         """
+
+        # This should be after the definition of
+        # filenames
+        super(SourceFile, self).__init__(parents=[])
+
+
         if len(preErrorMessages) >= 1:
             for msg in preErrorMessages:
                 Issue(
@@ -139,6 +148,9 @@ class SourceFile(WithIssueList):
         A list of feature names that could be issued
         in the parser.
         """
+
+
+
 
         if not doNotReadFiles:
             self.doReadFiles(
@@ -241,7 +253,7 @@ class SourceFile(WithIssueList):
     @property
     def label(self):
         #type: ()->Text
-        return self.basename
+        return "'%s'" % self.basename
 
     @property
     def directory(self):
