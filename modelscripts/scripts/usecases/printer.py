@@ -93,7 +93,7 @@ class UsecaseModelPrinter(ModelPrinter):
         # else:
         #     for u in usecaseModel.system.usecases:
         #         if len(u.actors)==0:
-        #             self.outLine(Styles.smallIssue.do('-- NOBODY %s') % u.name)
+        #             self.outLine(Styles.mediumIssue.do('-- NOBODY %s') % u.name)
         #             # self.outLine('')
         #     self.outLine('')
         return self.output

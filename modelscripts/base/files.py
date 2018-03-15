@@ -67,8 +67,6 @@ def readFileLines(
             message % file,
             issueOrigin)
 
-
-
 def writeFile(
         text,
         filename,

@@ -567,7 +567,12 @@ class Attribute(SourceModelElement, Member):
     """
 
     def __init__(self, name, class_, code=None, type=None,
-                 isDerived=False, isInit=False, expression=None,
+                 visibility='public',
+                 isDerived=False,
+                 isOptional=False,
+                 isId=False,
+                 isReadOnly=False,
+                 isInit=False, expression=None,
                  lineNo=None, docComment=None, eolComment=None):
         SourceModelElement.__init__(
             self,
@@ -580,8 +585,12 @@ class Attribute(SourceModelElement, Member):
         self.class_.attributeNamed[name] = self
         self.type = type # string later resolved as SimpleType
         self._isDerived = isDerived
+        self.visibility=visibility
+        self.isOptional = isOptional
         self.isInit = isInit
         self.expression = expression
+        self.isId=isId
+        self.isReadOnly=isReadOnly
 
     @MAttribute('Boolean')
     def isDerived(self):

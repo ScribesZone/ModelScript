@@ -1,0 +1,8 @@
+scenario model KOQuery03
+    | The goal of this scenario is just to
+    | test descriptions.
+
+import class model from 'main.cls'
+
+??2+3*5=3
+? Set{1,4}=Set{1,1,4}

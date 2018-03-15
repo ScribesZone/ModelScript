@@ -1,0 +1,18 @@
+scenario model KOInv01
+import class model from 'main.cls'
+
+scenario begin
+
+!create djamel : Employee
+!djamel.salary := -10
+
+!create ioannis : Employee
+!ioannis.salary := -20
+
+!create computing : Department
+!computing.budget := 1000
+
+!insert (djamel,computing) into WorksIn
+!insert (ioannis,computing) into WorksIn
+
+scenario end

@@ -46,8 +46,8 @@ ChoisirSeance
             {Spectacle.description}
     TelechargerInformations @OI
         SO
-            TelechargerUnDateDeSpectacle I
-            TelechargerDescriptif I
+        TelechargerUnDateDeSpectacle I
+        TelechargerDescriptif I
 
 ChoisirSeance
     S

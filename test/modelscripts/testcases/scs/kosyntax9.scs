@@ -1,0 +1,4 @@
+scenario model KOSyntax9
+import class model from 'main.cls'
+
+infomodel -r

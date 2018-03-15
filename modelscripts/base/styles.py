@@ -19,7 +19,8 @@ class Style(object):
 
 class Styles(object):
     bigIssue=Style('red', a=['bold'])
-    smallIssue=Style('magenta', a=['bold'])
+    mediumIssue=Style('magenta', a=['bold'])
+    smallIssue=Style('green')
     bigIssueSummary=Style('red', a=['reversed','bold'])
     smallIssueSummary=Style('magenta', a=['reversed','bold'])
 

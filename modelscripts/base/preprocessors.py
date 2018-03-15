@@ -16,7 +16,7 @@ from modelscripts.interfaces.environment import (
     Environment
 )
 
-DEBUG=0
+DEBUG=3
 
 #-----------------------------------------------------
 #  Line transfos
@@ -56,14 +56,16 @@ class PrefixToCommentTransfo(Transfo):
         self.prefixes = prefixes
         re_prefix = ( '(%s)' %
                          ('|'.join(prefixes)) )
-        self.regexp=('^(?P<all> *%s.*)'
+        self.regexp=('^(?P<before> *)(?P<all> *%s.*)'
                      % re_prefix)
 
     def do(self, line):
         #type: (Text) -> Optional[Text]
         m=re.match(self.regexp, line)
         if m:
-            return '--@%s' % m.group('all')
+            return '%s--@%s' % (
+                m.group('before'),
+                m.group('all'))
         else:
             return None
 
@@ -101,15 +103,15 @@ class Preprocessor(object):
         newLine=self.transformLine(line)
         if Config.preprocessorPrint>=1 or DEBUG>=2:
             if line==newLine:
-                print('pre:       ', line)
+                print('PRE:       ', line)
             else:
-                print('pre: xxxxx ', line)
-                print('pre: >>>>> ', newLine)
+                print('PRE: xxxxx ', line)
+                print('PRE: >>>>> ', newLine)
         return newLine
 
     def do(self, issueOrigin, filename):
         if Config.preprocessorPrint>=1 or DEBUG>=1:
-            print('\npre: '+'='*30+' preprocessing'+'='*30)
+            print('\nPRE: '+'='*30+' preprocessing'+'='*30)
         lines=readFileLines(
             file=filename,
             issueOrigin=issueOrigin,
@@ -119,7 +121,7 @@ class Preprocessor(object):
             self.preprocessLine(l) for l in lines ]
 
         if Config.preprocessorPrint>=1 or DEBUG>=1:
-            print('pre: ' + '=' * 30 + ' end preprocessing ' + '=' * 30)
+            print('PRE: ' + '=' * 30 + ' end preprocessing ' + '=' * 30)
         return Environment.writeWorkerFileLines(
             lines=new_lines,
             basicFileName=replaceExtension(filename, self.targetExtension),

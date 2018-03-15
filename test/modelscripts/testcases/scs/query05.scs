@@ -1,0 +1,7 @@
+scenario model Query05
+import class model from 'main.cls'
+
+
+? Set{2,3,5}->select(x|x>=3)
+
+

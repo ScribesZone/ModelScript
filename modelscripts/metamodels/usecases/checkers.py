@@ -2,6 +2,7 @@
 
 from modelscripts.megamodels.checkers import (
     Checker,
+    CheckOutput,
     NamingChecker,
     LimitsChecker
 )
@@ -25,9 +26,9 @@ class SystemDefinedChecker(Checker):
 
     def doCheck(self, ucm):
         if not ucm.isSystemDefined:
-            return (
-                'No system defined'
-            )
+            return CheckOutput(
+                message='No system defined',
+                locationElement=ucm)
 
 SystemDefinedChecker(
     level=Levels.Error
@@ -118,9 +119,10 @@ class LazyActorChecker(Checker):
 
     def doCheck(self, e):
         if len(e.usecases)==0:
-            return (
-                'Actor "%s" does not perform any usecase' %
-                e.name)
+            return CheckOutput(
+                message='Actor "%s" does not perform any usecase' %
+                    e.name)
+
 
 LazyActorChecker(
     level=Levels.Warning,
@@ -155,9 +157,9 @@ class UnusedUsecaseChecker(Checker):
 
     def doCheck(self, e):
         if len(e.actors)==0:
-            return (
-                'No actor performs "%s"' %
-                e.name)
+            return CheckOutput(
+                message='No actor performs "%s"' %
+                    e.name)
 
 UnusedUsecaseChecker(
     level=Levels.Warning,

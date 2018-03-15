@@ -95,7 +95,6 @@ class ScenarioModelPrinter(ModelPrinter):
             #       to have configuration dependent options
             #       In that case, the config provide will
             #       be directly
-            print('AA'*10,type(config))
             assert(isinstance(config, ModelPrinterConfig))
             config.modelHeader='scenario model'
             config.displayBlockSeparators=True
@@ -224,7 +223,7 @@ class ScenarioModelPrinter(ModelPrinter):
     def doUsecaseInstanceBlock(self, b):
         self.outLine(
             '%s %s %s' %(
-                self.kwd('uci'),
+                self.kwd('usecasei'),
                 b.actorInstance.name,
                 b.useCase.name),
             b.lineNo
@@ -241,10 +240,18 @@ class ScenarioModelPrinter(ModelPrinter):
 
 
     def doTopLevelBlock(self, b):
+        self.outLine(
+            '%s' %(
+                self.kwd('scenario begin'))
+        )
         if self.doDisplayEvaluation and b.blockEvaluation is not None:
             self.doBlockEvaluation(b.blockEvaluation)
         for op in b.operations:
             self.doOperation(op)
+        self.outLine(
+            '%s' % (
+                self.kwd('scenario end'))
+        )
         return self.output
 
 
@@ -444,11 +451,11 @@ class ScenarioModelPrinter(ModelPrinter):
     def doCheck(self, op):
         if self.config.useSyntax:
             self.outLine(
-                '%s%s%s%s' % (
-                    self.kwd('check'),
-                    self.kwd(' -d') if op.showFaultyObjects else '',
-                    self.kwd(' -v') if op.verbose else '',
-                    self.kwd(' -a') if op.all else ''),
+                '%s' % (
+                    self.kwd('? check')),
+                    # self.kwd(' -d') if op.showFaultyObjects else '',
+                    # self.kwd(' -v') if op.verbose else '',
+                    # self.kwd(' -a') if op.all else ''),
                 lineNo=op.lineNo
             )
         else:
@@ -465,10 +472,10 @@ class ScenarioModelPrinter(ModelPrinter):
                 self.doCardinalityViolation(c)
         for (index,ie) in enumerate(ce.invariantEvaluations):
             self.doInvariantEvaluation(index + 1, ie)
-        self.outLine(self.ann('checked %i invariants in ?.???s, %i failure.' % (
-            len(ce.invariantEvaluations),
-            999
-        )))
+        # self.outLine(self.ann('checked %i invariants in ?.???s, %i failure.' % (
+        #     len(ce.invariantEvaluations),
+        #     999
+        # )))
         return self.output
 
     def doCardinalityViolation(self, c):

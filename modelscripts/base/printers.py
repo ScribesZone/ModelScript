@@ -385,7 +385,7 @@ class StructuredPrinter(AbstractPrinter):
                         s,
                         styled=self.config.styled)
                 else:
-                    s = Styles.smallIssue.do(
+                    s = Styles.mediumIssue.do(
                         s,
                         styled=self.config.styled)
             self.outLine(s)

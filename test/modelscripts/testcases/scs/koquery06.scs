@@ -1,0 +1,14 @@
+scenario model KOQuery06
+import class model from 'main.cls'
+
+!djamel := new Employee
+!djamel.name := 'Djamel'
+!djamel.salary := 2600
+? 2+3=4
+
+scenario begin
+    !marie := new Employee('m')
+scenario end
+
+?? Employee.allInstances->size
+

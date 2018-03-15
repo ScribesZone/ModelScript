@@ -1,0 +1,8 @@
+scenario model US01
+import class model from 'main.cls'
+import usecase model from 'main.uss'
+
+actori toufik:CEO
+actori maria:Secretary
+actori xavier:Manager
+

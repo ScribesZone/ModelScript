@@ -200,7 +200,6 @@ class SourceFile(WithIssueModel):  # TODO: should be WithIssueList
         """
         Read one or two files.
         """
-
         assert logicalFileName or realFileName
         if logicalFileName is not None:
             self.fileName=logicalFileName

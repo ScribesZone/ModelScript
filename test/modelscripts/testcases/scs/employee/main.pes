@@ -1,6 +1,0 @@
-permission model Main
-import class model from 'main.cls'
-import usecase model from 'main.uss'
-
-CEO C Department
-CEO U Department.name,Department.location

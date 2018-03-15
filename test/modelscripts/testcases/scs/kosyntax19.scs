@@ -1,0 +1,12 @@
+scenario model KOSyntax19
+import class model from 'main.cls'
+
+
+
+
+?check
+
+!djamel := new Employee
+!djamel.name := 'Djamel'
+!djamel.salary := 2600
+!insert (djamel, computing) into WorksIn

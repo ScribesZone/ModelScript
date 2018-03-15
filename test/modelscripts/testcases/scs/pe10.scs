@@ -1,0 +1,10 @@
+scenario model PE10
+import class model from 'main.cls'
+import usecase model from 'main.uss'
+import permission model from 'main.pes'
+
+scenario begin
+    !create djamel : Employee
+    !djamel.name := 'Djamel'
+    !djamel.salary := 2600
+scenario end

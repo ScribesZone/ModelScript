@@ -67,7 +67,7 @@ class Level(object):
 class Levels(object):
     Hint=Level('HINT', 10, Styles.smallIssue)
     Info=Level('INFO', 20, Styles.smallIssue)
-    Warning=Level('WARNING', 30, Styles.smallIssue)
+    Warning=Level('WARNING', 30, Styles.mediumIssue)
     Error=Level('ERROR', 40, Styles.bigIssue)
     Fatal=Level('FATAL ERROR', 50, Styles.bigIssue)
 
@@ -104,7 +104,7 @@ class Issue(object):
             print('ISS: ****NEW %s IN %s **** -> %s'  % (
                 type(self).__name__,
                 self.origin._issueBox.label,
-                str(self)
+                unicode(self)
             ))
 
         if level==Levels.Fatal:
@@ -126,8 +126,6 @@ class Issue(object):
 
     def str(self,
             pattern=None,
-            displayOrigin=False,
-            displayLocation=True,
             styled=False): # not used, but in subclasses
 
         """
@@ -144,12 +142,12 @@ class Issue(object):
         if pattern is None:
             pattern=(
                 Annotations.prefix
-                + '{origin}:{kind}:{level}:{location}:{message}')
+                + u'{origin}:{kind}:{level}:{location}:{message}')
         text=pattern.format(
-            origin='ORIGIN',
+            origin=u'ORIGIN',
             level=self.level.str(),
             kind=self.kind,
-            location='?',
+            location=u'?',
             message=self.message
         )
         return self.level.style.do(
@@ -271,13 +269,11 @@ class LocalizedSourceIssue(Issue):
 
     def str(self,
             pattern=None,
-            displayOrigin=False,
-            displayLocation=True,
             styled=False):
         if pattern is None:
             pattern=(
                 Annotations.prefix
-                + '{kind}:{level}:{origin}:{line}:{message}')
+                + u'{kind}:{level}:{origin}:{line}:{message}')
         text=pattern.format(
             origin=self.location.sourceFile.basename,
             level=self.level.str(),
@@ -338,7 +334,7 @@ class IssueBox(object):
 
 
         if DEBUG>=1:
-            print('ISS: New issue box for %s -> %s' % (
+            print(u'ISS: New issue box for %s -> %s' % (
                 type(self.origin).__name__,
                 self.label))
 
@@ -364,7 +360,7 @@ class IssueBox(object):
         if not issueBox in self.parents:
             self.parents.append(issueBox)
             if DEBUG >= 1:
-                print('ISS: Add parent "%s" -> "%s"' % (
+                print(u'ISS: Add parent "%s" -> "%s"' % (
                         self.label,
                         issueBox.label))
 
@@ -476,17 +472,17 @@ class IssueBox(object):
     @property
     def summaryLine(self):
 
-        def times(n, word, pattern='%i %s'):
+        def times(n, word, pattern=u'%i %s'):
             if n==0:
                 return ''
             else:
                 return (pattern % (
                     n,
-                    word + ('s' if n>=2 else '')
+                    word + (u's' if n>=2 else u'')
                 ))
 
         if self.nb==0:
-            return ''
+            return u''
         level_msgs=[]
         m=self.summaryMap
         for l in m:
@@ -497,9 +493,9 @@ class IssueBox(object):
         if len(level_msgs)==1:
             text=level_msgs[0]
         else:
-            text= '%s (%s)' % (
-                    times(self.nb, 'Issue'),
-                    ', '.join(level_msgs)
+            text= u'%s (%s)' % (
+                    times(self.nb, u'Issue'),
+                    u', '.join(level_msgs)
                 )
         return Annotations.fullLine(text)
 

@@ -1,0 +1,39 @@
+quality model Usecases
+import glossary model UML
+
+rule SystemDefined
+end
+
+rule ActorLimits
+| In a given usecase model there should at least
+| {min} actors and at most {max} actors.
+properties
+    level : Level = Warning
+    min : Integer = 0
+    | minimum actor autorized per usecase model
+    max : Integer = 100
+    | minimum actor autorized per usecase model
+end
+
+rule SystemNaming
+end
+
+rule UsecaseLimits
+end
+
+
+
+enforce rule ActorLimits
+|
+|
+| fsdgdfg
+properties
+    level=Levels.Warning
+    min=1
+    max=10
+end
+
+ignore rule SystemNaming
+| The name of the system is not important in the
+| context as it is not used anyway
+end

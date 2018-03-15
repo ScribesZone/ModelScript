@@ -14,6 +14,11 @@ from modelscripts.megamodels.issues import (
 
 DEBUG=3
 
+class CheckOutput(object):
+    def __init__(self, message, locationElement=None):
+        self.message=message
+        self.locationElement=locationElement
+
 class CheckList(object):
 
     checkersForClass=collections.OrderedDict()
@@ -45,12 +50,14 @@ class CheckList(object):
                 print('-> [%s]' % (
                     ','.join([c.name for c in checkers])))
             for checker in checkers:
-                msg=checker.doCheck(element)
-                if msg is not None:
+                check_output=checker.doCheck(element)
+                if check_output is not None:
                     ModelElementIssue(
                         modelElement=element,
                         level=checker.level,
-                        message=msg
+                        message=check_output.message,
+                        locationElement=
+                            check_output.locationElement
                     )
         else:
             if DEBUG>=3:
@@ -90,10 +97,18 @@ class NamingChecker(Checker):
 
     def doCheck(self, e):
         if not self.fun(e.name):
-            return (
-                '"%s" should be in %s.' % (
-                e.name,
-                self.namingName))
+            return CheckOutput(
+                message='"%s" should be in %s.' % (
+                    e.name,
+                    self.namingName),
+                locationElement=self.locationElement(e))
+
+    def locationElement(self, e):
+        """
+        This method can be overloaded if a location
+        element is known
+        """
+        return e
 
 
 class LimitsChecker(Checker):
@@ -112,18 +127,27 @@ class LimitsChecker(Checker):
     def doCheck(self, e):
         l=self.size(e)
         if l<self.min:
-            return (
-                'At least %s %s(s) must be defined. Got %s.' %(
+            msg=('At least %s %s(s) must be defined. Got %s.' % (
                     self.min,
                     self.label,
-                    l
-                )
+                    l))
+            return CheckOutput(
+                message=msg,
+                locationElement=self.locationElement(e)
             )
         if l>self.max:
-            return (
-                'At most %s %s(s) must be defined. Got %s.' %(
+            msg=('At most %s %s(s) must be defined. Got %s.' %(
                     self.max,
                     self.label,
-                    l
-                )
+                    l))
+            return CheckOutput(
+                message=msg,
+                locationElement=self.locationElement(e)
             )
+
+    def locationElement(self, e):
+        """
+        This method can be overloaded if a location
+        element is known
+        """
+        return e

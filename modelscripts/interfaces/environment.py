@@ -114,7 +114,6 @@ class Environment(object):
     #     else:
     #         assert name is not None
     #         worker_file=os.path.join(cls.getHomeWorkerDir(), name)
-    #         print('UU'*10+' %s '% worker_file)
     #         return worker_file
 
     @classmethod

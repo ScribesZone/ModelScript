@@ -1,0 +1,9 @@
+scenario model KOSyntax8
+import class model from 'main.cls'
+
+actori bob
+
+usecasei u
+
+-- these are removed because of the "nothing to process"
+-- message which suppress all comments...

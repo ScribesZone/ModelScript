@@ -1,0 +1,4 @@
+scenario model SoilMessage1
+import class model from 'main.cls'
+
+assert 2 = 'deux'

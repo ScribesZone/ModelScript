@@ -1,0 +1,7 @@
+scenario model Query03
+import class model from 'main.cls'
+
+
+? 2+3=4
+
+

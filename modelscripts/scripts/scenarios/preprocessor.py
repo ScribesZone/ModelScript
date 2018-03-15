@@ -18,21 +18,46 @@ class ScsToSoilPreprocessor(Preprocessor):
             targetText='.soil scenario model',
             targetExtension='.soil'
         )
+
+        #---- scenario begin ----------------------------
+        self.addTransfo(RegexpTransfo(
+            '^(?P<before> *)scenario +begin *$',
+            '{before}--@scenariobegin'))
+
+        #---- scenario end ----------------------------
+        self.addTransfo(RegexpTransfo(
+            '^(?P<before> *)scenario +end *$',
+            '{before}check -v -d -a'))
+
+        #---- block ends ---------------------------------
+        self.addTransfo(RegexpTransfo(
+            '^(?P<before> *)end *$',
+            '{before}check -a -d -v'))
+
+
+        #---- description lines --------------------------
         self.addTransfo(RegexpTransfo(
             '^(?P<before> *)\|(?P<rest>.*)',
             '{before}--|{rest}'))
+
         self.addTransfo(RegexpTransfo(
-            '^ *! *check *',
-            'check -v -d -a' ))
+            '^ *\? *check *',
+            'check -v -a -d' ))
+
+        #---- assert queries -----------------------------
         self.addTransfo(RegexpTransfo(
             '^(?P<before> *)assert *(?P<expr>.*)',
             '{before}?? {expr} --@assertquery'))
+
+        #---- megastatements -----------------------------
         # Remove the megammodel statement (import, model)
         # These statements are removed during
         # preprocessing since they are not useful after.
         self.addTransfo(RegexpTransfo(
             '^ *(scenario|import|object)', # remove mega
             '' ))
+
+
         # self.addTransfo(RegexpTransfo(
         #     '^(?P<before> *)enduci(?P<rest>.*)',
         #     '{before}check -v -d -a --@enduci{rest}'))
@@ -42,11 +67,7 @@ class ScsToSoilPreprocessor(Preprocessor):
         #     '{before}check -v -d -a --@endcontext{rest}'))
 
         self.addTransfo(PrefixToCommentTransfo((
-            'actor',
-            'system',
-            'uci',
-            'usecase',
-            'end',
-            'enduci',
-            'context',
-            'endcontext')))
+            'actori',
+            'systemi',
+            'usecasei',
+            'context')))

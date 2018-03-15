@@ -1,0 +1,7 @@
+scenario model KOSem1
+import class model from 'main.cls'
+
+scenario begin
+    ! ed := new NOcLASS
+    ! ed.budget := 0
+scenario end

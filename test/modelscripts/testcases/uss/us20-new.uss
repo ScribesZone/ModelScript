@@ -1,0 +1,40 @@
+usecase model US20
+
+system CyberBibliotheque
+| The system is nice
+end
+
+actor Personne
+| a personne
+end
+
+actor Employe
+| kdfj
+performs
+    SortirLivre
+    SInscrire
+    Redefinir
+    RentrerLivre
+end
+
+actor Bibliothequaire
+performs
+    RentrerLivre
+end
+
+usecase SortirLivre
+actors
+    Employe
+end
+
+usecase RentrerLivre
+actors
+
+end
+
+usecase DireAPersonne
+end
+
+
+|interaction
+|end

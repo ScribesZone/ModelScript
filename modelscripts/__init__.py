@@ -1,8 +1,8 @@
 # coding=utf-8
 
-
 import modelscripts.metamodels
 import modelscripts.scripts
+import modelscripts.config
 
 
 def finishMegamodel():
@@ -11,5 +11,6 @@ def finishMegamodel():
     Megamodel.model.name='megamodel'
     from modelscripts.metamodels.megamodels import _setMetaModel
     _setMetaModel(METAMODEL)
+
 
 finishMegamodel()

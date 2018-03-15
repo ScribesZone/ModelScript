@@ -1,0 +1,32 @@
+scenario model Descr1
+    | The goal of this scenario is just to
+    | test descriptions.
+
+import class model from 'main.cls'
+
+scenario begin
+    | bob decide to create a computing departement in los alaambritos.
+    !create computing : Department
+    !computing.name := 'Computing departement'
+    !computing.location := 'Los alaambritos'
+
+    | the budget of this departement is $10 000
+    !computing.budget := 10000
+
+    !create djamel : Employee
+    !djamel.name := 'Djamel'
+    !djamel.salary := 2600
+
+    !create ioannis : Employee
+    !ioannis.name := 'Ioannis'
+    !ioannis.salary := 1900
+
+    !insert (djamel, computing) into WorksIn
+    !insert (ioannis, computing) into WorksIn
+
+    !create turbo : Project
+    !turbo.name := 'Maxi turbo project'
+    !turbo.budget := 5000
+
+    ! c1 := new Control() between (computing, turbo)
+scenario end

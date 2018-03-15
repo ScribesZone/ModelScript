@@ -1,0 +1,6 @@
+scenario model KOSyntax20
+import class model from 'main.cls'
+
+scenario begin
+    !computing := Department('computing')
+scenario end

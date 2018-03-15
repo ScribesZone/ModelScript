@@ -12,12 +12,13 @@ from typing import Text, Optional
 
 import logging
 import os
-import tempfile
 import re
 from modelscripts.config import Config
 from modelscripts.interfaces.environment import Environment
 from modelscripts.base.files import (
-    replaceExtension
+    replaceExtension,
+    readFileLines,
+    writeFileLines
 )
 __all__ = [
     'USEEngine',
@@ -183,12 +184,18 @@ class USEEngine(object):
             redirection = '>%s 2>%s' % (output_filename, errors_filename)
             cls.outAndErr = None
 
-
-        commandPattern = '%s -nogui -nr %s %s '+ redirection
-        cls.command = (commandPattern
-                       % (USE_OCL_COMMAND, useSource, soilSource))
+        options=(
+              '-extendedTypeSystemChecks:I'
+            + '-oclAnyCollectionsChecks:I')
+        commandPattern = '%s -nogui -nr %s %s %s '+ redirection
+        cls.command = (commandPattern % (
+            USE_OCL_COMMAND,
+            options,
+            useSource,
+            soilSource))
         if DEBUG>=3 or Config.realtimeUSE>=1:
-            print('    use: USE EXECUTION %s' % cls.command)
+            print('USE: '+'.'*80)
+            print('USE:    USE EXECUTION %s' % cls.command)
         cls.directory = executionDirectory if executionDirectory is not None \
                      else os.getcwd()
         # cls.directory = executionDirectory if executionDirectory is not None \
@@ -198,20 +205,20 @@ class USEEngine(object):
         # Execute the command
         # log.info('Execute USE OCL in %s: %s', cls.directory, cls.command)
         if DEBUG>=2 or Config.realtimeUSE>=1:
-            print('    Execute USE OCL')
-            print('        working dir: %s' % cls.directory)
-            print('        use file   : %s' % useSource)
-            print('        soil file  : %s' % soilSource)
-            print('        errWithOut : %s' % errWithOut)
-            print('        output     : %s' % output_filename)
+            print('USE:    Execute USE OCL')
+            print('USE:        working dir: %s' % cls.directory)
+            print('USE:        use file   : %s' % useSource)
+            print('USE:        soil file  : %s' % soilSource)
+            print('USE:        errWithOut : %s' % errWithOut)
+            print('USE:        output     : %s' % output_filename)
             if cls.outAndErr:
-                print('        output     : %s' % errors_filename)
+                print('USE:        output     : %s' % errors_filename)
 
         os.chdir(cls.directory)
         cls.commandExitCode = os.system(cls.command)
         os.chdir(previousDirectory)
         if DEBUG>=2 or Config.realtimeUSE>=1:
-            print('        exit code  : %s' % cls.commandExitCode)
+            print('USE:        exit code  : %s' % cls.commandExitCode)
         if errWithOut:
              if cls.commandExitCode != 0:   #FIXME: was != 0 but  with a bug
                  cls.outAndErr = None
@@ -220,8 +227,7 @@ class USEEngine(object):
         else:
             cls.out = readAndRemove(output_filename)
             if DEBUG >= 2 or Config.realtimeUSE >= 1:
-                print('        '
-                      'output of %s lines' %
+                print('USE:        output of %s lines' %
                       len(cls.out.split('\n')))
             # log.debug('----- output -----')
             # log.debug(cls.out)
@@ -230,23 +236,23 @@ class USEEngine(object):
             cls.err = readAndRemove(errors_filename)
             if len(cls.err) > 0:
                 if DEBUG >= 2 or Config.realtimeUSE >= 1:
-                    print(
-                        '        WITH ERRORS of %s lines: (first lines below)' %
+                    print('USE:        WITH ERRORS of %s lines:'
+                          '(first lines below)' %
                         len(cls.err.split('\n'))   )
                 LINE_COUNT = 3
                 for err_line in cls.err.split('\n')[:LINE_COUNT]:
                     if err_line != '':
                         if DEBUG >= 2 or Config.realtimeUSE >= 1:
-                            print('         ERROR: %s' % err_line)
+                            print('USE:         ERROR: %s' % err_line)
             else:
                 if DEBUG >= 2 or Config.realtimeUSE >= 1:
-                    print(
-                        '        without anything in stderr')
+                    print('USE:        without anything in stderr')
 
             # log.debug('----- errors -----')
             # log.debug(cls.err)
             # log.debug('----- end of errors ------')
-
+        if DEBUG >= 2 or Config.realtimeUSE >= 1:
+            print('USE: ' + '.' * 80)
         return cls.commandExitCode
 
 
@@ -270,9 +276,8 @@ class USEEngine(object):
         if m:
             return m.group('version')
         else:
-            msg = "Cannot execute USE OCL or get its version.\n" \
-
-            raise EnvironmentError('Cannot execute "use" command. Is this program installed?')
+            msg = "Cannot execute USE OCL or get its version. Is this program installed?\n"
+            raise EnvironmentError(msg)
 
     @classmethod
     def withUseOCL(cls):
@@ -304,10 +309,14 @@ class USEEngine(object):
         if prequelFileName is None:
             prequelFileName=useFileName
         soil=cls._soilHelper('infoModelAndQuit.soil')
+        if DEBUG>=2:
+            print('USE: '+' analyzeUSEModel '.center(80,'#'))
         cls._execute(
             useFileName,
             soil,
             basicFileName=prequelFileName)
+        if DEBUG>=2:
+            print('USE: '+' END analyzeUSEModel '.center(80,'#'))
         return cls.commandExitCode
 
 
@@ -365,47 +374,104 @@ class USEEngine(object):
         The implementation is:
         1. first create the trace (.stc) with executeSoilFileAsTrace
         2. merge the soil file and trace file with merge
+        If the file contains no soil statements at all the content is
+        copied directly to the .sex file with 00001 like marker to
+        mimics what happend with the regular process.
         """
+
+        def is_empty_soil(abs_soil_file):
+            """
+            Indicates if there is at least a useful soil statement
+            that is a line starting with ! ou ?.
+            Check is not in the list because if there is no ! there
+            is nothing to check anyway. Additionaly this is necessary
+            since the scn preprocessor generate check for end statement
+            so that there is check even in the case of just usecase or
+            textual scenario.
+            :param abs_soil_file:
+            :return:
+            """
+            lines=readFileLines(
+                file=abs_soil_file,
+                issueOrigin=None)
+            for line in lines:
+                if re.match(
+                    '^ *(!|\?)',
+                    line):
+                    return False
+            return True
+
+        def empty_soil_to_sex(abs_soil_file, sex_filename):
+
+            lines=readFileLines(
+                file=abs_soil_file,
+                issueOrigin=None)
+            out_lines=[]
+            for (no, line) in enumerate(lines):
+                out_lines.append('%05i:%s' % (
+                    no,
+                    line))
+            writeFileLines(out_lines, sex_filename)
+
+        def trace_and_merge_to_sex(
+                prequel_file_name,
+                abs_use_file,
+                abs_soil_file,
+                sex_filename
+        ):
+            """
+            Create a trace (-> .stc) and then perform a merge (-> .sex)
+            """
+            if DEBUG>=3:
+                print('USE: executeSoilFileAsSex: Soil file: %s'
+                      % abs_soil_file)
+                displayFileContent(abs_soil_file)
+                print('USE: executeSoilFileAsSex: executeSoilFileAsTrace')
+            trace_filename = cls.executeSoilFileAsTrace(
+                abs_use_file,
+                abs_soil_file,
+                prequelFileName=prequel_file_name)
+            if DEBUG>=3:
+                print(
+                    'USE: executeSoilFileAsSex: '
+                    'TRACE RESULT saved in %s'
+                    % trace_filename)
+                displayFileContent(trace_filename, prefix='USE:    ')
+                print('USE: executeSoilFileAsSex: now merging')
+            from modelscripts.use.engine.merger import merge
+            merge(
+                abs_soil_file,
+                trace_filename,
+                prequelFileName=prequel_file_name)
+            if DEBUG>=3:
+                print('USE: executeSoilFileAsSex: '
+                    'SEX FILE saved in %s' % sex_filename)
+                displayFileContent(sex_filename)
+            return sex_filename
+
+        if DEBUG>=2:
+            print('USE: '+' executeSoilFileAsSex '.center(80,'#'))
         if prequelFileName is None:
             prequelFileName=soilFile
-
-
-        from modelscripts.use.engine.merger import merge
-
         abs_use_file=os.path.realpath(useFile)
         abs_soil_file=os.path.realpath(soilFile)
-        if DEBUG>=3 or Config.realtimeUSE>=1:
-            print(
-                'use: executeSoilFileAsSex: '
-                'Soil file: %s' % abs_soil_file)
-            displayFileContent(abs_soil_file)
-            print(
-                'use: executeSoilFileAsSex:'
-                'executeSoilFileAsTrace')
-        trace_filename = cls.executeSoilFileAsTrace(
-            abs_use_file,
-            abs_soil_file,
-            prequelFileName=prequelFileName)
-        # print('HH'*10, trace_filename)
-        if DEBUG>=3 or Config.realtimeUSE>=1:
-            print(
-                'use: executeSoilFileAsSex: '
-                'TRACE RESULT saved in %s' % trace_filename)
-            displayFileContent(trace_filename, prefix='use:    ')
-            print('use: executeSoilFileAsSex: now merging')
-        sex_filename=merge(
-            abs_soil_file,
-            trace_filename,
-            prequelFileName=prequelFileName)
-        if DEBUG>=3:
-            print(
-                'use: executeSoilFileAsSex: '
-                'SEX FILE saved in %s' % sex_filename)
-            displayFileContent(sex_filename)
+        sex_filename = Environment.getWorkerFileName(
+            basicFileName=replaceExtension(prequelFileName, '.sex'))
+        if is_empty_soil(abs_soil_file):
+            empty_soil_to_sex(
+                abs_soil_file=abs_soil_file,
+                sex_filename=sex_filename)
+        else:
+            trace_and_merge_to_sex(
+                prequel_file_name=prequelFileName,
+                abs_use_file=abs_use_file,
+                abs_soil_file=abs_soil_file,
+                sex_filename=sex_filename)
         with open(sex_filename, 'rU') as f:
             cls.outAndErr=f.read()
+        if DEBUG >= 2:
+            print('USE: ' + ' END executeSoilFileAsSex '.center(80, '#'))
         return sex_filename
-
 
 def displayFileContent(filename, prefix='    ', length=5):
     import io

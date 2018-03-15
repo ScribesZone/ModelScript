@@ -1,0 +1,6 @@
+scenario model KOSyntax15
+import class model from 'main.cls'
+
+scenario begin
+scenario end
+context

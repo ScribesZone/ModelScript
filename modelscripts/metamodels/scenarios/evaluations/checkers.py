@@ -1,14 +1,47 @@
 # coding=utf-8
 from typing import Text, Optional
-from modelscripts.megamodels.checkers import Checker
+from modelscripts.megamodels.checkers import (
+    Checker,
+    CheckOutput
+)
 from modelscripts.base.issues import (
     Levels
 )
 
 from modelscripts.metamodels.scenarios.evaluations.operations import (
-    _USEImplementedAssertQueryEvaluation
+    _USEImplementedQueryEvaluation
 )
 
+class QueryEvaluationChecker(Checker):
+
+    def __init__(self,**params):
+        super(QueryEvaluationChecker, self).__init__(
+            metaclasses=[_USEImplementedQueryEvaluation],
+            **params
+        )
+
+
+    def doCheck(self, qe):
+        #type: ('_USEImplementedQueryEvaluation') -> Optional[CheckOutput]
+        lines=['Query returns %s : %s' % (
+                        qe.resultValue,
+                        qe.resultType)]
+        if qe.operation.verbose:
+            lines.append('Details of query evaluation')
+            lines.extend(['    '+se for se in qe.subexpressions])
+        return CheckOutput(
+            message='\n'.join(lines),
+            locationElement=qe.operation)
+
+QueryEvaluationChecker(
+    level=Levels.Info
+)
+
+
+
+from modelscripts.metamodels.scenarios.evaluations.operations import (
+    _USEImplementedAssertQueryEvaluation
+)
 class QueryAssertChecker(Checker):
 
     def __init__(self,**params):
@@ -19,16 +52,17 @@ class QueryAssertChecker(Checker):
 
 
     def doCheck(self, e):
-        #type: ('_USEImplementedAssertQueryEvaluation') -> Optional[Text]
+        #type: ('_USEImplementedAssertQueryEvaluation') -> Optional[CheckOutput]
         if e.status != 'OK':
-            return (
-                'Assert is %s (%s : %s)' % (
-                    e.status,
-                    e.resultValue,
-                    e.resultType
-            ))
-        else:
-            return None
+            lines=['Assert is %s (returns %s : %s)' % (
+                        e.status,
+                        e.resultValue,
+                        e.resultType)]
+            lines.append('Details of assert evaluation')
+            lines.extend(['    '+se for se in e.subexpressions])
+            return CheckOutput(
+                message='\n'.join(lines),
+                locationElement=e.operation)
 
 QueryAssertChecker(
     level=Levels.Error
@@ -50,11 +84,22 @@ class InvariantViolationChecker(Checker):
 
 
     def doCheck(self, iv):
-        #type: ('InvariantViolation') -> Optional[Text]
-            return (
-                'Invariant %s is violated' % (
-                    iv.invariant.invariantLabel,
-            ))
+        #type: ('InvariantViolation') -> Optional[CheckOutput]
+        lines=[
+            'Invariant %s returns %s %s' % (
+                iv.invariant.invariantLabel,
+                iv.resultValue,
+                ': '+iv.resultType if iv.resultType!="Boolean" else '' )]
+        for vo in iv.violatingObjects:
+            lines.append(
+                '    object "%s" violates the invariant.' % (
+                    vo
+                ))
+        lines.append('Detailled evaluation of the invariant.')
+        for e in iv.subexpressions:
+            lines.append('    '+e)
+        return CheckOutput(
+            message='\n'.join(lines))
 
 InvariantViolationChecker(
     level=Levels.Error
@@ -63,28 +108,37 @@ InvariantViolationChecker(
 #-------------------------------------------------------------
 
 from modelscripts.metamodels.scenarios.evaluations.operations import (
-    CardinalityViolationObject
+    CardinalityViolation
 )
 
-class CardinalityViolationCheckerObject(Checker):
+class CardinalityViolationChecker(Checker):
 
     def __init__(self, **params):
-        super(CardinalityViolationCheckerObject, self).__init__(
-            metaclasses=[CardinalityViolationObject],
+        super(CardinalityViolationChecker, self).__init__(
+            metaclasses=[CardinalityViolation],
             **params
         )
 
 
-    def doCheck(self, vo):
-        #type: ('CardinalityViolationObject') -> Optional[Text]
-            r=vo.cardinalityViolation.role
-            return (
-                'Cardinality of role %s.%s[%s]  is violated' % (
-                    r.association.name,
-                    r.name,
-                    r.cardinalityLabel
+    def doCheck(self, v):
+        #type: ('CardinalityViolation') -> Optional[CheckOutput]
+        r=v.role
+        lines=[
+            'Cardinality of role %s.%s[%s] is violated:' % (
+                r.association.name,
+                r.name,
+                r.cardinalityLabel
+        )]
+        for vo in v.violatingObjects:
+            lines.append(
+            '    object "%s" has %i "%s"' % (
+                vo.violatingObject,
+                vo.actualCardinality,
+                r.name
             ))
+        return CheckOutput(
+            message='\n'.join(lines))
 
-CardinalityViolationCheckerObject(
+CardinalityViolationChecker(
     level=Levels.Error
 )

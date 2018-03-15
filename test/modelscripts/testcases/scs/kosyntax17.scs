@@ -1,0 +1,16 @@
+scenario model KOSyntax17
+
+import class model from 'main.cls'
+import usecase model from 'main.uss'
+
+
+        actori toufik:CEO
+        actori maria:Secretary
+        actori xavier:Manager
+
+    usecasei toufik OpenNewDepartment
+        !create computing : Department
+        !computing.name := 'Computing departement'
+        !computing.location := 'Los alaambritos'
+        !computing.budget := 10000
+    end

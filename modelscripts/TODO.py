@@ -1,24 +1,30 @@
 # coding=utf-8
 
 # TODO:0 create a scenario for valence/cci/pi
+# TODO:0 check koquery90 with assert/query mixture at top
+# TODO:0 check ? vs ?? + KOQuery03
+# TODO:0 check koinv04: display of cls,
+
+# TODO:0 locate model issues
+# TODO:1 change the syntax of assert. assert name : ....
+#        add name in metamodel and output
+#        assert inv a: False
+#        assert inv b: Failure
+#        assert inv b
+#        assert 2+3=5
+#        assert b : 2+6=3
+#
 # TODO:0 bind object/evaluation model issuebox with scenario
 #        otherwise there is no error reported when building objects
 # TODO:0 add | text block to : (require analysis because before)
+#        binding descriotion to elements is not compulsary
 #        object
 #        scenario
 # TODO:0 add inheritance in cl metamodel
 # TODO:0 add check for optional attributes in check
-# TODO:0 add check for id attributes in check
+# TODO:1 add check for id attributes in check
+# TODO:0 state begin and state end for objects
 # TODO:0 test and test error display + error detection among files
-# TODO:0 add "begin" "end" for scenario --@begin --@end -> check
-#        this mean adding state within preprocessor or parser
-#        parser would be best
-# TODO:0 handle use message 'Nothing to do, because file' in merge
-#       check with us01scs  without ?0
-#       currently the merger generate an empty file
-#       is should be enough to first check soil line
-#       if not, just compile /use if imported
-#       otherwise just print comments
 # FIXME:0 display /tmp error in sex/use
 #        for metamodels, since composed metamodels are
 #        important (e.g. permissoion -> usecase)
@@ -26,6 +32,16 @@
 # FIXME:0 strange printing for models
 # TODO:0 check why empty entries are  ignored in glossary
 #       see domain2.gls
+
+
+# CAVEAT1: Scenario must import a class model now
+#       This limitation should be removed.
+#       At the moment it this is required because scenarios
+#       are based on the pair use + soil
+#       Look at SexSource and check how to remove dependency on '.use"
+#       Looking at the case of empty scs file should help as well
+#       See test kosyntax21 kosyntax22
+#
 # TODO:1 datatype: definition + replacement
 # TODO:1 package: hierachy + tests
 # TODO:1 improve text block metrics with ref and word
@@ -97,6 +113,11 @@ Expression " + StringUtil.inQuotes(this.stringRep(args, "")) +
 The operation `selectByKind' is only applicable on collections.
 
 """
+# TODO:0 Add Internal Fatal, Error, warning and move use trace to internal warning
+#        Error during USE execution: Unexpected line (#85) in use trace:
+#        "You can change this check using the -extendedTypeSystemChecks switch."
+#       Add -extendedTypeSystemChecks:I  -oclAnyCollectionsChecks:I
+
 """
 Warning: Operation call ...
 This may lead to unexpected behavior.

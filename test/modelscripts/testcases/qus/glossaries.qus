@@ -1,0 +1,51 @@
+quality model Glossaries
+
+
+rule TermeTropCompose {dont}
+| Le nom du terme est composé de plusieurs mots ou sous-termes mais
+| certains de ceux-ci semblent ne pas être pertinents ou nécessaires dans
+| la composition totale. Il est préférable de les enlever pour rester à des
+| termes essentiels. Il doit y avoir au maximum {max} composants dans
+| terme
+properties
+    level : Level = 'warning'
+    control : Control is 'automatic'
+    max : Integer = 5
+content
+| :exemple:
+|       Dans “AjouterDansPanier” le terme
+|       “BatimentAAccesControle” pourrait certainement être simplifié en
+|       “Batiment” car dans ce contexte si les batiments auxquels on fait
+|       référence sont toujours ce type de batiment. C’est évidemment
+|       le cas dans une définition comme celle-ci:
+|       “BatimentAAccesControle : Bâtiment appartenant à une [Zone]
+|       nécessitant des [DroitDAcces]s pour y pénétrer
+|       .”
+| :commentaire:
+|       Dans l’exemple “AjouterDansPanier”, il est probable qu’une
+|       confusion existe entre d’une part le nom du terme et
+|       d’autre par le nom d’une exigence, ou d’un cas d’utilisation.
+|       Ces derniers
+|       résultent naturellement de la composition de verbes (plus ou moins
+|       généraux, et pouvant donc être dans certains cas définis dans un
+|       glossaire) et de formes nominales définies dans des glossaires.
+check
+| gfdg {ntime}
+| dgsf
+end
+
+
+enforce rule XXX {do}
+| Le nom du terme est composé de plusieurs mots ou sous-termes mais
+| certains de ceux-ci semblent ne pas être pertinents ou nécessaires dans
+properties
+    max : Integer = 5
+    control : 'manual'
+    automatic Term.name
+check
+
+end
+
+
+enforce rule TermeTropCompose
+    control='Automatic'

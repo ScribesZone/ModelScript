@@ -1,0 +1,4 @@
+scenario model KOSyntax14
+import class model from 'main.cls'
+
+scenario end

@@ -1,7 +1,0 @@
-scenario model Koinv02
-import class model from 'main.cls'
-
-! ed := new Department
-! ed.budget := -100
-!check
--- inv Department::i1a must fail

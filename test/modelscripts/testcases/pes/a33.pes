@@ -1,16 +1,16 @@
 permission model A33
-    | This permission model has a description.
-    | This description is only three lines long.
-    | It is not so nice indeed.
+| This permission model has a description.
+| This description is only three lines long.
+| It is not so nice indeed.
 
 import usecase model from 'a.uss'
 import class model from 'a.cls'
 
 
 M,N  can CD  C,R
-    | M and N can create and delete C and R if they want
-    | This is just a possibility though
+| M and N can create and delete C and R if they want
+| This is just a possibility though
 
 M can C  C
-    | In particular M can create C.
-    | This rule is subsumed by the one above.
+| In particular M can create C.
+| This rule is subsumed by the one above.

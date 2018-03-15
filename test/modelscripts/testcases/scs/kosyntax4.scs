@@ -1,0 +1,4 @@
+scenario model KOSyntax4
+import class model from 'main.cls'
+
+check -g

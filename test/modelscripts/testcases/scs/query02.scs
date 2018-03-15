@@ -1,0 +1,12 @@
+scenario model Query02
+import class model from 'main.cls'
+
+
+? 2+3=4
+?? 2+3=4
+
+scenario begin
+scenario end
+
+?? Employee.allInstances->size
+

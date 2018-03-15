@@ -1,0 +1,9 @@
+scenario model KOCard06
+import class model from 'main.cls'
+
+scenario begin
+    !djamel := new Employee
+    !maurice := new Employee
+    ?check
+    !computing := Department('computing')
+scenario end

@@ -1,0 +1,6 @@
+scenario model KOSyntax7
+import class model from 'main.cls'
+
+-- a comment
+
+end

@@ -384,7 +384,6 @@ class UseModelSource(ModelSourceFile):
             r = r'^ *--(?P<comment>|[^@].*)$'
             m = re.match(r, line)
             if m:
-                print('UU'*100)
                 c=m.group('comment')
                 last_doc_comment.add(c)
                 continue
@@ -491,7 +490,6 @@ class UseModelSource(ModelSourceFile):
                 r' *$'
             m = re.match(r, line)
             if m:
-                print('OO'*100)
                 package=Package(
                     name=m.group('name'),
                     model=self.classModel,

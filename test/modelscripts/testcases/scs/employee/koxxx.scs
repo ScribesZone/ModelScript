@@ -1,5 +1,0 @@
-scenario model koinv01
-import class model from 'main.cls'
-
-! ed := new Departement
-! ed.budget := 0

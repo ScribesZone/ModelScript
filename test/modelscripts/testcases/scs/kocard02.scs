@@ -1,0 +1,9 @@
+scenario model KOCard02
+import class model from 'main.cls'
+
+scenario begin
+!djamel := new Employee
+!djamel.salary:=1000
+!maurice := new Employee
+!maurice.salary:=2000
+scenario end

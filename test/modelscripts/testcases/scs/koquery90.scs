@@ -1,0 +1,63 @@
+scenario model KoQuery90
+    | The goal of this scenario is just to
+    | test descriptions.
+
+import class model from 'main.cls'
+import usecase model from 'main.uss'
+
+actori toufik:CEO
+    | Toufik is a VIP.
+actori maria:Secretary
+    | Maria is a scretarty with a lot of skills.
+actori xavier:Manager
+
+
+
+context
+    | - The computing departement at los alaambritos have
+    |   a budget of $10000
+    !computing := new Department
+    !computing.name := 'Computing departement'
+    !computing.location := 'Los alaambritos'
+    !computing.budget := 10000
+end
+
+scenario begin
+    | - djamel works in the computing departement
+    |   with a gross salary of 2600
+    !djamel := new Employee
+    !djamel.name := 'Djamel'
+    !djamel.salary := 2600
+    !insert (djamel, computing) into WorksIn
+
+    ?check
+
+    | - maria start to register a new employee
+    usecasei maria RegisterNewEmployee
+        | - she register ioanis with a salary of $1900
+        !ioannis := new Employee
+        !ioannis.name := 'Ioannis'
+        !ioannis.salary := 1900
+        !insert (ioannis, computing) into WorksIn
+    end
+
+    ??2+3*5=3
+
+    assert 2+3 = 6
+    assert 2*2 = 4
+
+    !turbo := new Project
+    !turbo.name := 'Maxi turbo project'
+    !turbo.budget := 5000
+    ! c1 := new Control() between (computing, turbo)
+    ! c1.frequence:=15
+
+    usecasei maria IncreaseSalary
+        !sandrine := new Employee
+        !sandrine.name := 'Sandrine'
+        !sandrine.salary := 2000
+        !insert (sandrine, computing) into WorksIn
+        !sandrine.salary := 2600
+    end
+
+scenario end

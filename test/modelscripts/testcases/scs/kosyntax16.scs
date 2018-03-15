@@ -1,0 +1,16 @@
+scenario model KOSyntax16
+import class model from 'main.cls'
+
+actori toufik:CEO
+actori maria:Secretary
+actori xavier:Manager
+
+
+context
+    !computing := new Department
+    !computing.name := 'Computing departement'
+    !computing.location := 'Los alaambritos'
+    !computing.budget := 10000
+end
+
+!djamel := new Employee

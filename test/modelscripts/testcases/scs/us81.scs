@@ -1,0 +1,39 @@
+scenario model US81
+import class model from 'main.cls'
+import usecase model from 'main.uss'
+
+actori toufik:CEO
+actori maria:Secretary
+actori xavier:Manager
+
+scenario begin
+    usecasei toufik OpenNewDepartment
+        !create computing : Department
+        !computing.name := 'Computing departement'
+        !computing.location := 'Los alaambritos'
+        !computing.budget := 10000
+    end
+
+    usecasei maria RegisterNewEmployee
+        !create djamel : Employee
+        !djamel.name := 'Djamel'
+        !djamel.salary := 2600
+        !insert (djamel, computing) into WorksIn
+    end
+
+    usecasei maria RegisterNewEmployee
+        !create ioannis : Employee
+        !ioannis.name := 'Ioannis'
+        !ioannis.salary := 1900
+        !insert (ioannis, computing) into WorksIn
+    end
+
+    usecasei xavier CreateNewProject
+        !create turbo : Project
+        !turbo.name := 'Maxi turbo project'
+        !turbo.budget := 5000
+        ! c1 := new Control() between (computing, turbo)
+        ! c1.frequence:=15
+    end
+scenario end
+

@@ -41,7 +41,6 @@ __all__=(
     'merge'
 )
 
-# DEBUG=3
 DEBUG=0
 
 class _NumberedFile(object):
@@ -79,12 +78,16 @@ class _SexFile(object):
     def __init__(self,
                  soilNumberedFile,
                  traceNumberedFile,
-                 prequelFileName):
+                 prequelFileName,
+                 sexFileName=None):
         self.soil=soilNumberedFile
         self.trace=traceNumberedFile
         self.prequelFileName=prequelFileName
         self.sexLines=[]
-        self.sexFileName=Environment.getWorkerFileName(
+        if sexFileName is not None:
+            self.sexFileName=sexFileName
+        else:
+            self.sexFileName=Environment.getWorkerFileName(
                 basicFileName=replaceExtension(prequelFileName, '.sex'))
             # (f, sexFileName) = tempfile.mkstemp(suffix='.sex', text=True)
             # os.close(f)
@@ -100,24 +103,26 @@ class _SexFile(object):
                 self.soil.lineno,
                 self.soil.line()
             )
-            # Check that the content of the soil and the trace match
-            # This is not the case for comment as they are removed
-            # in the trace.
+            # Check that the content of the soil and the
+            # trace match This is not the case for comment
+            # as they are removed in the trace.
             if not re.match('^ *--.*', self.soil.line()):
                 if not self.trace.line().endswith(self.soil.line()):
-                    raise ValueError(
-                        'Internal error: lines of soil and trace does not match:\n'
-                        '%05i:%s\n%05i:%s\n' % (
-                            self.soil.lineno,
-                            self.soil.line(),
-                            self.trace.lineno,
-                            self.trace.line()
-                        )
-                    )
+                    print(',,'*10+self.soil.line())
+                    print(',,'*10+self.trace.line())
+                    # raise ValueError(
+                    #     'Internal error: lines of soil and trace does not match:\n'
+                    #     '%05i:%s\n%05i:%s\n' % (
+                    #         self.soil.lineno,
+                    #         self.soil.line(),
+                    #         self.trace.lineno,
+                    #         self.trace.line()
+                    #     )
+                    # )
         else:
             out_line = '|||||:%s' % self.trace.line()
         if DEBUG:
-            print(out_line)
+            print('MGR: '+out_line)
 
         self.sexLines.append(out_line)
         self.sexFileHandler.write(out_line + '\n')
@@ -126,11 +131,11 @@ class _SexFile(object):
         self.sexFileHandler.close()
 
 
-def merge(soilFile, traceFile, prequelFileName):
-    #type: (Text, Text, Optional[Text])->Text
+def merge(soilFile, traceFile, prequelFileName, sexFileName=None):
+    #type: (Text, Text, Optional[Text], Optional[Text])->Text
 
     if DEBUG:
-        print('\nMerging %s and %s\n' % (
+        print('MGR: Merging %s and %s' % (
             os.path.basename(soilFile),
             os.path.basename(traceFile)
         ))
@@ -140,7 +145,8 @@ def merge(soilFile, traceFile, prequelFileName):
     merged=_SexFile(
         soilNumberedFile=soil,
         traceNumberedFile=trace,
-        prequelFileName=prequelFileName)
+        prequelFileName=prequelFileName,
+        sexFileName=sexFileName)
 
 
     prefixSoil=os.path.basename(soilFile)
@@ -152,142 +158,171 @@ def merge(soilFile, traceFile, prequelFileName):
     while trace.nextLine() is not None:
         line=trace.line()
         if DEBUG:
-            print('%5i: %s' % (trace.lineno, line))
+            print('MGR: %5i: %s' % (trace.lineno, line))
         #sex.append(line)
 
         if re.match('^USE version ',line):
             if DEBUG>=2:
-                print(' ' * 10 + 'skip')
+                print('MGR: '+' ' * 10 + 'skip')
             continue
 
-        if re.match('^[^>]*\.soil> open \'.*\' *$',line):
+        if re.match('^[^>]*\.soil> *open \'.*\' *$',line):
             if DEBUG>=2:
-                print(' ' * 10 + 'skip')
+                print('MGR: '+' ' * 10 + 'skip')
             continue
 
-        #---- message for empty files
+        #---- message for empty files -------------------------------------
         #FIXME: check why merging does not work when there is this answer
         #TODO: add a test for it.
         if re.match('^Nothing to do, because file .*contains no data!',line):
             if DEBUG>=2:
-                print(' ' * 10 + 'skip')
+                print('MGR:'+' ' * 10 + 'skip')
             continue
 
-        #---- empty line
+        #---- empty soil line --------------------------------------------------
 
         if re.match('^'+prefixSoil+'> *$',line):
             if DEBUG>=2:
-                print(' '*10+'blank')
+                print('MGR: '+' '*10+'blank')
             merged.out('soil')
             continue
 
-        #---- operation
+        #---- soil operation ---------------------------------------------------
 
         if re.match('^'+prefixSoil+'> *!.*$',line):
             if DEBUG>=2:
-                print(' '*10+'operation')
+                print('MGR: '+' '*10+'operation')
             merged.out('soil')
             continue
 
 
-        #---- comment or skip
+        #---- soil comment -------------------------
 
-        if (re.match('^ *$',line)
-            or re.match('^'+prefixSoil+'> *--.*',line)):
+
+
+
+        if re.match('^'+prefixSoil+'> *--.*',line):
             if not in_check_result and not in_query_result:
                 if DEBUG>=2:
-                    print(' '*10+'comment')
+                    print('MGR: '+' '*10+'comment-')
                 merged.out('soil')
                 continue
             else:
                 if DEBUG>=2:
-                    print(' '*10+'skip')
+                    print('MGR: '+' '*10+'skip')
                 continue
 
+        if re.match('^ *$', line):
+            if DEBUG >= 2:
+                print('MGR: ' + ' ' * 10+'skip')
+            continue
 
-
-        #---- query operation and result
+        #---- query operation ---------------------------------------------
 
         if re.match('^'+prefixSoil+'> *\?\??.*$',line):
             if DEBUG>=2:
-                print(' '*10+'query')
+                print('MGR: '+' '*10+'query')
             merged.out('soil')
             in_query_result=True
             continue
+            
+        #.... query results ...............................................
+
 
         if re.match('^Detailed results of subexpressions:$', line):
             if DEBUG>=2:
-                print(' ' * 10 + 'skip')
+                print('MGR: '+' ' * 10 + 'skip')
             merged.out('trace')
             in_query_result = True
             continue
 
         if re.match('^  [^ ].*$', line) and in_query_result:
             if DEBUG>=2:
-                print(' '*10+'query result')
+                print('MGR: '+' '*10+'query result')
             merged.out('trace')
             continue
 
 
         if re.match('^-> .* : .*$',line):
             if DEBUG>=2:
-                print(' '*10+'query result end')
+                print('MGR: '+' '*10+'query result end')
             in_query_result=False
             merged.out('trace')
             continue
 
 
 
-        #---- check operation and result
+        #---- check operation ---------------------------------------------
 
-        if (re.match('^'+prefixSoil+'> check *.*$', line)):
+        if (re.match('^'+prefixSoil+'> *check *.*$', line)):
             if DEBUG>=2:
-                print(' '*10+'check')
+                print('MGR: '+' '*10+'check')
             in_check_result=True
             merged.out('soil')
             continue
 
+        #.... check results ...............................................
+
         if (re.match('^checking invariant \([0-9]+\) `',line)):
             if DEBUG>=2:
-                print(' ' * 10 + 'check result')
+                print('MGR: '+' ' * 10 + 'check result')
             in_check_result=True
             merged.out('trace')
             continue
 
         if re.match('^checked \d+ invariants in .*$',line):
             if DEBUG>=2:
-                print(' '*10+'check result end')
+                print('MGR: '+' '*10+'check result end')
             in_check_result=False
             merged.out('trace')
             continue
 
-        if in_check_result:
+        if (in_check_result
+            and not (re.match('^(Error|Warning|<input>)', line))):
             if DEBUG>=2:
-                print(' '*10+'check result')
+                print('MGR: '+' '*10+'check result')
             merged.out('trace')
             continue
 
-
-        #---- errors / warning
-
-        if re.match('^(Error|Warning|<input>)(?P<error>.*)$', line):
-            if DEBUG>=2:
-                print(' ' * 10 + 'ERROR')
-            merged.out('trace')
-            continue
+        #---- quit operation ----------------------------------------------
 
         if re.match('^.*\.soil> *quit *$', line):
             if DEBUG>=2:
-                print('')
+                print('MGR:')
             break
 
+        #---- errors / warning --------------------------------------------
+
+        if re.match('^(Error|Warning|<input>):?(?P<issue>.*)$', line):
+            if DEBUG>=2:
+                print('MGR: '+' ' * 10 + 'ERROR')
+            merged.out('trace')
+            continue
 
 
+        #---- unexpected command ------------------------------------------
+        # an error will be reported so just ignore it
+        if re.match('^'+prefixSoil+'>.*$',line):
+            if DEBUG>=2:
+                print('MGR: ' + ' ' * 10 + 'Input error -> let it be')
+            merged.out('soil')
 
-        raise ValueError('Unexpected line (#%i) in use trace:\n"%s"' %(
-            trace.lineno,
-            trace.line()
-        ))
+            # raise ValueError(
+            #     'Unexpected input at line #%i' % (
+            #         trace.lineno,
+            #     ))
+
+        #---- unexpected ouput --------------------------------------------
+        if re.match('^.*$',line):
+            if DEBUG>=2:
+                print('..'*100+line)
+                print('MGR: ' + ' ' * 10 + 'Unexpected output line')
+            merged.out('trace')
+
+        # raise ValueError('Unexpected output from use at line #%i: "%s"' %(
+        #     trace.lineno,
+        #     trace.line()
+        # ))
 
     merged.close()
     return merged.sexFileName

@@ -1,0 +1,10 @@
+scenario model Query04
+import class model from 'main.cls'
+
+?? Set{2,3,5}->select(x|x>=3)
+? Set{2,3,5}->select(x|x>=3)
+? 3+2
+? 5*6+3
+
+
+

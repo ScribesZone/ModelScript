@@ -47,32 +47,32 @@ def test_USEEngine_executeSoilFile():
         soilfile = os.path.join(TEST_CASES_DIRECTORY,
                             'useengine', sf)
 
-        print('=== asTrace %s '%soilfile)
-        USEEngine.executeSoilFileAsTrace(usefile, soilfile, prequelFileName=usefile)
-        print('= '+sf+'='*60)
-        print(USEEngine.outAndErr)
-        assert USEEngine.commandExitCode == 0
+        # print('=== asTrace %s '%soilfile)
+        # USEEngine.executeSoilFileAsTrace(usefile, soilfile, prequelFileName=usefile)
+        # print('= '+sf+'='*60)
+        # print(USEEngine.outAndErr)
+        # assert USEEngine.commandExitCode == 0
 
         print('=== asSex %s '%soilfile)
         USEEngine.executeSoilFileAsSex(usefile, soilfile, prequelFileName=usefile)
         print('= '+sf+'='*60)
         print(USEEngine.outAndErr)
         assert USEEngine.commandExitCode == 0
-
-def test_USEEngine_executeSoilFileAsTrace_KO():
-    usefile = os.path.join(TEST_CASES_DIRECTORY,
-                        'useengine', 'main.cls')
-    for sf in ['Demo666.soil','Demo666.1.soil'
-        , 'Demo666.2.soil','Demo666.3.soil','Demo666.4.soil']:
-        soilfile = os.path.join(TEST_CASES_DIRECTORY,
-                            'useengine', '_negative', sf)
-        USEEngine.executeSoilFileAsTrace(usefile, soilfile)
-        print('= '+sf+'='*60)
-        print(USEEngine.outAndErr)
-        assert USEEngine.commandExitCode == 0
-        assert (
-            'Error: ' in USEEngine.outAndErr
-            or '<input>:1:' in USEEngine.outAndErr )
+#
+# def test_USEEngine_executeSoilFileAsTrace_KO():
+#     usefile = os.path.join(TEST_CASES_DIRECTORY,
+#                         'useengine', 'main.cls')
+#     for sf in ['Demo666.soil','Demo666.1.soil'
+#         , 'Demo666.2.soil','Demo666.3.soil','Demo666.4.soil']:
+#         soilfile = os.path.join(TEST_CASES_DIRECTORY,
+#                             'useengine', '_negative', sf)
+#         USEEngine.executeSoilFileAsTrace(usefile, soilfile)
+#         print('= '+sf+'='*60)
+#         print(USEEngine.outAndErr)
+#         assert USEEngine.commandExitCode == 0
+#         assert (
+#             'Error: ' in USEEngine.outAndErr
+#             or '<input>:1:' in USEEngine.outAndErr )
 
 def test_USEEngine_noUSEBinary():
     tmp_USE_OCL_COMMAND= modelscripts.use.engine.USE_OCL_COMMAND
