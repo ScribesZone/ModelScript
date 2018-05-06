@@ -1,0 +1,45 @@
+state model
+
+assert Department.MoreEmployeesThanProjects OK
+assert Employee.MoreProjectsHigherSalary OK
+assert Project.BudgetWithinDepartmentBudget OK
+assert Project.EmployeesInControllingDepartment OK
+
+
+| The site could be temporarily unavailable or too busy. Try again in
+| a few moments. If you are unable to load any pages, check your
+| computer’s network connection. If your computer or network is
+| protected by a firewall or proxy, make sure that Firefox is permitte
+| to access the Web.
+computing is a Department
+computing.name is 'Computing departement'
+computing.location is 'Los alaambritos'
+computing.budget is 10000
+
+computing is a Department:
+    name is 'Computing departement'
+    location is 'Los alaambritos'
+    budget is 10000
+
+| The site could be temporarily unavailable or too busy.
+djamel is a Employee
+djamel.name is 'Djamel'
+djamel.salary is 2600
+
+| If you are unable to load any pages, check your computer’s network connection. If your computer or network is
+ioannis is a Employee
+ioannis.name is 'Ioannis'
+ioannis.salary is 1900
+
+| protected by a firewall or proxy, make sure that Firefox is permitte
+| to access the Web.
+
+djamel WorksIn computing
+ioannis WorksIn computing
+
+turbo is a Project
+turbo.name is 'Maxi turbo project'
+turbo.budget is 5000
+
+computing Controls turbo
+ioannis WorksIn computing
