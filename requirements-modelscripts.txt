@@ -1,2 +1,4 @@
 typing
 nose
+textX
+ipython
