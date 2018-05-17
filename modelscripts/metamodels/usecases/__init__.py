@@ -40,8 +40,9 @@ class UsecaseModel(Model):
         self.system=System(self)
         """
         The system of the usecase model.
-        It is created automatically during initialization. This avoid 
-        to have None and then None exception in case of unfinished parsing.
+        It is created automatically during initialization.
+        This avoid to have None and then None exception 
+        in case of unfinished parsing.
         The value of the system is set later.
         Use 'isSystemDefined' to check if the system has been
         defined in the model.
@@ -104,7 +105,11 @@ class System(SourceModelElement):
         self.usecaseNamed = collections.OrderedDict()
         # type: Dict[str,Usecase]
 
-    def setInfo(self, name, code=None, lineNo=None,
+        self.impliciteDeclaration = True
+
+    def setInfo(self, name,
+                implicitDeclaration=True,
+                code=None, lineNo=None,
                 docComment=None, eolComment=None
                 ):
         super(System, self).__init__(
@@ -113,6 +118,8 @@ class System(SourceModelElement):
             code=code,
             lineNo=lineNo,
             docComment=docComment, eolComment=eolComment)
+
+        self.implicitDeclaration=implicitDeclaration
 
     @property
     def usecases(self):
@@ -143,6 +150,8 @@ class Actor(SourceModelElement, Subject):
                  usecaseModel,
                  name,
                  kind='human',
+                 implicitDeclaration=False,
+                 astnode=None,
                  code=None,
                  lineNo=None,
                  docComment=None,
@@ -150,15 +159,13 @@ class Actor(SourceModelElement, Subject):
         SourceModelElement.__init__(self,
             model=usecaseModel,
             name=name,
-            code=code,
-            lineNo=lineNo,
-            docComment=docComment,
-            eolComment=eolComment)
+            astnode=astnode)
 
         self.usecaseModel = usecaseModel
         self.usecaseModel.actorNamed[name]=self
-        self.kind=kind # system|human
-        self.superActors=[]
+        self.kind=kind # system|human  human is default
+        self.implicitDeclaration=implicitDeclaration
+        self.superActors=[]  # strings during parsing
         self.subActors=[]
         self.usecases=[]
 
@@ -197,7 +204,9 @@ class Usecase(SourceModelElement, Subject):
     def __init__(self,
                  system,
                  name,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
+                 implicitDeclaration=False,
+                 code=None, lineNo=None,
+                 docComment=None, eolComment=None):
 
         SourceModelElement.__init__(self,
             model=system.model,
@@ -208,6 +217,7 @@ class Usecase(SourceModelElement, Subject):
             eolComment=eolComment)
         self.system = system
         self.system.usecaseNamed[name]=self
+        self.implicitDeclaration=implicitDeclaration
         self.actors=[]
 
     @property
