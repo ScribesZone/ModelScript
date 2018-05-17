@@ -1,0 +1,7 @@
+usecase model US4
+import usecase model from 'uc10.ucs'
+
+system UC4
+
+usecase  SortirLivre
+usecase RentrerLivre

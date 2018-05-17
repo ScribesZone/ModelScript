@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+python \
+    $THISDIR/../modelscripts/scripts/base/grammars.py \
+    $THISDIR/../modelscripts/scripts/$1/parser \
+    $1 \
+    $2

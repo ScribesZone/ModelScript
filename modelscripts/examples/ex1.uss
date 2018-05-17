@@ -1,0 +1,98 @@
+# implemented
+#   interactions
+#   human|system actor
+#   usecase
+#   documentation for model, actor, usecase
+# TODO
+#   nested struture and details
+
+usecase model
+
+
+interactions:
+    Employe Inscrire
+    Employe RetirerUnItem
+    Employe PrendreUnItem
+    Internaute RetirerUnItem
+    Internaute ConsulterLesItems
+
+
+human actor Employee
+
+
+
+
+
+usecase Prendre:
+    | Prendre is just about ...
+    actors
+        Employe
+        Internaute
+    permissions
+        can create, read Emprunt
+        can update Emprunt.date
+        can CRUD Prolongation.dateLimite
+        can read Prolongation
+        Emprunt : create, read
+        Emprunt.date : update
+        Emprunt.dateLimite: read-
+        Prolongation : CRUD
+        EstEmprunteA : create, read, update
+
+usecase SInscrire
+    priority: must
+    risk: 2
+    begin
+        --
+    end
+    pre
+    post
+
+    permission
+
+
+
+
+usecase RetirerUnItem
+
+    priority: must
+
+    interface: IHM
+
+    interface: CLI
+
+    interface: API
+    interface: WS
+
+usecase PrendreUnItem
+    priority should
+
+usecase DemanderUneProlongation
+
+actor Bibliothecaire:
+    performs
+        VerifierUnItem
+        TraiterUneProlongation
+
+actor Gerer < Bibliothecaire:
+
+
+
+actor Bibliothecaire
+    permissions
+        Emprunt : create, read
+        Emprunt.date : update
+        Emprunt.dateLimite: read-
+        Prolongation : CRUD
+        EstEmprunteA : create, read, update
+
+usecase Emprunter:
+    actor
+    permissions
+        can  create, read Emprunt
+        Emprunt.date : update
+        can read Emprunt.dateLimite
+        can CRUD Prolongation
+        EstEmprunteA : create, read, update
+
+usecase Emprunter

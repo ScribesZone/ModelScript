@@ -34,9 +34,3 @@ domain nombre
         | `référence` `pendante`
 
 
-domain glossaire
-
-    référence:
-        | `une` `référence` est un peu plus que
-        | `deux` mot. Attention à l'`indentation`
-        | qui doit être toujours de `huit` espaces.

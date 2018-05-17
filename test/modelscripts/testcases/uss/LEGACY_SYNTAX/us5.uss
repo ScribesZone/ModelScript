@@ -1,0 +1,7 @@
+usecase model US5
+
+
+system CyberBibliotheque
+
+actor Employe
+actor Bibliothequaire

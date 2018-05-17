@@ -14,6 +14,7 @@ from test.modelscripts.issues import (
 
 
 EXPECTED_ISSUES={
+    'a.uss':   {F: 0, E: 0, W: 1, I: 0, H: 0},
     'us1.uss': {F: 1, E: 0, W: 1, I: 0, H: 0},
     'us2.uss': {F: 0, E: 0, W: 2, I: 0, H: 0},
     'us3.uss': {F: 0, E: 0, W: 4, I: 0, H: 0},

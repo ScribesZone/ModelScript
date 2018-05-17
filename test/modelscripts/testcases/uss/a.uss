@@ -1,12 +1,11 @@
-usecase model AE1
+usecase model A
 
-system AE1
+system A
 
 actor M
     usecases
         U1
         U2
-        U4
 
 actor N
     usecases

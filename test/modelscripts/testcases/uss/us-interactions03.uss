@@ -1,0 +1,15 @@
+usecase model
+
+
+interactions
+    Employe Inscrire
+    Employe RetirerUnItem
+    Employe PrendreUnItem
+    Internaute RetirerUnItem
+    Internaute ConsulterLesItems
+
+actor Employe
+actor Nobody
+
+usecase DoNothing
+

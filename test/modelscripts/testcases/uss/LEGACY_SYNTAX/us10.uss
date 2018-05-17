@@ -1,0 +1,10 @@
+usecase model US10
+
+
+system CyberBibliotheque
+
+actor Employe
+actor Bibliothequaire
+usecase  SortirLivre
+usecase RentrerLivre
+

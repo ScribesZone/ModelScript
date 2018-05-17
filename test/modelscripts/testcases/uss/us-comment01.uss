@@ -1,0 +1,17 @@
+# this is a useless comment
+usecase model
+    | some doc comment
+    | with various lines
+    | and more ...
+    # this is yet another useless comment
+  # but with two lines
+
+human actor Employee
+    | some doc comment
+    | with various lines
+    | and more ...
+
+usecase IncreaseSalary
+    | some doc comment
+    | with various lines
+    | and more ...

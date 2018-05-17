@@ -1,0 +1,4 @@
+usecase model
+    | some doc comment
+    | with various lines
+    | and more ...

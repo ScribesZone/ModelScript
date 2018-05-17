@@ -1,4 +1,12 @@
 # coding=utf-8
+"""
+Initialize the megamodel with
+- all metamodels
+- all scripts (parsers/printers/plantuml/...)
+- the configuration
+
+This module is called by the environant
+"""
 
 import modelscripts.metamodels
 import modelscripts.scripts

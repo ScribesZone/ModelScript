@@ -5,7 +5,10 @@ import argparse
 import traceback
 
 def setup():
-    #------ add modescribes to the path -------------------
+    """
+    Add the modelscripts home to python PATH.
+    """
+    #------ add modescripts to the path -------------------
     modelscribes_home=os.path.realpath(
         os.path.join(
             os.path.dirname(__file__),
@@ -13,14 +16,18 @@ def setup():
     sys.path.insert(0,modelscribes_home)
     #------------------------------------------------------
 
+# adjust the PATH
 setup()
 from typing import List, Text
-import modelscripts
+
+# initialize the megamodel with metamodels and scripts
+import modelscripts  # DON'T REMOVE
 
 from modelscripts.base.files import (
     extension,
     replaceExtension
 )
+
 from modelscripts.interfaces.environment import Environment
 from modelscripts.locallibs.termcolor import cprint
 from modelscripts.scripts.base.printers import ModelPrinterConfig
@@ -30,6 +37,11 @@ from modelscripts.use.engine import (
     USEEngine
 )
 from modelscripts.interfaces.environment import Environment
+
+
+
+
+#-------------- Command Line Interface ------------------------------------
 
 OPTIONS=[
     ('Dpre','preprocessorPrint'),

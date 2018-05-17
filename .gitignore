@@ -1,3 +1,9 @@
+build/
+*.tx.dot
+*.tx.dot.png
+
+
+
 _ARCHIVES/
 .venv/
 .mdls/

@@ -40,9 +40,9 @@ class UsecaseModel(Model):
         self.system=System(self)
         """
         The system of the usecase model.
-        It is created automatically now. This avoid to have None
-        and then None exception in case of unfinished parsing.
-        The value of the system are set later.
+        It is created automatically during initialization. This avoid 
+        to have None and then None exception in case of unfinished parsing.
+        The value of the system is set later.
         Use 'isSystemDefined' to check if the system has been
         defined in the model.
         """

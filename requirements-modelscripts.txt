@@ -1,4 +1,4 @@
 typing
 nose
-textX
-ipython
+textX==1.6.1
+ipython==5.0

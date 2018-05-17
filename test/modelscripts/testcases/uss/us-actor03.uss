@@ -1,0 +1,7 @@
+usecase model
+
+human actor Employee
+
+system actor CyberTFR
+
+actor Manager

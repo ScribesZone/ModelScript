@@ -1,0 +1,6 @@
+usecase model
+
+usecase RentACar
+usecase RentTwoCar
+
+usecase FindADirection

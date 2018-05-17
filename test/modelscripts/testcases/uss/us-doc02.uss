@@ -1,0 +1,10 @@
+usecase model
+    | some doc comment
+    | with various lines
+    | and more ...
+
+human actor Employee
+    | some doc comment
+    | with various lines
+    | and more ...
+

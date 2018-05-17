@@ -16,9 +16,6 @@ class Config(object):
     realtimeUSE=0
     realtimeCheckers=0
 
-
-
-
 modules={
     'USE':'modelscripts.use.engine',
     'MGR':'modelscripts.use.engine.merger',

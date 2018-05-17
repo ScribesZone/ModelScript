@@ -1,0 +1,6 @@
+usecase model US8
+
+system UC8
+
+usecase  SortirLivre
+usecase RentrerLivre
