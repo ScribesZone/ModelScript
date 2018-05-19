@@ -33,8 +33,15 @@ class SourceElement(object):
     Element of a source file.
     """
     __metaclass__ = ABCMeta
-    def __init__(self, name=None, lineNo=None, code=None, docComment=None, eolComment=None):
+    def __init__(self,
+                 name=None,
+                 astNode=None,
+                 lineNo=None,
+                 code=None,
+                 docComment=None,
+                 eolComment=None):
         self.name = name
+        self.astnode=astNode
         self.lineNo = lineNo
         self.code=code
         self.docComment = docComment
