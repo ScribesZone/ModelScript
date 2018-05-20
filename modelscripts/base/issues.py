@@ -13,12 +13,9 @@ from modelscripts.base.annotations import (
 from modelscripts.base.locations import (
     SourceLocation,
 )
-
-
-from modelscripts.config import Config
-
-#TODO:4 it should be better to remove the printer dependency
+# TODO:4 it should be better to remove the printer dependency
 from modelscripts.base.styles import Styles
+from modelscripts.config import Config
 
 DEBUG=1
 
@@ -81,14 +78,16 @@ class Issue(object):
     The class LocalizedSourceIssue must be used instead
     if the error line is known.
     """
-    def __init__(self, origin, level, message):
-        #type: (WithIssueList, Level, 'Text') -> None
+    def __init__(self, origin, level, message, code=None):
+        #type: (WithIssueList, Level, 'Text', Optional['Text']) -> None
         """
         Create a source error and add it to the given SourceFile.
         Raise FatalError if the error is fatal and processing could not
         continue.
         """
         assert message is not None and message!=''
+
+        self.code=code
 
         self.origin = origin  #type: WithIssueList
         """ A source file or a model. """
@@ -101,8 +100,9 @@ class Issue(object):
         self.origin._issueBox._add(self)
 
         if DEBUG>=1 or Config.realtimeIssuePrint>=1:
-            print('ISS: ****NEW %s IN %s **** -> %s'  % (
+            print('ISS: ****NEW %s%s IN %s **** -> %s'  % (
                 type(self).__name__,
+                '' if self.code is None else ':'+self.code,
                 self.origin._issueBox.label,
                 unicode(self)
             ))
@@ -169,6 +169,7 @@ class LocalizedSourceIssue(Issue):
                  level,
                  message,
                  line,
+                 code=None,
                  column=None,
                  fileName=None):
         #type: ('SourceFile', Level, Text, int, Optional[int], Optional[Text]) -> None
@@ -255,6 +256,7 @@ class LocalizedSourceIssue(Issue):
         # """
 
         super(LocalizedSourceIssue, self).__init__(
+            code=code,
             origin=sourceFile,
             level=level,
             message=message)
@@ -524,9 +526,6 @@ class IssueBox(object):
 
     def __repr__(self):
         return self.__str__()
-
-
-
 
 
 class WithIssueList(object):
