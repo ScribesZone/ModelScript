@@ -1,8 +1,20 @@
 #!/usr/bin/env bash
-
+#
+# Debug script parsers
+#
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-python \
-    $THISDIR/../modelscripts/scripts/base/grammars.py \
-    $THISDIR/../modelscripts/scripts/$1/parser \
-    $1 \
-    $2
+
+PYTHONPATH=$THISDIR/..
+PYTHON_SCRIPT=$THISDIR/../modelscripts/base/grammars.py
+GRAMMAR_FILE=$THISDIR/../modelscripts/scripts/$1/parser/grammar.tx
+if [ "$2" == "" ]
+then
+    SCRIPT_FILE=""
+else
+    SCRIPT_FILE=$THISDIR/../test/modelscripts/testcases/$2
+fi
+PYTHONPATH=$PYTHONPATH \
+    python \
+        $PYTHON_SCRIPT \
+        $GRAMMAR_FILE \
+        $SCRIPT_FILE
