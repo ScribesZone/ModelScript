@@ -19,6 +19,11 @@ class BracketedScript(object):
     OPENING_BRACKET='{'
     CLOSING_BRACKET='}'
     EOL=';'
+    IS_BLANK_LINE='^ *(#.*)?$'
+    IS_DOC_LINE_REGEX='^ *\|'
+    CLOSING_DOC_LINE='|'
+    DOC_LINE_CONTENT=' *\| ?(?P<content>.*)\|;(};)*$'
+
 
     def __init__(self, file, targetFilename=None):
         self.file=file
@@ -29,24 +34,34 @@ class BracketedScript(object):
             else targetFilename
         )
 
-    def _isBlankLine(self, index):
+    def _is_blank_line(self, index):
         """ Check if the line is blank or a comment line """
-        m=re.match('^ *(#.*)?$', self.lines[index])
+        m=re.match(self.IS_BLANK_LINE, self.lines[index])
         return m is not None
 
-    def _isDocLine(self, index):
-        m=re.match('^ *\|', self.lines[index])
+    def _is_doc_line(self, index):
+        m=re.match(self.IS_DOC_LINE_REGEX, self.lines[index])
         return m is not None
 
-    def _nbSpaces(self, index):
+    def _terminate_doc_line(self, docLine):
+        return  docLine +self.CLOSING_DOC_LINE
+
+
+    @classmethod
+    def extractDocLineText(cls, docLine):
+        m = re.match(cls.DOC_LINE_CONTENT, docLine)
+        assert m is not None
+        return m.group('content')
+
+    def _nb_spaces(self, index):
         m=re.match(' *', self.lines[index])
         if m:
             return len(m.group(0))
         else:
             return 0
 
-    def _lineIndent(self, index):
-        blanks=self._nbSpaces(index)
+    def _line_indent(self, index):
+        blanks=self._nb_spaces(index)
         if blanks % self.SPACE_INDENT==0:
             return blanks // self.SPACE_INDENT
         else:
@@ -72,11 +87,13 @@ class BracketedScript(object):
         lnbl_indent=0
         # take all lines + a extra virtual line to close everything
         for (index, line) in enumerate(self.lines):
-            if not self._isBlankLine(index):
-                indent=self._lineIndent(index)
+            if not self._is_blank_line(index):
+                indent=self._line_indent(index)
                 delta=indent-lnbl_indent
-                if self._isDocLine(index):
-                    self.bracketedLines[index] += '|'
+                if self._is_doc_line(index):
+                    self.bracketedLines[index]=(
+                        self._terminate_doc_line(self.bracketedLines[index])
+                    )
                 if delta>1:
                     # this will never happened for the last line
                     raise SyntaxError('Wrong indentation: "%s"'
