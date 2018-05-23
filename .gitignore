@@ -1,11 +1,25 @@
 build/
 *.tx.dot
 *.tx.dot.png
+
 *.glsb
+
 *.ussb
+
 *.clsb
+
+*.mesb
+*.mes.dot
+*.mes.dot.png
+
+*.obsb
+*.obs.dot
+*.obs.dot.png
+
 *.pesb
+
 *.stsb
+
 *.scsb
 
 
