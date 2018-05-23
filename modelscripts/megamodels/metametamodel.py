@@ -7,7 +7,7 @@ import importlib
 from typing import List
 from modelscripts.megamodels import Megamodel
 
-DEBUG=1
+DEBUG=0
 
 #TODO: merge metamodelelements in the megamodel
 

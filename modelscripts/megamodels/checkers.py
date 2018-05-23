@@ -12,12 +12,13 @@ from modelscripts.megamodels.issues import (
     ModelElementIssue
 )
 
-DEBUG=3
+DEBUG=0
 
 class CheckOutput(object):
     def __init__(self, message, locationElement=None):
         self.message=message
         self.locationElement=locationElement
+
 
 class CheckList(object):
 
@@ -51,9 +52,15 @@ class CheckList(object):
                     ','.join([c.name for c in checkers])))
             for checker in checkers:
                 check_output=checker.doCheck(element)
+                metaclasses_part='_'.join(
+                    [mc.__name__ for mc in checker.metaclasses])
+                code='cck.%s.%s' % (
+                    metaclasses_part,
+                    checker.__class__.__name__)
                 if check_output is not None:
                     ModelElementIssue(
                         modelElement=element,
+                        code=code,
                         level=checker.level,
                         message=check_output.message,
                         locationElement=
@@ -85,6 +92,14 @@ class Checker(object):
                 self.name,
                 type(e).__name__
             ))
+
+
+class PassChecker(Checker):
+    def __init__(self, **params):
+        Checker.__init__(self, **params)
+
+    def doCheck(self, e):
+        pass
 
 
 class NamingChecker(Checker):

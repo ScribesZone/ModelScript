@@ -28,8 +28,9 @@ __all__=(
     'Model',
     'ModelElement',
 )
-
 DEBUG=1
+
+
 
 class Model(MegamodelElement, ModelElement, WithIssueModel):
     """
@@ -40,8 +41,8 @@ class Model(MegamodelElement, ModelElement, WithIssueModel):
     - possibly a source file if the model is the result
       of parsing this file,
     - a metamodel
-    - an issue box. This issue box stores "semantical"
-      errors found on the model while the source
+    - an issue box. This issue box stores "semanctical"
+      errors found on the model, while the source
       file issuebox stores "syntactical" errors.
       The _issueBox has as a parent the sourceFile'
       issue box if any.
@@ -75,6 +76,10 @@ class Model(MegamodelElement, ModelElement, WithIssueModel):
         # this attribute
         # is set by parseToFillImportBox
         # Could be '' if no kind specified
+
+        self.status='' #type: Text
+        # Set later
+        # a keyword like "draft" | "" | "consolidated"
 
         # FIXME: add model dependencies.
         # FIXME first check the code below (outDep, etc.)

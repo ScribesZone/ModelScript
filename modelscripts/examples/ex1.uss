@@ -4,7 +4,7 @@
 #   usecase
 #   documentation for model, actor, usecase
 # TODO
-#   nested struture and details
+#   nested struture and usecase/actor details
 
 usecase model
 

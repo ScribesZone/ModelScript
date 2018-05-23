@@ -4,14 +4,14 @@
 
 import logging
 
-from typing import Union, Text, Optional
+from typing import Union, Optional
 
-from modelscripts.base.styles import Styles
-from modelscripts.scripts.base.printers import (
+from modelscripts.base.modelprinters import (
     ModelPrinter,
     ModelSourcePrinter,
     ModelPrinterConfig,
 )
+from modelscripts.base.styles import Styles
 from modelscripts.metamodels.scenarios import (
     ScenarioModel,
     operations,
@@ -21,8 +21,8 @@ from modelscripts.metamodels.scenarios import (
 from modelscripts.metamodels.scenarios.evaluations import (
     ScenarioEvaluation,
 )
-from modelscripts.metamodels.scenarios.evaluations.operations import InvariantValidation, CardinalityViolation, AssertQueryEvaluation
-
+from modelscripts.metamodels.scenarios.evaluations.operations import \
+    InvariantValidation, CardinalityViolation, AssertQueryEvaluation
 
 __all__ =(
     'ScenarioModelPrinter',

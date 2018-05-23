@@ -9,14 +9,16 @@ from modelscripts.base.issues import (
     WithIssueList,
     IssueBox
 )
+import re
 from modelscripts.base.annotations import (
     Annotations
 )
-DEBUG=2
+DEBUG=0
 
 #TODO:2 The type ModelElement should be better defined
 #       Currently classes inherits from SourceElements which
 #       is not really appropriate.
+
 
 
 class ModelElementIssue(Issue):
@@ -25,6 +27,7 @@ class ModelElementIssue(Issue):
                  modelElement,
                  level,
                  message,
+                 code=None,
                  locationElement=None):
         #type: ('ModelElement', Level, Text, 'ModelElement') -> None
         self.modelElement=modelElement #type: 'ModelElement'
@@ -43,6 +46,7 @@ class ModelElementIssue(Issue):
                 print('ISM: Unlocated Model Issue %s' % message)
             issue=Issue(
                 origin=modelElement.model,
+                code=code,
                 level=level,
                 message=message)
         else:
@@ -51,6 +55,7 @@ class ModelElementIssue(Issue):
                     line_no,
                     message))
             issue=LocalizedSourceIssue(
+                code=code,
                 sourceFile=self.locationElement.model.source,
                 level=level,
                 message=message,

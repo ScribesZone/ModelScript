@@ -1,6 +1,5 @@
 # coding=utf-8
 
-print('AA'*100)
 levels={
     'SXP':0,
     'USE':0,

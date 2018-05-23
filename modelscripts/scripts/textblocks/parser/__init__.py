@@ -1,4 +1,58 @@
 # # coding=utf-8
+
+from typing import Any, Optional
+
+from modelscripts.metamodels.textblocks import (
+    TextBlock,
+    TextLine,
+    PlainText,
+    TextReference
+)
+#  import modelscripts.metamodels.textblocks in script due to cycle
+from modelscripts.metamodels.glossaries import GlossaryModel
+
+def astTextBlockToTextBlock(container, astTextBlock, glossary=None):
+    #type: ('SourceModelElement', Optional['grammar.TextBlock'], Optional[GlossaryModel]) -> Optional[TextBlock]
+    if astTextBlock is None:
+        return None
+    else:
+
+        text_block=TextBlock(
+            container=container,
+            astTextBlock=astTextBlock,
+            glossary=None)
+        for ast_text_line in astTextBlock.textLines:
+            text_line=TextLine(text_block, ast_text_line)
+            for ast_text_token in ast_text_line.textTokens:
+                type_ =ast_text_token.__class__.__name__
+                if type_=='PlainText':
+                    PlainText(
+                        textLine=text_line,
+                        text=ast_text_token.text,
+                        astPlainText=ast_text_token)
+                elif type_=='TextReference':
+                    TextReference(
+                        textLine=text_line,
+                        text=ast_text_token.text,
+                        astTextReference=ast_text_token)
+                else:
+                    raise NotImplementedError(
+                        'Type %s not supported' % type_)
+
+            # line_string=BracketedScript.extractDocLineText(ast_doc_line.text)
+            # text_line=TextLine(
+            #     text_block,
+            #     astNode=ast_doc_line,
+            #     stringLine=line_string)
+        return text_block
+
+
+
+
+
+
+
+
 # """
 # Parser for text blocks.
 #
@@ -14,7 +68,7 @@
 #
 # from modelscripts.metamodels.textblocks import (
 #     TextBlock,
-#     Line,
+#     TextLine,
 #     BrokenReference,
 #     Occurrence,
 #     PlainToken
@@ -73,7 +127,7 @@
 #
 #         for (line_no, line) in self.linePairs:
 #             (segments, errors)=segmentsAndErrors(line)
-#             line_model=Line(
+#             line_model=TextLine(
 #                 self.model,
 #                 lineNo=line_no
 #             )

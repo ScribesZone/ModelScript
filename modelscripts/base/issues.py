@@ -172,7 +172,7 @@ class LocalizedSourceIssue(Issue):
                  code=None,
                  column=None,
                  fileName=None):
-        #type: ('SourceFile', Level, Text, int, Optional[int], Optional[Text]) -> None
+        #type: ('SourceFile', Level, Text, int, Optional[Text], Optional[int], Optional[Text]) -> None
         """
         Create a localized source file and add it to
         the given source file.

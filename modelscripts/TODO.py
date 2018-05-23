@@ -1,6 +1,8 @@
 # coding=utf-8
 
-# TODO:0 create a scenario for valence/cci/pi
+
+# TODO:uss:1 Create the "system" with appropriate name
+
 # TODO:0 check koquery90 with assert/query mixture at top
 # TODO:0 check ? vs ?? + KOQuery03
 # TODO:0 check koinv04: display of cls,

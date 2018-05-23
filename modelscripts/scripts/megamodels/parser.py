@@ -43,6 +43,22 @@ ModelSourceFile='ModelSourceFile'
 
 DEBUG=0
 
+ISSUES={
+    'IMPORT_EXCEPTION':'mgm.env.Import.Exception',
+    'IMPORT_ALLOWED':'mgm.sem.Import.Allowed',
+    'IMPORT_EXTENSION':'mgm.sem.Import.Extension',
+    'IMPORT_NO_FILE':'mgm.sem.Import.NotFound',
+    'DEFINITION_EXCEPTION':'mgm.sem.Definition.Exception',
+    'DEFINITION_KIND':'mgm.sem.Definition.Kind',
+    'DEFINITION_CASE':'mgm.sem.Definition.Case',
+    'DEFINITION_NAMING':'mgm.sem.Definition.Naming',
+    'BOX_TWICE':'mgm.sem.Box.Twice',
+    'DEFINITION_UNAMED':'mgm.sem.Definition.Unamed',
+}
+
+def icode(ilabel):
+    return ISSUES[ilabel]
+
 # TODO: do nested parsing of import to get better errors
 
 class MegamodelStatement(object):
@@ -183,6 +199,7 @@ def _matchModelImport(
                     label=metamodel_label) #type: Metamodel
             except ValueError as e:
                 LocalizedSourceIssue(
+                    code=icode('IMPORT_EXCEPTION'),
                     sourceFile=modelSourceFile,
                     line=lineNo,
                     level=Levels.Fatal, # could be error with some work
@@ -193,6 +210,7 @@ def _matchModelImport(
             # noinspection PyUnboundLocalVariable
             if metamodel not in target_mms:
                 LocalizedSourceIssue(
+                    code=icode('IMPORT_ALLOWED'),
                     sourceFile=modelSourceFile,
                     line=lineNo,
                     level=Levels.Fatal, # could be error with some work
@@ -209,6 +227,7 @@ def _matchModelImport(
             file_extension=os.path.splitext(abs_target_filename)[1]
             if file_extension != metamodel.extension:
                 LocalizedSourceIssue(
+                    code=icode('IMPORT_EXTENSION'),
                     sourceFile=modelSourceFile,
                     line=lineNo,
                     level=Levels.Fatal, # could be error with some work
@@ -217,6 +236,7 @@ def _matchModelImport(
                             metamodel.extension )))
             if not os.path.isfile(abs_target_filename):
                 LocalizedSourceIssue(
+                    code=icode('IMPORT_NO_FILE'),
                     sourceFile=modelSourceFile,
                     line=lineNo,
                     level=Levels.Fatal, # could be error with some work
@@ -323,6 +343,7 @@ def _matchModelDefinition(
                 label=metamodel_label) #type: Metamodel
         except ValueError as e:
             LocalizedSourceIssue(
+                code=icode('DEFINITION_EXCEPTION'),
                 sourceFile=modelSourceFile,
                 line=lineNo,
                 level=Levels.Fatal, # could be error with some work
@@ -335,6 +356,7 @@ def _matchModelDefinition(
         # noinspection PyUnboundLocalVariable
         if model_kind not in metamodel.modelKinds:
             LocalizedSourceIssue(
+                code=icode('DEFINITION_EXCEPTION'),
                 sourceFile=modelSourceFile,
                 line=lineNo,
                 level=Levels.Fatal, # could be error with some work
@@ -361,6 +383,7 @@ def _matchModelDefinition(
         name=m['name']
         if not noSymbolChecking and not(Symbol.is_CamlCase(name)):
             LocalizedSourceIssue(
+                code=icode('DEFINITION_CASE'),
                 sourceFile=modelSourceFile,
                 line=lineNo,
                 level=Levels.Error,
@@ -371,6 +394,7 @@ def _matchModelDefinition(
         if name.lower() != modelSourceFile.name.lower():
             if not recognizeUSEOCLNativeModelDefinition:
                 LocalizedSourceIssue(
+                    code=icode('DEFINITION_NAMING'),
                     sourceFile=modelSourceFile,
                     line=lineNo,
                     level=Levels.Error,
@@ -432,6 +456,7 @@ def parseToFillImportBox(modelSource,
             if md is not None:
                 if modelSource.importBox.modelName is not None:
                     LocalizedSourceIssue(
+                        code=icode('BOX_TWICE'),
                         sourceFile=modelSource,
                         line=line_no,
                         level=Levels.Warning,
@@ -472,6 +497,7 @@ def parseToFillImportBox(modelSource,
         if modelSource.importBox.modelName is None:
             m2_label=modelSource.model.metamodel.label
             Issue(
+                code=icode('DEFINITION_UNAMED'),
                 origin = modelSource,
                 level = Levels.Warning,
                 message = (

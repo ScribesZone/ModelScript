@@ -7,20 +7,17 @@ Generate a usecase model from a usecase script.
 from __future__ import (
     unicode_literals, print_function, absolute_import, division
 )
-from typing import Text
-import re
 
 import os
-import logging
 
-from modelscripts.megamodels.sources import ModelSourceFile
+from typing import Text
 
-from modelscripts.scripts.megamodels.parser import (
-    isMegamodelStatement
+from modelscripts.base.grammars import (
+    ModelSourceAST, \
+    ASTBasedModelSourceFile,
+    ASTNodeSourceIssue
 )
-
 from modelscripts.base.issues import (
-    LocalizedSourceIssue,
     Levels,
 )
 from modelscripts.metamodels.usecases import (
@@ -29,39 +26,38 @@ from modelscripts.metamodels.usecases import (
     Usecase,
     METAMODEL
 )
-
-from textx import metamodel_from_file
-from modelscripts.scripts.base.grammars import (
-    Grammar,
-    AST
+from modelscripts.scripts.textblocks.parser import (
+    astTextBlockToTextBlock
 )
 
-
-
-
 __all__=(
-    'initModule'
     'UsecaseModelSource'
 )
 
+#FIXME: the name of the model is set to ''
+#       it should be set to the name of the file
+#       and this should be done in ModelSourceFile
+
 DEBUG=0
 
-def initModule():
-    pass
+ISSUES={
+    'ACTOR_TWICE':'us.syn.Actor.Twice',
+    'ACTOR_NO_SUPER':'us.syn.Actor.NoSuper',
+    'USECASE_TWICE': 'us.syn.Usecase.Twice'
+}
 
-class UsecaseModelSource(ModelSourceFile):
+def icode(ilabel):
+    return ISSUES[ilabel]
+
+
+class UsecaseModelSource(ASTBasedModelSourceFile):
 
     def __init__(self, usecaseFileName):
         #type: (Text) -> None
         this_dir=os.path.dirname(os.path.realpath(__file__))
-        print('CC'*20,this_dir)
-        self.grammar=Grammar(
-            'usecases',
-            this_dir
-        )
-        self.ast=None
         super(UsecaseModelSource, self).__init__(
-            fileName=usecaseFileName
+            fileName=usecaseFileName,
+            grammarFile=os.path.join(this_dir, 'grammar.tx')
         )
 
 
@@ -88,28 +84,66 @@ class UsecaseModelSource(ModelSourceFile):
         #             line=line_no,
         #         )
 
-        def _ensureActor(name):
-            # _checkSystemExist(isLast=False)
+        def _ensureActor(name, astnode, implicit):
             if name in self.usecaseModel.actorNamed:
-                return self.usecaseModel.actorNamed[name]
+                existing_actor=self.usecaseModel.actorNamed[name]
+                if  (         not existing_actor.implicitDeclaration
+                          and not implicit ):
+                    ASTNodeSourceIssue(
+                        code=icode('ACTOR_TWICE'),
+                        astNode=astnode,
+                        level=Levels.Error,
+                        message=(
+                             'Actor "%s" already declared at line %s' % (
+                                 name,
+                                 self.ast.line(existing_actor.astnode)))
+                    )
+                    return existing_actor
+                else:
+                    return existing_actor
             else:
-                return Actor(self.usecaseModel, name)
+                new_actor=Actor(
+                            self.usecaseModel,
+                            name=name,
+                            astNode=astnode,
+                            implicitDeclaration=implicit)
+                return new_actor
 
-        def _ensureUsecase(name):
-            # _checkSystemExist(isLast=False)
+        def _ensureUsecase(name, astnode, implicit):
             if name in (self.usecaseModel.system.usecaseNamed):
-                return self.usecaseModel.system.usecaseNamed[name]
+                existing_usecase=\
+                    self.usecaseModel.system.usecaseNamed[name]
+                if  (         not existing_usecase.implicitDeclaration
+                          and not implicit ):
+                    ASTNodeSourceIssue(
+                        code=icode('USECASE_TWICE'),
+                        astNode=astnode,
+                        level=Levels.Error,
+                        message=(
+                             'Usecase "%s" already declared at line %s' % (
+                                 name,
+                                 self.ast.line(existing_usecase.astnode)))
+                    )
+                    return existing_usecase
+                else:
+                    return existing_usecase
             else:
-                return Usecase(self.usecaseModel.system, name)
+                new_usecase=Usecase(
+                    self.usecaseModel.system,
+                    name=name,
+                    astNode=astnode,
+                    implicitDeclaration=implicit)
+                return new_usecase
 
 
         if DEBUG>=1:
             print('\nParsing %s\n' % self.fileName)
 
-        print('Hello usecases')
+        self.ast = ModelSourceAST(self.grammar, self)
 
-
-        self.ast = AST(self.grammar, self.fileName)
+        self.usecaseModel.docComment=astTextBlockToTextBlock(
+            container=self.usecaseModel,
+            astTextBlock=self.ast.model.testBlock)
 
         # self.usecaseModel.system.setInfo(
           #                  name=name   #,
@@ -117,149 +151,90 @@ class UsecaseModelSource(ModelSourceFile):
                        # )
         for declaration in self.ast.model.declarations:
             type_=declaration.__class__.__name__
-            if type_=='Usecase':
-                usecase_decl=declaration
-                _ensureUsecase(usecase_decl.name)
-            elif type_=='Actor':
+
+            if type_=='Actor':
                 actor_decl=declaration
-                _ensureUsecase(actor_decl.name)
+                a=_ensureActor(
+                    name=actor_decl.name,
+                    astnode=actor_decl,
+                    implicit=False)
+                a.kind=(
+                    'human' if actor_decl.kind is None
+                    else actor_decl.kind)
+
+                a.superActors=actor_decl.superActors
+                a.docComment=astTextBlockToTextBlock(
+                    container=a,
+                    astTextBlock=actor_decl.testBlock)
+
+
+            elif type_=='Usecase':
+                usecase_decl=declaration
+                u=_ensureUsecase(
+                    name=usecase_decl.name,
+                    astnode=usecase_decl,
+                    implicit=False)
+                u.docComment=astTextBlockToTextBlock(
+                    container=u,
+                    astTextBlock=usecase_decl.textBlock)
+
             elif type_=='Interactions':
                 for interaction in declaration.interactions:
-                    a=_ensureActor(interaction.actor)
-                    u=_ensureUsecase(interaction.usecase)
+                    a=_ensureActor(
+                        interaction.actor,
+                        astnode=interaction,
+                        implicit=True)
+                    u=_ensureUsecase(
+                        interaction.usecase,
+                        astnode=interaction,
+                        implicit=True)
                     a.addUsecase(u)
             else:
                 raise NotImplementedError(
                     'Unexpected type %s' % type_)
 
+        self._resolve()
 
-#         current_actor=None
-#         current_usecase=None
-#         #FIXME: use doc-for in all the parser
-#         current_element=self.usecaseModel
-#         current_scope='model'
-# # model | system | actor | usecase | actor.usecases
-#
-#         for (line_index, line) in enumerate(self.sourceLines):
-#             original_line = line
-#             # replace tabs by spaces
-#             line = line.replace('\t',' ')
-#             line_no = line_index+1
-#
-#             if DEBUG>=2:
-#                 print ('#%i : %s' % (line_no, original_line))
-#
-#             #---- blank lines ---------------------------------
-#             r = '^ *$'
-#             m = re.match(r, line)
-#             if m:
-#                 continue
-#
-#             #---- comments -------------------------------------
-#             r = '^ *--.*$'
-#             m = re.match(r, line)
-#             if m:
-#                 continue
-#
-#             #---- description ----------------------------------
-#             r = '^ *\|(?P<line>.*)$'
-#             m = re.match(r, line)
-#             if m:
-#                 current_element.description.addNewLine(
-#                     stringLine=m.group('line'),
-#                     lineNo=line_no,
-#                 )
-#                 continue
-#
-#
-#             #---- megamodel statements -------------
-#             is_mms=isMegamodelStatement(
-#                 lineNo=line_no,
-#                 modelSourceFile=self)
-#             if is_mms:
-#                 # megamodel statements have already been
-#                 # parse so silently ignore them
-#                 continue
-#
-#
-#             #--- system X -------------------------
-#             r = begin(0)+r'system +(?P<name>\w+)'+end
-#             m = re.match(r, line)
-#             if m:
-#                 if self.usecaseModel.isSystemDefined:
-#                     LocalizedSourceIssue(
-#                         sourceFile=self,
-#                         level=Levels.Warning,
-#                         message='System defined twice',
-#                         line=line_no,
-#                     )
-#                 name=m.group('name')
-#                 self.usecaseModel.system.setInfo(
-#                     name=name,
-#                     lineNo=line_no,
-#                 )
-#                 current_element=self.usecaseModel.system
-#                 current_scope='system'
-#                 continue
-#
-#             #--- actor X --------------------------
-#             r =(begin(0)
-#                 +r'(?P<kind>(human|system))?'
-#                 +' *actor +(?P<name>\w+)'+end)
-#             m = re.match(r, line)
-#             if m:
-#                 current_usecase=None
-#                 name=m.group('name')
-#                 current_actor=_ensureActor(name)
-#                 current_actor.kind=m.group('kind'),
-#                 current_actor.lineNo=line_no
-#                 current_element=current_actor
-#                 current_scope='actor'
-#                 continue
-#
-#             #--- usecase X --------------------------
-#             r = begin(0)+r'usecase +(?P<name>\w+)'+end
-#             m = re.match(r, line)
-#             if m:
-#                 current_actor=None
-#                 name=m.group('name')
-#                 current_usecase=_ensureUsecase(name)
-#                 current_usecase.lineNo = line_no
-#                 current_element=current_usecase
-#                 current_scope='usecase'
-#                 continue
-#
-#             if current_scope=='actor':
-#
-#                 # --- ....usecases ------------------------
-#                 r = begin(1)+r'usecases'+end
-#                 m = re.match(r, line)
-#                 if m:
-#                     current_scope='actor.usecases'
-#                     continue
-#
-#             if current_scope=='actor.usecases':
-#                 r = begin(2)+r'(?P<name>\w+)'+end
-#                 m = re.match(r, line)
-#                 if m:
-#                     uc=_ensureUsecase(m.group('name'))
-#                     current_actor.addUsecase(uc)
-#                     current_element=uc
-#                     uc.lineNo=line_no
-#                 continue
-#
-#
-#             LocalizedSourceIssue(
-#                 sourceFile=self,
-#                 level=Levels.Error,
-#                 message=(
-#                     'Syntax error. Line ignored.'),
-#                 line=line_no
-#             )
-#
-#         # End of file
-#         line_no=len(self.sourceLines)
-#        _checkSystemExist(isLast=True)
+    def _resolve(self):
+        def resolve_super_actors():
+            names_defined = self.usecaseModel.actorNamed
+            for actor in self.usecaseModel.actors:
+                for (isa, sa_name) in enumerate(
+                        actor.superActors):
+                    # try to solve the superactor name
+
+                    if sa_name in names_defined:
+                        super_actor = names_defined[sa_name]
+                        # replace the string the by the actor
+                        actor.superActors[isa] = super_actor
+                    else:
+                        ASTNodeSourceIssue(
+                            code=icode('ACTOR_NO_SUPER'),
+                            astNode=actor.astnode,
+                            level=Levels.Error,
+                            message=(
+                                'Super actor %s is not defined' % (
+                                    sa_name))
+                        )
+                        # #FIXME: convert this to ASTSourceIssue
+                        # LocalizedSourceIssue(
+                        #     sourceFile=self,
+                        #     level=Levels.Error,
+                        #     message=(
+                        #         'Super actor %s is not defined in %s' % (
+                        #             sa_name,
+                        #             actor.name)),
+                        #     line=self.ast.line(actor.astnode)
+                        # )
+                        # remove the super actor, just to continue
+                        # without a fatal error
+                        del actor.superActors[isa]
+
+        resolve_super_actors()
+
+
+
+
 
 
 METAMODEL.registerSource(UsecaseModelSource)

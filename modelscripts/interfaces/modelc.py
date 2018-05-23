@@ -1,8 +1,9 @@
 # coding=utf-8
-import sys
-import os
 import argparse
+import os
+import sys
 import traceback
+
 
 def setup():
     """
@@ -21,16 +22,14 @@ setup()
 from typing import List, Text
 
 # initialize the megamodel with metamodels and scripts
-import modelscripts  # DON'T REMOVE
 
 from modelscripts.base.files import (
     extension,
     replaceExtension
 )
 
-from modelscripts.interfaces.environment import Environment
 from modelscripts.locallibs.termcolor import cprint
-from modelscripts.scripts.base.printers import ModelPrinterConfig
+from modelscripts.base.modelprinters import ModelPrinterConfig
 from modelscripts.megamodels import Megamodel
 from modelscripts.config import Config
 from modelscripts.use.engine import (

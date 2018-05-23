@@ -10,8 +10,8 @@ from modelscripts.base.printers import (
 
 from modelscripts.metamodels.textblocks import (
     TextBlock,
-    BrokenReference,
-    Occurrence
+    PlainText,
+    TextReference
 )
 
 __all__=(
@@ -30,31 +30,44 @@ class TextBlockPrinter(AbstractPrinter):
         self.textBlock=textBlock
 
     def do(self):
-        if len(self.textBlock.lines)>=1:
+        if len(self.textBlock.textLines)>=1:
             self.doTextBlock(self.textBlock)
         return self.output
 
     def doTextBlock(self, textBlock):
-        for line in textBlock.lines:
+        for line in textBlock.textLines:
             self.doLine(line)
         return self.output
 
     def doLine(self, line):
         _= '    %s' % (
             Styles.comment.do('|', self.config.styled))
-        for token in line.tokens:
-            if isinstance(token, Occurrence):
-                x= Styles.bold.do(
-                    '`%s`!' % token.string,
-                    styled=self.config.styled)
-            elif isinstance(token, BrokenReference):
-                x= Styles.ko.do(
-                    '`%s`?' % token.string,
-                    styled=self.config.styled)
-            else:
-                x=Styles.comment.do(
-                    token.string,
-                    styled=self.config.styled)
-            _+=x
+        for token in line.textTokens:
+            self.doTextToken(token)
         self.outLine(_,lineNo=line.lineNo)
         return self.output
+
+    def doTextToken(self, token):
+        if isinstance(token, TextReference):
+            r=token
+            if r.isOccurrence:
+                x = Styles.bold.do(
+                    '`%s`!' % r.text,
+                    styled=self.config.styled)
+            elif r.isBroken:
+                x = Styles.ko.do(
+                    '`%s`?' % r.text,
+                    styled=self.config.styled)
+            else:
+                x = Styles.comment.do(
+                    '`%s`_' % r.text,
+                    styled=self.config.styled)
+        elif isinstance(token, PlainText):
+            x = Styles.comment.do(
+                token.text,
+                styled=self.config.styled)
+        else:
+            raise NotImplementedError(
+                'Printing %s is not implemented'
+                % type(token))
+        self.out(x)

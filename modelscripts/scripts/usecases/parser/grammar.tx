@@ -1,0 +1,77 @@
+UsecaseModel:
+    status=ModelStatus? modelKind=ModelKind? 'usecase' 'model' (name=ID) ?
+    ('{'
+        docBlock=DocBlock
+    '}')? ';'
+    declarations *= Declaration
+;
+
+ModelStatus:
+      'draft'
+    | 'consolidated'
+;
+
+ModelKind:
+      'preliminary'
+    | 'detailed'
+;
+
+Declaration:
+      Actor
+    | Usecase
+    | Interactions
+;
+
+Actor:
+    (kind=ActorKind) ?
+    'actor' name=ID
+    ('<' superActors *= ID[',']) ?
+    ('{'
+        docBlock=DocBlock
+    '}')? ';'
+;
+
+ActorKind:
+    'human' | 'system'
+;
+
+Usecase:
+    'usecase' name=ID
+    ('{'
+        docBlock=DocBlock
+    '}')? ';'
+;
+
+
+Interactions:
+    'interactions' '{'
+        interactions *= Interaction
+    '}' ';'
+;
+
+Interaction:
+    Article? actor=ID Verb? usecase=ID ';'
+;
+
+Article:
+    'une' | 'un' | 'an' | 'a'
+;
+
+Verb:
+    'can' | 'peut'
+;
+
+
+
+DocBlock:
+     docLines *= DocLine
+;
+
+DocLine:
+    text=/\|.*\|;/
+;
+
+
+Comment:
+    /#.*$/
+;

@@ -1,12 +1,13 @@
 # coding=utf-8
 from typing import Optional
-from modelscripts.base.issues import IssueBox
-from modelscripts.scripts.base.printers import (
+
+from modelscripts.base.modelprinters import (
     ModelPrinter,
     ModelPrinterConfig,
 )
 from modelscripts.megamodels import Megamodel
 from modelscripts.metamodels.megamodels import METAMODEL
+
 
 class MegamodelPrinter(ModelPrinter):
     def __init__(self,

@@ -25,8 +25,9 @@ class ModelElement(object):
         from modelscripts.metamodels.textblocks import (
             TextBlock
         )
-        self.description=TextBlock(
-            container=self)
+        print('MM',type(model))
+        self.description=None
+        #type: Optional[TextBlock]
 
     @property
     def model(self):
@@ -80,20 +81,23 @@ class SourceModelElement(ModelElement, SourceElement):
     def __init__(self,
                  model,
                  name=None,
+                 astNode=None,
                  code=None,
                  lineNo=None,
                  docComment=None,
                  eolComment=None):
-        assert model is not None
         from modelscripts.megamodels.models import Model
-        assert isinstance(model, Model)
         SourceElement.__init__(self,
-            name = name,
-            code = code,
-            lineNo = lineNo,
-            docComment = docComment,
-            eolComment = eolComment)
-        ModelElement.__init__(self, model)
+                               name = name,
+                               astNode=astNode,
+                               code = code,
+                               lineNo = lineNo,
+                               docComment = docComment,
+                               eolComment = eolComment)
+        if model is not None:
+            #assert model is not None
+            assert isinstance(model, Model)
+            ModelElement.__init__(self, model)
         if self.source is not None:
             self.source._addSourceModelElement(self)
 

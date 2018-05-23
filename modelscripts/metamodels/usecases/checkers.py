@@ -16,23 +16,28 @@ from modelscripts.metamodels.usecases import (
 )
 
 
-class SystemDefinedChecker(Checker):
+#
+# Remove this check since isSystemDefined is always false
+# with the current parser
+#
+#  class SystemDefinedChecker(Checker):
+#
+#     def __init__(self, **params):
+#         super(SystemDefinedChecker, self).__init__(
+#             metaclasses=[UsecaseModel],
+#             **params
+#         )
+#
+#     def doCheck(self, ucm):
+#         if not ucm.isSystemDefined:
+#             return CheckOutput(
+#                 message='No system defined',
+#                 locationElement=ucm)
+#
+# SystemDefinedChecker(
+#     level=Levels.Error
+# )
 
-    def __init__(self, **params):
-        super(SystemDefinedChecker, self).__init__(
-            metaclasses=[UsecaseModel],
-            **params
-        )
-
-    def doCheck(self, ucm):
-        if not ucm.isSystemDefined:
-            return CheckOutput(
-                message='No system defined',
-                locationElement=ucm)
-
-SystemDefinedChecker(
-    level=Levels.Error
-)
 
 class ActorLimitsChecker(LimitsChecker):
     def __init__(self, **params):
@@ -44,12 +49,12 @@ class ActorLimitsChecker(LimitsChecker):
     def size(self, e):
         return len(e.actors)
 
-
 ActorLimitsChecker(
     level=Levels.Warning,
     min=1,
     max=10
 )
+
 
 #-------------------------------------------------------------
 
@@ -58,19 +63,22 @@ from modelscripts.metamodels.usecases import (
 )
 
 
-class SystemNamingChecker(NamingChecker):
-    def __init__(self, **params):
-        NamingChecker.__init__(
-            self,
-            metaclasses=[System],
-            fun=Symbol.is_CamlCase,
-            namingName='CamlCase',
-            **params
-        )
-
-SystemNamingChecker(
-    level=Levels.Warning,
-)
+# remove this check since the system name is not
+# set in the current parser ('**unamed**")
+#
+# class SystemNamingChecker(NamingChecker):
+#     def __init__(self, **params):
+#         NamingChecker.__init__(
+#             self,
+#             metaclasses=[System],
+#             fun=Symbol.is_CamlCase,
+#             namingName='CamlCase',
+#             **params
+#         )
+#
+# SystemNamingChecker(
+#     level=Levels.Warning,
+# )
 
 
 class UsecaseLimitsChecker(LimitsChecker):
@@ -82,7 +90,6 @@ class UsecaseLimitsChecker(LimitsChecker):
 
     def size(self, e):
         return len(e.usecases)
-
 
 UsecaseLimitsChecker(
     level=Levels.Warning,

@@ -1,21 +1,18 @@
 # coding=utf-8
-from __future__ import unicode_literals, print_function, absolute_import, division
+from __future__ import unicode_literals, print_function, absolute_import, \
+    division
+
 from typing import Optional
 
-from modelscripts.scripts.base.printers import (
+from modelscripts.base.modelprinters import (
     ModelPrinter,
     ModelSourcePrinter,
     ModelPrinterConfig,
 )
-
 from modelscripts.metamodels.objects import (
     ObjectModel,
-    Object,
-    Link,
-    LinkObject,
     METAMODEL
 )
-
 
 
 class ObjectModelPrinter(ModelPrinter):

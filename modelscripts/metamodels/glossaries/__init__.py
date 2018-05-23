@@ -4,8 +4,7 @@
 Glossary metamodel.
 
     GlossaryModel
-    <>--* Domain
-          <>--* Entry
+        <>--* Entry
 """
 from __future__ import print_function
 
@@ -18,21 +17,20 @@ from modelscripts.megamodels.models import Model
 from modelscripts.megamodels.elements import SourceModelElement
 from modelscripts.base.metrics import Metrics
 
-
 class GlossaryModel(Model):
     """
-    Collection of named domains.
+    Collection of named packages.
     """
 
     def __init__(self):
         super(GlossaryModel, self).__init__()
 
-        self.domainNamed=collections.OrderedDict()
-        # type: Dict[Text, Domain]
+        self.packageNamed=collections.OrderedDict()
+        # type: Dict[Text, Package]
 
     @property
-    def domains(self):
-        return list(self.domainNamed.values())
+    def packages(self):
+        return list(self.packageNamed.values())
 
     @property
     def metamodel(self):
@@ -43,15 +41,21 @@ class GlossaryModel(Model):
     def findEntry(self, term):
         #type: (Text) -> Optional[Entry]
 
-        # search first in the main terms
-        for domain in self.domainNamed.values():
-            if term in domain.entryNamed:
-                return domain.entryNamed[term]
+        # search first as the main term
+        for packages in self.packageNamed.values():
+            if term in packages.entryNamed:
+                return packages.entryNamed[term]
 
-        # search then in alternatives terms
-        for domain in self.domainNamed.values():
-            for entry in domain.entryNamed.values():
-                if term in entry.alternativeTerms:
+        # search then in inflections
+        for packages in self.packageNamed.values():
+            for entry in packages.entryNamed.values():
+                if term in entry.inflections:
+                    return entry
+
+        # search then in synonyms
+        for packages in self.packageNamed.values():
+            for entry in packages.entryNamed.values():
+                if term in entry.synonyms:
                     return entry
 
         return None
@@ -69,29 +73,30 @@ class GlossaryModel(Model):
         #type: () -> Metrics
         ms=super(GlossaryModel, self).metrics
         ms.addList((
-            ('domain', len(self.domains)),
+            ('packages', len(self.packages)),
             ('entry', sum(
                 len(d.entries)
-                for d in self.domains
+                for d in self.packages
             ))
         ))
         return ms
 
 
-class Domain(SourceModelElement):
+class Package(SourceModelElement):
     """
     A collection of entry indexed by the main term.
     """
 
 
-    def __init__(self, glossaryModel, name, lineNo=None):
-        super(Domain, self).__init__(
+    def __init__(self, glossaryModel, name, astNode=None):
+        super(Package, self).__init__(
             model=glossaryModel,
             name=name,
-            lineNo=lineNo
+            astNode=astNode
         )
         self.glossaryModel=glossaryModel
-        self.glossaryModel.domainNamed[name]=self
+        self.glossaryModel.packageNamed[name]=self
+        self.impliciteDeclaration = True
         self.entryNamed=collections.OrderedDict()
         # type: Dict[Text, Entry]
         # Entries indexed by main term name
@@ -108,29 +113,44 @@ class Entry(SourceModelElement):
     """
 
     def __init__(self,
-                 domain,
-                 mainTerm,
-                 alternativeTerms=(),
-                 lineNo=None):
+                 package,
+                 term,
+                 label=None,
+                 synonyms=(),
+                 inflections=(),
+                 translations=None,
+                 astNode=None):
         super(Entry, self).__init__(
-            model=domain.glossaryModel,
+            model=package.glossaryModel,
             name=None,
-            lineNo=lineNo
+            astNode=astNode
         )
         # TODO: check, unique main/alternative(?) term
-        self.domain=domain
-        #type: Domain
+        self.package=package
+        #type: Package
 
-        self.domain.entryNamed[mainTerm]=self
+        self.package.entryNamed[term]=self
 
-        self.mainTerm=mainTerm
+        self.term=term
         #type: Text
 
-        self.alternativeTerms=list(alternativeTerms)
+        self.synonyms=list(synonyms)
         #type: List[Text]
 
+        self.inflections=list(inflections)
+        #type: List[Text]
+
+        self.label=label
+        #type: Optional[Text]
+
+        self.translations=(
+            {} if translations is None
+            else translations )
+        #type: Dict[Text, Text]
+
         self.occurrences=[]
-        #type: List['Occurrence']
+        #type: List['TextReference']
+        """ Occurrences that refer to this entry """
 
 
 METAMODEL = Metamodel(

@@ -5,26 +5,22 @@ Generate a USE OCL specification from a modeL.
 This is currently only a preliminary version.
 """
 
-from typing import Optional
-
 import logging
 
+from typing import Optional
+
+from modelscripts.base.modelprinters import (
+    ModelPrinter,
+    ModelPrinterConfig,
+)
 from modelscripts.base.printers import (
     indent
 )
-from modelscripts.base.styles import Styles
-from modelscripts.scripts.base.printers import (
-    ModelPrinter,
-    ModelSourcePrinter,
-    ModelPrinterConfig,
-)
-
 from modelscripts.metamodels.classes import (
     ClassModel
 )
 from modelscripts.metamodels.classes.expressions import (
     PreCondition,
-    PostCondition,
 )
 
 # logging.basicConfig(level=logging.DEBUG)

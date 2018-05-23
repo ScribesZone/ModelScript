@@ -123,10 +123,11 @@ class ModelPrinter(ContentPrinter):
         return self.output
 
     def doModelTextBlock(self, textBlock):
-        assert isinstance(textBlock, TextBlock)
-        s = TextBlockPrinter(textBlock).do()
-        self.outLine(s)
-        return self.output
+        if textBlock is not None:
+            assert isinstance(textBlock, TextBlock)
+            s = TextBlockPrinter(textBlock).do()
+            self.outLine(s)
+            return self.output
 
 
 class ModelSourcePrinterConfig(ContentPrinterConfig):

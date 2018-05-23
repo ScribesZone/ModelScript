@@ -95,9 +95,7 @@ class System(SourceModelElement):
         SourceModelElement.__init__(self,
             model=usecaseModel,
             name='*unknown*',
-            code=None,
-            lineNo=None,
-            docComment=None, eolComment=None)
+            astNode=None)
 
         self.usecaseModel = usecaseModel
         self.usecaseModel.system=self
@@ -109,15 +107,12 @@ class System(SourceModelElement):
 
     def setInfo(self, name,
                 implicitDeclaration=True,
-                code=None, lineNo=None,
-                docComment=None, eolComment=None
+                astNode=None
                 ):
         super(System, self).__init__(
             model=self.usecaseModel,
             name=name,
-            code=code,
-            lineNo=lineNo,
-            docComment=docComment, eolComment=eolComment)
+            astNode=astNode)
 
         self.implicitDeclaration=implicitDeclaration
 
@@ -151,15 +146,11 @@ class Actor(SourceModelElement, Subject):
                  name,
                  kind='human',
                  implicitDeclaration=False,
-                 astnode=None,
-                 code=None,
-                 lineNo=None,
-                 docComment=None,
-                 eolComment=None):
+                 astNode=None):
         SourceModelElement.__init__(self,
-            model=usecaseModel,
-            name=name,
-            astnode=astnode)
+                                    model=usecaseModel,
+                                    name=name,
+                                    astNode=astNode)
 
         self.usecaseModel = usecaseModel
         self.usecaseModel.actorNamed[name]=self
@@ -205,16 +196,12 @@ class Usecase(SourceModelElement, Subject):
                  system,
                  name,
                  implicitDeclaration=False,
-                 code=None, lineNo=None,
-                 docComment=None, eolComment=None):
+                 astNode=None):
 
         SourceModelElement.__init__(self,
-            model=system.model,
-            name=name,
-            code=code,
-            lineNo=lineNo,
-            docComment=docComment,
-            eolComment=eolComment)
+                                    model=system.model,
+                                    name=name,
+                                    astNode=astNode)
         self.system = system
         self.system.usecaseNamed[name]=self
         self.implicitDeclaration=implicitDeclaration
@@ -254,7 +241,7 @@ METAMODEL = Metamodel(
     label='usecase',
     extension='.uss',
     modelClass=UsecaseModel,
-    modelKinds=('', 'preliminary', 'detailled')
+    modelKinds=('preliminary', '', 'detailed')
 )
 MetamodelDependency(
     sourceId='us',

@@ -71,7 +71,7 @@ class ModelSourceFile(SourceFile):
                  recognizeUSEOCLNativeModelDefinition=False):
         #type: (Text, Optional[Text], Optional[Text], List[Any], bool, bool, bool, bool, List[Text], bool) -> None
         """
-        An empty model is created automatically and it
+        An empty model is created automatically. It
         is associated with this source file.
         This empty model is created according to
         the metamodel specified by the property 'metamodel'.
@@ -92,7 +92,7 @@ class ModelSourceFile(SourceFile):
         Args:
             fileName:
                 The logical name of the file.
-                This is not necessarily the file parsed.
+                This is not necessarily the name of the file parsed.
             realFileName:
                 The real file to be read. If file reading
                 has to be postponed, then the parameter
