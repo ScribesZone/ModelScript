@@ -1,7 +1,7 @@
 import os
 import sys
 from typing import Text, Optional
-from textx import metamodel_from_file
+from textx import metamodel_from_str
 from textx.export import (
     metamodel_export,
     model_export
@@ -22,19 +22,38 @@ __all__= (
     'ASTNodeSourceIssue'
 )
 
+#TODO: remove the kludge below and add some kind of include grammar
+
+INCLUDES= (
+    '../scripts/megamodels/parser/grammar.tx',
+    '../scripts/textblocks/parser/grammar.tx',
+)
+
+def _read_file(filename):
+    with open(filename, 'r') as content_file:
+        content = content_file.read()
+    return content
+
 class Grammar(object):
     def __init__(self, grammarFile):
-                 # useLanguageCode=False):
-        # self.languageCode=language[0:2]
-        # if useLanguageCode:
-        #     self.directory=os.path.join(
-        #         grammarDirectory, self.languageCode)
-        # else:
-        #     self.directory=grammarDirectory
         self.file=grammarFile
-        self.metamodel=metamodel_from_file(self.file)
+        full_grammar_text=self._get_grammar_str()
+        self.metamodel=metamodel_from_str(full_grammar_text)
         self.metamodel.auto_init_attributes=False
         self.parser=self.metamodel.parser
+
+    def _read_file(self, filename):
+        with open(filename, 'r') as content_file:
+            content = content_file.read()
+        return content
+
+    def _get_grammar_str(self):
+        grammar_str=self._read_file(self.file)
+        this_dir = os.path.dirname(os.path.realpath(__file__))
+        for include in INCLUDES:
+            included_file=os.path.join(this_dir, include)
+            grammar_str += _read_file(included_file)
+        return grammar_str
 
     def visualize(self):
         dot_file=self.file+'.dot'
@@ -53,13 +72,17 @@ class AST(object):
         return get_model(astNode).ast
 
     def __init__(self, grammar, file):
+        #type: (Grammar, Text) -> None
+        print('NN'*30, file)
         self.grammar=grammar
         self.file=file
-        self.bracketedFile= modelscripts.base.brackets.BracketedScript(self.file).save()
+        self.bracketedFile=\
+            modelscripts.base.brackets.BracketedScript(self.file).save()
+        print('NN'*30, self.bracketedFile)
         self.model=self.grammar.metamodel.model_from_file(
             self.bracketedFile)
+        print('NN'*30, type(self.model), self.model)
         # instrument textx model with a reference back to this object
-        # this allo
         self.model.ast=self
         # self.bracketedtext=brackets.BracketedScript(self.file).text
         # self.model=self.grammar.metamodel.model_from_str(
