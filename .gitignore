@@ -2,11 +2,13 @@ build/
 *.tx.dot
 *.tx.dot.png
 
-*.glsb
-
 *.ussb
+*.uss.dot
+*.uss.dot.png
 
 *.clsb
+*.cls.dot
+*.cls.dot.png
 
 *.mesb
 *.mes.dot
@@ -16,11 +18,17 @@ build/
 *.obs.dot
 *.obs.dot.png
 
-*.pesb
+*.glsb
+*.gls.dot
+*.gls.dot.png
 
-*.stsb
+*.pesb
+*.pes.dot
+*.pes.dot.png
 
 *.scsb
+*.scs.dot
+*.scs.dot.png
 
 
 
