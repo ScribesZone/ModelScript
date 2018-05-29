@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+#
+# Run textx on some testcases or just on a grammar
+#
+
+
+if [ "$#" -ne 2 ]; then
+    echo "Illegal number of parameters."
+    echo "Usage"
+    echo "   model-textx usecases"
+    echo "   model-textx usecases  uss/us-actor02.uss"
+fi
+
+LANGUAGE=$1
+SCRIPT=$2
+
+THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PYTHONPATH=$THISDIR/..
+PYTHON_SCRIPT=$THISDIR/../modelscripts/base/grammars.py
+GRAMMAR_FILE=$THISDIR/../modelscripts/scripts/${LANGUAGE?}/parser/grammar.tx
+if [ "${SCRIPT?}" == "" ]
+then
+    SCRIPT_FILE=""
+else
+    SCRIPT_FILE=$THISDIR/../test/modelscripts/testcases/${SCRIPT?}
+fi
+PYTHONPATH=$PYTHONPATH \
+    python \
+        $PYTHON_SCRIPT \
+        $GRAMMAR_FILE \
+        $SCRIPT_FILE
