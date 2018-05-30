@@ -1,0 +1,4 @@
+#@Issue mgm.sem.Import.Allowed 1
+glossary model GL_Mega08
+import permission model from "a.pe"
+

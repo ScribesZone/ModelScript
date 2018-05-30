@@ -1,0 +1,5 @@
+glossary model Gl_import03
+import glossary model from "gl-import02.gls"
+
+Trois
+    | This a definition.

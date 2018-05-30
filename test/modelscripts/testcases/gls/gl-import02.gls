@@ -1,0 +1,5 @@
+glossary model Gl_import02
+import glossary model from "gl-import00.gls"
+
+Deux
+    | This a definition.

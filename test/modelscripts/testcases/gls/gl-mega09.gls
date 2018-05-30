@@ -1,0 +1,4 @@
+#@Issue mgm.sem.Import.NotFound 1
+glossary model GL_Mega08
+import glossary model from "nofile.gls"
+

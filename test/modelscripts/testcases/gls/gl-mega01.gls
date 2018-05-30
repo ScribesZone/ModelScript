@@ -1,0 +1,3 @@
+#@Issue mgm.sem.Import.Extension 1
+glossary model GL_Mega01
+import glossary model from "t"

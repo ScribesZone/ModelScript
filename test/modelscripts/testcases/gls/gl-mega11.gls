@@ -1,0 +1,3 @@
+glossary model GL_Mega11
+import glossary model from "gl-import00.gls"
+

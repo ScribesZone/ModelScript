@@ -1,36 +1,40 @@
 glossary model Medium
+    | ceci `est` la description de `un` élément
+    | dans `un` contexte `uno` et `deux`
+    | `un` `test`
 
-domain nombre
-
-    un uno une one:
-        | ceci est la description de `un` élément
-        | dans `un` contexte `uno` et `deux`
-        | `un` `test`
-        | trois
-
-    deux two:
-        | `un` autre exemple de `one` et voici une
-        | `référence` `pendante`
-
-
-domain glossaire
-
-    référence:
-        | `une` `référence` est un peu plus que
-        | `deux` mot. Attention à l'`indentation`
-        | qui doit être toujours de `huit` espaces.
+Trois
+    | a
+    package: technical
+    synonyms: Uno One
+    inflections: unite uns
+    label: "un"
+    translations
+        en: ""
+        es: ""
 
 
-domain nombre
+Reference
+    |
+    | `une` `référence` est un peu plus que
+    | `deux` mot. Attention à l'`indentation`
+    | qui doit être toujours de `huit` espaces.
+    synonyms : a b c
+    package : a
 
-    un uno une one:
-        | ceci est la description de `un` élément
-        | dans `un` contexte `uno` et `deux`
-        | `un` `test`
-        | trois
 
-    deux two:
-        | `un` autre exemple de `one` et voici une
-        | `référence` `pendante`
+Deux
+    | ceci est la description de `un` élément
+    | dans `un` contexte `uno` et `deux`
+    | `un` `test`
+    | trois
+    package: a
 
+ZIO
+    | packaef
+    package: b
+
+ODK
+    | Order Designed Kant
+    package: a
 

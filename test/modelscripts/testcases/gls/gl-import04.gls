@@ -1,0 +1,10 @@
+glossary model Gl_import04
+import glossary model from "gl-import01.gls"
+import glossary model from "gl-import02.gls"
+import glossary model from "gl-import03.gls"
+
+Quatre
+    | This a definition
+
+Four
+    |
