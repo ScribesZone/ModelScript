@@ -1,9 +1,0 @@
-glossary model Demo1
-
-domain A
-
-    body:
-    |    this is an example of a `element` in a
-
-    text:
-    |    a
