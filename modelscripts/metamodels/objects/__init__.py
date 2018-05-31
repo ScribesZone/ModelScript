@@ -5,6 +5,7 @@ Simple metamodel for object states. Contains definitions for:
 
     ObjectModel
     <>--* Object
+        <>--* Slot
     <>--* Link
     <>--* LinkObject
 
