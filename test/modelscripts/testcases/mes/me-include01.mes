@@ -1,0 +1,2 @@
+object model A
+include object model from "A.obs"

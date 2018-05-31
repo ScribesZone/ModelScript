@@ -1,0 +1,3 @@
+usecase model A
+import glossary model from "domain.gls"
+import glossary model from "implementation.gls"

@@ -1,0 +1,3 @@
+object model A
+import glossary model from "domain.gls"
+include object model from "A.obs"
