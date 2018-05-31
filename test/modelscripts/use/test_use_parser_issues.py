@@ -1,27 +1,26 @@
 # coding=utf-8
-from __future__  import print_function
+from __future__ import print_function
+
 import logging
+
 import modelscripts.scripts.classes.parser
 import modelscripts.scripts.classes.printer
-from modelscripts.use.use.parser import (
-    UseModelSource
-)
-from modelscripts.scripts.base.printers import (
+from modelscripts.base.modelprinters import (
     ModelSourcePrinter
 )
-
 from modelscripts.metamodels import (
     classes
 )
-
+from modelscripts.use.use.parser import (
+    UseModelSource
+)
 from test.modelscripts import (
     getTestFile
 )
-
-from test.modelscripts.issues import (
+from test.modelscripts.assertions import (
     assertIssueBox,
     F, E, W, I, H,
-    checkFileIssues,
+    checkAllAssertionsForDirectory,
     checkValidIssues
 )
 
@@ -44,7 +43,7 @@ EXPECTED_ISSUES={
 
 
 def testGenerator_Issues():
-    res = checkFileIssues(
+    res = checkAllAssertionsForDirectory(
         'use/issues/frozen',
         ['.use', '.clm'],
         EXPECTED_ISSUES)
