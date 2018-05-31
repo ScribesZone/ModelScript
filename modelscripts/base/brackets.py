@@ -16,13 +16,13 @@ import re
 class BracketedScript(object):
 
     SPACE_INDENT=4
-    OPENING_BRACKET='{'
-    CLOSING_BRACKET='}'
-    EOL=';'
+    OPENING_BRACKET='{_'
+    CLOSING_BRACKET='}_'
+    EOL=';_'
     IS_BLANK_LINE='^ *(#.*)?$'
     IS_DOC_LINE_REGEX='^ *\|'
-    CLOSING_DOC_LINE='|'
-    DOC_LINE_CONTENT=' *\| ?(?P<content>.*)\|;(};)*$'
+    CLOSING_DOC_LINE='|_'
+    DOC_LINE_CONTENT=' *\| ?(?P<content>.*)\|_;_(}_;_)*$'
 
 
     def __init__(self, file, targetFilename=None):
