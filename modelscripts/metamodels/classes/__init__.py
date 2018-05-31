@@ -354,11 +354,11 @@ class PackagableElement(SourceModelElement):
                  name,
                  model,
                  package=None,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
+                 code=None, lineNo=None, description=None, eolComment=None):
         super(PackagableElement, self).__init__(
             model=model,
             name=name,
-            code=code, lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+            code=code, lineNo=lineNo, description=description, eolComment=eolComment)
         self.package=package
         if self.package is not None:
             self.package.addElement(self)
@@ -388,12 +388,12 @@ class SimpleType(PackagableElement):
                  name,
                  model,
                  package=None,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
+                 code=None, lineNo=None, description=None, eolComment=None):
         super(SimpleType, self).__init__(
             model=model,
             name=name,
             package=package,
-            code=code, lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+            code=code, lineNo=lineNo, description=description, eolComment=eolComment)
 
 
     @MAttribute('String')
@@ -431,13 +431,13 @@ class Package(PackagableElement, Entity):
                  name,
                  model,
                  package=None,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
+                 code=None, lineNo=None, description=None, eolComment=None):
         super(Package, self).__init__(
             name=name,
             model=model,
             package=package,
             code=code,
-            lineNo=lineNo, docComment=docComment,
+            lineNo=lineNo, description=description,
             eolComment=eolComment)
         self._elememts=[]
         self.model.packageNamed[name]=self
@@ -471,13 +471,13 @@ class Enumeration(SimpleType):
                  name,
                  model,
                  package=None,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
+                 code=None, lineNo=None, description=None, eolComment=None):
         super(Enumeration, self).__init__(
             name,
             model,
             package=package,
             code=code, lineNo=lineNo,
-            docComment=docComment, eolComment=eolComment)
+            description=description, eolComment=eolComment)
         self.model.enumerationNamed[name] = self
         self._literals=[]
 
@@ -495,13 +495,13 @@ class Enumeration(SimpleType):
 
 class EnumerationLiteral(SourceModelElement):
 
-    def __init__(self, name, enumeration, code=None, lineNo=None, docComment=None, eolComment=None):
+    def __init__(self, name, enumeration, code=None, lineNo=None, description=None, eolComment=None):
         SourceModelElement.__init__(
             self,
             model=enumeration.model,
             name=name,
             code=code,
-            lineNo=lineNo, docComment=docComment,
+            lineNo=lineNo, description=description,
             eolComment=eolComment)
         self.enumeration=enumeration
         self.enumeration._literals.append(self)
@@ -519,12 +519,12 @@ class Class(PackagableElement, Entity):
     ]
 
     def __init__(self, name, model, isAbstract=False, superclasses=(),
-                 lineNo=None, docComment=None, eolComment=None):
+                 lineNo=None, description=None, eolComment=None):
         super(Class, self).__init__(
             name=name,
             model=model,
             lineNo=lineNo,
-            docComment=docComment,
+            description=description,
             eolComment=eolComment)
         self.model.classNamed[name] = self
         self.isAbstract = isAbstract
@@ -573,13 +573,13 @@ class Attribute(SourceModelElement, Member):
                  isId=False,
                  isReadOnly=False,
                  isInit=False, expression=None,
-                 lineNo=None, docComment=None, eolComment=None):
+                 lineNo=None, description=None, eolComment=None):
         SourceModelElement.__init__(
             self,
             model=class_.model,
             name=name,
             code=code,
-            lineNo=lineNo, docComment=docComment,
+            lineNo=lineNo, description=description,
             eolComment=eolComment)
         self.class_ = class_
         self.class_.attributeNamed[name] = self
@@ -616,13 +616,13 @@ class Operation(SourceModelElement, Member):
 
     def __init__(self, name,  class_, signature, code=None,
                  expression=None,
-                 lineNo=None, docComment=None, eolComment=None):
+                 lineNo=None, description=None, eolComment=None):
         SourceModelElement.__init__(
             self,
             model=class_.model,
             name=name,
             code=code,
-            lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+            lineNo=lineNo, description=description, eolComment=eolComment)
         self.class_ = class_
         self.signature = signature
         self.class_.operationWithSignature[signature] = self
@@ -663,12 +663,12 @@ class Association(PackagableElement, Entity):
 
     def __init__(self,
                  name, model, kind=None,
-                 lineNo=None, docComment=None, eolComment=None):
+                 lineNo=None, description=None, eolComment=None):
         # type: (Text,ClassModel,Optional[Text],Optional[int],Optional[Text],Optional[Text]) -> None
         super(Association, self).__init__(
             name=name,
             model=model,
-            lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+            lineNo=lineNo, description=description, eolComment=eolComment)
         self.model.associationNamed[name] = self
         self.kind = kind   # association|composition|aggregation|associationclass  # TODO:should associationclass be
         # there?
@@ -758,7 +758,7 @@ class Role(SourceModelElement, Member):
                  cardMin=None, cardMax=None, type=None, isOrdered=False,
                  qualifiers=None, subsets=None, isUnion=False,
                  expression=None,
-                 lineNo=None, docComment=None, eolComment=None):
+                 lineNo=None, description=None, eolComment=None):
 
         # unamed role get the name of the class with lowercase for the first letter
         if name=='' or name is None:
@@ -769,7 +769,7 @@ class Role(SourceModelElement, Member):
             model=association.model,
             name=name,
             code=code,
-            lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+            lineNo=lineNo, description=description, eolComment=eolComment)
         self.association = association
         self.association.roleNamed[name] = self
         self.cardinalityMin = cardMin
@@ -850,7 +850,7 @@ class AssociationClass(Class, Association):
     """
     def __init__(self,
                  name, model, isAbstract=False, superclasses=(),
-                 lineNo=None, docComment=None, eolComment=None):
+                 lineNo=None, description=None, eolComment=None):
         # Use multi-inheritance to initialize the association class
         Class.__init__(self,
             name=name,
@@ -858,13 +858,13 @@ class AssociationClass(Class, Association):
             isAbstract=isAbstract,
             superclasses=superclasses,
             lineNo=lineNo,
-            docComment=docComment, eolComment=eolComment)
+            description=description, eolComment=eolComment)
         Association.__init__(self,
             name=name,
             model=model,
             kind='associationclass',
             lineNo=lineNo,
-            docComment=docComment, eolComment=eolComment)
+            description=description, eolComment=eolComment)
         # But register the association class apart and only once, to avoid
         # confusion and the duplicate in the associations and classes lists
         del self.model.classNamed[name]
