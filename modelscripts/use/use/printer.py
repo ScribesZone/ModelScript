@@ -48,8 +48,8 @@ class UseModelPrinter(ModelPrinter):
         self.doUseModel(self.theModel)
         return self.output
 
-    def doDocComment(self, source_element, indent):
-        c = source_element.docComment   # multiple lines
+    def doDescription(self, source_element, indent):
+        c = source_element.description   # multiple lines
         if c is not None:
             for line in c:
                 self.out(indent + self.cmt('--' + line) + '\n')
@@ -101,7 +101,7 @@ class UseModelPrinter(ModelPrinter):
         return self.output
 
     def doEnumeration(self, enumeration):
-        self.doDocComment(enumeration, '')
+        self.doDescription(enumeration, '')
         self.out('%s %s {' % (
             self.kwd('enum'),
             enumeration.name))
@@ -119,7 +119,7 @@ class UseModelPrinter(ModelPrinter):
         return self.output
 
     def doClass(self, class_):
-        self.doDocComment(class_, '')
+        self.doDescription(class_, '')
         if class_.superclasses:
             sc = (self.kwd('< ')
                   +self.kwd(',').join(map(
@@ -156,7 +156,7 @@ class UseModelPrinter(ModelPrinter):
         return self.output
 
     def doAssociation(self, association):
-        self.doDocComment(association, '')
+        self.doDescription(association, '')
         self.outLine('%s %s %s' % (
             self.kwd(association.kind),
             association.name,
@@ -170,7 +170,7 @@ class UseModelPrinter(ModelPrinter):
         return self.output
 
     def doAssociationClass(self, associationClass):
-        self.doDocComment(associationClass, '')
+        self.doDescription(associationClass, '')
         if associationClass.superclasses:
             superclass_names = [c.name for c in associationClass.superclasses]
             sc = self.kwd(' < ') + self.kwd(',').join(superclass_names)
@@ -202,7 +202,7 @@ class UseModelPrinter(ModelPrinter):
         return self.output
 
     def doAttribute(self, attribute):
-        self.doDocComment(attribute, '    ')
+        self.doDescription(attribute, '    ')
         self.outLine('%s %s %s' % (
                 attribute.name,
                 self.kwd(':'),
@@ -219,7 +219,7 @@ class UseModelPrinter(ModelPrinter):
         return self.output
 
     def doOperation(self, operation):
-        self.doDocComment(operation, '    ')
+        self.doDescription(operation, '    ')
         self.outLine('%s%s' % (
                 operation.signature,
                 ' =' if operation.hasImplementation
@@ -244,7 +244,7 @@ class UseModelPrinter(ModelPrinter):
             prefix_comment = '    '
             prefix_first = '    '
             prefix_rest  = '        '
-        self.doDocComment(invariant, '    ')
+        self.doDescription(invariant, '    ')
         self.outLine('%s%s%s %s:' % (
             prefix_first,
             self.kwd('existential ') if invariant.isExistential else '',
@@ -257,7 +257,7 @@ class UseModelPrinter(ModelPrinter):
         return self.output
 
     def doRole(self, role):
-        self.doDocComment(role, '    ')
+        self.doDescription(role, '    ')
         if role.name:
             rn = self.kwd('role ') + role.name
         else:
@@ -273,7 +273,7 @@ class UseModelPrinter(ModelPrinter):
         prefix_first = '        '
         prefix_rest  = '            '
         keyword='pre' if isinstance(condition,PreCondition) else 'post'
-        self.doDocComment(condition, '    ')
+        self.doDescription(condition, '    ')
         self.outLine('%s%s %s:' % (
             prefix_first,
             self.kwd(keyword),
