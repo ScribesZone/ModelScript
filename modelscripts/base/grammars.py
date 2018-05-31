@@ -22,7 +22,7 @@ from modelscripts.base.issues import (
     LocalizedSourceIssue,
     Levels
 )
-from modelscripts.megamodels.newsources import NewASTBasedModelSourceFile
+from modelscripts.megamodels.sources import ASTBasedModelSourceFile
 
 __all__= (
     'Grammar',
@@ -221,7 +221,7 @@ class ModelSourceAST(AST):
         )
 
 
-class ASTBasedModelSourceFile(NewASTBasedModelSourceFile):
+class ASTBasedModelSourceFile(ASTBasedModelSourceFile):
     """
     Source file with a model produced via an AST.
     """

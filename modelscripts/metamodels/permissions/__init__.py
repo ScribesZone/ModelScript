@@ -69,7 +69,7 @@ class FactorizedPermissionRule(PermissionRule):
 class UCPermissionModel(PermissionModel):
 
     def __init__(self):
-        # #type: (UsecaseModel, ClassModel, SourceFile) -> None
+        # #type: (UsecaseModel, ClassModel, OldSourceFile) -> None
         super(UCPermissionModel, self).__init__()
 
         self.usecaseModel=None #type: Optional[UsecaseModel]

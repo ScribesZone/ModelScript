@@ -5,5 +5,5 @@ import modelscripts.scripts.scenarios.parser
 import modelscripts.scripts.permissions.parser
 import modelscripts.scripts.objects.parser
 import modelscripts.scripts.glossaries.parser
-import modelscripts.scripts.classes.parser
+import modelscripts.scripts.use_classes.parser
 # import modelscripts.scripts.accesses.parser

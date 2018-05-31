@@ -39,7 +39,11 @@ class WithTextBlocks(object):
 
     @property
     def glossaryList(self):
-        #TODO: check how to get access to Megamodel globally
+        # TODO: improve the framework to simplify the code below
+        #   When using an importBox one can write this
+        #       return self.importBox.models('gl')
+        #   Unfortunately this is for sources only
+        #   The same should be available for models
         from modelscripts.megamodels import Megamodel
         GLOSSARY_METAMODEL = Megamodel.theMetamodel('gl')
         return self.usedModels(

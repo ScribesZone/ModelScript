@@ -13,7 +13,7 @@ MetamodelDependency='MetamodelDepndency'
 Model='Model'
 ModelDependency='ModelDependency'
 
-ModelSourceFile='ModelSourceFile'
+ModelSourceFile='ModelOldSourceFile'
 SourceFileDependency='SourceFileDependency'
 OptSource=Optional[ModelSourceFile]
 

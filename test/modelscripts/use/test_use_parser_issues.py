@@ -3,8 +3,8 @@ from __future__ import print_function
 
 import logging
 
-import modelscripts.scripts.classes.parser
-import modelscripts.scripts.classes.printer
+import modelscripts.scripts.use_classes.parser
+import modelscripts.scripts.use_classes.printer
 from modelscripts.base.modelprinters import (
     ModelSourcePrinter
 )

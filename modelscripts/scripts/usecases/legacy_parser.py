@@ -7,7 +7,7 @@ from __future__ import unicode_literals, print_function, absolute_import, divisi
 from typing import Text
 import re
 
-from modelscripts.megamodels.sources import ModelSourceFile
+from modelscripts.megamodels.oldsources import ModelOldSourceFile
 
 from modelscripts.scripts.megamodels.parser import (
     isMegamodelStatement
@@ -32,7 +32,7 @@ __all__=(
 DEBUG=0
 
 
-class UsecaseModelSource(ModelSourceFile):
+class UsecaseModelSource(ModelOldSourceFile):
     def __init__(self, usecaseFileName):
         #type: (Text) -> None
         super(UsecaseModelSource, self).__init__(

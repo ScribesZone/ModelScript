@@ -8,11 +8,11 @@ from modelscripts.base.printers import (
     Styles
 )
 
-from modelscripts.metamodels.textblocks import (
-    TextBlock,
-    PlainText,
-    TextReference
-)
+# from modelscripts.metamodels.textblocks import (
+#     TextBlock,
+#     PlainText,
+#     TextReference
+# )
 
 __all__=(
     'TextBlockPrinter'
@@ -48,6 +48,9 @@ class TextBlockPrinter(AbstractPrinter):
         return self.output
 
     def doTextToken(self, token):
+        from modelscripts.metamodels.textblocks import (
+            TextReference, PlainText
+        )
         if isinstance(token, TextReference):
             r=token
             if r.isOccurrence:

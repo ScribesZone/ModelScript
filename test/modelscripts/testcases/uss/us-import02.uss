@@ -1,5 +1,4 @@
-    #@Issue cck.UsecaseModel.ActorLimitsChecker 1
-    #@Issue cck.System.UsecaseLimitsChecker 1
+    #@Issue mgm.sem.Import.Allowed 1
     #@Issue level *
 
 usecase model Us_import02

@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from abc import ABCMeta, abstractproperty
-from modelscripts.base.sources import SourceElement
+from modelscripts.base.oldsources import SourceElement
 from typing import Optional, List
 
 __all__=(

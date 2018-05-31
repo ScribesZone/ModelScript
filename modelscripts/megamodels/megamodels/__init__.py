@@ -26,12 +26,12 @@ __all__=(
 )
 
 Metamodel= 'Metamodel'
-MetamodelDependency='MetamodelDepndency'
+MetamodelDependency='MetamodelDependency'
 
 # Model='Model'
 ModelDependency='ModelDependency'
 
-ModelSourceFile='ModelSourceFile'
+ModelSourceFile='ModelOldSourceFile'
 SourceFileDependency='SourceFileDependency'
 OptSource=Optional[ModelSourceFile]
 

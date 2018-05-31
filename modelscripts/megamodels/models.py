@@ -13,14 +13,15 @@ from modelscripts.megamodels.megamodels import (
     MegamodelElement
 )
 from modelscripts.megamodels.elements import ModelElement
+from modelscripts.metamodels.textblocks import WithTextBlocks
 # from modelscripts.megamodels.metamodels import Metamodel
 # from modelscripts.megamodels.sources import (
-#     ModelSourceFile
+#     ModelOldSourceFile
 # )
 # from modelscripts.megamodels.dependencies.models import ModelDependency
 # from modelscripts.megamodels.dependencies.metamodels import MetamodelDependency
 Metamodel='Metamodel'
-ModelSourceFile='ModelSourceFile'
+ModelSourceFile='ModelOldSourceFile'
 ModelDependency='ModelDependency'
 MetamodelDependency='MetamodelDependency'
 
@@ -32,7 +33,8 @@ DEBUG=1
 
 
 
-class Model(MegamodelElement, ModelElement, WithIssueModel):
+
+class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
     """
     The root class for all models.
 
@@ -52,15 +54,14 @@ class Model(MegamodelElement, ModelElement, WithIssueModel):
     def __init__(self):
         #type: () -> None
 
-
         self.name='' #type: Text
         # set later
         # If the model is from a sourceFile
         # then set by parseToFillImportBox
 
         self.source=None  #type: Optional[ModelSourceFile]
-        # Set later if build from a ModelSourceFile.
-        # Set in the constuctor of ModelSourceFile
+        # Set later if build from a ModelOldSourceFile.
+        # Set in the constuctor of ModelOldSourceFile
         MegamodelElement.__init__(self)
 
         WithIssueModel.__init__(self, parents=[])
@@ -112,7 +113,7 @@ class Model(MegamodelElement, ModelElement, WithIssueModel):
     @property
     def metrics(self):
         #type: ()->Metrics
-        return Metrics()
+        return self.textBlocksMetrics
 
     @property
     def fullMetrics(self):
@@ -126,9 +127,26 @@ class Model(MegamodelElement, ModelElement, WithIssueModel):
     def text(self):
         return self.metamodel.modelPrinterClass(self).do()
 
+    def resolve(self):
+        """
+        Resolve the model. This is useful for instance to create actual
+        references to model element by replacing symbols. What this
+        method do is metamodel dependent. All sub methods have to call
+        this method. This method solve references in text blocks.
+        """
+
+        def resolveTextBlocks():
+            for block in self.textBlocks:
+                block.resolve()
+
+        if DEBUG>=1:
+            _=(' RESOLVE '+self.label+' ').center(70, '.')
+            print('MOD: '+_)
+        resolveTextBlocks()
+
     def finalize(self):
         if DEBUG>=1:
-            _=(' finalize '+self.label+' ').center(70, '.')
+            _=(' FINALIZE '+self.label+' ').center(70, '.')
             print('MOD: '+_)
         self.check()
 
@@ -156,7 +174,7 @@ class Model(MegamodelElement, ModelElement, WithIssueModel):
         outdeps=self.outDependencies(
             targetMetamodel=targetMetamodel,
             metamodelDependency=metamodelDependency)
-        return [ dep.targetModel for dep in outdeps]
+        return [dep.targetModel for dep in outdeps]
 
     def clientModels(self,
                      targetMetamodel=None,
@@ -263,3 +281,9 @@ class Model(MegamodelElement, ModelElement, WithIssueModel):
                     % mm_dep.targetMetamodel)
             else:
                 pass
+
+    def __str__(self):
+        return '<model:%s>' % self.label
+
+    def __repr__(self):
+        return '<model:%s>' % self.label

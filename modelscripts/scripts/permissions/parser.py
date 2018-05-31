@@ -13,7 +13,7 @@ from modelscripts.base.issues import (
     LocalizedSourceIssue,
     Levels,
 )
-from modelscripts.megamodels.sources import ModelSourceFile
+from modelscripts.megamodels.oldsources import ModelOldSourceFile
 from modelscripts.metamodels.classes import (
     Entity,
     ClassModel,
@@ -30,14 +30,14 @@ from modelscripts.metamodels.permissions.sar import Subject, Action, Resource
 from modelscripts.metamodels.usecases import (
     UsecaseModel,
 )
-from modelscripts.scripts.megamodels.parser import (
+from modelscripts.scripts.megamodels.parser.oldparser import (
     isMegamodelStatement
 )
 
 
 DEBUG=0
 
-class PermissionModelSource(ModelSourceFile):
+class PermissionModelSource(ModelOldSourceFile):
 
     def __init__(self, fileName):
         #type: (Text)->None

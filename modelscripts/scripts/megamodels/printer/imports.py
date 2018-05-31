@@ -5,7 +5,7 @@ from modelscripts.base.printers import (
     AbstractPrinter,
     AbstractPrinterConfig
 )
-from modelscripts.megamodels.sources import (
+from modelscripts.megamodels.oldsources import (
     ImportBox,
     SourceImport
 )

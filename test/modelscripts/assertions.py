@@ -17,6 +17,45 @@ from test.modelscripts import (
 )
 from modelscripts.megamodels import Megamodel
 
+#------------------------------------------------------------------------
+# This package allows to check assertions against test case.
+# The test can be written like that.
+
+        # EXPECTED_ISSUES={
+        #     # 'gl-mega01.gls':    {
+        #     #     #'mgm.sem.Import.Allowed':1,
+        #     #     E:2,
+        #     #       level:'*',
+        #     #       'else':0
+        #     # },
+        # }
+        # EXPECTED_METRICS={
+        #     #     'myFile.gls': {
+        #     #         'myIssueLabel' : 3
+        #     #     }
+        # }
+        #
+        # def testGenerator_Assertions():
+        #     res = checkAllAssertionsForDirectory(
+        #         relTestcaseDir='gls',
+        #         extension=['.gls'],
+        #         expectedIssuesFileMap=EXPECTED_ISSUES,
+        #         expectedMetricsFileMap=EXPECTED_METRICS)
+        #
+        #     for (file , expected_issue_map, expected_metrics_map) in res:
+        #         yield (
+        #             checkValidIssues,
+        #             file,
+        #             glossaries.METAMODEL,
+        #             expected_issue_map,
+        #             expected_metrics_map)
+
+
+# If no assertions are provided in code then it is
+# assertions can be written in directly in files.
+#------------------------------------------------------------------------
+
+
 F=Levels.Fatal
 E=Levels.Error
 W=Levels.Warning

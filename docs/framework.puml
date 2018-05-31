@@ -1,0 +1,85 @@
+@startuml
+
+class WithIssueList {
+}
+WithIssueList - IssueBox
+
+WithIssueList <|--WithIssueModel
+class WithIssueModel {
+}
+
+WithIssueModel <|--SourceFile
+class SourceFile {
+    fileName
+    sourceLines
+    ?modelMapping
+
+}
+
+SourceFile <|-- ModelSourceFile
+class ModelSourceFile {
+    /modelKind
+    /modelName
+    /metamodel
+    /fullIssueBox
+}
+Model - "source" ModelSourceFile
+ModelSourceFile - ImportBox
+
+class ASTBasedModelSourceFile {
+    grammar
+    ast
+}
+ModelSourceFile <|-- ASTBasedModelSourceFile
+
+AST <|-- ModelSourceAST
+ASTBasedModelSourceFile - ModelSourceAST
+
+
+@enduml
+
+
+
+
+
+
+
+@startuml
+
+class Person {
+    name : String
+    age : Integer
+    salary : Real
+--
+    raiseSalary(rate:Real):Real
+}
+
+@enduml
+
+    Source file with a model produced via an AST.
+    """
+    def __init__(self, fileName, grammarFile):
+        #type: (Text, Text) -> None
+
+        self.grammar=Grammar(grammarFile)
+        #type:
+
+        self.ast=None  #type: Optional[ModelSourceAST]
+        # filled just below
+        # type: Optional[ModelSourceAST]
+        # self.ast=ModelSourceAST(self.grammar, self)
+
+@startuml
+
+class Company {
+{field}  name : String
+{field}  location : String
+--
+{method}    hire(p:Person)
+{method}    fire(p:Person)
+}
+
+
+
+Person  -  Company : WorksFor
+@enduml

@@ -6,7 +6,7 @@ import os
 from nose.plugins.attrib import attr
 
 import modelscripts.diagrams.plantuml.engine
-import modelscripts.scripts.classes.plantuml
+import modelscripts.scripts.use_classes.plantuml
 import modelscripts.use.use.parser
 from modelscripts.base.modelprinters import (
     ModelSourcePrinter
@@ -96,7 +96,7 @@ def check_isValid(testFile, plantUMLengine):
     assert use_file.isValid
     print('\n'*2+'='*80)
     print('Generating '+puml_file_path)
-    out = modelscripts.scripts.classes.plantuml.ClassDiagramPrinter(use_file.classModel)
+    out = modelscripts.scripts.use_classes.plantuml.ClassDiagramPrinter(use_file.classModel)
     print(out.do(outputFile=puml_file_path))
     print('\n'*2+'.'*80)
     plantUMLengine.generate(puml_file_path)

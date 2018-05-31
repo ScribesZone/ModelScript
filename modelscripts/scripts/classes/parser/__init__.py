@@ -1,16 +1,8 @@
 # coding=utf-8
 
-"""
-Generate a usecase model from a usecase script.
-"""
-
-from __future__ import (
-    unicode_literals, print_function, absolute_import, division
-)
-
-import os
-
+from __future__ import print_function
 from typing import Text
+import os
 
 from modelscripts.base.grammars import (
     # ModelSourceAST, \
@@ -20,10 +12,12 @@ from modelscripts.base.grammars import (
 from modelscripts.base.issues import (
     Levels,
 )
-from modelscripts.metamodels.usecases import (
-    UsecaseModel,
-    Actor,
-    Usecase,
+from modelscripts.metamodels.classes import (
+    ClassModel,
+    Class,
+    Attribute,
+    Association,
+    Role,
     METAMODEL
 )
 from modelscripts.megamodels.metamodels import Metamodel
@@ -36,12 +30,9 @@ from modelscripts.scripts.textblocks.parser import (
 )
 
 __all__=(
-    'UsecaseModelSource'
+    'ClassModelSource'
 )
 
-#FIXME: the name of the model is set to ''
-#       it should be set to the name of the file
-#       and this should be done in ModelOldSourceFile
 
 DEBUG=0
 
@@ -55,21 +46,21 @@ def icode(ilabel):
     return ISSUES[ilabel]
 
 
-class UsecaseModelSource(ASTBasedModelSourceFile):
+class ClassModelSource(ASTBasedModelSourceFile):
 
     def __init__(self, usecaseFileName):
         #type: (Text) -> None
         this_dir=os.path.dirname(os.path.realpath(__file__))
-        super(UsecaseModelSource, self).__init__(
+        super(ClassModelSource, self).__init__(
             fileName=usecaseFileName,
             grammarFile=os.path.join(this_dir, 'grammar.tx')
         )
 
 
     @property
-    def usecaseModel(self):
-        #type: () -> UsecaseModel
-        m=self.model #type: UsecaseModel
+    def classModel(self):
+        #type: () -> ClassModel
+        m=self.model #type: ClassModel
         return m
 
 
@@ -187,8 +178,8 @@ class UsecaseModelSource(ASTBasedModelSourceFile):
 
     def resolve(self):
         def resolve_super_actors():
-            names_defined = self.usecaseModel.actorNamed
-            for actor in self.usecaseModel.actors:
+            names_defined = self.classModel.actorNamed
+            for actor in self.classModel.actors:
                 for (isa, sa_name) in enumerate(
                         actor.superActors):
                     # try to solve the superactor name
@@ -208,7 +199,7 @@ class UsecaseModelSource(ASTBasedModelSourceFile):
                         )
                         del actor.superActors[isa]
 
-        super(UsecaseModelSource, self).resolve()
+        super(ClassModelSource, self).resolve()
         resolve_super_actors()
 
 
@@ -216,4 +207,10 @@ class UsecaseModelSource(ASTBasedModelSourceFile):
 
 
 
-METAMODEL.registerSource(UsecaseModelSource)
+
+
+
+
+
+
+METAMODEL.registerSource(ClassModelSource)

@@ -95,7 +95,7 @@ class Issue(object):
     def __init__(self, origin, level, message, code=None):
         #type: (WithIssueList, Level, 'Text', Optional['Text']) -> None
         """
-        Create a source error and add it to the given SourceFile.
+        Create a source error and add it to the given OldSourceFile.
         Raise FatalError if the error is fatal and processing could not
         continue.
         """
@@ -186,7 +186,7 @@ class LocalizedSourceIssue(Issue):
                  code=None,
                  column=None,
                  fileName=None):
-        #type: ('SourceFile', Level, Text, int, Optional[Text], Optional[int], Optional[Text]) -> None
+        #type: (OldSourceFile, Level, Text, int, Optional[Text], Optional[int], Optional[Text]) -> None
         """
         Create a localized source file and add it to
         the given source file.
@@ -212,7 +212,7 @@ class LocalizedSourceIssue(Issue):
         """
 
         def __adjust(sourceFile, line, column):
-            #type: ('SourceFile', int,int) -> Tuple[int,int]
+            #type: (OldSourceFile, int,int) -> Tuple[int,int]
             lines = sourceFile.sourceLines
             nblines = len(lines)
             if line == 0:
@@ -246,7 +246,7 @@ class LocalizedSourceIssue(Issue):
         )
 
         # self.sourceFile = sourceFile
-        # """ The source file. An instance of SourceFile. """
+        # """ The source file. An instance oOldSourceFilele. """
         #
         # self.fileName = (
         #     fileName if fileName is not None
@@ -311,7 +311,7 @@ class LocalizedSourceIssue(Issue):
 class IssueBox(object):
     """
     A collection of issues for a 'WithIssueList'
-    element (so far a Model or SourceFile).
+    element (so far a Model oOldSourceFilele).
     IssueBoxes can be nested following the import
     graphs. Issue boxes also provide some query mecanisms.
     """
@@ -320,7 +320,7 @@ class IssueBox(object):
         #type: (Any, List[IssueBox]) -> None
 
 
-        self.origin=origin #type: Union['SourceFile', 'Model']
+        self.origin=origin #type: Union[OldSourceFile, 'Model']
         """
         The container of the issue box, typically a 
         source file or a model.

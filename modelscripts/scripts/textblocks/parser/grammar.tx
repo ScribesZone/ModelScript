@@ -1,0 +1,43 @@
+
+// ================== TextBlock grammar ===========================
+
+TextBlock:
+     textLines *= TextLine
+;
+
+TextLine[noskipws]:
+    /\s*\|/ textTokens *= TextToken EndOfTextLine
+;
+
+TextToken:
+      TextReference
+    | PlainText
+;
+
+TextReference:
+    '`' text=/[^`]*/ '`'
+;
+
+PlainText:
+    text=/[^`\|]*/
+;
+
+Comment:
+    /#.*$/
+;
+
+o_:
+    '{_'
+;
+
+_o:
+    '}_'
+;
+
+X:
+    ';_'
+;
+
+EndOfTextLine:
+    /\|_;_/
+;

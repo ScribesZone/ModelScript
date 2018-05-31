@@ -1,13 +1,15 @@
 # coding=utf-8
 """
-Manage "SourceImports" and "ImportBoxes". A SourceImport
-is a concrete implementation of "SourceFileDependency".
-It is materialized by a statement like "import usecase
-model from "<file>"
+Manage "SourceImports" and "ImportBoxes".
+
+A SourceImport is a concrete implementation of
+"SourceFileDependency". It is materialized by a
+statement like "import usecase model from "<file>"
 (the actual format is defined in the megamodel parser).
+
 A import box is basically a list of source import.
 
-Actually import source files, that is parse them
+This module actually import source files: is parse them
 and bound them in "SourceImport".
 """
 
@@ -15,8 +17,8 @@ from typing import Dict, Text, List, Optional
 from abc import ABCMeta
 from modelscripts.megamodels.dependencies import Dependency
 from modelscripts.megamodels.dependencies.models import ModelDependency
-#from modelscripts.megamodels.sources import ModelSourceFile
-ModelSourceFile='ModelSourceFile'
+#from modelscripts.megamodels.sources import ModelOldSourceFile
+ModelSourceFile='ModelOldSourceFile'
 
 #from modelscripts.scripts.megamodels.parser import ImportStatement
 ImportStatement='ImportStatement'
@@ -42,7 +44,8 @@ __all__ = (
 
 class SourceFileDependency(Dependency):
     """
-    A dependency between source
+    A pair of source files representing a dependency between
+    these two files.
     """
     __metaclass__ = ABCMeta
 
@@ -85,8 +88,9 @@ class SourceFileDependency(Dependency):
 
 class SourceImport(SourceFileDependency):
     """
-    A SourceFileDependency with additionaly the
-    source import statement located the source in the form
+    A SourceFileDependency with its concrete representation
+    in the term of the source import statement
+    located the source in the form
     of a ImportStatement created by the megamodel parser.
     """
     def __init__(self, importStmt):
@@ -94,13 +98,12 @@ class SourceImport(SourceFileDependency):
         """
         Create an SourceImport and actually perform the
         actuel import of target source file. If the target
-        source file is not already registered in
-        the megamodel
+        source file is not already registered in the megamodel
         then the target is
-        read and a ModelSourceFile is therefore created.
+        read and a ModelOldSourceFile is therefore created.
         This possibly could generate some issues but these
-        are stored in the target ModelSourceFile.
-        The _issueBox of the importing ModelSourceFile is
+        are stored in the target ModelOldSourceFile.
+        The _issueBox of the importing ModelOldSourceFile is
         linked to the one of the target. This allows to
         source to "see" issues produced in the target.
         """
@@ -111,6 +114,7 @@ class SourceImport(SourceFileDependency):
         self.importBox=None #type: Optional[ImportBox]
         """ Back reference to the containing import box """
         # filled in ImportBox.addImport
+
         try:
             # already registered
             from modelscripts.megamodels import Megamodel
@@ -122,7 +126,7 @@ class SourceImport(SourceFileDependency):
             importedSourceFile=self._doImport(importStmt)
 
         super(SourceImport, self).__init__(
-            self.importStmt.sourceFile,
+            self.importStmt.modelSourceFile,
             importedSourceFile
         )
 
@@ -130,6 +134,7 @@ class SourceImport(SourceFileDependency):
 
         if self.importedSourceFile.issues.bigIssues:
             Issue(
+                code='iss.source.import.fatal',
                 origin=self.importingSourceFile,
                 level=Levels.Fatal,
                 message=
@@ -158,9 +163,6 @@ class SourceImport(SourceFileDependency):
         """
         self.importingSourceFile.issues.addParent(
             self.importedSourceFile.issues)
-        if DEBUG>=9:
-            print('DEBUG: aaa'+
-                  str(self.importingSourceFile.issues))
 
 
     def __repr__(self):
@@ -189,15 +191,17 @@ class ModelDescriptor(object):
         """
         # will be set by parseToFillImportBox
 
-        self._modelKind=None #type: Optional[Text]
+        self._modelKinds=[] #type: List[Text]
         """ 
-        Model kind of the importing model. Could be for
-        instance "conceptual" or "preliminary".
+        Model kinds of the importing model. A list of label like
+        instance "draft", "conceptual" or "preliminary".
         This information is found in the model 
-        declaration statement. It will be set by
+        definition statement. It will be set by
         the method parseToFillImportBox() in the model source
         which call setModelInfo().
         """
+
+        self._modelDescription=None  #type: Optional[Text]
 
     @property
     def modelName(self):
@@ -205,16 +209,17 @@ class ModelDescriptor(object):
         return self._modelName
 
     @property
-    def modelKind(self):
-        # type: () -> Text
-        return self._modelKind
+    def modelKinds(self):
+        # type: () -> List[Text]
+        return self._modelKinds
 
-    def setModelInfo(self, modelName, modelKind):
+    def setModelInfo(self, modelName, modelKinds, modelDescription):
         """
         Set description.
         """
         self._modelName = modelName
-        self._modelKind = modelKind
+        self._modelKinds = modelKinds
+        self._modelDescription = modelDescription
 
 
 
@@ -236,7 +241,7 @@ class ImportBox(ModelDescriptor):
         #type: (ModelSourceFile) -> None
         """
         Creates an empty ImportBox for the given
-        ModelSourceFile.
+        ModelOldSourceFile.
         """
 
         super(ImportBox, self).__init__()
@@ -255,7 +260,7 @@ class ImportBox(ModelDescriptor):
         This attribute is private. Use instead
         addImport, imports, models, etc.
         """
-        # ??? type: Dict[Text, List[ModelSourceFile]] <-- probably an error
+        # ??? type: Dict[Text, List[ModelOldSourceFile]] <-- probably an error
 
 
 
@@ -266,23 +271,25 @@ class ImportBox(ModelDescriptor):
         """
         List of all SourceImports starting from this
         ImportBox, that is, from the corresponding.
-        ModelSourceFile.
+        ModelOldSourceFile.
         """
         return [
             i for ilist in self._importsByMetamodelId.values()
                 for i in ilist ]
 
-    def setModelInfo(self, modelName, modelKind):
+    def setModelInfo(self, modelName, modelKinds, modelDescription):
         super(ImportBox, self).setModelInfo(
             modelName,
-            modelKind)
+            modelKinds,
+            modelDescription)
         # Fill as well the model box. It cannot be derived
         # as models can be build without any source
         # This cannot be avoided via a property for instance
         # because the model may exist independently from
         # the source. KKK
         self.modelSource.model.name = modelName
-        self.modelSource.model.kind = modelKind
+        self.modelSource.model.description = modelDescription
+        self.modelSource.model.kinds = modelKinds
 
 
     def addImport(self, sourceImport_):
@@ -290,6 +297,7 @@ class ImportBox(ModelDescriptor):
         """
         Add a source import to this box
         """
+        print('CC'*20)
         m2id=sourceImport_.importStmt.metamodel.id
         if m2id not in self._importsByMetamodelId:
             self._importsByMetamodelId[m2id]=[]

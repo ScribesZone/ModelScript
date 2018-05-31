@@ -6,7 +6,7 @@ from __future__ import print_function
 
 from modelscripts.use.use.parser import UseModelSource
 from modelscripts.metamodels.classes import METAMODEL
-from modelscripts.scripts.classes.preprocessor import (
+from modelscripts.scripts.use_classes.preprocessor import (
     ClsToUsePreprocessor
 )
 

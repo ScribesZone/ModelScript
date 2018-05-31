@@ -1,0 +1,41 @@
+
+// ================== Megamodel grammar ===========================
+
+
+MegamodelPart:
+    modelDefinition = ModelDefinition
+    modelImports *= ModelImport
+;
+
+ModelDefinition:
+    labels += NotKeywordID
+    'model'
+    (name = ID)?
+    (o_
+        textBlock = TextBlock
+    _o)? X
+;
+
+Keyword:
+      'model'
+    | 'import'
+    | 'include'
+    | 'from'
+;
+
+NotKeywordID:
+    !Keyword ID
+;
+
+ModelImport:
+    modifier = ImportModifier
+    targetMetamodel = ID
+    'model'
+    'from' targetPath = STRING  //TODO: make this optional
+    X
+;
+
+ImportModifier:
+      'import'
+    | 'include'
+;

@@ -39,7 +39,7 @@ __all__=(
     'isMegamodelStatement',
 )
 
-ModelSourceFile='ModelSourceFile'
+ModelSourceFile='ModelOldSourceFile'
 
 DEBUG=0
 
@@ -412,7 +412,7 @@ def _matchModelDefinition(
         )
 
 
-def parseToFillImportBox(modelSource,
+def newParseToFillImportBox(modelSource,
                          noSymbolChecking=False,
                          recognizeUSEOCLNativeModelDefinition=False):
     """
@@ -424,18 +424,7 @@ def parseToFillImportBox(modelSource,
 
     When a import is found then add a SourceImport
 
-    Generate an issue
-    - when there is more than one model definition
-
-    recognizeUSEOCLNativeModelDefinition is a patch to
-    parse line like "model <name>" in use file. This patch
-    could be remove when a generator will be provided.
-
-
-
     This method can raise an exception FatalError
-
-
     """
     assert modelSource.sourceLines is not None
     assert modelSource.model is not None

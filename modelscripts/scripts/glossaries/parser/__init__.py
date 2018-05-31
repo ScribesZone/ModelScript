@@ -3,27 +3,24 @@ from __future__ import unicode_literals, print_function, absolute_import, divisi
 from typing import Text, Union, Optional, Dict, List
 import re
 import os
-from modelscripts.scripts.megamodels.parser import (
-    isMegamodelStatement
-)
+# from modelscripts.scripts.megamodels.parser import (
+#     isMegamodelStatement
+# )
 from modelscripts.metamodels.glossaries import (
     GlossaryModel,
     Package,
     Entry,
     METAMODEL,
 )
+from modelscripts.megamodels.sources import (
+    ASTBasedModelSourceFile
+)
 from modelscripts.base.grammars import (
-    ModelSourceAST,
-    ASTBasedModelSourceFile,
     ASTNodeSourceIssue
 )
 from modelscripts.base.issues import (
     Levels,
 )
-from modelscripts.metamodels.textblocks import (
-    TextBlock,
-)
-# from modelscripts.scripts.textblocks.parser import TextBlockSource
 from modelscripts.megamodels.metamodels import Metamodel
 from modelscripts.scripts.textblocks.parser import (
     astTextBlockToTextBlock
@@ -47,6 +44,12 @@ class GlossaryModelSource(ASTBasedModelSourceFile):
             fileName=glossaryFileName,
             grammarFile=os.path.join(this_dir, 'grammar.tx')
         )
+        # although this is not specified the glossary model
+        # depends on itelf
+        self.model.glossaryModelUsed=self.model
+        if self.isValid and self.model is not None and self.model.glossaryModelUsed:
+            self.resolve()
+
 
     @property
     def metamodel(self):
@@ -59,13 +62,7 @@ class GlossaryModelSource(ASTBasedModelSourceFile):
         m=self.model #type: GlossaryModel
         return m
 
-
-    def parseToFillModel(self):
-        self._parse_main_body()
-        if self.glossaryModel and self.isValid:
-            self._resolve()
-
-    def _parse_main_body(self):
+    def fillModel(self):
 
         def _ensurePackage(name):
             if name in self.glossaryModel.packageNamed:
@@ -74,11 +71,8 @@ class GlossaryModelSource(ASTBasedModelSourceFile):
                 p=Package(self.glossaryModel, name)
                 return p
 
-        self.ast = ModelSourceAST(self.grammar, self)
 
-        self.glossaryModel.docComment = astTextBlockToTextBlock(
-            container=self.glossaryModel,
-            astTextBlock=self.ast.model.textBlock)
+
 
         for ast_entry in self.ast.model.entries:
             if ast_entry.package is None:
@@ -118,32 +112,10 @@ class GlossaryModelSource(ASTBasedModelSourceFile):
                     ),
                     astNode=ast_entry
                 )
-                entry.docComment=astTextBlockToTextBlock(
+                entry.description=astTextBlockToTextBlock(
                     container=entry,
                     astTextBlock=ast_entry.textBlock)
 
-
-
-    def _resolve(self):
-        """
-        For all entry description in the glossary
-        resolve the description with this glossary.
-        """
-        for domain in self.glossaryModel.packageNamed.values():
-            for entry in domain.entryNamed.values():
-                entry.description.resolve()
-                # description_parser= (
-                #     self.descriptionBlockSourcePerEntry[entry])
-                # # lno=self.__descriptionFirstLineNoPerEntry[entry]
-                # description_parser.parseToFillModel(
-                #     container=entry,
-                #     glossary=self.model
-                # )
-                # if not description_parser.isValid:
-                #     # TODO: check what should be done
-                #     raise ValueError('Error in parsing Text source')
-                # else:
-                #     entry.description=description_parser.model
 
 
 

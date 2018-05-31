@@ -34,7 +34,7 @@ from modelscripts.base.preprocessors import (
 )
 
 from modelscripts.base.parsers import DocCommentLines
-from modelscripts.megamodels.sources import ModelSourceFile
+from modelscripts.megamodels.oldsources import ModelOldSourceFile
 
 from modelscripts.megamodels.metamodels import Metamodel
 from modelscripts.base.issues import (
@@ -75,7 +75,7 @@ def _removeExtraSpaces(x):
     return ' '.join(x.split())
 
 
-class UseModelSource(ModelSourceFile):
+class UseModelSource(ModelOldSourceFile):
     """
     Abstraction of ``.use`` source file.
     This source file can be valid or not. In this later case

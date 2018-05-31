@@ -52,7 +52,7 @@ from modelscripts.use.engine import USEEngine
 
 from modelscripts.base.parsers import DocCommentLines
 from modelscripts.base.preprocessors import Preprocessor
-from modelscripts.megamodels.sources import ModelSourceFile
+from modelscripts.megamodels.oldsources import ModelOldSourceFile
 
 from modelscripts.base.issues import (
     Issue,
@@ -71,7 +71,7 @@ from modelscripts.metamodels.glossaries import (
     GlossaryModel,
 )
 
-from modelscripts.scripts.classes.parser import (
+from modelscripts.scripts.use_classes.parser import (
     ClassModelSource
 )
 from modelscripts.metamodels.classes import (
@@ -119,7 +119,7 @@ from modelscripts.metamodels.permissions import (
     PermissionModel
 )
 
-from modelscripts.scripts.megamodels.parser import (
+from modelscripts.scripts.megamodels.parser.oldparser import (
     isMegamodelStatement
 )
 
@@ -140,7 +140,7 @@ def isEmptySoilFile(file):
     return match is None
 
 
-class _SexOrSoilSource(ModelSourceFile):
+class _SexOrSoilSource(ModelOldSourceFile):
     __metaclass__ = ABCMeta
 
     def __init__(self,
