@@ -1,3 +1,5 @@
-#@Issue src.syn 1
+    #@Issue src.syn 1
+    #@Issue level *
+
 glossary model
 glossary model
