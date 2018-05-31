@@ -9,6 +9,11 @@ TEST_CASES_DIRECTORY = os.path.join(
 BUILD_DIRECTORY = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), 'build')
 
+#=====================================================================
+#                      Directory and files
+#=====================================================================
+
+
 def _getDir(absolutePath, relDir, ensure=True):
     dir=os.path.join(absolutePath, relDir)
     if not os.path.exists(dir):
