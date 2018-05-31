@@ -12,9 +12,9 @@ from modelscripts.base.printers import (
 )
 from modelscripts.base.styles import Styles
 
-from modelscripts.metamodels.textblocks import (
-    TextBlock
-)
+# from modelscripts.metamodels.textblocks import (
+#     TextBlock
+# )
 from modelscripts.scripts.textblocks.printer import (
     TextBlockPrinter
 )
@@ -123,6 +123,8 @@ class ModelPrinter(ContentPrinter):
         return self.output
 
     def doModelTextBlock(self, textBlock):
+        from modelscripts.metamodels.textblocks import TextBlock
+
         if textBlock is not None:
             assert isinstance(textBlock, TextBlock)
             s = TextBlockPrinter(textBlock).do()
