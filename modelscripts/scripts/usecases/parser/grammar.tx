@@ -1,8 +1,5 @@
 UsecaseModel:
-    status=ModelStatus? modelKind=ModelKind? 'usecase' 'model' (name=ID) ?
-    ('{'
-        docBlock=DocBlock
-    '}')? ';'
+    megamodelPart = MegamodelPart
     declarations *= Declaration
 ;
 
@@ -26,9 +23,9 @@ Actor:
     (kind=ActorKind) ?
     'actor' name=ID
     ('<' superActors *= ID[',']) ?
-    ('{'
-        docBlock=DocBlock
-    '}')? ';'
+    (o_
+        textBlock=TextBlock
+    _o)? X
 ;
 
 ActorKind:
@@ -37,20 +34,20 @@ ActorKind:
 
 Usecase:
     'usecase' name=ID
-    ('{'
-        docBlock=DocBlock
-    '}')? ';'
+    (o_
+        textBlock=TextBlock
+    _o)? X
 ;
 
 
 Interactions:
-    'interactions' '{'
+    'interactions' o_
         interactions *= Interaction
-    '}' ';'
+    _o X
 ;
 
 Interaction:
-    Article? actor=ID Verb? usecase=ID ';'
+    Article? actor=ID Verb? usecase=ID X
 ;
 
 Article:
@@ -59,19 +56,4 @@ Article:
 
 Verb:
     'can' | 'peut'
-;
-
-
-
-DocBlock:
-     docLines *= DocLine
-;
-
-DocLine:
-    text=/\|.*\|;/
-;
-
-
-Comment:
-    /#.*$/
 ;
