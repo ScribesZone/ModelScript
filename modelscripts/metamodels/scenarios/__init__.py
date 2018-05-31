@@ -134,7 +134,7 @@ class ScenarioTopLevelElement(SourceModelElement):
 
     def __init__(self, model, name,
                  code=None, lineNo=None,
-                 docComment=None, eolComment=None):
+                 description=None, eolComment=None):
         self.scenario=model
         #type: ScenarioModel
         SourceModelElement.__init__(self,
@@ -142,19 +142,19 @@ class ScenarioTopLevelElement(SourceModelElement):
             name=name,
             code=code,
             lineNo=lineNo,
-            docComment=docComment,
+            description=description,
             eolComment=eolComment)
 
 
 class ActorInstance(ScenarioTopLevelElement, Subject):
     def __init__(self, model, name, actor,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
+                 code=None, lineNo=None, description=None, eolComment=None):
         ScenarioTopLevelElement.__init__(self,
             model=model,
             name=name,
             code=code,
             lineNo=lineNo,
-            docComment=docComment,
+            description=description,
             eolComment=eolComment)
 
         self.actor=actor
@@ -169,13 +169,13 @@ class ActorInstance(ScenarioTopLevelElement, Subject):
 class SystemInstance(ScenarioTopLevelElement): #TODO: check if Resource
     def __init__(self, model, name, system,
                  code=None, lineNo=None,
-                 docComment=None, eolComment=None):
+                 description=None, eolComment=None):
         ScenarioTopLevelElement.__init__(self,
             model=model,
             name=name,
             code=code,
             lineNo=lineNo,
-            docComment=docComment,
+            description=description,
             eolComment=eolComment)
 
         self.system = system

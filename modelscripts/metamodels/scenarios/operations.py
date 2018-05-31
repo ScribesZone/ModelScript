@@ -61,12 +61,12 @@ class Operation(SourceModelElement, Subject):
     def __init__(self,
         block,
         name=None,
-        code=None, lineNo=None, docComment=None, eolComment=None):
+        code=None, lineNo=None, description=None, eolComment=None):
         SourceModelElement.__init__(self,
             model=block.model,
             name=name,
             code=code, lineNo=lineNo,
-            docComment=docComment, eolComment=eolComment)
+            description=description, eolComment=eolComment)
         self.block=block
         self.block.operations.append(self)
 
@@ -88,8 +88,8 @@ class ReadOperation(Operation):
 
     def __init__(self,
                  block, name=None,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
-        super(ReadOperation, self).__init__(block, name, code, lineNo, docComment, eolComment)
+                 code=None, lineNo=None, description=None, eolComment=None):
+        super(ReadOperation, self).__init__(block, name, code, lineNo, description, eolComment)
 
 
 class UpdateOperation(Operation):
@@ -98,8 +98,8 @@ class UpdateOperation(Operation):
 
     def __init__(self,
         block, name=None,
-        code=None, lineNo=None, docComment=None, eolComment=None):
-        super(UpdateOperation, self).__init__(block, name, code, lineNo, docComment, eolComment)
+        code=None, lineNo=None, description=None, eolComment=None):
+        super(UpdateOperation, self).__init__(block, name, code, lineNo, description, eolComment)
 
 
 #--------------------------------------------------------------
@@ -111,8 +111,8 @@ class ObjectCreation(UpdateOperation):
     """
     def __init__(self, block,
                  variableName, class_, id=None,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
-        super(ObjectCreation, self).__init__(block, variableName, code, lineNo, docComment, eolComment)
+                 code=None, lineNo=None, description=None, eolComment=None):
+        super(ObjectCreation, self).__init__(block, variableName, code, lineNo, description, eolComment)
 
         self.class_=class_
         # type: Class
@@ -127,15 +127,15 @@ class ObjectDestruction(UpdateOperation):
     """
     def __init__(self, block,
                  variableName,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
-        super(ObjectDestruction, self).__init__(block, variableName, code, lineNo, docComment, eolComment)
+                 code=None, lineNo=None, description=None, eolComment=None):
+        super(ObjectDestruction, self).__init__(block, variableName, code, lineNo, description, eolComment)
 
 
 class LinkCreation(UpdateOperation):
     def __init__(self, block,
                  names, association, id=None,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
-        super(LinkCreation, self).__init__(block, None, code, lineNo, docComment, eolComment)
+                 code=None, lineNo=None, description=None, eolComment=None):
+        super(LinkCreation, self).__init__(block, None, code, lineNo, description, eolComment)
 
         self.names=names #type:List[Text]
 
@@ -148,8 +148,8 @@ class LinkCreation(UpdateOperation):
 class LinkDestruction(UpdateOperation):
     def __init__(self, block,
                  names, association,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
-        super(LinkDestruction, self).__init__(block, None, code, lineNo, docComment, eolComment)
+                 code=None, lineNo=None, description=None, eolComment=None):
+        super(LinkDestruction, self).__init__(block, None, code, lineNo, description, eolComment)
 
         self.names=names
 
@@ -160,8 +160,8 @@ class LinkDestruction(UpdateOperation):
 class LinkObjectCreation(UpdateOperation):
     def __init__(self, block,
                  variableName=None, names=(), id=None, associationClass=None,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
-        super(LinkObjectCreation, self).__init__(block, variableName, code, lineNo, docComment, eolComment)
+                 code=None, lineNo=None, description=None, eolComment=None):
+        super(LinkObjectCreation, self).__init__(block, variableName, code, lineNo, description, eolComment)
         # self.name can be None
         self.names = names
         self.id = id
@@ -175,8 +175,8 @@ class AttributeAssignment(UpdateOperation):
                  variableName,
                  attributeName,
                  expression,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
-        super(AttributeAssignment, self).__init__(block, None, code, lineNo, docComment, eolComment)
+                 code=None, lineNo=None, description=None, eolComment=None):
+        super(AttributeAssignment, self).__init__(block, None, code, lineNo, description, eolComment)
 
         self.variableName = variableName
         self.attributeName = attributeName
@@ -193,14 +193,14 @@ class Query(ReadOperation):
     def __init__(self, block,
                  expression,
                  verbose=False,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
+                 code=None, lineNo=None, description=None, eolComment=None):
         super(Query, self).__init__(
             block=block,
             name=None,
             code=code,
             lineNo=
             lineNo,
-            docComment=docComment, eolComment=eolComment)
+            description=description, eolComment=eolComment)
 
         self.expression = expression
         self.verbose = verbose
@@ -209,13 +209,13 @@ class AssertQuery(Query):
     def __init__(self, block,
                  expression,
                  verbose=False,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
+                 code=None, lineNo=None, description=None, eolComment=None):
         super(AssertQuery, self).__init__(
             block=block,
             expression=expression,
             verbose=verbose,
             code=code, lineNo=lineNo,
-            docComment=docComment, eolComment=eolComment)
+            description=description, eolComment=eolComment)
 
 
 
@@ -224,8 +224,8 @@ class Check(ReadOperation):
                  verbose=False,
                  showFaultyObjects=False,
                  all=True,
-                 code=None, lineNo=None, docComment=None, eolComment=None):
-        super(Check, self).__init__(block, None, code, lineNo, docComment, eolComment)
+                 code=None, lineNo=None, description=None, eolComment=None):
+        super(Check, self).__init__(block, None, code, lineNo, description, eolComment)
 
         self.verbose = verbose
         self.showFaultyObjects = showFaultyObjects

@@ -474,8 +474,8 @@ class _USEImplementedCheckEvaluation(CheckEvaluation):
 #                  showFaultyObjects=False,
 #                  checkEvaluation=None,
 #                  all=True,
-#                  code=None, lineNo=None, docComment=None, eolComment=None):
-#         super(_CheckEvaluationProxy, self).__init__(block, None, code, lineNo, docComment, eolComment)
+#                  code=None, lineNo=None, description=None, eolComment=None):
+#         super(_CheckEvaluationProxy, self).__init__(block, None, code, lineNo, description, eolComment)
 #
 #         self.verbose = verbose
 #         self.showFaultyObjects = showFaultyObjects
@@ -754,8 +754,8 @@ class _USEImplementedAssertQueryEvaluation(AssertQueryEvaluation):
 #                  expression,
 #                  verbose=False,
 #                  queryEvaluation=None,
-#                  code=None, lineNo=None, docComment=None, eolComment=None):
-#         super(Query, self).__init__(block, None, code, lineNo, docComment, eolComment)
+#                  code=None, lineNo=None, description=None, eolComment=None):
+#         super(Query, self).__init__(block, None, code, lineNo, description, eolComment)
 #
 #         self.expression = expression
 #         self.verbose = verbose

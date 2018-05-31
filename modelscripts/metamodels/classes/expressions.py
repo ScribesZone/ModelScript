@@ -38,11 +38,11 @@ class Condition(PackagableElement):
     __metaclass__ = abc.ABCMeta
     def __init__(
             self, name, model, class_, expression, code=None,
-            lineNo=None, docComment=None, eolComment=None):
+            lineNo=None, description=None, eolComment=None):
         #type: (Optional[Text], ClassModel, Class, Text, Optional[Text], Optional[int], Optional[Text], Optional[Text]) -> None
         super(Condition, self).__init__(
             name, model, code=code,
-            lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+            lineNo=lineNo, description=description, eolComment=eolComment)
         self.class_ = class_  # Text resolved in Class  # could be null as some invariants are toplevel
         self.expression = expression
         # add it so that it can be resolved later
@@ -57,11 +57,11 @@ class OperationCondition(Condition):
     def __init__(
             self, name, model, class_, operation, expression,
             code=None,   # FIXME: operation could be unknowed
-            lineNo=None, docComment=None, eolComment=None ):
+            lineNo=None, description=None, eolComment=None ):
         #type: (Optional[Text], ClassModel, Class,  Operation, Text, Optional[Text], Optional[int], Optional[Text], Optional[Text]) -> None
         super(OperationCondition, self).__init__(
             name, model, class_=class_, expression=expression, code=code,
-            lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+            lineNo=lineNo, description=description, eolComment=eolComment)
         self.operation=operation # the signature of the operation, then resolved as Operation
         # # store the condition in the operation
         # operation.conditionNamed[name] = self
@@ -74,11 +74,11 @@ class PreCondition(OperationCondition):
     """
     def __init__(self,
                  name, model, class_, operation, expression, code=None,
-                 lineNo=None, docComment=None, eolComment=None):
+                 lineNo=None, description=None, eolComment=None):
         super(PreCondition, self).__init__(
             name, model, class_=class_, operation=operation, expression=expression,
             code=code,
-            lineNo=lineNo, docComment=docComment, eolComment=eolComment
+            lineNo=lineNo, description=description, eolComment=eolComment
         )
 
 
@@ -89,11 +89,11 @@ class PostCondition(OperationCondition):
     """
     def __init__(self,
                  name, model, class_, operation, expression, code=None,
-                 lineNo=None, docComment=None, eolComment=None):
+                 lineNo=None, description=None, eolComment=None):
         super(PostCondition, self).__init__(
             name, model, class_=class_, operation=operation, expression=expression,
             code=code,
-            lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+            lineNo=lineNo, description=description, eolComment=eolComment)
 
 
 class Invariant(Condition):
@@ -105,10 +105,10 @@ class Invariant(Condition):
                  additionalVariables = (),
                  toplevelDefined=True,
                  isExistential=False,
-                 lineNo=None, docComment=None, eolComment=None):
+                 lineNo=None, description=None, eolComment=None):
         super(Invariant, self).__init__(
             name, model, class_=class_, expression=expression, code=code,
-            lineNo=lineNo, docComment=docComment, eolComment=eolComment)
+            lineNo=lineNo, description=description, eolComment=eolComment)
         self.variable = variable
         self.additionalVariables = additionalVariables
         self.toplevelDefined=toplevelDefined,
