@@ -30,7 +30,7 @@ build/
 *.scs.dot
 *.scs.dot.png
 
-
+*.svg
 
 _ARCHIVES/
 .venv/
