@@ -36,10 +36,9 @@ class ImportBoxPrinter(AbstractPrinter):
 
 
     def doModelDefinition(self, importBox):
-        model_kind=('' if not importBox.modelKind
-                    else self.kwd(importBox.modelKind))
+        model_kinds=[self.kwd(mk) for mk in importBox.modelKinds]
         words=(
-            model_kind,
+            model_kinds,
             self.kwd(importBox.modelSource.metamodel.label),
             self.kwd('model'),
             importBox.modelName)
@@ -61,6 +60,7 @@ class ImportBoxPrinter(AbstractPrinter):
                     import_.importStmt.literalTargetFileName
             ))
         except Exception as e:
+            s='**Error** in doSourceImport'
             print(e)
         else:
             print(s)
@@ -69,4 +69,3 @@ class ImportBoxPrinter(AbstractPrinter):
             lineNo=import_.importStmt.lineNo
         )
         return self.output
-
