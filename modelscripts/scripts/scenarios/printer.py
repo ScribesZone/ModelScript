@@ -141,8 +141,8 @@ class ScenarioModelPrinter(ModelPrinter):
         self.scenarioModel(self.theModel)
         return self.output
 
-    # def docComment(self, source_element, indent):
-    #     c = source_element.docComment   # multiple lines
+    # def description(self, source_element, indent):
+    #     c = source_element.description   # multiple lines
     #     if c is not None:
     #         for line in c:
     #             self.out(indent+'--'+line+'\n')

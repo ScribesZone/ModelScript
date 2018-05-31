@@ -40,8 +40,8 @@ class ObjectDiagramPrinter(object):
     def out(self, s):
         self.output += s
 
-    # def docComment(self, source_element, indent):
-    #     c = source_element.docComment   # multiple lines
+    # def description(self, source_element, indent):
+    #     c = source_element.description   # multiple lines
     #     if c is not None:
     #         for line in c:
     #             self.out(indent+'--'+line+'\n')
