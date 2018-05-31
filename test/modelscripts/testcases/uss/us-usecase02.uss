@@ -1,0 +1,15 @@
+    #@Issue us.syn.Usecase.Twice 3
+    #@Issue cck.Actor.LazyActorChecker 1
+    #@Issue cck.Usecase.UnusedUsecaseChecker 3
+    #@Issue level *
+
+usecase model Us_usecase02
+
+actor Manager
+usecase PrendreUnCafe
+usecase PrendreUnCroissant
+
+usecase PrendreUnCroissant
+usecase Prendre
+usecase Prendre
+usecase Prendre

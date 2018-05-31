@@ -1,5 +1,7 @@
+
+
 # this is a useless comment
-usecase model
+usecase model Us_comment01
     | some doc comment
     | with various lines
     | and more ...
@@ -15,3 +17,11 @@ usecase IncreaseSalary
     | some doc comment
     | with various lines
     | and more ...
+
+usecase DecreaseSalary
+usecase FreezeSalary
+
+interactions
+    Employee IncreaseSalary
+    Employee DecreaseSalary
+    Employee FreezeSalary

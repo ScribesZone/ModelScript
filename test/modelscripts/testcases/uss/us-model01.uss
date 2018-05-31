@@ -1,1 +1,5 @@
-usecase model
+    #@Issue cck.UsecaseModel.ActorLimitsChecker 1
+    #@Issue cck.System.UsecaseLimitsChecker 1
+    #@Issue level *
+
+usecase model Us_model01

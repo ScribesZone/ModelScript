@@ -1,4 +1,8 @@
-usecase model
+    #@Issue cck.UsecaseModel.ActorLimitsChecker 1
+    #@Issue cck.Usecase.UnusedUsecaseChecker 3
+    #@Issue level *
+
+usecase model Us_usecase01
 
 usecase RentACar
 usecase RentTwoCar

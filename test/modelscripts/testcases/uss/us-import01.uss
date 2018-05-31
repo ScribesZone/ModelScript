@@ -1,0 +1,9 @@
+usecase model Us_import01
+    | This is a existing `Term`.
+
+import glossary model from "g.gls"
+
+interactions
+    Manager IncreaseSalary
+    Manager FreezeSalary
+    Employee GetPaid

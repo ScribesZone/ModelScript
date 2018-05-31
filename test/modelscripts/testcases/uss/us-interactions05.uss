@@ -1,0 +1,18 @@
+usecase model Us_interactions04
+
+
+interactions
+    Employe Inscrire
+    un Employe peut Inscrire
+    une Secretaire peut EliminerUnDossier
+    Employe can WithdrawMoney
+    an Employe can WithdrawMoney
+    a Manager can HireAnEmploye
+
+actor Employe
+actor Manager
+actor Secretaire
+
+
+
+

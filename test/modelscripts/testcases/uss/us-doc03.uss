@@ -1,14 +1,24 @@
-usecase model
-    | some doc comment
+    #@Issue cck.Actor.LazyActorChecker 2
+    #@Issue cck.Usecase.UnusedUsecaseChecker 3
+    #@Issue level *
+
+
+usecase model Us_doc03
+    | some doc comment for the model
     | with various lines
     | and more ...
 
 human actor Employee
-    | some doc comment
+    | some doc comment for he actor
     | with various lines
     | and more ...
 
+actor Manager
+
 usecase IncreaseSalary
-    | some doc comment
+    | some doc comment for the usecase
     | with various lines
     | and more ...
+
+usecase DecreaseSalary
+usecase FreeSalary

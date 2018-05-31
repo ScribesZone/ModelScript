@@ -1,4 +1,8 @@
-usecase model
+    #@Issue cck.Actor.LazyActorChecker 1
+    #@Issue cck.System.UsecaseLimitsChecker 1
+    #@Issue level *
+
+usecase model Us_doc02
     | some doc comment
     | with various lines
     | and more ...

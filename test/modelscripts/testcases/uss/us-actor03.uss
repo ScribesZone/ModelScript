@@ -1,4 +1,8 @@
-usecase model
+    #@Issue cck.Actor.LazyActorChecker 3
+    #@Issue cck.System.UsecaseLimitsChecker 1
+    #@Issue level *
+
+usecase model Us_Actor03
 
 human actor Employee
 

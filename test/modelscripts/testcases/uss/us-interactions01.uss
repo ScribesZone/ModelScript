@@ -1,7 +1,9 @@
-usecase model
+usecase model Us_interactions01
 
 
 interactions
     Employe Inscrire
+    Employe Partir
+    Employe Arriver
 
 
