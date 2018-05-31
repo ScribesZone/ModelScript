@@ -1,21 +1,22 @@
 # coding=utf-8
 
 import logging
+import os
 
 from nose.plugins.attrib import attr
+
+import modelscripts.diagrams.plantuml.engine
+import modelscripts.scripts.classes.plantuml
+import modelscripts.use.use.parser
+from modelscripts.base.modelprinters import (
+    ModelSourcePrinter
+)
 from test.modelscripts import (
     TEST_CASES_DIRECTORY,
     getTestDir,
     getBuildDir,
 )
 
-import os
-import modelscripts.use.use.parser
-from modelscripts.scripts.base.printers import (
-    ModelSourcePrinter
-)
-import modelscripts.scripts.classes.plantuml
-import modelscripts.diagrams.plantuml.engine
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
 

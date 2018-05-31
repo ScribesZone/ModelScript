@@ -6,9 +6,9 @@ from modelscripts.scripts.megamodels.printer.megamodels import MegamodelPrinter
 from modelscripts.metamodels import (
     classes
 )
-from test.modelscripts.issues import (
+from test.modelscripts.assertions import (
     F, E, W, I, H,
-    checkFileIssues,
+    checkAllAssertionsForDirectory,
     checkValidIssues
 )
 
@@ -22,7 +22,7 @@ EXPECTED_ISSUES={
 
 
 def testGenerator_Issues():
-    res = checkFileIssues(
+    res = checkAllAssertionsForDirectory(
         'cls',
         ['.cls'],
         EXPECTED_ISSUES)
