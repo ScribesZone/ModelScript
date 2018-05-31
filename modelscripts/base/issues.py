@@ -31,6 +31,10 @@ class Level(object):
         self.rank=rank
         self.style=style
 
+    @property
+    def code(self):
+        return self.label[0]
+
     def __le__(self, other):
         return self.rank <= other.rank
 
@@ -70,6 +74,16 @@ class Levels(object):
 
     Levels=[Fatal, Error, Warning, Info, Hint]
 
+    @classmethod
+    def fromCode(cls, code):
+        """
+        Return the level corresponding to a code
+        or None if the code is not a label.
+        """
+        for level in Levels.Levels:
+            if level.code==code:
+                return level
+        return None
 
 class Issue(object):
     """
@@ -457,19 +471,34 @@ class IssueBox(object):
         return
 
     @property
-    def summaryMap(self):
+    def summaryLevelMap(self):
         #type: () -> Dict[Level, int]
         """
         A map that give for each level the
         number of corresponding issues at that level.
         This include levels with 0 issues.
         """
-        map=OrderedDict()
+        map = OrderedDict()
         for l in Levels.Levels:
-            n=len(self.select(level=l))
-            map[l]=n
+            n = len(self.select(level=l))
+            map[l] = n
         return map
 
+    @property
+    def summaryCodeMap(self):
+        # type: () -> Dict[Level, int]
+        """
+        A map that give for each level the
+        number of corresponding issues at that level.
+        This include levels with 0 issues.
+        """
+        map=OrderedDict()
+        for i in self.all:
+            if i.code in map:
+                map[i.code]+=1
+            else:
+                map[i.code]=1
+        return map
 
     @property
     def summaryLine(self):
@@ -486,7 +515,7 @@ class IssueBox(object):
         if self.nb==0:
             return u''
         level_msgs=[]
-        m=self.summaryMap
+        m=self.summaryLevelMap
         for l in m:
             n=m[l]
             if n>0:
