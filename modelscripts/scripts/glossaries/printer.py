@@ -39,6 +39,7 @@ class GlossaryModelPrinter(ModelPrinter):
         return self.output
 
     def doGlossaryModel(self, glossary):
+        self.doModelTextBlock(glossary.description)
         for package in glossary.packageNamed.values():
             self.doPackage(package)
         return self.output
@@ -51,6 +52,7 @@ class GlossaryModelPrinter(ModelPrinter):
             ),
             lineNo=package.lineNo,
             linesBefore=1)
+        self.doModelTextBlock(package.description)
         for entry in package.entryNamed.values():
             self.doEntry(entry)
         return self.output
@@ -62,7 +64,7 @@ class GlossaryModelPrinter(ModelPrinter):
             linesBefore=1
         )
         #TODO: add detailled information from entries
-        self.doModelTextBlock(entry.docComment)
+        self.doModelTextBlock(entry.description)
 
         if len(entry.synonyms)>0:
             self.outLine(self.kwd('synonyms'))
@@ -83,7 +85,7 @@ class GlossaryModelPrinter(ModelPrinter):
             for (language, label) in entry.translations.items():
                 self.outLine(
                     '%s: "%s"' % (language, label))
-
+        return self.output
 
     def doDescription(self, textBlock):
         block_text=TextBlockPrinter(
