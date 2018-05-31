@@ -1,0 +1,5 @@
+object model A
+
+paul : Personne
+paul.nom='Paul'
+paul.poids=110.5
