@@ -479,7 +479,7 @@ class UseModelSource(ModelSourceFile):
                 c.name=m.group('name')
                 c.code=self.realSourceLines
                 c.lineNo = line_no
-                c.docComment = last_doc_comment.consume()
+                c.description = last_doc_comment.consume()
                 c.eolComment = current_eol_comment
                 continue
 
@@ -495,7 +495,7 @@ class UseModelSource(ModelSourceFile):
                     model=self.classModel,
                     package=None,
                     lineNo=line_no,
-                    docComment=last_doc_comment.consume(),
+                    description=last_doc_comment.consume(),
                     eolComment=current_eol_comment
                 )
                 current_package=package
@@ -544,7 +544,7 @@ class UseModelSource(ModelSourceFile):
                     model=self.classModel,
                     code=line,
                     lineNo=line_no,
-                    docComment=last_doc_comment.consume(),
+                    description=last_doc_comment.consume(),
                     eolComment=current_eol_comment,
                 )
                 for literal_value in literal_values:
@@ -632,7 +632,7 @@ class UseModelSource(ModelSourceFile):
                         isAbstract=m.group('abstract') == 'abstract',
                         superclasses=superclasses,
                         lineNo=line_no,
-                        docComment=last_doc_comment.consume(),
+                        description=last_doc_comment.consume(),
                         eolComment=current_eol_comment,
                     )
                 current_element=current_class
@@ -686,7 +686,7 @@ class UseModelSource(ModelSourceFile):
                         isAbstract=m.group('abstract') == 'abstract',
                         superclasses=superclasses,
                         lineNo=line_no,
-                        docComment=last_doc_comment.consume(),
+                        description=last_doc_comment.consume(),
                         eolComment=current_eol_comment,
                     )
                 current_class = ac
@@ -731,7 +731,7 @@ class UseModelSource(ModelSourceFile):
                         isInit=is_init,
                         expression=expression,
                         lineNo=line_no,
-                        docComment=last_doc_comment.consume(),
+                        description=last_doc_comment.consume(),
                         eolComment=current_eol_comment,
                     )
                     current_attribute = attribute
@@ -786,7 +786,7 @@ class UseModelSource(ModelSourceFile):
                             signature=signature,
                             expression=expr,
                             lineNo=line_no,
-                            docComment=last_doc_comment.consume(),
+                            description=last_doc_comment.consume(),
                             eolComment=current_eol_comment,
                         )
                     current_operation = operation
@@ -825,7 +825,7 @@ class UseModelSource(ModelSourceFile):
                         model=self.classModel,
                         kind=m.group('kind'),
                         lineNo=line_no,
-                        docComment=last_doc_comment.consume(),
+                        description=last_doc_comment.consume(),
                         eolComment=current_eol_comment,
                     )
                 current_element=current_association
@@ -917,7 +917,7 @@ class UseModelSource(ModelSourceFile):
                         isUnion=m.group('union') == 'union',
                         expression=m.group('expression'),
                         lineNo=line_no,
-                        docComment=last_doc_comment.consume(),
+                        description=last_doc_comment.consume(),
                         eolComment=current_eol_comment,
                     )
                     current_element=role
@@ -991,7 +991,7 @@ class UseModelSource(ModelSourceFile):
                                 isExistential=m.group('existential') == 'existential',
                                 expression=m.group('expr'),
                                 lineNo=line_no,
-                                docComment=last_doc_comment.consume(),
+                                description=last_doc_comment.consume(),
                                 eolComment=current_eol_comment,
                             )
                             current_element = current_condition
@@ -1011,7 +1011,7 @@ class UseModelSource(ModelSourceFile):
                                 operation=current_context['signature'],
                                 expression=m.group('expr'),
                                 lineNo=line_no,
-                                docComment=last_doc_comment.consume(),
+                                description=last_doc_comment.consume(),
                                 eolComment=current_eol_comment,
                             )
                             current_element = current_condition
@@ -1031,7 +1031,7 @@ class UseModelSource(ModelSourceFile):
                                 operation=current_context['signature'],
                                 expression=m.group('expr'),
                                 lineNo=line_no,
-                                docComment=last_doc_comment.consume(),
+                                description=last_doc_comment.consume(),
                                 eolComment=current_eol_comment,
                             )
                             current_element = current_condition
