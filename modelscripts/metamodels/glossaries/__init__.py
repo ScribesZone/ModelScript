@@ -12,11 +12,27 @@ import collections
 
 from typing import Dict, Text, Optional, List
 
+from modelscripts.base.metrics import (
+    Metrics,
+    Metric
+)
+from modelscripts.megamodels.dependencies.metamodels import (
+    MetamodelDependency
+)
+from modelscripts.megamodels.elements import SourceModelElement
 from modelscripts.megamodels.metamodels import Metamodel
 from modelscripts.megamodels.models import Model
-from modelscripts.megamodels.elements import SourceModelElement
-from modelscripts.base.metrics import Metrics
+# class WithTextBlockModel(object):
+#
+#     def __init__(self):
+#         self.glossaryList=[]
+#         #type: List[GlossaryModel]
+#         # Filled later. The list of glossary used to solve text block
+#
+#         self.textBlocks=[]
 
+
+# GlossaryDependent must be first !
 class GlossaryModel(Model):
     """
     Collection of named packages.
@@ -27,6 +43,23 @@ class GlossaryModel(Model):
 
         self.packageNamed=collections.OrderedDict()
         # type: Dict[Text, Package]
+
+
+    @property
+    def glossaryList(self):
+        #TODO: should be momoized. It is call for each occurrence.
+        _=[self]+super(GlossaryModel, self).glossaryList
+        print('A'*20, len(_), _)
+        return _
+
+    @property
+    def textBlocks(self):
+        _=super(GlossaryModel, self).textBlocks
+        if self.description is not None:
+            _.append(self.description)
+        for p in self.packages:
+            _.extend(p.textBlocks)
+        return _
 
     @property
     def packages(self):
@@ -60,25 +93,18 @@ class GlossaryModel(Model):
 
         return None
 
-
-    # def resolveTextBlock(self, textBlock):
-    #     for line in textBlock.lines:
-    #         for token in line.tokens:
-    #             if isinstance(token, Reference):
-    #                 reference=token
-    #                 reference.resolve(self)
+    # def resolve(self):
+    #     self.resolveTextBlocks()
 
     @property
     def metrics(self):
         #type: () -> Metrics
         ms=super(GlossaryModel, self).metrics
-        ms.addList((
-            ('packages', len(self.packages)),
-            ('entry', sum(
-                len(d.entries)
-                for d in self.packages
-            ))
-        ))
+        ms.add(Metric('package', len(self.packages)))
+        ms.add(Metric(
+            label='entry',
+            plural='entries',
+            n=sum(len(d.entries) for d in self.packages)))
         return ms
 
 
@@ -87,13 +113,13 @@ class Package(SourceModelElement):
     A collection of entry indexed by the main term.
     """
 
-
     def __init__(self, glossaryModel, name, astNode=None):
         super(Package, self).__init__(
             model=glossaryModel,
             name=name,
             astNode=astNode
         )
+        self.isResolved=False
         self.glossaryModel=glossaryModel
         self.glossaryModel.packageNamed[name]=self
         self.impliciteDeclaration = True
@@ -104,6 +130,16 @@ class Package(SourceModelElement):
     @property
     def entries(self):
         return self.entryNamed.values()
+
+    @property
+    def textBlocks(self):
+        _=[]
+        if self.description is not None:
+            _.append(self.description)
+        for p in self.entries:
+            _.extend(p.textBlocks)
+        return _
+
 
 
 class Entry(SourceModelElement):
@@ -152,6 +188,14 @@ class Entry(SourceModelElement):
         #type: List['TextReference']
         """ Occurrences that refer to this entry """
 
+        self.isResolved=False
+
+    @property
+    def textBlocks(self):
+        _=[]
+        if self.description is not None:
+            _.append(self.description)
+        return _
 
 METAMODEL = Metamodel(
     id='gl',
@@ -159,10 +203,10 @@ METAMODEL = Metamodel(
     extension='.gls',
     modelClass=GlossaryModel
 )
-# MetamodelDependency(
-#     sourceId='gl',
-#     targetId='gl',
-#     optional=True,
-#     multiple=True,
-# )
+MetamodelDependency(
+    sourceId='gl',
+    targetId='gl',
+    optional=True,
+    multiple=True,
+)
 
