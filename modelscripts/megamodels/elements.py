@@ -25,7 +25,6 @@ class ModelElement(object):
         from modelscripts.metamodels.textblocks import (
             TextBlock
         )
-        print('MM',type(model))
         self.description=None
         #type: Optional[TextBlock]
 
@@ -54,6 +53,14 @@ class ModelElement(object):
         CheckList.check(self)
         for child in self.children:
             child.check()
+
+    @property
+    def textBlocks(self):
+        """
+        The list of text blocks in the element.
+        Should be overidden if there is a text block to be resolved.
+        """
+        return []
 
     # @abstractproperty
     # def parent(self):
@@ -84,7 +91,7 @@ class SourceModelElement(ModelElement, SourceElement):
                  astNode=None,
                  code=None,
                  lineNo=None,
-                 docComment=None,
+                 description=None,
                  eolComment=None):
         from modelscripts.megamodels.models import Model
         SourceElement.__init__(self,
@@ -92,7 +99,7 @@ class SourceModelElement(ModelElement, SourceElement):
                                astNode=astNode,
                                code = code,
                                lineNo = lineNo,
-                               docComment = docComment,
+                               description = description,
                                eolComment = eolComment)
         if model is not None:
             #assert model is not None
