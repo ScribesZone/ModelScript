@@ -1,8 +1,5 @@
 GlossaryModel:
-    status=ModelStatus? 'glossary' 'model' (name=ID) ?
-    ('{'
-        textBlock=TextBlock
-    '}')? ';'
+    megamodelPart = MegamodelPart
     entries *= Entry
 ;
 
@@ -13,7 +10,7 @@ ModelStatus:
 
 Entry:
     term=ID
-    ('{'
+    (o_
         ( textBlock=TextBlock )?
         (
             (package = Package) ?
@@ -23,70 +20,42 @@ Entry:
             (translationPart = TranslationPart) ?
         )#
         // declarations *= Declaration
-    '}')? ';'
+    _o)? X
 ;
 
 Package:
-    'package' ':' name=ID ';'
+    'package' ':' name=ID X
 ;
 
 SynonymPart:
     'synonyms' ':' synonyms *= ID
-    ('{'
-        synonyms *= ID ';'
-    '}')? ';'
+    (o_
+        synonyms *= ID X
+    _o)? X
 ;
 
 InflectionPart:
     'inflections' ':' inflections *= ID
-    ('{'
-        inflections *= ID ';'
-    '}')? ';'
+    (o_
+        inflections *= ID X
+    _o)? X
 ;
 
 Label:
-    'label' ':' text=STRING ';'
+    'label' ':' text=STRING X
 ;
 
 TranslationPart:
     'translations'
-    ('{'
+    (o_
         translations *= Translation
-    '}')? ';'
+    _o)? X
 ;
 
 Translation:
-    language=ID ':' label=STRING ';'
+    language=ID ':' label=STRING X
 ;
 
 
+// Common definitions go here
 
-
-
-
-TextBlock:
-     textLines *= TextLine
-;
-
-TextLine[noskipws]:
-    /\s*\|/ textTokens *= TextToken /\|;/
-;
-
-TextToken:
-      TextReference
-    | PlainText
-;
-
-TextReference:
-    '`' text=/[^`]*/ '`'
-;
-
-
-PlainText:
-    text=/[^`\|]*/
-;
-
-
-Comment:
-    /#.*$/
-;
