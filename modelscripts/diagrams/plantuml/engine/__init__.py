@@ -31,3 +31,9 @@ class PlantUMLEngine(object):
         # TODO: check how to get errors from generation
         if errno != 0:
             RuntimeError('Error in plantuml generation')
+
+print('=='*20)
+if __name__ == "__main__":
+    import sys
+    engine=PlantUMLEngine()
+    engine.generate(sys.argv[1])
