@@ -315,7 +315,6 @@ def merge(soilFile, traceFile, prequelFileName, sexFileName=None):
         #---- unexpected ouput --------------------------------------------
         if re.match('^.*$',line):
             if DEBUG>=2:
-                print('..'*100+line)
                 print('MGR: ' + ' ' * 10 + 'Unexpected output line')
             merged.out('trace')
 
