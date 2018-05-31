@@ -394,7 +394,6 @@ class _SexOrSoilSource(ModelSourceFile):
         def _reqClassModel():
             """ Check that the model is available"""
             if self.classModel is None:
-                print('SS'*100)
                 raise NotImplementedError()
                 LocalizedSourceIssue(
                     sourceFile=self,
@@ -1558,7 +1557,6 @@ class _SexOrSoilSource(ModelSourceFile):
 
                         # end close nothing
                         section='none'
-                        print('MM'*10+str(_S.line_no)+' '+line)
                         LocalizedSourceIssue(
                             sourceFile=self,
                             level=Levels.Error,
