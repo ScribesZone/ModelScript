@@ -3,16 +3,6 @@ UsecaseModel:
     declarations *= Declaration
 ;
 
-ModelStatus:
-      'draft'
-    | 'consolidated'
-;
-
-ModelKind:
-      'preliminary'
-    | 'detailed'
-;
-
 Declaration:
       Actor
     | Usecase
@@ -25,7 +15,8 @@ Actor:
     ('<' superActors *= ID[',']) ?
     (o_
         textBlock=TextBlock
-    _o)? X
+    _o)?
+    X
 ;
 
 ActorKind:
