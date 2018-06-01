@@ -36,7 +36,7 @@ log = logging.getLogger('test.' + __name__)
 
 
 __all__ = [
-    'UseModelPrinter',
+    'ClassModelPrinter',
 ]
 
 class ClassModelPrinter(ModelPrinter):
@@ -56,42 +56,13 @@ class ClassModelPrinter(ModelPrinter):
         self.doUseModel(self.theModel)
         return self.output
 
-    def doDescription(self, source_element, indent):
-        c = source_element.description   # multiple lines
-        if c is not None:
-            for line in c:
-                self.out(indent + self.cmt('--' + line) + '\n')
-        return self.output
-
-    def doEolComment(self, source_element):
-        c=source_element.eolComment
-        if c is not None:
-            self.out(self.cmt(' --' + c))
-            print('PP'*10+c)
-
-        # TODO: this should be arranged if needed
-        # self.out('\n')
-        return self.output
 
     def doUseModel(self, model):
         self.doModelTextBlock(model.description)
 
-        if self.theModel.dataTypes is not None:
-            for t in self.theModel.dataTypes:
-                self.outLine(
-                    self.cmt('-- basic type : %s') % t.name)
+        for d in model.dataTypes:
+            self.doDataType(d)
 
-        #TODO: Add again management of doccomment for model
-        # Model does not inherit anymore from doccomment
-        # but it still make sense to add comment for them
-        # self.doDocComment(self.theModel, '')
-
-        #TODO: Add again management of eolcomment for model
-        # Model does not inherit anymore from doccomment
-        # but it still make sense to add comment for them
-        # self.doDocComment(self.theModel, '')
-        # self.doEolComment(self.theModel)
-        # self.outLine('')
 
         for e in model.enumerations:
             self.doEnumeration(e)
@@ -108,43 +79,46 @@ class ClassModelPrinter(ModelPrinter):
         # TODO: invariants, operationConditions, dataTypes
         return self.output
 
+    def doDataType(self, datatype):
+        self.outLine('%s %s' % (
+            self.kwd('datatype'),
+            datatype.name))
+        self.doModelTextBlock(datatype.description, indent=1)
+
     def doEnumeration(self, enumeration):
-        self.doDescription(enumeration, '')
-        self.out('%s %s {' % (
-            self.kwd('enum'),
+        self.outLine('%s %s' % (
+            self.kwd('enumeration'),
             enumeration.name))
-        self.doEolComment(enumeration)
-        self.doModelTextBlock(enumeration.description)
+        self.doModelTextBlock(enumeration.description, indent=1)
         for (i,el) in enumerate(enumeration.literals):
             self.doEnumerationLiteral(el)
-            if i+1< len(enumeration.literals):
-                self.outLine(',')
-        self.outLine(self.kwd('}'))
+        self.outLine('')
         return self.output
 
     def doEnumerationLiteral(self, enumerationLiteral):
-        self.out(enumerationLiteral.name)
+        self.outLine(enumerationLiteral.name, indent=1)
+        self.doModelTextBlock(
+            enumerationLiteral.description, indent=2)
         return self.output
 
     def doClass(self, class_):
-        self.doDescription(class_, '')
+        self.doModelTextBlock(class_.description)
         if class_.superclasses:
-            sc = (self.kwd('< ')
+            sc = (self.kwd('extends ')
                   +self.kwd(',').join(map(
                         lambda s:s.name, class_.superclasses)))
         else:
             sc = ''
-        self.outLine("%s %s %s " % (
+        if class_.isAbstract:
+            abstract='abstract '
+        abstract='abstract' if class_.isAbstract else None
+        self.outLine(' '.join(filter(None,[
+            (self.kwd('abstract') if class_.isAbstract else ''),
             self.kwd('class'),
             class_.name,
-            sc,
-            ))
-        # self.outLine("%s %s %s %s" % (
-        #     self.kwd('class'),
-        #     class_.name,
-        #     sc,
-        #     self.doEolComment(class_)))
-        self.doModelTextBlock(class_.description)
+            sc])))
+
+        # self.doModelTextBlock(class_.description)
         if class_.attributes:
             self.outLine(self.kwd('attributes'))
             for attribute in class_.attributes:
@@ -159,26 +133,23 @@ class ClassModelPrinter(ModelPrinter):
             for invariant in class_.invariants:
                 self.doInvariant(invariant)
 
-        self.outLine(self.kwd('end'),
-                     linesAfter=1)
         return self.output
 
     def doAssociation(self, association):
-        self.doDescription(association, '')
+        self.doModelTextBlock(association.description)
         self.outLine('%s %s %s' % (
             self.kwd(association.kind),
             association.name,
             self.kwd('between'),
         ))
         self.doModelTextBlock(association.description)
-        self.doEolComment(association)
         for role in association.roles:
             self.doRole(role)
         self.outLine(self.kwd('end'), linesAfter=1)
         return self.output
 
     def doAssociationClass(self, associationClass):
-        self.doDescription(associationClass, '')
+        self.doModelTextBlock(associationClass.description)
         if associationClass.superclasses:
             superclass_names = [c.name for c in associationClass.superclasses]
             sc = self.kwd(' < ') + self.kwd(',').join(superclass_names)
@@ -189,7 +160,6 @@ class ClassModelPrinter(ModelPrinter):
             associationClass.name,
             sc,
             self.kwd('between')))
-        self.doEolComment(associationClass)
         self.doModelTextBlock(associationClass.description)
 
 
@@ -210,14 +180,13 @@ class ClassModelPrinter(ModelPrinter):
         return self.output
 
     def doAttribute(self, attribute):
-        self.doDescription(attribute, '    ')
+        self.doModelTextBlock(attribute.description)
         self.outLine('%s %s %s' % (
                 attribute.name,
                 self.kwd(':'),
                 attribute.type.name),
             indent=1)
         self.doModelTextBlock(attribute.description)
-        self.doEolComment(attribute)
         if attribute.isDerived:
             self.outLine('%s %s' % (
                     self.kwd('derive ='),
@@ -227,14 +196,13 @@ class ClassModelPrinter(ModelPrinter):
         return self.output
 
     def doOperation(self, operation):
-        self.doDescription(operation, '    ')
+        self.doModelTextBlock(operation.description)
         self.outLine('%s%s' % (
                 operation.signature,
                 ' =' if operation.hasImplementation
                     else ''),
             indent=1
         )
-        self.doEolComment(operation)
         if operation.hasImplementation:
             self.outLine(indent('        ',operation.expression)+'\n')
         self.doModelTextBlock(operation.description)
@@ -252,7 +220,7 @@ class ClassModelPrinter(ModelPrinter):
             prefix_comment = '    '
             prefix_first = '    '
             prefix_rest  = '        '
-        self.doDescription(invariant, '    ')
+        self.doModelTextBlock(invariant.description)
         self.outLine('%s%s%s %s:' % (
             prefix_first,
             self.kwd('existential ') if invariant.isExistential else '',
@@ -260,12 +228,11 @@ class ClassModelPrinter(ModelPrinter):
             invariant.name,
         ))
         self.doModelTextBlock(invariant.description)
-        self.doEolComment(invariant)
         self.out(indent(prefix_rest, invariant.expression)+'\n')
         return self.output
 
     def doRole(self, role):
-        self.doDescription(role, '    ')
+        self.doModelTextBlock(role.description)
         if role.name:
             rn = self.kwd('role ') + role.name
         else:
@@ -274,20 +241,18 @@ class ClassModelPrinter(ModelPrinter):
         self.outLine('    %s[%s..%s] %s'
                  % (role.type.name, role.cardinalityMin, max, rn ))
         self.doModelTextBlock(role.description)
-        self.doEolComment(role)
         return self.output
 
     def doOperationCondition(self, condition):
         prefix_first = '        '
         prefix_rest  = '            '
         keyword='pre' if isinstance(condition,PreCondition) else 'post'
-        self.doDescription(condition, '    ')
+        self.doModelTextBlock(condition.description)
         self.outLine('%s%s %s:' % (
             prefix_first,
             self.kwd(keyword),
             condition.name,
         ))
-        self.doEolComment(condition)
         self.doModelTextBlock(condition.description)
         self.out(indent(prefix_rest,condition.expression)+'\n')
         return self.output
