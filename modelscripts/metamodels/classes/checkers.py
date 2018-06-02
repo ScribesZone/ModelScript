@@ -7,7 +7,20 @@ from modelscripts.base.issues import (
 from modelscripts.base .symbols import Symbol
 
 from modelscripts.metamodels.classes import (
+    Class,
     EnumerationLiteral
+)
+
+class ClassNomenclatureChecker(NamingChecker):
+    def __init__(self, **params):
+        super(ClassNomenclatureChecker, self).__init__(
+            metaclasses=[Class],
+            fun=Symbol.is_CamlCase,
+            namingName='CamlCase',
+            **params)
+
+ClassNomenclatureChecker(
+    level=Levels.Warning
 )
 
 class EnumLiteralNomenclatureChecker(NamingChecker):
