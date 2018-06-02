@@ -39,7 +39,7 @@ class SourceElement(object):
                  lineNo=None,
                  description=None):
         self.name = name
-        self.astnode=astNode
+        self.astNode=astNode
         self.lineNo = lineNo
         self.description = description
 
