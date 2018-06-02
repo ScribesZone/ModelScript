@@ -14,6 +14,9 @@ from modelscripts.metamodels.usecases import (
     METAMODEL
 )
 
+__all__ = [
+    'UsecaseModelPrinter',
+]
 
 class UsecaseModelPrinter(ModelPrinter):
 
