@@ -74,7 +74,7 @@ Attribute:
     (visibility = Visibility) ?
     name=ID ':' type=ID
     (cardinality=Cardinality) ?
-    ( '{' tags += ID '}' )?
+    ( '{' tags += ID [','] '}' )?
     (o_
         textBlock=TextBlock
     _o)?
@@ -126,7 +126,7 @@ PermissionsCompartment:
 
 
 Association:
-    kind=AssociationKind o_
+    kind=AssociationKind name=ID o_
         (textBlock=TextBlock) ?
         roleCompartment=RoleCompartment
         attributeCompartment=AttributesCompartment ?
@@ -143,14 +143,14 @@ AssociationKind:
 
 RoleCompartment:
     'roles' o_
-        from=Role
-        to=Role
+        source=Role
+        target=Role
     _o
     X
 ;
 
 Role:
-    name=ID ':' class=[Class] cardinality=Cardinality ?
+    name=ID ':' type=[Class] cardinality=Cardinality ?
     (o_
         textBlock=TextBlock
     _o)?
@@ -164,9 +164,6 @@ Invariant:
 ;
 
 Cardinality:
-//    '[' max='*' ']'
-//    | '[' min=CardinalityMin ']'
-//    | '[' min=CardinalityMin ? ('..' max=CardinalityMax)? ']'
    '[' min=Multiplicity ? ('..' max=Multiplicity) ? ']'
 ;
 
