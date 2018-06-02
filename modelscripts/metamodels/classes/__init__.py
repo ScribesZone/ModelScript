@@ -250,12 +250,16 @@ class ClassModel(Model):
         ms=super(ClassModel, self).metrics
         ms.addList((
             ('package', len(self.packages)),
-            ('dat   Type', len(self.dataTypes)),
+            ('data type', len(self.dataTypes)),
             ('enumeration', len(self.enumerations)),
-            ('regularClass', len(self.regularClasses) ),
-            ('regularAssociation',
+            ('enumeration literal', len(
+                [el
+                    for e in self.enumerations
+                        for el in e.literals])),
+            ('regular class', len(self.regularClasses) ),
+            ('regular association',
                 len(self.regularAssociations)),
-            ('associationClass', len(self.associationClasses)),
+            ('association class', len(self.associationClasses)),
         ))
         return ms
 
@@ -353,12 +357,14 @@ class PackagableElement(SourceModelElement):
     def __init__(self,
                  name,
                  model,
+                 astNode=None,
                  package=None,
-                 code=None, lineNo=None, description=None, eolComment=None):
+                 lineNo=None, description=None):
         super(PackagableElement, self).__init__(
             model=model,
             name=name,
-            code=code, lineNo=lineNo, description=description, eolComment=eolComment)
+            astNode=astNode,
+            lineNo=lineNo, description=description)
         self.package=package
         if self.package is not None:
             self.package.addElement(self)
@@ -375,8 +381,10 @@ class PackagableElement(SourceModelElement):
 class Entity(Resource):
     __metaclass__ = abc.ABCMeta
 
+
 class Member(Resource):
     __metaclass__ = abc.ABCMeta
+
 
 class SimpleType(PackagableElement):
     """
@@ -387,13 +395,14 @@ class SimpleType(PackagableElement):
     def __init__(self,
                  name,
                  model,
+                 astNode=None,
                  package=None,
-                 code=None, lineNo=None, description=None, eolComment=None):
+                 lineNo=None, description=None):
         super(SimpleType, self).__init__(
             model=model,
             name=name,
             package=package,
-            code=code, lineNo=lineNo, description=description, eolComment=eolComment)
+            astNode=astNode, lineNo=lineNo, description=description)
 
 
     @MAttribute('String')
@@ -411,13 +420,14 @@ class DataType(SimpleType):
     # not in sources, but used created during symbol resolution
     type = 'DataType'
 
-    def __init__(self, model, name, package=None):
+    def __init__(self, model, name, astNode=None, package=None):
         super(DataType, self).__init__(
             model=model,
             name=name,
-            package=package)
+            astNode=astNode,
+            package=package
+        )
         self.model.dataTypeNamed[name]=self
-
 
     def __repr__(self):
         return self.name
@@ -430,15 +440,15 @@ class Package(PackagableElement, Entity):
     def __init__(self,
                  name,
                  model,
+                 astNode=None,
                  package=None,
-                 code=None, lineNo=None, description=None, eolComment=None):
+                 lineNo=None, description=None):
         super(Package, self).__init__(
             name=name,
             model=model,
+            astNode=astNode,
             package=package,
-            code=code,
-            lineNo=lineNo, description=description,
-            eolComment=eolComment)
+            lineNo=lineNo, description=description,)
         self._elememts=[]
         self.model.packageNamed[name]=self
 
@@ -471,13 +481,15 @@ class Enumeration(SimpleType):
                  name,
                  model,
                  package=None,
-                 code=None, lineNo=None, description=None, eolComment=None):
+                 astNode=None,
+                 lineNo=None, description=None):
         super(Enumeration, self).__init__(
             name,
             model,
             package=package,
-            code=code, lineNo=lineNo,
-            description=description, eolComment=eolComment)
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description)
         self.model.enumerationNamed[name] = self
         self._literals=[]
 
@@ -489,20 +501,19 @@ class Enumeration(SimpleType):
     #     self.literals.append(name)
 
 
-
     def __repr__(self):
         return '%s(%s)' % (self.name, repr(self.literals))
 
 class EnumerationLiteral(SourceModelElement):
 
-    def __init__(self, name, enumeration, code=None, lineNo=None, description=None, eolComment=None):
+    def __init__(self, name, enumeration, astNode=None, lineNo=None,
+                 description=None):
         SourceModelElement.__init__(
             self,
             model=enumeration.model,
+            astNode=astNode,
             name=name,
-            code=code,
-            lineNo=lineNo, description=description,
-            eolComment=eolComment)
+            lineNo=lineNo, description=description)
         self.enumeration=enumeration
         self.enumeration._literals.append(self)
 
@@ -519,13 +530,13 @@ class Class(PackagableElement, Entity):
     ]
 
     def __init__(self, name, model, isAbstract=False, superclasses=(),
-                 lineNo=None, description=None, eolComment=None):
+                 lineNo=None, description=None, astNode=None):
         super(Class, self).__init__(
             name=name,
             model=model,
+            astNode=astNode,
             lineNo=lineNo,
-            description=description,
-            eolComment=eolComment)
+            description=description)
         self.model.classNamed[name] = self
         self.isAbstract = isAbstract
         self.superclasses = superclasses  # strings resolved as classes
@@ -566,21 +577,21 @@ class Attribute(SourceModelElement, Member):
     Attributes.
     """
 
-    def __init__(self, name, class_, code=None, type=None,
+    def __init__(self, name, class_, type=None,
+                 description=None,
                  visibility='public',
                  isDerived=False,
                  isOptional=False,
                  isId=False,
                  isReadOnly=False,
                  isInit=False, expression=None,
-                 lineNo=None, description=None, eolComment=None):
+                 lineNo=None, astNode=None):
         SourceModelElement.__init__(
             self,
             model=class_.model,
             name=name,
-            code=code,
-            lineNo=lineNo, description=description,
-            eolComment=eolComment)
+            astNode=astNode,
+            lineNo=lineNo, description=description)
         self.class_ = class_
         self.class_.attributeNamed[name] = self
         self.type = type # string later resolved as SimpleType
@@ -615,14 +626,14 @@ class Operation(SourceModelElement, Member):
     ]
 
     def __init__(self, name,  class_, signature, code=None,
-                 expression=None,
-                 lineNo=None, description=None, eolComment=None):
+                 expression=None, astNode=None,
+                 lineNo=None, description=None):
         SourceModelElement.__init__(
             self,
             model=class_.model,
             name=name,
-            code=code,
-            lineNo=lineNo, description=description, eolComment=eolComment)
+            astNode=astNode,
+            lineNo=lineNo, description=description)
         self.class_ = class_
         self.signature = signature
         self.class_.operationWithSignature[signature] = self
@@ -663,12 +674,13 @@ class Association(PackagableElement, Entity):
 
     def __init__(self,
                  name, model, kind=None,
-                 lineNo=None, description=None, eolComment=None):
+                 lineNo=None, description=None, astNode=None):
         # type: (Text,ClassModel,Optional[Text],Optional[int],Optional[Text],Optional[Text]) -> None
         super(Association, self).__init__(
             name=name,
             model=model,
-            lineNo=lineNo, description=description, eolComment=eolComment)
+            astNode=astNode,
+            lineNo=lineNo, description=description)
         self.model.associationNamed[name] = self
         self.kind = kind   # association|composition|aggregation|associationclass  # TODO:should associationclass be
         # there?
@@ -754,11 +766,11 @@ class Role(SourceModelElement, Member):
     Roles.
     """
 
-    def __init__(self, name, association, code=None,
+    def __init__(self, name, association, astNode=None,
                  cardMin=None, cardMax=None, type=None, isOrdered=False,
                  qualifiers=None, subsets=None, isUnion=False,
                  expression=None,
-                 lineNo=None, description=None, eolComment=None):
+                 lineNo=None, description=None):
 
         # unamed role get the name of the class with lowercase for the first letter
         if name=='' or name is None:
@@ -768,8 +780,8 @@ class Role(SourceModelElement, Member):
             self,
             model=association.model,
             name=name,
-            code=code,
-            lineNo=lineNo, description=description, eolComment=eolComment)
+            astNode=astNode,
+            lineNo=lineNo, description=description)
         self.association = association
         self.association.roleNamed[name] = self
         self.cardinalityMin = cardMin
@@ -850,7 +862,7 @@ class AssociationClass(Class, Association):
     """
     def __init__(self,
                  name, model, isAbstract=False, superclasses=(),
-                 lineNo=None, description=None, eolComment=None):
+                 lineNo=None, description=None, astNode=None):
         # Use multi-inheritance to initialize the association class
         Class.__init__(self,
             name=name,
@@ -858,13 +870,14 @@ class AssociationClass(Class, Association):
             isAbstract=isAbstract,
             superclasses=superclasses,
             lineNo=lineNo,
-            description=description, eolComment=eolComment)
+            description=description,
+            astNode=astNode)
         Association.__init__(self,
             name=name,
             model=model,
             kind='associationclass',
             lineNo=lineNo,
-            description=description, eolComment=eolComment)
+            description=description, astNode=astNode)
         # But register the association class apart and only once, to avoid
         # confusion and the duplicate in the associations and classes lists
         del self.model.classNamed[name]
