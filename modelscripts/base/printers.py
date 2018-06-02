@@ -124,10 +124,10 @@ class AbstractPrinter(object):
     def indent(self, n=1):
         self._baseIndent+=n
 
-    def out(self, s, style=None):
+    def out(self, s, indent=0, style=None):
         if self.config.styled and style is not None:
             s=style.do(s)
-        self.output += s
+        self.output += '%s%s' % (self._indentPrefix(indent), s)
         return self.output
 
     def outLine(self,
