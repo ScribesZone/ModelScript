@@ -41,7 +41,7 @@ class SourceElement(object):
                  description=None,
                  eolComment=None):
         self.name = name
-        self.astnode=astNode
+        self.astNode=astNode
         self.lineNo = lineNo
         self.code=code
         self.description = description
