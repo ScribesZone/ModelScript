@@ -40,7 +40,10 @@ __all__=(
 DEBUG=0
 
 ISSUES={
-    'CLASS_NO_SUPER':'cl.syn.Class.NoSuper',
+    'CLASS_NO_SUPER':'cl.res.Class.NoSuper',
+    'ATTRIBUTE_NO_TYPE':'cl.res.Attribute.NoType',
+    'ROLE_NO_CLASS':'cl.res.Role.NoClass',
+    'CARDINALITY_ERROR':'cl.syn.Cardinality.Error'
 }
 
 def icode(ilabel):
@@ -66,7 +69,6 @@ class ClassModelSource(ASTBasedModelSourceFile):
             fileName=usecaseFileName,
             grammarFile=os.path.join(this_dir, 'grammar.tx')
         )
-        self.registerBasicDataTypes()
 
 
     @property
@@ -85,6 +87,33 @@ class ClassModelSource(ASTBasedModelSourceFile):
 
     def fillModel(self):
 
+        def cardinality_min_max(ast_cardinality):
+
+            min=ast_cardinality.min
+            max=ast_cardinality.max
+            if max is None:
+                # [*] -> [0..*]
+                if min=='*':
+                    min=0
+                    max='*'
+                # [x] -> [x..x]
+                else:
+                    max=min
+            if (min=='*'
+                or min < 0
+                or (max != '*' and (max < min))):
+                ASTNodeSourceIssue(
+                    code=icode('CARDINALITY_ERROR'),
+                    astNode=ast_cardinality,
+                    level=Levels.Fatal,
+                    message=(
+                        'Malformed cardinality "[%s..%s]".'
+                        % (ast_cardinality.min, ast_cardinality)))
+            return (
+                min,
+                max if max!='*' else None)
+
+        # TODO: add check to avoid duplicate
         def define_datatype(ast_datatype):
             d=DataType(
                 name=ast_datatype.name,
@@ -95,6 +124,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 container=d,
                 astTextBlock=ast_datatype.textBlock)
 
+        # TODO: add check to avoid duplicate
         def define_enumeration(ast_enumeration):
             e=Enumeration(
                 name=ast_enumeration.name,
@@ -107,7 +137,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
             for ast_el in ast_enumeration.literals:
                 define_enumeration_literal(e, ast_el)
 
-        # TODO: add a check to avoid duplicate nams
+        # TODO: add a check to avoid duplicate name
         #   in global space, enumerations, etc.
         def define_enumeration_literal(enumeration, ast_literal):
                 el=EnumerationLiteral(
@@ -119,6 +149,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     container=el,
                     astTextBlock=ast_literal.textBlock)
 
+        # TODO: add a check to avoid duplicate name
         def define_class(ast_class):
             c=Class(
                 name=ast_class.name,
@@ -128,8 +159,6 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 superclasses=[
                     _Placeholder(s) for s in ast_class.superclasses]
             )
-            print('AA'*10, 'Adding class %s' %c )
-            print('AA',self.classModel.classes)
             c.description=astTextBlockToTextBlock(
                 container=c,
                 astTextBlock=ast_class.textBlock)
@@ -141,7 +170,15 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 for ast_att in ast_ac.attributes:
                     define_attribute(c, ast_att)
 
+        # TODO: add check to avoid duplicate
         def define_attribute(class_, ast_attribute):
+            visibility= {
+                None:'public',
+                '+':'public',
+                '-':'private',
+                '%':'protected',
+                '~':'package' } [ast_attribute.visibility]
+
             # TODO: implement isOptional, isInit
             # TODO: implement isId, readonly,
             a=Attribute(
@@ -149,15 +186,41 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 class_=class_,
                 astNode=ast_attribute,
                 isDerived=ast_attribute.isDerived,
+                visibility=visibility,
+                type=_Placeholder(ast_attribute.type)
             )
             # TODO: convert visibiliy + to public, etc.
             a.description=astTextBlockToTextBlock(
                 container=class_,
                 astTextBlock=ast_attribute.textBlock)
 
+        # TODO: add a check to avoid duplicate name
+        def define_association(ast_association):
+            a=Association(
+                name=ast_association.name,
+                model=self.classModel,
+                astNode=ast_association,
+                kind=ast_association.kind
+            )
+            a.description = astTextBlockToTextBlock(
+                container=a,
+                astTextBlock=ast_association.textBlock)
+            define_role(a, ast_association.roleCompartment.source)
+            define_role(a, ast_association.roleCompartment.target)
 
-        def define_association(declaration):
-            pass
+        def define_role(association, ast_role):
+            (min, max)=cardinality_min_max(ast_role.cardinality)
+            r=Role(
+                astNode=ast_role,
+                association=association,
+                name=ast_role.name,
+                type=_Placeholder(ast_role.type.name),
+                cardMin=min,
+                cardMax=max
+            )
+            r.description = astTextBlockToTextBlock(
+                container=r,
+                astTextBlock=ast_role.textBlock)
 
         def define_invariant(declaration):
             pass
@@ -180,95 +243,91 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 raise NotImplementedError(
                     'declaration of %s not implemented' % type_)
 
-            # if type_=='Actor':
-
-            # elif type_=='Usecase':
-            #     usecase_decl=declaration
-            #     u=_ensureUsecase(
-            #         name=usecase_decl.name,
-            #         astnode=usecase_decl,
-            #         implicit=False)
-            #     u.description=astTextBlockToTextBlock(
-            #         container=u,
-            #         astTextBlock=usecase_decl.textBlock)
-            #
-            # elif type_=='Interactions':
-            #     for interaction in declaration.interactions:
-            #         a=_ensureActor(
-            #             interaction.actor,
-            #             astnode=interaction,
-            #             implicit=True)
-            #         u=_ensureUsecase(
-            #             interaction.usecase,
-            #             astnode=interaction,
-            #             implicit=True)
-            #         a.addUsecase(u)
-            # else:
-            #     raise NotImplementedError(
-            #         'Unexpected type %s' % type_)
-
+    #----------------------------------------------------------------
+    #                          Resolution
+    #----------------------------------------------------------------
     def resolve(self):
 
+
         def resolve_class_content(class_):
-            actual_super_classes=[]
-            print('NN'*10, "resolving class", class_, type(class_))
-            for class_placeholder in class_.superclasses:
-                name=class_placeholder.value
-                print('NN'*20, 'processing %s in %s' %(name,class_.name) )
-                try:
-                    c=self.classModel._findClassOrAssociationClass(name)
-                    actual_super_classes.append(c)
-                except:
+
+            def resolve_superclasses():
+                actual_super_classes=[]
+                for class_placeholder in class_.superclasses:
+                    name=class_placeholder.value
+                    try:
+                        c=self.classModel._findClassOrAssociationClass(
+                            name)
+                        actual_super_classes.append(c)
+                    except:
+                        ASTNodeSourceIssue(
+                            code=icode('CLASS_NO_SUPER'),
+                            astNode=class_.astNode,
+                            level=Levels.Error,
+                            message=(
+                                'Class "%s" does not exist. '
+                                "'Can't be a as a superclass of %s."
+                                % (name, class_.name)))
+                class_.superclasses=actual_super_classes
+
+            def resolve_attribute(attribute):
+                type_name=attribute.type.value
+
+                if type_name in self.classModel.simpleTypeNamed:
+                    attribute.type=(
+                        self.classModel.simpleTypeNamed[type_name])
+                else:
                     ASTNodeSourceIssue(
-                        code=icode('CLASS_NO_SUPER'),
+                        code=icode('ATTRIBUTE_NO_TYPE'),
                         astNode=class_.astNode,
                         level=Levels.Error,
                         message=(
-                            'Class "%s" does not exist as a superclass of %s'
-                            % (name, class_.name))
-                    )
-            class_.superclasses=actual_super_classes
-            print('SS'*10,'after:',class_.superclasses)
+                            'Datatype "%s" does not exist. '
+                            "'Can't be a the type of %s."
+                            "Replaced by 'String'."
+                            % (type_name, attribute.name)))
+                    attribute.type=(
+                        self.classModel.simpleTypeNamed['String'])
 
 
-        print('XX'*10,'resolving',self.classModel.classes)
+            resolve_superclasses()
+            for a in class_.attributes:
+                resolve_attribute(a)
+
+        def resolve_association_content(association):
+
+            def resolve_role(role):
+                #type: (Role) -> None
+                try:
+                    print('OO'*10, "resolving %s %s"%(role.type.value,type(role.type.value)))
+                    c=self.classModel._findClassOrAssociationClass(
+                        role.type.value)
+                    role.type=c
+                except:
+                    ASTNodeSourceIssue(
+                        code=icode('ROLE_NO_CLASS'),
+                        astNode=role.astNode,
+                        level=Levels.Fatal,
+                        message=(
+                            'Class "%s" does not exist. '
+                            "'Can't be used in the role '%s'."
+                            % (role.type.value, role.name)))
+
+            print('ZZ'*10,'resolving',association)
+            for r in association.roles:
+                print('ZZ' * 1, 'resolving role', r)
+                resolve_role(r)
+
+
+        self.registerBasicDataTypes()
+
         for c in self.classModel.classes:
             resolve_class_content(c)
 
+        print('ZZ'*10,'resolving',self.classModel.associations)
 
-            # resolve class attributes
-        #     for a in class_.attributes:
-        #         __resolveAttribute(a)
-        #     # resolve class operations
-        #     for op in class_.operations:
-        #         __resolveOperation(op)
-        # pass
-        # def resolve_super_actors():
-        #     names_defined = self.classModel.actorNamed
-        #     for actor in self.classModel.actors:
-        #         for (isa, sa_name) in enumerate(
-        #                 actor.superActors):
-        #             # try to solve the superactor name
-        #
-        #             if sa_name in names_defined:
-        #                 super_actor = names_defined[sa_name]
-        #                 # replace the string the by the actor
-        #                 actor.superActors[isa] = super_actor
-        #             else:
-        #                 ASTNodeSourceIssue(
-        #                     code=icode('ACTOR_NO_SUPER'),
-        #                     astNode=actor.astnode,
-        #                     level=Levels.Error,
-        #                     message=(
-        #                         'Super actor %s is not defined' % (
-        #                             sa_name))
-        #                 )
-        #                 del actor.superActors[isa]
-        #
-        # super(ClassModelSource, self).resolve()
-        # resolve_super_actors()
-
-
+        for a in self.classModel.associations:
+            resolve_association_content(a)
 
 
     def registerBasicDataTypes(self):
