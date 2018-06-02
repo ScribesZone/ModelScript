@@ -56,7 +56,6 @@ class ClassModelPrinter(ModelPrinter):
         self.doUseModel(self.theModel)
         return self.output
 
-
     def doUseModel(self, model):
         self.doModelTextBlock(model.description)
 
@@ -120,12 +119,12 @@ class ClassModelPrinter(ModelPrinter):
 
         # self.doModelTextBlock(class_.description)
         if class_.attributes:
-            self.outLine(self.kwd('attributes'))
+            self.outLine(self.kwd('attributes'), indent=1)
             for attribute in class_.attributes:
                 self.doAttribute(attribute)
 
         if class_.operations:
-            self.outLine(self.kwd('operations'))
+            self.outLine(self.kwd('operations'), indent=1)
             for operation in class_.operations:
                 self.doOperation(operation)
 
@@ -136,16 +135,14 @@ class ClassModelPrinter(ModelPrinter):
         return self.output
 
     def doAssociation(self, association):
-        self.doModelTextBlock(association.description)
-        self.outLine('%s %s %s' % (
+        self.outLine('%s %s' % (
             self.kwd(association.kind),
             association.name,
-            self.kwd('between'),
         ))
-        self.doModelTextBlock(association.description)
+        self.doModelTextBlock(association.description, indent=1)
+        self.outLine(self.kwd('roles'), indent=1)
         for role in association.roles:
             self.doRole(role)
-        self.outLine(self.kwd('end'), linesAfter=1)
         return self.output
 
     def doAssociationClass(self, associationClass):
@@ -167,7 +164,7 @@ class ClassModelPrinter(ModelPrinter):
             self.doRole(role)
 
         if associationClass.attributes:
-            self.outLine(self.kwd('attributes'))
+            self.outLine(self.kwd('attributes'), indent=1)
             for attribute in associationClass.attributes:
                 self.doAttribute(attribute)
 
@@ -180,19 +177,26 @@ class ClassModelPrinter(ModelPrinter):
         return self.output
 
     def doAttribute(self, attribute):
-        self.doModelTextBlock(attribute.description)
-        self.outLine('%s %s %s' % (
+        visibility={
+            'public':None,
+            'private':'-',
+            'protected':'%',
+            'package':'~'
+        }[attribute.visibility]
+        _=' '.join(filter(None,[
+                self.kwd('/') if attribute.isDerived else None,
+                visibility,
                 attribute.name,
                 self.kwd(':'),
-                attribute.type.name),
-            indent=1)
-        self.doModelTextBlock(attribute.description)
-        if attribute.isDerived:
-            self.outLine('%s %s' % (
-                    self.kwd('derive ='),
-                    attribute.expression),
-                indent=2
-            )
+                attribute.type.name]))
+        self.outLine(_, indent=2)
+        self.doModelTextBlock(attribute.description, indent=3)
+        # if attribute.isDerived:
+        #     self.outLine('%s %s' % (
+        #             self.kwd('derive ='),
+        #             attribute.expression),
+        #         indent=2
+        #     )
         return self.output
 
     def doOperation(self, operation):
@@ -233,13 +237,16 @@ class ClassModelPrinter(ModelPrinter):
 
     def doRole(self, role):
         self.doModelTextBlock(role.description)
-        if role.name:
-            rn = self.kwd('role ') + role.name
-        else:
-            rn = ''
-        max = '*' if role.cardinalityMax is None else role.cardinalityMax
-        self.outLine('    %s[%s..%s] %s'
-                 % (role.type.name, role.cardinalityMin, max, rn ))
+        _=('%s %s %s%s%s%s%s%s' % (
+            role.name,
+            self.kwd(':'),
+            role.type.name,
+            self.kwd('['),
+            role.cardinalityMin,
+            self.kwd('..'),
+            '*' if role.cardinalityMax is None else role.cardinalityMax,
+            self.kwd(']')))
+        self.outLine(_, indent=2)
         self.doModelTextBlock(role.description)
         return self.output
 
