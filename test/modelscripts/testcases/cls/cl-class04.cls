@@ -1,5 +1,5 @@
     #@Metric "regular class" 3
-    #@Issue cl.syn.Class.NoSuper 2
+    #@Issue cl.res.Class.NoSuper 2
     #@Issue level *
 
 class model Cl_class01
