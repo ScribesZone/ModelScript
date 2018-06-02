@@ -122,13 +122,12 @@ class ModelPrinter(ContentPrinter):
 
         return self.output
 
-    def doModelTextBlock(self, textBlock):
+    def doModelTextBlock(self, textBlock, indent=0):
         from modelscripts.metamodels.textblocks import TextBlock
-
         if textBlock is not None:
             assert isinstance(textBlock, TextBlock)
-            s = TextBlockPrinter(textBlock).do()
-            self.outLine(s)
+            s = TextBlockPrinter(textBlock, indent=indent).do()
+            self.outLine(s, indent)
             return self.output
 
 
