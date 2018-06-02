@@ -1,4 +1,5 @@
 object model A
+import class model from '../cls/CyberCompany.cls'
 
-paul est une Personne
-marie est un Manager
+paul is an Employee.
+marie is a Manager.

@@ -1,5 +1,5 @@
-object model
+object model Ob_object03
+import class model from '../cls/CyberCompany.cls'
 
-paul : Personne
-marie:Manager
-samira est une Personne
+marie : Manager
+samira:Employee

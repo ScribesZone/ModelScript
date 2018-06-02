@@ -1,3 +1,4 @@
 object model A
+import class model from '../cls/CyberCompany.cls'
 
-computing is a Department
+computing is a Department.
