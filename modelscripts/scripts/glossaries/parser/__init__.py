@@ -88,7 +88,7 @@ class GlossaryModelSource(ASTBasedModelSourceFile):
                     message=(
                         'Entry "%s" already declared at line %s' % (
                             ast_entry.term,
-                            self.ast.line(existing_entry.astnode))))
+                            self.ast.line(existing_entry.astNode))))
             else:
                 entry=Entry(
                     package=package,
