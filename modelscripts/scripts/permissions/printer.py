@@ -34,7 +34,7 @@ class PermissionModelPrinter(ModelPrinter):
         return self.output
 
     def doPermissionModel(self, permissionModel):
-        self.doModelTextBlock(permissionModel.description)
+        self.doModelTextBlock(permissionModel.description, indent=1)
         for rule in permissionModel.rules:
             self.doFactorizedPermissionRule(rule)
 

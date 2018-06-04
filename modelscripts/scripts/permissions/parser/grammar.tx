@@ -1,0 +1,47 @@
+PermissionModel:
+    megamodelPart = MegamodelPart
+    declarations *= Declaration
+;
+
+Declaration:
+    RuleDeclaration
+;
+
+RuleDeclaration:
+//'A'
+         ENSpeechRuleDeclaration
+    //|  FRSpeechRuleDeclaration
+    //| SymbolicRuleDeclaration
+;
+
+ENSpeechRuleDeclaration:
+    'The' 'usecase' (subjectNames += ID [','])
+    'can' (actionNames += ENAction [','])
+    'some' (resourceExprs += ResourceExpr [','])
+    '.'
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
+    X
+;
+
+ResourceExpr:
+    entityName=ID ('.' memberName
+    =ID)?
+;
+
+ENAction:
+      'create'  | 'C'
+    | 'read'    | 'R'
+    | 'update'  | 'U'
+    | 'delete'  | 'D'
+    | 'execute' | 'X'
+;
+
+FRSpeechRuleDeclaration:
+    'fr'
+;
+
+SymbolicRuleDeclaration:
+    'o' ?
+;
