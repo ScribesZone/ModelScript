@@ -1,53 +1,69 @@
 ObjectModel:
-    'object' 'model' (name=ID) ?
-    (o_
-        textBlock=TextBlock
-    _o)? X
+    megamodelPart = MegamodelPart
     declarations *= Declaration
 ;
 
 Declaration:
-      Object
-    | Slot
-//    | Link
-//    | ObjectLink
+      ObjectDeclaration
+    | SlotDeclaration
+//    | LinkDeclaration
+//    | ObjectLinkDeclaration
 ;
 
-Object:
-      VerboseObject
+ObjectDeclaration:
+      SpeechObject
     | SymbolicObject
 ;
 
-VerboseObject:
+
+SpeechObject:
     name = ID
     ('est'|'is')
     ('une'|'un'|'an'|'a')  // order is important
-    class = ID
+    type = ID
+    '.'
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
     X
 ;
 
 SymbolicObject:
     name = ID
     ':'
-    class = ID
+    type = ID
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
     X
 ;
 
-Slot:
-      VerboseSlot
+SlotDeclaration:
+      SpeechSlot
     | SymbolicSlot
 ;
 
-VerboseSlot:
-    ('the'|/l'/|'la'|'les'|'le') ?
+SpeechSlot:
+    Article ?
     attribute = ID
     ('of'|'de')
     object = ID
     ('is'|'est')
     value = BASETYPE
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
+    '.'
     X
 ;
 
+Article:
+      /[T|t]he/
+    | /[L|l] *'/
+    | /[L|l]a/
+    | /[L|l]es/
+    | /[L|l]e/
+;
 
 SymbolicSlot:
     object = ID
@@ -55,5 +71,8 @@ SymbolicSlot:
     attribute = ID
     '='
     value = BASETYPE
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
     X
 ;
