@@ -18,16 +18,20 @@ __all__=(
     'TextBlockPrinter'
 )
 
+TextBlock='TextBlock'
+
 class TextBlockPrinter(AbstractPrinter):
 
     def __init__(self,
                  textBlock,
+                 indent=0,
                  config=None):
-        #type: (TextBlock, Optional[AbstractPrinterConfig]) -> None
+        #type: (TextBlock, int, Optional[AbstractPrinterConfig]) -> None
         super(TextBlockPrinter, self).__init__(
             config=config
         )
         self.textBlock=textBlock
+        self.indent=indent
 
     def do(self):
         if len(self.textBlock.textLines)>=1:
@@ -40,11 +44,12 @@ class TextBlockPrinter(AbstractPrinter):
         return self.output
 
     def doLine(self, line):
-        _= '    %s' % (
+        _= '%s' % (
             Styles.comment.do('|', self.config.styled))
+        self.out(_, indent=self.indent)
         for token in line.textTokens:
             self.doTextToken(token)
-        self.outLine(_,lineNo=line.lineNo)
+        # self.outLine(_,lineNo=line.lineNo)
         return self.output
 
     def doTextToken(self, token):
@@ -74,3 +79,4 @@ class TextBlockPrinter(AbstractPrinter):
                 'Printing %s is not implemented'
                 % type(token))
         self.out(x)
+        return self.output
