@@ -93,7 +93,7 @@ class UsecaseModelSource(ASTBasedModelSourceFile):
                         message=(
                              'Actor "%s" already declared at line %s' % (
                                  name,
-                                 self.ast.line(existing_actor.astnode)))
+                                 self.ast.line(existing_actor.astNode)))
                     )
                     return existing_actor
                 else:
@@ -119,7 +119,7 @@ class UsecaseModelSource(ASTBasedModelSourceFile):
                         message=(
                              'Usecase "%s" already declared at line %s' % (
                                  name,
-                                 self.ast.line(existing_usecase.astnode)))
+                                 self.ast.line(existing_usecase.astNode)))
                     )
                     return existing_usecase
                 else:
@@ -200,7 +200,7 @@ class UsecaseModelSource(ASTBasedModelSourceFile):
                     else:
                         ASTNodeSourceIssue(
                             code=icode('ACTOR_NO_SUPER'),
-                            astNode=actor.astnode,
+                            astNode=actor.astNode,
                             level=Levels.Error,
                             message=(
                                 'Super actor %s is not defined' % (
