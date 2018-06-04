@@ -41,3 +41,42 @@ X:
 EndOfTextLine:
     /\|_;_/
 ;
+
+
+// Not really related to text block, no better place for the moment
+
+Le_:
+    'Le' | 'La' | "L'"
+;
+
+le_:
+    'le' | 'la'
+;
+
+d_un_:
+    'd' "'" ('une'|'un')
+;
+
+de_:
+    "d'" | 'de'
+;
+
+du_:
+    'du' | 'de' 'la'
+;
+
+Un_ :
+    'Une' | 'Un'
+;
+
+un_ :
+    'une' | 'un'
+;
+
+A_ :
+    'A' | 'An'
+;
+
+a_ :
+    'a' | 'an'
+;
