@@ -34,6 +34,10 @@ from modelscripts.metamodels.usecases import (
     UsecaseModel
 )
 
+__all__=(
+    'UCPermissionModel',
+    'FactorizedPermissionRule'
+)
 
 ClassModel='ClassModel'
 
@@ -41,19 +45,20 @@ ClassModel='ClassModel'
 #    Usecases/Classes specific
 #------------------------------------------------------------------------------
 
-CreateAction = Action('C', None)
-ReadAction = Action('R', None)
-UpdateAction = Action('U', None)
-DeleteAction = Action('D', None)
-ExecuteAction = Action('X', None)
+CreateAction = Action('create', None)
+ReadAction = Action('read', None)
+UpdateAction = Action('update', None)
+DeleteAction = Action('delete', None)
+ExecuteAction = Action('execute', None)
 
 
 class FactorizedPermissionRule(PermissionRule):
-    def __init__(self, model, subjects, actions, resources, lineNo=None):
-        #type: (UCPermissionModel, List[Subject], List[Action], List[Resource])->None
+    def __init__(self, model, subjects, actions, resources, astNode=None, lineNo=None):
+        #type: (UCPermissionModel, List[Subject], List[Action], List[Resource], Optional['ASTNode'], Optional[int])->None
         super(FactorizedPermissionRule, self).__init__(
             model=model,
-            lineNo=lineNo)
+            lineNo=lineNo,
+            astNode=astNode)
         self.subjects=subjects      #type: List[Subject]
         self.actions=actions        #type: List[Action]
         self.resources=resources    #type: List[Resource]
@@ -69,7 +74,7 @@ class FactorizedPermissionRule(PermissionRule):
 class UCPermissionModel(PermissionModel):
 
     def __init__(self):
-        # #type: (UsecaseModel, ClassModel, OldSourceFile) -> None
+        #type: (UsecaseModel, ClassModel, SourceFile) -> None
         super(UCPermissionModel, self).__init__()
 
         self.usecaseModel=None #type: Optional[UsecaseModel]
