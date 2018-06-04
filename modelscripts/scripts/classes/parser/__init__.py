@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from __future__ import print_function
-from typing import Text
+from typing import Text, Union
 import os
 
 from modelscripts.base.grammars import (
@@ -10,7 +10,7 @@ from modelscripts.base.grammars import (
     ASTNodeSourceIssue
 )
 from modelscripts.base.issues import (
-    Levels,
+    Levels
 )
 from modelscripts.metamodels.classes import (
     ClassModel,
@@ -31,6 +31,8 @@ from modelscripts.megamodels.sources import (
 from modelscripts.scripts.textblocks.parser import (
     astTextBlockToTextBlock
 )
+from modelscripts.megamodels.models import Model, Placeholder
+
 
 __all__=(
     'ClassModelSource'
@@ -50,23 +52,13 @@ def icode(ilabel):
     return ISSUES[ilabel]
 
 
-class _Placeholder(object):
-    """
-    Used just to put some symbol value in the metamodel
-    waiting for symbol resolution. this will be replaced
-    by an actual reference to a model element.
-    """
-    def __init__(self, value):
-        self.value=value
-
-
 class ClassModelSource(ASTBasedModelSourceFile):
 
-    def __init__(self, usecaseFileName):
+    def __init__(self, fileName):
         #type: (Text) -> None
         this_dir=os.path.dirname(os.path.realpath(__file__))
         super(ClassModelSource, self).__init__(
-            fileName=usecaseFileName,
+            fileName=fileName,
             grammarFile=os.path.join(this_dir, 'grammar.tx')
         )
 
@@ -78,12 +70,10 @@ class ClassModelSource(ASTBasedModelSourceFile):
         m=self.model #type: ClassModel
         return m
 
-
     @property
     def metamodel(self):
         #type: () -> Metamodel
         return METAMODEL
-
 
     def fillModel(self):
 
@@ -157,7 +147,8 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 astNode=ast_class,
                 isAbstract=ast_class.isAbstract,
                 superclasses=[
-                    _Placeholder(s) for s in ast_class.superclasses]
+                    Placeholder(s, 'Classifier')
+                    for s in ast_class.superclasses]
             )
             c.description=astTextBlockToTextBlock(
                 container=c,
@@ -187,7 +178,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 astNode=ast_attribute,
                 isDerived=ast_attribute.isDerived,
                 visibility=visibility,
-                type=_Placeholder(ast_attribute.type)
+                type=Placeholder((ast_attribute.type),'Classifier')
             )
             # TODO: convert visibiliy + to public, etc.
             a.description=astTextBlockToTextBlock(
@@ -214,7 +205,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 astNode=ast_role,
                 association=association,
                 name=ast_role.name,
-                type=_Placeholder(ast_role.type.name),
+                type=Placeholder(ast_role.type.name,'Classifier'),
                 cardMin=min,
                 cardMax=max
             )
@@ -248,13 +239,12 @@ class ClassModelSource(ASTBasedModelSourceFile):
     #----------------------------------------------------------------
     def resolve(self):
 
-
         def resolve_class_content(class_):
 
             def resolve_superclasses():
                 actual_super_classes=[]
                 for class_placeholder in class_.superclasses:
-                    name=class_placeholder.value
+                    name=class_placeholder.placeholderValue
                     try:
                         c=self.classModel._findClassOrAssociationClass(
                             name)
@@ -271,7 +261,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 class_.superclasses=actual_super_classes
 
             def resolve_attribute(attribute):
-                type_name=attribute.type.value
+                type_name=attribute.type.placeholderValue
 
                 if type_name in self.classModel.simpleTypeNamed:
                     attribute.type=(
@@ -299,9 +289,8 @@ class ClassModelSource(ASTBasedModelSourceFile):
             def resolve_role(role):
                 #type: (Role) -> None
                 try:
-                    print('OO'*10, "resolving %s %s"%(role.type.value,type(role.type.value)))
                     c=self.classModel._findClassOrAssociationClass(
-                        role.type.value)
+                        role.type.placeholderValue)
                     role.type=c
                 except:
                     ASTNodeSourceIssue(
@@ -311,24 +300,18 @@ class ClassModelSource(ASTBasedModelSourceFile):
                         message=(
                             'Class "%s" does not exist. '
                             "'Can't be used in the role '%s'."
-                            % (role.type.value, role.name)))
+                            % (role.type.placeholderValue, role.name)))
 
-            print('ZZ'*10,'resolving',association)
             for r in association.roles:
-                print('ZZ' * 1, 'resolving role', r)
                 resolve_role(r)
-
 
         self.registerBasicDataTypes()
 
         for c in self.classModel.classes:
             resolve_class_content(c)
 
-        print('ZZ'*10,'resolving',self.classModel.associations)
-
         for a in self.classModel.associations:
             resolve_association_content(a)
-
 
     def registerBasicDataTypes(self):
         DATATYPES='Integer Boolean Real String Date DateTime Time'
