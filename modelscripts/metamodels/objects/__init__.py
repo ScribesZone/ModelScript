@@ -307,13 +307,13 @@ class Link(PackagableElement, Entity):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self,
-                 model, class_,
+                 model, association,
                  sourceObject, targetObject,
                  name=None,
                  package=None,
                  astNode=None, lineNo=None,
                  description=None):
-        #type: (ObjectModel, Class, Object, Object, Optional[Text], Optional[Package], Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
+        #type: (ObjectModel, Union[Association, Placeholder], Object, Object, Optional[Text], Optional[Package], Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
         PackagableElement.__init__(
             self,
             model=model,
@@ -325,8 +325,8 @@ class Link(PackagableElement, Entity):
         )
         Entity.__init__(self)
 
-        self.class_=class_
-        #type: Class
+        self.association=association
+        #type: association
 
         self.sourceObject = sourceObject
         # type: Object
@@ -349,7 +349,7 @@ class PlainLink(Link):
         #type: (ObjectModel, Class, Object, Object, Optional[Text], Optional[Package], Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
         super(PlainLink, self).__init__(
             model=model,
-            class_=class_,
+            association=class_,
             sourceObject=sourceObject,
             targetObject=targetObject,
             name=name,
@@ -392,7 +392,7 @@ class LinkObject(Object, Link):
         Link.__init__(
             self,
             model=model,
-            class_=class_,
+            association=class_,
             sourceObject=sourceObject,
             targetObject=targetObject,
             name=name,

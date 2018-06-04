@@ -6,17 +6,17 @@ ObjectModel:
 Declaration:
       ObjectDeclaration
     | SlotDeclaration
-//    | LinkDeclaration
+    | LinkDeclaration
 //    | ObjectLinkDeclaration
 ;
 
 ObjectDeclaration:
-      SpeechObject
-    | SymbolicObject
+      SpeechObjectDeclaration
+    | SymbolicObjectDeclaration
 ;
 
 
-SpeechObject:
+SpeechObjectDeclaration:
     name = ID
     ('est'|'is')
     ('une'|'un'|'an'|'a')  // order is important
@@ -28,7 +28,7 @@ SpeechObject:
     X
 ;
 
-SymbolicObject:
+SymbolicObjectDeclaration:
     name = ID
     ':'
     type = ID
@@ -39,11 +39,11 @@ SymbolicObject:
 ;
 
 SlotDeclaration:
-      SpeechSlot
-    | SymbolicSlot
+      SpeechSlotDeclaration
+    | SymbolicSlotDeclaration
 ;
 
-SpeechSlot:
+SpeechSlotDeclaration:
     Article ?
     attribute = ID
     ('of'|'de')
@@ -65,7 +65,7 @@ Article:
     | /[L|l]e/
 ;
 
-SymbolicSlot:
+SymbolicSlotDeclaration:
     object = ID
     '.'
     attribute = ID
@@ -76,3 +76,35 @@ SymbolicSlot:
     _o) ?
     X
 ;
+
+
+LinkDeclaration:
+      SpeechLinkDeclaration
+    | SymbolicLinkDeclaration
+;
+
+SpeechLinkDeclaration:
+    source = ID
+    association = ID
+    target = ID
+    '.'
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
+    X
+;
+
+SymbolicLinkDeclaration:
+    '('
+    source = ID
+    ','
+    association = ID
+    ','
+    target = ID
+    ')'
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
+    X
+;
+

@@ -1,0 +1,4 @@
+    # must raise an error because there is no import of a class model
+
+object model Ob_model02
+

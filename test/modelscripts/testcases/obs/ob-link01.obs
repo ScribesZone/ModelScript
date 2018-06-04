@@ -1,0 +1,6 @@
+object model A
+import class model from '../cls/CyberCompany.cls'
+
+computing is a Department.
+paul is an Employee.
+paul WorksIn computing.

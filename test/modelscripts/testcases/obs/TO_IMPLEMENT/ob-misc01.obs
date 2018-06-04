@@ -1,0 +1,32 @@
+object model A
+include object model A1
+
+|
+computing is a Department.
+The name of computing is 'Computing department'.
+The budget of computing is 12000.
+
+turbo is a Project.
+The budget of turbo is 2000.
+
+computing Controls Turbo.
+djamel is an Employee.
+The name of djamel is 'Djamel'.
+
+
+
+dJAtC is the Job between djamel and computing.
+The salary of djamelJib is 2000.
+
+computing : Department
+computing.name='Computing department'
+computing.budget=12000
+turbo : Project
+turbo.budget=10000
+(computing,Controls,turbo)
+dJAtC=(djamel,Job,computing)
+
+
+
+dJAtC=(djamel,worksin,computing)
+dJAtC.salary=1200

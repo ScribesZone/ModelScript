@@ -82,10 +82,14 @@ class ObjectModelPrinter(ModelPrinter):
             str(l.association)
                 if isinstance(l.association, Placeholder)
             else l.association.name)
-        self.outLine('%s %s %s' % (
-                     l.roles[0].name,
-                     association_name,
-                     l.roles[1].name))
+        self.outLine('%s%s%s %s%s %s%s' % (
+                    self.kwd('('),
+                    l.sourceObject.name,
+                    self.kwd(','),
+                    association_name,
+                    self.kwd(','),
+                    l.targetObject.name,
+                    self.kwd(')')))
         return self.output
 
         # FIXME:1 add object links
