@@ -1,5 +1,6 @@
 # coding=utf-8
-
+from __future__ import print_function
+from nose.plugins.attrib import attr
 
 import modelscripts
 from modelscripts.scripts.megamodels.printer.megamodels import MegamodelPrinter
@@ -13,28 +14,20 @@ from test.modelscripts.assertions import (
 )
 
 
-
-EXPECTED_ISSUES={
-    # 'us28.scs':         {F: 0, E: 0, W: 11, I: 0, H: 0},
-    # 'us90.scs':         {F: 0, E: 0, W: 9, I: 0, H: 0},
-    # 'empty01.scs':      {F: 1, E: 0, W: 1, I: 0, H: 0},
-    # 'empty02.scs':      {F: 1, E: 0, W: 1, I: 0, H: 0},
-    # 'ko01.scs':         {F: 1, E: 0, W: 1, I: 0, H: 0},
-    # 'ko02.scs':         {F: 1, E: 0, W: 1, I: 0, H: 0},
-    # 'ko03.scs':         {F: 1, E: 0, W: 1, I: 0, H: 0},
-    # 'ko04.scs':         {F: 1, E: 0, W: 1, I: 0, H: 0},
-    # 'ko05.scs':         {F: 1, E: 0, W: 1, I: 0, H: 0},
-    # 'ko06.scs':         {F: 1, E: 0, W: 1, I: 0, H: 0},
-}
-
-
-def testGenerator_Issues():
+def testGenerator_Assertions():
     res = checkAllAssertionsForDirectory(
-        'obs',
-        ['.obs'],
-        EXPECTED_ISSUES)
-    for (file , ex) in res:
-        yield (checkValidIssues, file, objects.METAMODEL,  ex)
+        relTestcaseDir='obs',
+        extension=['.obs'],
+        expectedIssuesFileMap={},
+        expectedMetricsFileMap={})
+
+    for (file , expected_issue_map, expected_metrics_map) in res:
+        yield (
+            checkValidIssues,
+            file,
+            objects.METAMODEL,
+            expected_issue_map,
+            expected_metrics_map)
 
 def testFinalMegamodel():
     MegamodelPrinter().display()
