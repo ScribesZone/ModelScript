@@ -15,10 +15,9 @@ from modelscripts.base.issues import (
 )
 from modelscripts.metamodels.objects import (
     ObjectModel,
-    Object,
     PlainObject,
+    BasicValue,
     Slot,
-    Link,
     PlainLink,
     LinkObject,
     METAMODEL
@@ -47,9 +46,6 @@ ISSUES={
 }
 def icode(ilabel):
     return ISSUES[ilabel]
-
-
-BasicValue=Union[Text, 'Bool', int, float]
 
 class ObjectModelSource(ASTBasedModelSourceFile):
 
@@ -137,7 +133,7 @@ class ObjectModelSource(ASTBasedModelSourceFile):
                 and is_object_name_defined(target_name)):
                 source_object=self.objectModel._objectNamed[source_name]
                 target_object=self.objectModel._objectNamed[target_name]
-                l=Link(
+                l=PlainLink(
                     model=self.objectModel,
                     name=None,
                     package=None,
