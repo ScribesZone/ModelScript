@@ -52,6 +52,7 @@ __all__=(
     'StateElement',
     'Object',
     'PlainObject',
+    'BasicValue',
     'Slot',
     'Link',
     'PlainLink',
@@ -274,6 +275,7 @@ class PlainObject(Object):
 
 
 
+BasicValue=Union[Text, 'Bool', int, float]
 
 
 
@@ -281,7 +283,7 @@ class Slot(SourceModelElement, Member):
 
     def __init__(self, object, attribute, value,
                  description=None, lineNo=None, astNode=None):
-        #type: (Object, Union[Attribute, Placeholder], 'BasicType', Optional[TextBlock], Optional[int], 'ASTNode') -> None
+        #type: (Object, Union[Attribute, Placeholder], BasicValue, Optional[TextBlock], Optional[int], 'ASTNode') -> None
         attribute_name=(
             attribute.placeholderValue
                 if isinstance(attribute, Placeholder)
@@ -340,16 +342,16 @@ class Link(PackagableElement, Entity):
 class PlainLink(Link):
 
     def __init__(self,
-                 model, class_,
+                 model, association,
                  sourceObject, targetObject,
                  name=None,
                  package=None,
                  astNode=None, lineNo=None,
                  description=None):
-        #type: (ObjectModel, Class, Object, Object, Optional[Text], Optional[Package], Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
+        #type: (ObjectModel, Union[Association, Placeholder], Object, Object, Optional[Text], Optional[Package], Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
         super(PlainLink, self).__init__(
             model=model,
-            association=class_,
+            association=association,
             sourceObject=sourceObject,
             targetObject=targetObject,
             name=name,
@@ -371,7 +373,7 @@ class PlainLink(Link):
 
 class LinkObject(Object, Link):
 
-    def __init__(self, model, class_,
+    def __init__(self, model, associationClass,
                  sourceObject, targetObject,
                  name,
                  package=None,
@@ -381,18 +383,18 @@ class LinkObject(Object, Link):
             self,
             model=model,
             name=name,
-            class_=class_,
+            class_=associationClass,
             package=package,
             astNode=astNode,
             lineNo=lineNo,
             description=description
         )
-        # the object link has been added to _objectNamed
+        # the linkObject has been added to _objectNamed
 
         Link.__init__(
             self,
             model=model,
-            association=class_,
+            association=associationClass,
             sourceObject=sourceObject,
             targetObject=targetObject,
             name=name,
@@ -401,7 +403,7 @@ class LinkObject(Object, Link):
             lineNo=lineNo,
             description=description
         )
-        # the object link has been added to _links
+        # the linkObject has been added to _links
 
         # just make sure that the name of this link object is set.
         # This avoid relying on the implementation of Link constructor.
