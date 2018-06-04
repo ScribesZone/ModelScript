@@ -231,7 +231,7 @@ def assertMetrics(
 
     printActualSummary()
 
-    assert not unexpected, 'Unexpected number of metrics'
+    assert not unexpected, 'Unexpected metrics'
 
 RE_ISSUE_HEADER=r'^ *# *@ *Issue'
 RE_ISSUE_LABEL=r'(?P<label>[\w.]+)'
