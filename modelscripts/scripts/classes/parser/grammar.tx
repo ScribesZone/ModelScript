@@ -23,7 +23,7 @@ EntitydDeclaration:
 
 DataType:
     'datatype' name=ID (o_
-        (textBlock = TextBlock) ?
+        (textBlock = TextBlock)
     _o) ?
     X
 ;
@@ -184,25 +184,25 @@ Visibility:
 //====================================================================
 
 SpeechDeclaration:
-      SpeechClassDefinition
+      SpeechClassDeclaration
     | SpeechInheritance
-    | SpeechAttributeDefinition
-    | SpeechAssocForwardDefinition
+    | SpeechAttributeDeclaration
+    | SpeechAssocForwardDeclaration
     | SpeechAssocConstraint
 ;
 
 
-SpeechClassDefinition:
-      FRClassDefinition
-    | ENClassDefinition
+SpeechClassDeclaration:
+      FRClassDeclaration
+    | ENClassDeclaration
 ;
 
-FRClassDefinition:
+FRClassDeclaration:
     'Le' 'concept' 'de' class=ID  'est' 'important' '.'
     X
 ;
 
-ENClassDefinition:
+ENClassDeclaration:
     'The' 'concept' 'of' class=ID 'is' 'important' '.'
     X
 ;
@@ -222,25 +222,25 @@ ENClassInheritance:
     X
 ;
 
-SpeechAttributeDefinition:
-      FRAttributeDefinition
-    | ENAttributeDefinition
+SpeechAttributeDeclaration:
+      FRAttributeDeclaration
+    | ENAttributeDeclaration
 ;
 
-FRAttributeDefinition:
+FRAttributeDeclaration:
     Le_ attribute=ID d_un_ class=ID 'est' un_ type=ID '.' X
 ;
 
-ENAttributeDefinition:
+ENAttributeDeclaration:
     'The' attribute=ID 'of' a_ class=ID 'is' a_ type=ID '.' X
 ;
 
-SpeechAssocForwardDefinition:
-      ENAssocForwardDefinition
-    | FRAssocForwardDefinition
+SpeechAssocForwardDeclaration:
+      ENAssocForwardDeclaration
+    | FRAssocForwardDeclaration
 ;
 
-ENAssocForwardDefinition:
+ENAssocForwardDeclaration:
     A_ class1=ID
     association=ID
     'of'? cardinality=SpeechAssocCardinality
@@ -250,7 +250,7 @@ ENAssocForwardDefinition:
     X
 ;
 
-FRAssocForwardDefinition:
+FRAssocForwardDeclaration:
     Un_ class1=ID
     association=ID
     de_? cardinality=SpeechAssocCardinality
@@ -261,12 +261,12 @@ FRAssocForwardDefinition:
 ;
 
 
-SpeechAssocReverseDefinition:
-      ENAssocReverseDefinition
-    | FRAssocReverseDefinition
+SpeechAssocReverseDeclaration:
+      ENAssocReverseDeclaration
+    | FRAssocReverseDeclaration
 ;
 
-ENAssocReverseDefinition:
+ENAssocReverseDeclaration:
     A_ class2=ID
     'has' cardinality=SpeechAssocCardinality
     role1=ID
@@ -275,7 +275,7 @@ ENAssocReverseDefinition:
     X
 ;
 
-FRAssocReverseDefinition:
+FRAssocReverseDeclaration:
     Un_ class2=ID
     'a' cardinality=SpeechAssocCardinality
     role1=ID
