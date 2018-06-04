@@ -1,0 +1,59 @@
+ObjectModel:
+    'object' 'model' (name=ID) ?
+    (o_
+        textBlock=TextBlock
+    _o)? X
+    declarations *= Declaration
+;
+
+Declaration:
+      Object
+    | Slot
+//    | Link
+//    | ObjectLink
+;
+
+Object:
+      VerboseObject
+    | SymbolicObject
+;
+
+VerboseObject:
+    name = ID
+    ('est'|'is')
+    ('une'|'un'|'an'|'a')  // order is important
+    class = ID
+    X
+;
+
+SymbolicObject:
+    name = ID
+    ':'
+    class = ID
+    X
+;
+
+Slot:
+      VerboseSlot
+    | SymbolicSlot
+;
+
+VerboseSlot:
+    ('the'|/l'/|'la'|'les'|'le') ?
+    attribute = ID
+    ('of'|'de')
+    object = ID
+    ('is'|'est')
+    value = BASETYPE
+    X
+;
+
+
+SymbolicSlot:
+    object = ID
+    '.'
+    attribute = ID
+    '='
+    value = BASETYPE
+    X
+;
