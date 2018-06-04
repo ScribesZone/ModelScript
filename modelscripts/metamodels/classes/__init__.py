@@ -530,10 +530,11 @@ class Class(PackagableElement, Entity):
     ]
 
     def __init__(self, name, model, isAbstract=False, superclasses=(),
-                 lineNo=None, description=None, astNode=None):
+                 package=None, lineNo=None, description=None, astNode=None):
         super(Class, self).__init__(
             name=name,
             model=model,
+            package=None,
             astNode=astNode,
             lineNo=lineNo,
             description=description)
@@ -673,12 +674,13 @@ class Association(PackagableElement, Entity):
     ]
 
     def __init__(self,
-                 name, model, kind=None,
+                 name, model, kind=None, package=None,
                  lineNo=None, description=None, astNode=None):
         # type: (Text,ClassModel,Optional[Text],Optional[int],Optional[Text],Optional[Text]) -> None
         super(Association, self).__init__(
             name=name,
             model=model,
+            package=package,
             astNode=astNode,
             lineNo=lineNo, description=description)
         self.model.associationNamed[name] = self
@@ -787,6 +789,7 @@ class Role(SourceModelElement, Member):
         self.cardinalityMin = cardMin
         self.cardinalityMax = cardMax
         self.type = type        # string to be resolved in Class
+        #type:
         self.isOrdered = isOrdered
 
         # (str,str) to be resolved in (str,SimpleType)
@@ -862,6 +865,7 @@ class AssociationClass(Class, Association):
     """
     def __init__(self,
                  name, model, isAbstract=False, superclasses=(),
+                 package=None,
                  lineNo=None, description=None, astNode=None):
         # Use multi-inheritance to initialize the association class
         Class.__init__(self,
@@ -869,6 +873,7 @@ class AssociationClass(Class, Association):
             model=model,
             isAbstract=isAbstract,
             superclasses=superclasses,
+            package=package,
             lineNo=lineNo,
             description=description,
             astNode=astNode)
@@ -876,6 +881,7 @@ class AssociationClass(Class, Association):
             name=name,
             model=model,
             kind='associationclass',
+            package=package,
             lineNo=lineNo,
             description=description, astNode=astNode)
         # But register the association class apart and only once, to avoid
