@@ -1,7 +1,6 @@
-object model A
+object model Ob_slot01
+import class model from '../cls/CyberCompany.cls'
 
-paul est une Personne
-le nom de paul est 'Paul'
-le poids de paul est 110.5
-le nbDEnfants de paul est 3
-l'age de paul est 24
+samira is an Employee.
+The name of samira is 'Samira'.
+The salary of samira is 2500.

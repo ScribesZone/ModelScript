@@ -1,7 +1,11 @@
-object model A
+    # attribute that does not exist
 
-paul est une Personne
-le nom de paul est 'Paul'
-le poids de paul est 110.5
-le nbDEnfants de paul est 3
-l'age de paul est 24
+    #@Issue o.res.Slot.NoAttribute 1
+    #@Issue else *
+
+object model Ob_slot02
+import class model from '../cls/CyberCompany.cls'
+
+samira is an Employee.
+The name of samira is 'Samira'.
+The nothing of samira is 2500.

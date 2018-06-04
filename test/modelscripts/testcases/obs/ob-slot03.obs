@@ -1,5 +1,6 @@
 object model A
+import class model from '../cls/CyberCompany.cls'
 
-paul : Personne
-paul.nom='Paul'
-paul.poids=110.5
+paul : Employee
+paul.name='Paul'
+paul.salary=3200
