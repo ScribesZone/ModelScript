@@ -19,35 +19,95 @@ Simple metamodel for object states. Contains definitions for:
 
 
 from collections import OrderedDict
+from typing import List, Optional, Dict, Text, Union
+import abc
 
-from typing import List, Optional, Dict
+# TODO: to be continued
+from modelscripts.megamodels.py import (
+    MComposition,
+    MReference,
+    MAttribute
+)
+from modelscripts.megamodels.elements import SourceModelElement
 from modelscripts.base.metrics import Metrics
 from modelscripts.megamodels.metamodels import Metamodel
-from modelscripts.megamodels.models import Model
+from modelscripts.megamodels.models import (
+    Model,
+    Placeholder)
 from modelscripts.megamodels.dependencies.metamodels import (
     MetamodelDependency
+)
+# used for typing
+from modelscripts.metamodels.classes import (
+    Class,
+    Attribute,
+    Association
+)
+from modelscripts.metamodels.textblocks import (
+    TextBlock
 )
 
 __all__=(
     'ObjectModel',
     'StateElement',
     'Object',
+    'PlainObject',
     'Slot',
     'Link',
+    'PlainLink',
     'LinkObject',
 )
 
+
 class ObjectModel(Model):
+
     def __init__(self):
         super(ObjectModel, self).__init__()
-        self.objects = []
-        # type: List[Object]
 
-        self.links = []
+        self._objectNamed = OrderedDict()
+        # type: Dict[Text, Object]
+        """
+        All objects (plain objects and link objects).
+        Link object are also registered in _links. 
+        """
+
+        self._links=[]
         # type: List[Link]
+        """
+        All plain links (no link object).
+        Link object are also regitered in _objectNamed
+        """
 
-        self.linkObjects = []
-        # type: List[LinkObject]
+        # ALL packages, not only the top level ones
+        self.packageNamed=OrderedDict() #type: Dict[Text, Package]
+
+    @property
+    def objects(self):
+        #type: () -> List[Object]
+        return self._objectNamed.values()
+
+    @property
+    def plainObjects(self):
+        #type: () -> List[PlainObject]
+        return [
+            o for o in self.objects if isinstance(o, PlainObject) ]
+
+    @property
+    def linkObjects(self):
+        #type: () -> List[LinkObject]
+        return [
+            o for o in self.objects if isinstance(o, LinkObject) ]
+
+    @property
+    def links(self):
+        #type: () -> List[Link]
+        return self._links
+
+    @property
+    def plainLinks(self):
+        #type: () -> List[PlainLink]
+        return [
+            l for l in self.objects if isinstance(l, PlainLink) ]
 
     @property
     def metrics(self):
@@ -56,6 +116,8 @@ class ObjectModel(Model):
         ms.addList((
             ('object', len(self.objects)),
             ('link', len(self.links)),
+            ('plain object', len(self.plainObjects)),
+            ('plain link', len(self.plainLinks)),
             ('linkObject', len(self.linkObjects)),
             ('slot',sum(
                 len(o.slots)
@@ -68,132 +130,288 @@ class ObjectModel(Model):
         #type: () -> Metamodel
         return METAMODEL
 
-class StateElement(object):
-    def __init__(self, state):
-        self.state = state
+
+class PackagableElement(SourceModelElement):
+    """
+    Top level element.
+    """
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self,
+                 name,
+                 model,
+                 package=None,
+                 lineNo=None, astNode=None, description=None):
+        super(PackagableElement, self).__init__(
+            model=model,
+            name=name,
+            astNode=astNode,
+            lineNo=lineNo, description=description)
+        self.package=package
+        if self.package is not None:
+            self.package.addElement(self)
+
+    @MAttribute('String')
+    def label(self):
+        if self.package is not None:
+            return '%s.%s' % (
+                self.package.label,
+                self.name)
+        else:
+            return self.name
 
 
-
-class Object(StateElement):
-
-    _last_indexes=dict()
-    # type: Dict[str,int]
-    # last index for a given class name
-    # This allow to have id likes _Person1, _Employee2
-
-    def __init__(self, state, classifier, name=None):
-
-        # FIXME: mix between id and name
-        # There should be 3 concepts. Consider := R('lila')
-        # - the variable name is currently refered as 'name'
-        #   in parsing and here. Not necessarily define or
-        #   can be ambuguious because of multiple assignement
-        # - the label just like 'lila'. it can be defined or not
-        #   this is what is displayed in the object diagram
-        #   CURRENT we display the name. Which is wrong
-        # - the uid always defined. it is used to produce graph
-        #    is computed as below. Currenty the notion of
-        #   label is not implemented or clearly defined.
-        # To fix this, changes in 'scenario.py',
-        # 'objects/parser.py', this file and the puml generator
-        def _get_uid():
-            if self.name is not None:
-                return self.name
-            else:
-                cn = self.classifier.name
-                if cn not in self._last_indexes:
-                    self._last_indexes[cn] = 1
-                else:
-                    self._last_indexes[cn] += 1
-                return ('_%s%i' % (
-                    cn,
-                    self._last_indexes[cn]
-                ))
-
-        StateElement.__init__(self, state)
-        state.objects.append(self)
-
-        # type: Optional[str]
+class ResourceInstance:
+    __metaclass__ = abc.ABCMeta
+    """ 
+    Currently not used, but can be useful to describes
+    access instances. 
+    This corresponds to the instance level of Resource.
+    See modelscripts.metamodels.permissions.sar.Resource
+    """
 
 
-        self.classifier = classifier
-        #: this is a Class but can be AssociationClass for subtype
+class Entity(ResourceInstance):
+    __metaclass__ = abc.ABCMeta
 
-        self.name = name
-        # type: Optional[str]
-        #: name is the display name of the object
 
-        self.uid = _get_uid()
-        # type: str
-        #: a unique id like  'reslili'  or '_Residence2'
+class Member(ResourceInstance):
+    __metaclass__ = abc.ABCMeta
 
-        # Slot of the object sorted by attribute name
-        self.slotNamed = OrderedDict()
-        # type: Dict[str, Slot]
+# TODO: generalize and improve packages
+#       This class comes from metamodels.class
+#       It would make sense to move this to a upper level
 
-    def assign(self, object, attribute, value):
-        #TODO: check that the attribute pertains to the class
-        #       or to a superclass
-        self.slotNamed[attribute.name]=Slot(
-            object=object,
-            attribute=attribute,
-            value=value
+class Package(PackagableElement, Entity):
+    """
+    Packages.
+    """
+    def __init__(self,
+                 name,
+                 model,
+                 package=None,
+                 lineNo=None, astNode=None, description=None):
+        PackagableElement.__init__(
+            self,
+            name=name,
+            model=model,
+            package=package,
+            lineNo=lineNo, astNode=astNode, description=description)
+        self._elememts=[]
+        Entity.__init__(self)
+        self.model.packageNamed[name]=self
+
+
+    @property
+    def elements(self):
+        return self._elememts
+
+    def addElement(self, element):
+        assert element is not None
+        if element not in self._elememts:
+            self._elememts.append(element)
+            element.package=self
+
+
+class Object(PackagableElement, Entity):
+    """
+    An object. Either a plain object or a link object.
+    Link object
+    """
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, model, name, class_,
+                 package=None,
+                 lineNo=None, description=None, astNode=None):
+        #type: (ObjectModel, Text, Union[Class, Placeholder], Optional[package], Optional[int], Optional[TextBlock], Optional['ASTNode'] )-> None
+        PackagableElement.__init__(
+            self,
+            model=model,
+            name=name,
+            package=package,
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description
         )
+        Entity.__init__(self)
+
+        self.class_ = class_
+        #type: Union[Placeholder, Class]
+
+        self.slotNamed = OrderedDict()
+        #type: Dict[Text, Slot]
+        # Slots of the object indexed by attribute name (not attribute)
+
+        #TODO: check for duplicates to avoid loosing objects
+        model._objectNamed[name]=self
 
     @property
     def slots(self):
         return list(self.slotNamed.values())
 
-    def delete(self):
-        #TODO:  implement delete operation on objects
+    # def delete(self):
+    #     #TODO:  implement delete operation on objects
+    #
+    #     raise NotImplementedError('Delete operation on objects is not implemented')
 
-        raise NotImplementedError('Delete operation on objects is not implemented')
 
 
-class Slot(StateElement):
+class PlainObject(Object):
 
-    def __init__(self, object, attribute, value):
-        super(Slot, self).__init__(object.state)
+    def __init__(self, model, name, class_,
+                 package=None,
+                 lineNo=None, description=None, astNode=None):
+        #type: (ObjectModel, Text, Union[Class, Placeholder], Optional[package], Optional[int], Optional[TextBlock], Optional['ASTNode'] )-> None
+        super(PlainObject, self).__init__(
+            model=model,
+            name=name,
+            class_=class_,
+            package=package,
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description
+        )
+
+
+
+
+
+
+class Slot(SourceModelElement, Member):
+
+    def __init__(self, object, attribute, value,
+                 description=None, lineNo=None, astNode=None):
+        #type: (Object, Union[Attribute, Placeholder], 'BasicType', Optional[TextBlock], Optional[int], 'ASTNode') -> None
+        attribute_name=(
+            attribute.placeholderValue
+                if isinstance(attribute, Placeholder)
+            else attribute.name
+        )
+        SourceModelElement.__init__(
+            self,
+            model=object.model,
+            name='%s.%s' % (object.name, attribute_name),
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description)
+        Member.__init__(self)
         self.object=object
+
         self.attribute=attribute
         self.value=value
+        object.slotNamed[attribute_name]=self
 
 
-class Link(StateElement):
-    def __init__(self, state, classifier, objects):
-        super(Link, self).__init__(state)
-        state.links.append(self)
-        self.classifier = classifier
-        self.roles = objects
 
-    def delete(self):
-        self.state.links=[l for l in self.state.links if l != self]
+class Link(PackagableElement, Entity):
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self,
+                 model, class_,
+                 sourceObject, targetObject,
+                 name=None,
+                 package=None,
+                 astNode=None, lineNo=None,
+                 description=None):
+        #type: (ObjectModel, Class, Object, Object, Optional[Text], Optional[Package], Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
+        PackagableElement.__init__(
+            self,
+            model=model,
+            name=name,
+            package=package,
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description
+        )
+        Entity.__init__(self)
+
+        self.class_=class_
+        #type: Class
+
+        self.sourceObject = sourceObject
+        # type: Object
+
+        self.targetObject = targetObject
+        # type: Object
+
+        model._links.append(self)
+
+
+class PlainLink(Link):
+
+    def __init__(self,
+                 model, class_,
+                 sourceObject, targetObject,
+                 name=None,
+                 package=None,
+                 astNode=None, lineNo=None,
+                 description=None):
+        #type: (ObjectModel, Class, Object, Object, Optional[Text], Optional[Package], Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
+        super(PlainLink, self).__init__(
+            model=model,
+            class_=class_,
+            sourceObject=sourceObject,
+            targetObject=targetObject,
+            name=name,
+            package=package,
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description
+        )
+
+    # def delete(self):
+    #     self.state.links=[l for l in self.state.links if l != self]
+
+
+
+
+
+
 
 
 class LinkObject(Object, Link):
-    def __init__(self, state, classifier, objects, name=None) :
+
+    def __init__(self, model, class_,
+                 sourceObject, targetObject,
+                 name,
+                 package=None,
+                 astNode=None, lineNo=None,
+                 description=None):
         Object.__init__(
             self,
-            state=state,
-            classifier=classifier,
+            model=model,
             name=name,
+            class_=class_,
+            package=package,
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description
         )
-        # remove it from the list of objects just changed
-        state.objects = [o for o in state.objects if o!=self]
+        # the object link has been added to _objectNamed
+
         Link.__init__(
             self,
-            state=state,
-            classifier=classifier,
-            objects=objects,
+            model=model,
+            class_=class_,
+            sourceObject=sourceObject,
+            targetObject=targetObject,
+            name=name,
+            package=package,
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description
         )
-        # remove it from the list of objects just changed
-        state.links = [l for l in state.links if l!=self]
+        # the object link has been added to _links
 
-        state.linkObjects.append(self)
+        # just make sure that the name of this link object is set.
+        # This avoid relying on the implementation of Link constructor.
+        # This could be an issue otherwize since link have no name.
+        self.name=name
 
-    def delete(self):
-        #TODO:  implement delete operation on link objects
-        raise NotImplementedError('Delete operation on link object is not implemented')
+
+    # def delete(self):
+    #     #TODO:  implement delete operation on link objects
+    #     raise NotImplementedError('Delete operation on link object is not implemented')
 
 METAMODEL = Metamodel(
     id='ob',
@@ -216,6 +434,6 @@ MetamodelDependency(
 MetamodelDependency(
     sourceId='ob',
     targetId='cl',
-    optional=True,
+    optional=False,
     multiple=True,
 )
