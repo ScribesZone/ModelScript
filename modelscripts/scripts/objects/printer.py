@@ -13,6 +13,9 @@ from modelscripts.metamodels.objects import (
     ObjectModel,
     METAMODEL
 )
+from modelscripts.megamodels.models import (
+    Placeholder
+)
 
 
 class ObjectModelPrinter(ModelPrinter):
@@ -40,38 +43,48 @@ class ObjectModelPrinter(ModelPrinter):
 
 
     def doObject(self, o):
-        self.outLine('%s %s %s %s' % (
+        class_name=(
+            str(o.class_)
+                if isinstance(o.class_, Placeholder)
+            else o.class_.name)
+        self.outLine('%s %s %s' % (
                  o.name,
-                 self.kwd('is'),
-                 self.kwd('a'),
-                 o.classifier.name))
+                 self.kwd(':'),
+                 class_name))
         for s in o.slots:
             self.doSlot(s)
 
         return self.output
 
     def doSlot(self, slot):
+        print('TT'*10, )
+        attribute_name=(
+            str(slot.attribute) if isinstance(slot.attribute, Placeholder)
+            else slot.attribute.name)
         if self.config.verbose:
             self.outLine('%s %s %s %s %s' % (
-                    slot.attribute.name,
-                    self.kwd('of'),
                     slot.object.name,
-                    self.kwd('is'),
+                    self.kwd('.'),
+                    attribute_name,
+                    self.kwd('='),
                     str(slot.value)),
                 indent=0)
         else:
             self.outLine('%s %s %s' % (
-                    slot.attribute.name,
+                    attribute_name,
                     self.kwd('is'),
                     str(slot.value)),
                 indent=1)
         return self.output
 
-
     def doLink(self, l):
+        association_name=(
+            str(l.association)
+                if isinstance(l.association, Placeholder)
+            else l.association.name)
         self.outLine('%s %s %s' % (
                      l.roles[0].name,
-                     l.classifier.name,
+                     association_name,
                      l.roles[1].name))
         return self.output
 
