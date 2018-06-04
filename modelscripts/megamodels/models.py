@@ -287,3 +287,19 @@ class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
 
     def __repr__(self):
         return '<model:%s>' % self.label
+
+
+class Placeholder(object):
+    """
+    Used just to put some symbol value in some model
+    waiting for some kind of symbol resolution. This will be
+    replaced by an actual reference to a model element.
+    """
+    def __init__(self, placeholderValue, type=None):
+        self.placeholderValue=placeholderValue
+        self.type=type
+
+    def __str__(self):
+        return ('***%s(%s)***' %(
+            self.placeholderValue,
+            self.type))
