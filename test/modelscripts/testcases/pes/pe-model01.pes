@@ -1,0 +1,5 @@
+permission model Pe_model01
+    | This is the document of the permission model
+
+import class model from 'Simple.cls'
+import usecase model from 'Simple.uss'
