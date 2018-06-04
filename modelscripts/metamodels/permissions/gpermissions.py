@@ -1,6 +1,6 @@
 # coding=utf-8
 from abc import ABCMeta
-from typing import List
+from typing import List, Optional
 
 from modelscripts.base.oldsources import SourceElement
 from modelscripts.megamodels.models import Model
@@ -88,10 +88,11 @@ class PermissionModel(Model):
 class PermissionRule(SourceModelElement):
     __metaclass__ = ABCMeta
 
-    def __init__(self, lineNo, model):
-        #type: (int, PermissionModel) -> None
+    def __init__(self, model, lineNo=None, astNode=None):
+        #type: (PermissionModel, Optional[int], Optional['ASTNode']) -> None
         super(PermissionRule, self).__init__(
             model=model,
             name=None,
-            lineNo=lineNo)
+            lineNo=lineNo,
+            astNode=astNode)
         self.permissions=[] #type: List[Permission]
