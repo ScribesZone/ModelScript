@@ -1,5 +1,5 @@
 object model A
-import class model from '../cls/CyberCompany.cls'
+import class model from '../cls/cl-main-cybercompany-a.cls'
 
 paul is an Employee.
-marie is a Manager.
+plo2020 is a Project.
