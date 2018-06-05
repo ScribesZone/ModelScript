@@ -38,13 +38,10 @@ Interactions:
 ;
 
 Interaction:
-    Article? actor=ID Verb? usecase=ID X
+    UndefiniteArticle? actor=ID CanVerb? usecase=ID X
 ;
 
-Article:
-    'une' | 'un' | 'an' | 'a'
-;
 
-Verb:
+CanVerb:
     'can' | 'peut'
 ;
