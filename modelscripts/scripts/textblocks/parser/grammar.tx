@@ -45,6 +45,26 @@ EndOfTextLine:
 
 // Not really related to text block, no better place for the moment
 
+Article:
+      DefiniteArticle
+    | UndefiniteArticle
+;
+
+DefiniteArticle:
+      /[T|t]he/
+    | /[L|l] *'/
+    | /[L|l]a/
+    | /[L|l]es/
+    | /[L|l]e/
+;
+
+UndefiniteArticle:
+      'une'
+    | 'un'
+    | 'an'
+    | 'a'
+;
+
 Le_:
     'Le' | 'La' | "L'"
 ;
