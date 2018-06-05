@@ -1,11 +1,9 @@
-class model CyberCompany
+class model Cl_main_CyberCompany_a
 
 class Employee
     attributes
         name : String
         salary : Integer
-
-class Manager extends Employee
 
 class Department
     attributes
@@ -22,7 +20,6 @@ association WorksIn
     roles
         employees : Employee[*]
         departments : Department[1..*]
-
 
 association Controls
     roles
