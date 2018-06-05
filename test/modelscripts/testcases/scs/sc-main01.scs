@@ -1,0 +1,52 @@
+scenario model US90
+import class model from 'main.cls'
+import usecase model from 'main.uss'
+
+intention
+    | Describes canonical flow with 1 actor.
+
+summary
+    | An employeeand a project registered.
+    | Its salary it then increased.
+
+actor instances
+    toufik : CEO
+    maria : Secretary
+    xavier : Manager
+
+context
+    computing : Department
+    computing.name = 'Computing departement'
+    computing.location = 'Los alaambritos'
+    computing.budget := 10000
+    sandrine : Employee
+    sandrine.name = 'Sandrine'
+    sandrine.salary = 2000
+    (sandrine, WorksIn, computing)
+
+
+start
+    create djamel : Employee
+    set djamel.name := 'Djamel'
+    set djamel.salary := 2600
+    create (djamel, WorksIn, computing)
+
+    check
+
+    maria do RegisterNewEmployee
+        create ioannis = new Employee
+        set ioannis.name := 'Ioannis'
+        set ioannis.salary := 1900
+        create (ioannis, computing) into WorksIn
+
+    assert 2+3*5=3
+    create turbo = new Project
+    set turbo.name = 'Maxi turbo project'
+    set turbo.budget := 5000
+    create c1 : Control between (computing, turbo)
+    create c1.frequence:=15
+
+    maria do IncreaseSalary
+        update sandrine.salary = 2600
+
+
