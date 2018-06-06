@@ -1,20 +1,38 @@
 # coding=utf-8
 
 """
-Simple metamodel for object states. Contains definitions for:
+Simple metamodel for object states. The metamodel
+represents two views:
+* an abstract view in which object/slots and links are
+  represented without and order,
+* a story view that represents the same entities but
+  as they are defined, as in a story, in a sequential order
+  and with Annotated OBject (AOB) text blocks, that is text
+  blocks nested definitions.
 
-    ObjectModel
-    <>--* Object
-        <>--* Slot
-    <>--* Link
-    <>--* LinkObject
 
-    StateElement
-    <|-- Object
-    <|-- Link
+    Abstract view
+        ObjectModel
+        <>--* Object
+            <>--* Slot
+        <>--* Link
+        <>--* LinkObject
 
-    Link, Object
-    <|-- LinkObject
+        StateElement
+        <|-- Object
+        <|-- Link
+
+        Link, Object
+        <|-- LinkObject
+
+    Story view
+        Definition
+        <|-- CoreDefinition
+             <|-- Object
+             <|-- Slot
+             <|-- Link
+        <|-- AnnotatedTextBlock
+            <>--* CoreDefinition
 """
 
 
@@ -51,6 +69,7 @@ __all__=(
     'ObjectModel',
     'StateElement',
     'Object',
+    'AOBTextBlock',
     'PlainObject',
     'BasicValue',
     'Slot',
@@ -65,22 +84,36 @@ class ObjectModel(Model):
     def __init__(self):
         super(ObjectModel, self).__init__()
 
+        # ALL packages, not only the top level ones
+        self.packageNamed=OrderedDict() #type: Dict[Text, Package]
+
         self._objectNamed = OrderedDict()
         # type: Dict[Text, Object]
         """
         All objects (plain objects and link objects).
-        Link object are also registered in _links. 
+        Link object are also registered in _links.
+        This serve the abstract view of the model:
+        there is no indication about the definition order
+        with other definitions.
         """
 
         self._links=[]
         # type: List[Link]
         """
         All plain links (no link object).
-        Link object are also regitered in _objectNamed
+        Link object are also regitered in _objectNamed.
+        This serve the abstract view of the model:
+        there is no indication about the definition order
+        with other definitions.
         """
 
-        # ALL packages, not only the top level ones
-        self.packageNamed=OrderedDict() #type: Dict[Text, Package]
+        self.definitions=[]
+        #type: List[Definition]
+        """
+        The list of all "top level" definitions  
+        in the order of the "story".
+        """
+
 
     @property
     def objects(self):
@@ -108,7 +141,14 @@ class ObjectModel(Model):
     def plainLinks(self):
         #type: () -> List[PlainLink]
         return [
-            l for l in self.objects if isinstance(l, PlainLink) ]
+            l for l in self._links if isinstance(l, PlainLink) ]
+
+    @property
+    def annotatedTextBlocks(self):
+        # type: () -> List[AnnotatedTextBlock]
+        return [
+            l for l in self.definitions
+            if isinstance(l, AnnotatedTextBlock) ]
 
     @property
     def metrics(self):
@@ -123,6 +163,7 @@ class ObjectModel(Model):
             ('slot',sum(
                 len(o.slots)
                 for o in self.objects)),
+            ('annotated text block', len(self.annotatedTextBlocks))
         ))
         return ms
 
@@ -162,6 +203,31 @@ class PackagableElement(SourceModelElement):
             return self.name
 
 
+class Definition(object):
+    pass
+
+class CoreDefinition(Definition):
+    """
+    Elements that can be in Annotated Text Blocks:
+    * objects
+    * slots
+    * links
+    * link objects
+    Their container can be either the model (container attribute
+    set to None) or an annotated source.
+    """
+
+    def __init__(self, container):
+        self.container=container
+        #type: Optional[AnnotatedTextBlock]
+        """
+        None if the definition is at the top level.
+        The containing annotated text block otherwize
+        """
+        if self.container is not None:
+            self.container.definitions.append(self)
+
+
 class ResourceInstance:
     __metaclass__ = abc.ABCMeta
     """ 
@@ -172,18 +238,28 @@ class ResourceInstance:
     """
 
 
-class Entity(ResourceInstance):
+class Entity(ResourceInstance, CoreDefinition):
     __metaclass__ = abc.ABCMeta
 
+    def __init__(self, container):
+        #type: (Optional[AnnotatedTextBlock]) -> None
+        CoreDefinition.__init__(self,
+            container=container)
 
-class Member(ResourceInstance):
+class Member(ResourceInstance, CoreDefinition):
     __metaclass__ = abc.ABCMeta
+
+    def __init__(self, container):
+        # type: (Optional[AnnotatedTextBlock]) -> None
+        CoreDefinition.__init__(self,
+            container=container)
+
 
 # TODO: generalize and improve packages
 #       This class comes from metamodels.class
 #       It would make sense to move this to a upper level
 
-class Package(PackagableElement, Entity):
+class Package(PackagableElement):
     """
     Packages.
     """
@@ -199,7 +275,6 @@ class Package(PackagableElement, Entity):
             package=package,
             lineNo=lineNo, astNode=astNode, description=description)
         self._elememts=[]
-        Entity.__init__(self)
         self.model.packageNamed[name]=self
 
 
@@ -222,9 +297,10 @@ class Object(PackagableElement, Entity):
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, model, name, class_,
+                 container=None,
                  package=None,
                  lineNo=None, description=None, astNode=None):
-        #type: (ObjectModel, Text, Union[Class, Placeholder], Optional[package], Optional[int], Optional[TextBlock], Optional['ASTNode'] )-> None
+        #type: (ObjectModel, Text, Union[Class, Placeholder], Optional[AnnotatedTextBlock], Optional[package], Optional[int], Optional[TextBlock], Optional['ASTNode'] )-> None
         PackagableElement.__init__(
             self,
             model=model,
@@ -234,7 +310,7 @@ class Object(PackagableElement, Entity):
             lineNo=lineNo,
             description=description
         )
-        Entity.__init__(self)
+        Entity.__init__(self, container)
 
         self.class_ = class_
         #type: Union[Placeholder, Class]
@@ -244,7 +320,12 @@ class Object(PackagableElement, Entity):
         # Slots of the object indexed by attribute name (not attribute)
 
         #TODO: check for duplicates to avoid loosing objects
+        # Register the object in the model for the abstract view
         model._objectNamed[name]=self
+
+        if container is None:
+            # Register the object definition to the top level
+            model.definitions.append(self)
 
     @property
     def slots(self):
@@ -259,12 +340,13 @@ class Object(PackagableElement, Entity):
 
 class PlainObject(Object):
 
-    def __init__(self, model, name, class_,
+    def __init__(self, model, name, class_, container=None,
                  package=None,
                  lineNo=None, description=None, astNode=None):
-        #type: (ObjectModel, Text, Union[Class, Placeholder], Optional[package], Optional[int], Optional[TextBlock], Optional['ASTNode'] )-> None
+        #type: (ObjectModel, Text, Union[Class, Placeholder], Optional[package], Optional[int], Optional[AnnotatedTextBlock], Optional['ASTNode'] )-> None
         super(PlainObject, self).__init__(
             model=model,
+            container=container,
             name=name,
             class_=class_,
             package=package,
@@ -281,9 +363,9 @@ BasicValue=Union[Text, 'Bool', int, float]
 
 class Slot(SourceModelElement, Member):
 
-    def __init__(self, object, attribute, value,
+    def __init__(self, object, attribute, value, container=None,
                  description=None, lineNo=None, astNode=None):
-        #type: (Object, Union[Attribute, Placeholder], BasicValue, Optional[TextBlock], Optional[int], 'ASTNode') -> None
+        #type: (Object, Union[Attribute, Placeholder], BasicValue, Optional[AnnotatedTextBlock], Optional[TextBlock], Optional[int], 'ASTNode') -> None
         attribute_name=(
             attribute.placeholderValue
                 if isinstance(attribute, Placeholder)
@@ -296,13 +378,16 @@ class Slot(SourceModelElement, Member):
             astNode=astNode,
             lineNo=lineNo,
             description=description)
-        Member.__init__(self)
+        Member.__init__(self, container)
         self.object=object
 
         self.attribute=attribute
         self.value=value
         object.slotNamed[attribute_name]=self
 
+        if container is None:
+            # Register the object definition to the top level
+            object.model.definitions.append(self)
 
 
 class Link(PackagableElement, Entity):
@@ -312,10 +397,11 @@ class Link(PackagableElement, Entity):
                  model, association,
                  sourceObject, targetObject,
                  name=None,
+                 container=None,
                  package=None,
                  astNode=None, lineNo=None,
                  description=None):
-        #type: (ObjectModel, Union[Association, Placeholder], Object, Object, Optional[Text], Optional[Package], Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
+        #type: (ObjectModel, Union[Association, Placeholder], Object, Object, Optional[Text], Optional[AnnotatedTextBlock], Optional[Package], Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
         PackagableElement.__init__(
             self,
             model=model,
@@ -325,7 +411,7 @@ class Link(PackagableElement, Entity):
             lineNo=lineNo,
             description=description
         )
-        Entity.__init__(self)
+        Entity.__init__(self, container=container)
 
         self.association=association
         #type: association
@@ -338,6 +424,10 @@ class Link(PackagableElement, Entity):
 
         model._links.append(self)
 
+        if container is None:
+            # Register the link definition to the top level
+            model.definitions.append(self)
+
 
 class PlainLink(Link):
 
@@ -345,16 +435,18 @@ class PlainLink(Link):
                  model, association,
                  sourceObject, targetObject,
                  name=None,
+                 container=None,
                  package=None,
                  astNode=None, lineNo=None,
                  description=None):
-        #type: (ObjectModel, Union[Association, Placeholder], Object, Object, Optional[Text], Optional[Package], Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
+        #type: (ObjectModel, Union[Association, Placeholder], Object, Object, Optional[Text], Optional[AnnotatedTextBlock], Optional[Package], Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
         super(PlainLink, self).__init__(
             model=model,
             association=association,
             sourceObject=sourceObject,
             targetObject=targetObject,
             name=name,
+            container=container,
             package=package,
             astNode=astNode,
             lineNo=lineNo,
@@ -363,11 +455,6 @@ class PlainLink(Link):
 
     # def delete(self):
     #     self.state.links=[l for l in self.state.links if l != self]
-
-
-
-
-
 
 
 
@@ -414,6 +501,33 @@ class LinkObject(Object, Link):
     # def delete(self):
     #     #TODO:  implement delete operation on link objects
     #     raise NotImplementedError('Delete operation on link object is not implemented')
+
+
+
+class AnnotatedTextBlock(SourceModelElement, Definition):
+    """
+    Annotated text block container core definitions.
+    """
+    def __init__(self,
+                 model,
+                 textBlock=None,
+                 astNode=None, lineNo=None):
+        #type: (ObjectModel, TextBlock, Optional[Package], Optional['ASTNode'], Optional[int]) -> None
+        super(AnnotatedTextBlock, self).__init__(
+            model=model,
+            astNode=astNode,
+            lineNo=lineNo
+        )
+        self.textBlock=textBlock
+        #type: Optional[TextBlock]
+        # will be set later.
+
+        self.definitions=[]
+        #type: List[TextBlock]
+
+        model.definitions.append(self)
+
+
 
 METAMODEL = Metamodel(
     id='ob',
