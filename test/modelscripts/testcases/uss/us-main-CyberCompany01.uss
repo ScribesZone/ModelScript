@@ -1,0 +1,9 @@
+usecase model Us_main_CyberCompany01
+
+interactions
+    a CEO can OpenNewDepartment
+    a CEO can CloseDepartment
+    a Secretary can RegisterNewEmployee
+    a Secretary can IncreaseSalary
+    a Manager can CreateNewProject
+    a Employee can CreateValue
