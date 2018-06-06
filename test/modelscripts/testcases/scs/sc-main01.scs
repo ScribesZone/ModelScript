@@ -1,6 +1,6 @@
 scenario model US90
-import class model from 'main.cls'
-import usecase model from 'main.uss'
+import usecase model from '../uss/us-main-CyberCompany01.uss'
+import class model from '../cls/cl-main-cybercompany-a.cls'
 
 intention
     | Describes canonical flow with 1 actor.
@@ -18,7 +18,7 @@ context
     computing : Department
     computing.name = 'Computing departement'
     computing.location = 'Los alaambritos'
-    computing.budget := 10000
+    computing.budget = 10000
     sandrine : Employee
     sandrine.name = 'Sandrine'
     sandrine.salary = 2000
@@ -27,26 +27,27 @@ context
 
 start
     create djamel : Employee
-    set djamel.name := 'Djamel'
-    set djamel.salary := 2600
+    set djamel.name = 'Djamel'
+    set djamel.salary = 2600
     create (djamel, WorksIn, computing)
 
     check
 
     maria do RegisterNewEmployee
-        create ioannis = new Employee
-        set ioannis.name := 'Ioannis'
-        set ioannis.salary := 1900
-        create (ioannis, computing) into WorksIn
+        create ioannis : Employee
+        set ioannis.name = 'Ioannis'
+        set ioannis.salary = 1900
+        create (ioannis, WorksIn, computing)
 
-    assert 2+3*5=3
-    create turbo = new Project
+    # assert 2+3*5=3
+    create turbo : Project
     set turbo.name = 'Maxi turbo project'
-    set turbo.budget := 5000
-    create c1 : Control between (computing, turbo)
-    create c1.frequence:=15
+    set turbo.budget = 5000
+    #create c1 : Control between (computing, turbo)
+    #set c1.frequence =15
 
     maria do IncreaseSalary
         update sandrine.salary = 2600
+
 
 
