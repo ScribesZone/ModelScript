@@ -49,7 +49,6 @@ class GlossaryModel(Model):
     def glossaryList(self):
         #TODO: should be momoized. It is call for each occurrence.
         _=[self]+super(GlossaryModel, self).glossaryList
-        print('A'*20, len(_), _)
         return _
 
     @property
