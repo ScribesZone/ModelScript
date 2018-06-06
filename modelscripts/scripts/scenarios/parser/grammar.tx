@@ -1,0 +1,108 @@
+ScenarioModel:
+    megamodelPart = MegamodelPart
+    IntentionDeclaration ?
+    SummaryDeclaration ?
+    ActorInstanceDeclarationBlock ?
+    ContextDeclarationBlock ?
+    ActionDeclarationBlock
+;
+
+IntentionDeclaration:
+    'intention' (o_
+        (intention = TextBlock)
+    _o)
+    X
+;
+
+SummaryDeclaration:
+    'summary' (o_
+        (summary = TextBlock)
+    _o)
+    X
+;
+
+ActorInstanceDeclarationBlock:
+    'actor' 'instances' (o_
+        actorInstanceDeclarations *= ActorInstanceDeclaration
+    _o) ?
+    X
+;
+
+ActorInstanceDeclaration:
+    actorInstanceName = ID
+    ':'
+    actorName = ID
+    X
+;
+
+ContextDeclarationBlock:
+    // # TODO: should include the text from object model
+
+    'context' (o_
+        contextActionDeclarations *= contextActionDeclaration
+    _o)
+    X
+;
+
+contextActionDeclaration:
+      ObjectDeclaration
+    | SlotDeclaration
+    | LinkDeclaration
+    // TODO: LinkObjectDeclaration
+;
+
+ActionDeclarationBlock:
+    'start' (o_
+        actionDeclarations *= ActionDeclaration
+    _o)
+    X
+;
+
+ActionDeclaration:
+      AtomicActionDeclaration
+    | UsecaseActionDeclaration
+;
+
+UsecaseActionDeclaration:
+    actorInstanceName = ID
+    ('do'|'va')
+    usecaseName = ID (o_
+        actionDeclarations *= AtomicActionDeclaration
+    _o)
+    X
+;
+
+AtomicActionDeclaration:
+      ObjectActionDeclaration
+    | SlotActionDeclaration
+    | LinkActionDeclaration
+    | CheckDeclaration
+    //  TODO: LinkObjectDeclaration
+;
+
+ObjectActionDeclaration:
+    verb=CreateOrDelete ObjectDeclaration
+;
+
+SlotActionDeclaration:
+    verb=SetOrUpdate SlotDeclaration
+;
+
+LinkActionDeclaration:
+    verb=CreateOrDelete LinkDeclaration
+;
+
+CheckDeclaration:
+    'check'
+    X
+;
+
+CreateOrDelete:
+      'create'
+    | 'delete'
+;
+
+SetOrUpdate:
+      'set'
+    | 'update'
+;
