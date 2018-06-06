@@ -6,7 +6,7 @@ TextBlock:
 ;
 
 TextLine[noskipws]:
-    /\s*\|/ textTokens *= TextToken EndOfTextLine
+    /\n? *\|/ textTokens *= TextToken EndOfTextLine
 ;
 
 TextToken:
