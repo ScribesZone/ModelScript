@@ -1,5 +1,6 @@
-    #@Issue cck.Actor.LazyActorChecker 2
-    #@Issue cck.Usecase.UnusedUsecaseChecker 3
+    # two text blocks
+
+    #@Issue src.syn 1
     #@Issue level *
 
 
@@ -8,17 +9,5 @@ usecase model Us_doc03
     | with various lines
     | and more ...
 
-human actor Employee
-    | some doc comment for he actor
-    | with various lines
-    | and more ...
-
-actor Manager
-
-usecase IncreaseSalary
-    | some doc comment for the usecase
-    | with various lines
-    | and more ...
-
-usecase DecreaseSalary
-usecase FreeSalary
+    | This is a separated text block.
+    | So an error is produced
