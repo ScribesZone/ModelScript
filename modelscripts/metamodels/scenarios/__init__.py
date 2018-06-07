@@ -137,29 +137,27 @@ class ScenarioTopLevelElement(SourceModelElement):
     __metaclass__ = ABCMeta
 
     def __init__(self, model, name,
-                 code=None, lineNo=None,
-                 description=None, eolComment=None):
+                 astNode=None, lineNo=None,
+                 description=None):
         self.scenario=model
         #type: ScenarioModel
         SourceModelElement.__init__(self,
             model=model,
             name=name,
-            code=code,
+            astNode=astNode,
             lineNo=lineNo,
-            description=description,
-            eolComment=eolComment)
+            description=description)
 
 
 class ActorInstance(ScenarioTopLevelElement, Subject):
     def __init__(self, model, name, actor,
-                 code=None, lineNo=None, description=None, eolComment=None):
+                 astNode=None, lineNo=None, description=None):
         ScenarioTopLevelElement.__init__(self,
             model=model,
             name=name,
-            code=code,
+            astNode=astNode,
             lineNo=lineNo,
-            description=description,
-            eolComment=eolComment)
+            description=description)
 
         self.actor=actor
         # type: Actor
@@ -172,15 +170,14 @@ class ActorInstance(ScenarioTopLevelElement, Subject):
 
 class SystemInstance(ScenarioTopLevelElement): #TODO: check if Resource
     def __init__(self, model, name, system,
-                 code=None, lineNo=None,
-                 description=None, eolComment=None):
+                 astNode=None, lineNo=None,
+                 description=None):
         ScenarioTopLevelElement.__init__(self,
             model=model,
             name=name,
-            code=code,
+            astNode=astNode,
             lineNo=lineNo,
-            description=description,
-            eolComment=eolComment)
+            description=description)
 
         self.system = system
         # type: System
