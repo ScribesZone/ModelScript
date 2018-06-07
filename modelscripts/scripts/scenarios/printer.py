@@ -164,8 +164,10 @@ class ScenarioModelPrinter(ModelPrinter):
         for d in scenario.descriptors:
             self.doDescriptor(d)
 
-        for ai in scenario.actorInstanceNamed.values():
-            self.doActorInstance(ai)
+        if len(scenario.actorInstanceNamed.values())>=1:
+            self.outLine(self.kwd('actor instances'))
+            for ai in scenario.actorInstanceNamed.values():
+                self.doActorInstance(ai)
 
         if self.doDisplayEvaluation and self.scenario.scenarioEvaluation is not None:
             self.doAccessSet(self.scenario.scenarioEvaluation.accessSet)
@@ -192,13 +194,11 @@ class ScenarioModelPrinter(ModelPrinter):
         return self.output
 
     def doActorInstance(self, ai):
-        self.outLine('%s%s %s%s%s'%(
-                '' if not self.config.useSyntax else self.cmt('-- @'),
-                self.kwd('actori'),
+        self.outLine('%s %s %s'%(
                 ai.name,
                 self.kwd(':'),
                 ai.actor.name),
-            ai.lineNo)
+            indent=1)
         return self.output
 
 
