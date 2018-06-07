@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from __future__ import unicode_literals, print_function, absolute_import, division
-from typing import Text, Union
+from typing import Text, Union, Optional
 import os
 
 from modelscripts.megamodels.models import Model, Placeholder
@@ -20,6 +20,7 @@ from modelscripts.metamodels.objects import (
     Slot,
     PlainLink,
     LinkObject,
+    AnnotatedTextBlock,
     METAMODEL
 )
 from modelscripts.megamodels.sources import (
@@ -74,22 +75,23 @@ class ObjectModelSource(ASTBasedModelSourceFile):
 
     def fillModel(self):
 
-        def define_plain_object(ast_node, name, class_name):
+        def define_plain_object(ast_node, name, class_name, container):
             #type: ('ASTNode', Text, Text) -> None
             #TODO: check that this name is not duplicated
             o=PlainObject(
                 model=self.objectModel,
                 name=name,
                 class_=Placeholder(class_name, 'Class'),
+                container=container,
                 package=None,
                 astNode=ast_node)
             o.description = astTextBlockToTextBlock(
                 container=o,
                 astTextBlock=ast_node.textBlock)
 
-        def define_slot(ast_node, object_name, attribute_name, value):
+        def define_slot(ast_node, object_name,
+                        attribute_name, value, container):
             #type: ('ASTNode', Text, Text, BasicValue) -> None
-            print('ZZ' * 10, 'define', object_name, attribute_name, value)
             if object_name not in self.objectModel._objectNamed:
                 ASTNodeSourceIssue(
                     code=icode('SLOT_NO_OBJECT'),
@@ -105,15 +107,16 @@ class ObjectModelSource(ASTBasedModelSourceFile):
                     object=object,
                     attribute=Placeholder(attribute_name, 'Attribute'),
                     value=value,
+                    container=container,
                     astNode=ast_node
                 )
                 s.description = astTextBlockToTextBlock(
-                    container=s,
+                    container=s,  # not the container of the slot
                     astTextBlock=ast_node.textBlock)
-                print('ZZ'*10, s)
 
         def define_link(ast_node,
-                        source_name, target_name, association_name):
+                        source_name, target_name,
+                        association_name, container):
 
             def is_object_name_defined(object_name):
                 if object_name not in self.objectModel._objectNamed:
@@ -140,40 +143,76 @@ class ObjectModelSource(ASTBasedModelSourceFile):
                     association=Placeholder(association_name, 'Association'),
                     sourceObject=source_object,
                     targetObject=target_object,
+                    container=container,
                     astNode=ast_node)
                 l.description = astTextBlockToTextBlock(
                     container=l,
                     astTextBlock=ast_node.textBlock)
 
 
-        for declaration in self.ast.model.declarations:
-            # pass
+        def define_annotated_text_block_body(declaration):
+            # create the Annotated Text Block but
+            # do not add definitions in it
+            atb=AnnotatedTextBlock(
+                model=self.objectModel,
+                astNode=declaration
+            )
+            atb.textBlock=astTextBlockToTextBlock(
+                    container=self.objectModel,
+                    astTextBlock=declaration.textBlock)
+            return atb
+
+        def define_core_declaration(declaration, container):
+            #type: ('ASTCoreOBDeclaration', Optional[AnnotatedTextBlock]) -> None
             type_=declaration.__class__.__name__
-            print('XX'*10, 'Declaring %s' % type_)
             if type_ in ['SymbolicObjectDeclaration',
                         'SpeechObjectDeclaration']:
                 define_plain_object(
                     ast_node=declaration,
                     name=declaration.name,
-                    class_name=declaration.type)
+                    class_name=declaration.type,
+                    container=container)
             elif type_ in ['SymbolicSlotDeclaration',
                            'SpeechSlotDeclaration']:
                 define_slot(
                     ast_node=declaration,
                     object_name=declaration.object,
                     attribute_name=declaration.attribute,
-                    value=declaration.value)
+                    value=declaration.value,
+                    container=container)
             elif type_ in ['SpeechLinkDeclaration',
                            'SymbolicLinkDeclaration']:
                 define_link(
                     ast_node=declaration,
                     source_name=declaration.source,
                     target_name=declaration.target,
-                    association_name=declaration.association
+                    association_name=declaration.association,
+                    container=container
                 )
             else:
                 raise NotImplementedError(
-                    'declaration of %s not implemented' % type_)
+                    '%s is not a core definition' % type_)
+
+        # for some strange reason body can be None = > test
+        if self.ast.model.body is not None:
+            for declaration in self.ast.model.body.declarations:
+                # pass
+                type_=declaration.__class__.__name__
+                if type_ in [
+                        'SymbolicObjectDeclaration',
+                        'SpeechObjectDeclaration',
+                        'SymbolicSlotDeclaration',
+                        'SpeechSlotDeclaration',
+                        'SpeechLinkDeclaration',
+                        'SymbolicLinkDeclaration']:
+                    define_core_declaration(declaration, container=None)
+                elif type_=='ATextBlockOBDeclaration':
+                    atb=define_annotated_text_block_body(declaration)
+                    for sub_decl in declaration.declarations:
+                        define_core_declaration(sub_decl, container=atb)
+                else:
+                    raise NotImplementedError(
+                        'declaration of %s not implemented' % type_)
 
     def resolve(self):
 
@@ -181,7 +220,6 @@ class ObjectModelSource(ASTBasedModelSourceFile):
 
             def resolve_object_class():
                 name=object.class_.placeholderValue
-                print('LL' * 10, 'resolving', object, name)
                 if name not in self.classModel.classNamed:
                     ASTNodeSourceIssue(
                         code=icode('OBJECT_NO_CLASS'),
@@ -192,7 +230,6 @@ class ObjectModelSource(ASTBasedModelSourceFile):
                             % name))
                 else:
                     object.class_=self.classModel.classNamed[name]
-                    print('KK'*10, 'resolved', object.class_)
 
             def resolve_slot_attribute(slot):
                 attribute_name=slot.attribute.placeholderValue
@@ -235,9 +272,7 @@ class ObjectModelSource(ASTBasedModelSourceFile):
 
             resolve_link_association()
 
-        print('SS'*10, self.objectModel.objects)
         for o in self.objectModel.objects:
-            print('LL' * 10, 'resolving', o)
             resolve_object_content(o)
         for l in self.objectModel.links:
             resolve_link_content(l)
