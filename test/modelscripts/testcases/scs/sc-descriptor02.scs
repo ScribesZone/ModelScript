@@ -1,6 +1,9 @@
-    # check model descriptor
+    # duplicated intention
 
-    #@Metric "model descriptor" 2
+    #@Issue sc.syn.Descriptor.Twice 1
+    #@Issue else *
+
+    #@Metric "model descriptor" 1
     #@Metric "actorInstance" 0
     #@Metric "contextBlock" 0
     #@Metric "mainBlock" 0
@@ -17,6 +20,5 @@ import class model from '../cls/cl-main-cybercompany-a.cls'
 intention
     | Describes canonical flow with 1 actor.
 
-summary
-    | An employeeand a project registered.
-    | Its salary it then increased.
+intention
+    | Another intention
