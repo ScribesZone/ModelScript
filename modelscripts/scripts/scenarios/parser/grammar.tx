@@ -1,22 +1,14 @@
 ScenarioModel:
     megamodelPart = MegamodelPart
-    IntentionDeclaration ?
-    SummaryDeclaration ?
+    descriptors *= DescriptorDeclaration
     ActorInstanceDeclarationBlock ?
     ContextDeclarationBlock ?
     ActionDeclarationBlock ?
 ;
 
-IntentionDeclaration:
-    'intention' (o_
-        (intention = TextBlock)
-    _o)
-    X
-;
-
-SummaryDeclaration:
-    'summary' (o_
-        (summary = TextBlock)
+DescriptorDeclaration:
+    name=ID (o_
+        (textBlock = TextBlock)
     _o)
     X
 ;
@@ -50,25 +42,36 @@ ActionDeclarationBlock:
 ;
 
 ActionDeclaration:
-      AtomicActionDeclaration
+      ATextBlockActionDeclaration
     | UsecaseActionDeclaration
+    | ObjectActionDeclaration
+    | SlotActionDeclaration
+    | LinkActionDeclaration
+    //  TODO: LinkObjectDeclaration
+    | CheckDeclaration
+;
+
+ATextBlockActionDeclaration:
+    textBlock=TextBlock
+    (o_
+        // To simplify the grammar the rule is fully recursive
+        // Inappropriate nest check are permformed by parser
+        declarations *= ActionDeclaration
+    _o) ? // Optional does not seems to work
+          // Currently a text block have to be followed by some action.
+
+    X
 ;
 
 UsecaseActionDeclaration:
     actorInstanceName = ID
     ('do'|'va')
     usecaseName = ID (o_
-        actionDeclarations *= AtomicActionDeclaration
+        // To simplify the grammar the rule is fully recursive
+        // Inappropriate nest check are permformed by parser
+        actionDeclarations *= ActionDeclaration
     _o)
     X
-;
-
-AtomicActionDeclaration:
-      ObjectActionDeclaration
-    | SlotActionDeclaration
-    | LinkActionDeclaration
-    | CheckDeclaration
-    //  TODO: LinkObjectDeclaration
 ;
 
 ObjectActionDeclaration:
