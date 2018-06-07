@@ -8,7 +8,10 @@ import abc
 from typing import Optional, Text, List
 
 from modelscripts.megamodels.issues import WithIssueModel
-from modelscripts.base.metrics import Metrics
+from modelscripts.base.metrics import (
+    Metrics,
+    Metric
+)
 from modelscripts.megamodels.megamodels import (
     MegamodelElement
 )
@@ -113,7 +116,12 @@ class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
     @property
     def metrics(self):
         #type: ()->Metrics
-        return self.textBlocksMetrics
+        ms=Metrics()
+        ms.add(
+            Metric('model descriptor', len(self.descriptors))
+        )
+        ms.addMetrics(self.textBlocksMetrics)
+        return ms
 
     @property
     def fullMetrics(self):

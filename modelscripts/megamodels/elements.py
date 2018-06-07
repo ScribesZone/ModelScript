@@ -1,8 +1,9 @@
 # coding=utf-8
 
 from abc import ABCMeta, abstractproperty
+from collections import OrderedDict
 from modelscripts.base.oldsources import SourceElement
-from typing import Optional, List
+from typing import Optional, List, Any, Dict, Text
 
 __all__=(
     'ModelElement',
@@ -13,6 +14,22 @@ from modelscripts.base import py
 from modelscripts.megamodels.checkers import (
     CheckList
 )
+
+class Descriptor(object):
+
+    def __init__(self, name, value=None):
+        #type: (Text, Any) -> None
+        self.name=name
+        self.value=value
+        #type: Any
+
+    def __repr__(self):
+        return '<descriptor:%s:%s>' % (
+            self.name,
+            self.value
+        )
+
+
 
 class ModelElement(object):
     __metaclass__ = ABCMeta
@@ -28,10 +45,17 @@ class ModelElement(object):
         self.description=None
         #type: Optional[TextBlock]
 
+        self.descriptorNamed=OrderedDict()
+        #type: Dict[Text, Descriptor]
+
     @property
     def model(self):
         #type: () -> 'Model'
         return self._model
+
+    @property
+    def descriptors(self):
+        return self.descriptorNamed.values()
 
     @model.setter
     def model(self, model):
