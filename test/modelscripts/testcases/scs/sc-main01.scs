@@ -1,4 +1,8 @@
-scenario model US90
+scenario model Sc_main01
+    | This is a brief description of the scenario.
+    | More information can go in separate descriptions
+    | such as 'intention' or 'summary'.
+
 import usecase model from '../uss/us-main-CyberCompany01.uss'
 import class model from '../cls/cl-main-cybercompany-a.cls'
 
@@ -15,39 +19,63 @@ actor instances
     xavier : Manager
 
 context
-    computing : Department
-    computing.name = 'Computing departement'
-    computing.location = 'Los alaambritos'
-    computing.budget = 10000
+    | ACME is composed of various department.
+    | One of them is the computing department.
+        computing : Department
+        computing.name = 'Computing departement'
+        computing.location = 'Los alaambritos'
+    | Samira earn 2000€.
+    | And that's enough for living since she is single.
+        samira : Employee
+    | Samira loves pasta.
+
+    | Nobody care that she loves pasta.
+
+    | The budget of the computing department is 50 000 €.
+    | This is not too much, but that's ok.
+        computing.budget = 50000
     sandrine : Employee
     sandrine.name = 'Sandrine'
     sandrine.salary = 2000
     (sandrine, WorksIn, computing)
+    | That's all
 
 
 start
-    create djamel : Employee
+create djamel : Employee
+
+| djamel is hired to work in the computing department
+| with an initial salaty of 2600 €.
     set djamel.name = 'Djamel'
     set djamel.salary = 2600
     create (djamel, WorksIn, computing)
 
-    check
+check
 
-    maria do RegisterNewEmployee
-        create ioannis : Employee
-        set ioannis.name = 'Ioannis'
-        set ioannis.salary = 1900
+maria do RegisterNewEmployee
+    create ioannis : Employee
+    set ioannis.name = 'Ioannis'
+    set ioannis.salary = 1900
+    | Something is happening, but nodbody knows what...
+    | Ioannis is assigned to the computing department
         create (ioannis, WorksIn, computing)
 
-    # assert 2+3*5=3
+# assert 2+3*5=3
+
+| A new project is created, the Maxi turbo project
+| with a budget of 150 000 €.
+
     create turbo : Project
     set turbo.name = 'Maxi turbo project'
     set turbo.budget = 5000
     #create c1 : Control between (computing, turbo)
     #set c1.frequence =15
 
+| Time is passing...
+| 3 months after...
     maria do IncreaseSalary
         update sandrine.salary = 2600
 
 
+stop
 
