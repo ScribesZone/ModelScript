@@ -297,7 +297,6 @@ class ImportBox(ModelDescriptor):
         """
         Add a source import to this box
         """
-        print('CC'*20)
         m2id=sourceImport_.importStmt.metamodel.id
         if m2id not in self._importsByMetamodelId:
             self._importsByMetamodelId[m2id]=[]
