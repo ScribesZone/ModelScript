@@ -1,5 +1,3 @@
 usecase model A
     | While main usecases are performed by the `Manager`
     | but the `Owner` is able to cancel the `Action`s
-
-    | Some more text but on another line.
