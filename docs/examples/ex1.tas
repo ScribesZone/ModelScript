@@ -1,14 +1,23 @@
 task model
 
-tree
+task tree
     kfkf
-        kdfkf
-            kdfkfk
-                kdfkdfk
-                    kdfkdfk
-        kfkf
-            ldfk
-            kdfkf
-                lkfls
+      |_kdfkf
+      |   |_kdfkfk
+      |       |_kdfkdfk
+      |           |_kdfkdfk
+                  |_dgkg
+                    fgldjfg
+                    lkdfgld
+                    flgdlfjg
+                kdfgg
+                djflkgkdflg
+                fdjlgskj
+                dfklgds
+        fdgklkfd
+      |_kfkf
+          |_ldfk
+          |_kdfkf
+              |_lkfls
 
 task kfkf:
