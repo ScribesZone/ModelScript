@@ -9,8 +9,16 @@ from modelscripts.base.modelprinters import (
     ModelSourcePrinter,
     ModelPrinterConfig,
 )
+from modelscripts.scripts.textblocks.printer import (
+    TextBlockPrinter
+)
 from modelscripts.metamodels.objects import (
     ObjectModel,
+    Object,
+    Slot,
+    Link,
+    LinkObject,
+    AnnotatedTextBlock,
     METAMODEL
 )
 from modelscripts.megamodels.models import (
@@ -31,18 +39,41 @@ class ObjectModelPrinter(ModelPrinter):
 
     def doModelContent(self):
         super(ObjectModelPrinter, self).doModelContent()
-        self.doObjectModel(self.theModel)
+        self.doStoryObjectModel(self.theModel)
+        self.outLine(self.kwd('-'*80))
+        self.doAbstractObjectModel(self.theModel)
         return self.output
 
-    def doObjectModel(self, objectModel):
+    def doStoryObjectModel(self, objectModel):
+        for d in objectModel.definitions:
+            if isinstance(d, AnnotatedTextBlock):
+                self.doAnnotatedTextBlocks(d)
+            else:
+                self.doCoreDefinition(d, indent=0)
+        return self.output
+
+    def doAbstractObjectModel(self, objectModel):
         for o in objectModel.objects:
-            self.doObject(o)
+            self.doFullObject(o)
         for l in objectModel.links:
-            self.doLink(l)
-        return self.output
+            self.doLinkDefinition(l)
+        #TODO: add doObjectLinks
 
 
-    def doObject(self, o):
+    def doCoreDefinition(self, d, indent=0):
+        if isinstance(d, Object):
+            self.doObjectDefinition(d, indent=indent)
+        elif isinstance(d, Slot):
+            self.doSlotDefinition(d, indent=indent)
+        elif isinstance(d, Link):
+            self.doLinkDefinition(d, indent=indent)
+            # TODO: check what to do with LinkObject
+        else:
+            raise NotImplementedError(
+                'Unexpected type: %s' % type(d))
+
+
+    def doObjectDefinition(self, o, indent=0):
         class_name=(
             str(o.class_)
                 if isinstance(o.class_, Placeholder)
@@ -50,34 +81,43 @@ class ObjectModelPrinter(ModelPrinter):
         self.outLine('%s %s %s' % (
                  o.name,
                  self.kwd(':'),
-                 class_name))
-        for s in o.slots:
-            self.doSlot(s)
-
+                 class_name),
+            indent=indent)
         return self.output
 
-    def doSlot(self, slot):
-        print('TT'*10, )
+    def doFullObject(self, o, indent=0):
+        self.doObjectDefinition(o, indent)
+        for s in o.slots:
+            self.doNestedSlot(s, indent=indent+1)
+        return self.output
+
+    def doNestedSlot(self, slot, indent=0):
         attribute_name=(
-            str(slot.attribute) if isinstance(slot.attribute, Placeholder)
+            str(slot.attribute)
+            if isinstance(slot.attribute, Placeholder)
             else slot.attribute.name)
-        if self.config.verbose:
-            self.outLine('%s %s %s %s %s' % (
-                    slot.object.name,
-                    self.kwd('.'),
+        self.outLine('%s %s %s' % (
                     attribute_name,
                     self.kwd('='),
                     str(slot.value)),
-                indent=0)
-        else:
-            self.outLine('%s %s %s' % (
-                    attribute_name,
-                    self.kwd('is'),
-                    str(slot.value)),
-                indent=1)
+                indent=indent)
         return self.output
 
-    def doLink(self, l):
+    def doSlotDefinition(self, slot, indent=0):
+        attribute_name=(
+            str(slot.attribute)
+            if isinstance(slot.attribute, Placeholder)
+            else slot.attribute.name)
+        self.outLine('%s%s%s %s %s' % (
+                slot.object.name,
+                self.kwd('.'),
+                attribute_name,
+                self.kwd('='),
+                str(slot.value)),
+            indent=indent)
+        return self.output
+
+    def doLinkDefinition(self, l, indent=0):
         association_name=(
             str(l.association)
                 if isinstance(l.association, Placeholder)
@@ -89,10 +129,21 @@ class ObjectModelPrinter(ModelPrinter):
                     association_name,
                     self.kwd(','),
                     l.targetObject.name,
-                    self.kwd(')')))
+                    self.kwd(')')),
+            indent=indent)
         return self.output
 
         # FIXME:1 add object links
+
+    def doAnnotatedTextBlocks(self, atb):
+        block_text=TextBlockPrinter(
+            textBlock=atb.textBlock,
+            config=self.config).do()
+        self.outLine(block_text, indent=0)
+
+        for d in atb.definitions:
+            self.doCoreDefinition(d, indent=1)
+        return self.output
 
 
 METAMODEL.registerModelPrinter(ObjectModelPrinter)
