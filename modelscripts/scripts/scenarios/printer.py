@@ -11,6 +11,9 @@ from modelscripts.base.modelprinters import (
     ModelSourcePrinter,
     ModelPrinterConfig,
 )
+from modelscripts.scripts.textblocks.printer import (
+    TextBlockPrinter
+)
 from modelscripts.base.styles import Styles
 from modelscripts.metamodels.scenarios import (
     ScenarioModel,
@@ -18,6 +21,7 @@ from modelscripts.metamodels.scenarios import (
     blocks,
     METAMODEL
 )
+from modelscripts.metamodels.textblocks import TextBlock
 from modelscripts.metamodels.scenarios.evaluations import (
     ScenarioEvaluation,
 )
@@ -157,6 +161,9 @@ class ScenarioModelPrinter(ModelPrinter):
     def scenarioModel(self, scenario):
         # super(ScenarioModelPrinter, self).doModelContent()
 
+        for d in scenario.descriptors:
+            self.doDescriptor(d)
+
         for ai in scenario.actorInstanceNamed.values():
             self.doActorInstance(ai)
 
@@ -171,6 +178,18 @@ class ScenarioModelPrinter(ModelPrinter):
             self.doBlock(b)
         return self.output
 
+    def doDescriptor(self, descriptor):
+        #TODO: generalize the value of descriptor
+        #      currently only textBlock
+        #      To be changed in the parser and may be add a
+        #      descriptor value
+        assert isinstance(descriptor.value, TextBlock), 'current limitation'
+        block_text=TextBlockPrinter(
+            textBlock=descriptor.value,
+            config=self.config).do()
+        self.outLine(self.kwd(descriptor.name))
+        self.outLine(block_text, 1)
+        return self.output
 
     def doActorInstance(self, ai):
         self.outLine('%s%s %s%s%s'%(
