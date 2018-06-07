@@ -19,6 +19,7 @@ from modelscripts.megamodels.elements import (
 )
 from modelscripts.metamodels.scenarios import (
     ScenarioModel,
+    ActorInstance,
     METAMODEL
 )
 from modelscripts.metamodels.classes import (
@@ -51,6 +52,7 @@ DEBUG=0
 
 ISSUES={
    'DESCRIPTOR_TWICE':'sc.syn.Descriptor.Twice',
+   'ACTOR_NOT_FOUND':'sc.syn.ActorInstance.NoActor'
 }
 def icode(ilabel):
     return ISSUES[ilabel]
@@ -118,12 +120,41 @@ class ScenarioEvaluationModelSource(ASTBasedModelSourceFile):
                             name)))
             else:
                 d=Descriptor(name, tb)
-                print('II'*20, d)
                 self.scenarioModel.descriptorNamed[name]=d
 
+        def define_actor_instance(actori_decl):
+            actori_name=actori_decl.actorInstanceName
+            actor_name=actori_decl.actorName
+            if actor_name not in self.usecaseModel.actorNamed:
+                ASTNodeSourceIssue(
+                    code=icode('ACTOR_NOT_FOUND'),
+                    astNode=actori_decl,
+                    level=Levels.Error,
+                    message=(
+                        'Actor "%s" does not exist.'
+                        ' "%s" ignored.' % (
+                            actor_name,
+                            actori_name
+                        )))
+            else:
+                actor=self.usecaseModel.actorNamed[actor_name]
+                #TODO: check not already defined
+                ActorInstance(
+                    model=self.scenarioModel,
+                    name=actori_name,
+                    actor=actor,
+                    astNode=actori_decl
+                )
+
+
+        # descriptors
         for descriptor in self.ast.model.descriptors:
             define_descriptor(descriptor)
-
+        # actor istances
+        ap = self.ast.model.actorPart
+        if ap is not None:
+            for actori_decl in ap.actorInstanceDeclarations:
+                define_actor_instance(actori_decl)
 
     def resolve(self):
         pass
