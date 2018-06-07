@@ -1,0 +1,5 @@
+scenario model Sc_model01
+    | This is the description of the main description of the scenario
+
+import usecase model from '../uss/us-main-CyberCompany01.uss'
+import class model from '../cls/cl-main-cybercompany-a.cls'
