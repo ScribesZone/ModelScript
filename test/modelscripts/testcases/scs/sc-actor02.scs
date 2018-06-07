@@ -1,7 +1,7 @@
     # check OK actor instances
 
-    #@Metric "model descriptor" 0
-    #@Metric "actorInstance" 3
+    #@Issue sc.syn.ActorInstance.NoActor 1
+    #@Issue else *
 
 scenario model Sc_main01
 
@@ -10,5 +10,5 @@ import class model from '../cls/cl-main-cybercompany-a.cls'
 
 actor instances
     toufik : CEO
-    maria : Secretary
+    maria : Nothing
     xavier : Manager
