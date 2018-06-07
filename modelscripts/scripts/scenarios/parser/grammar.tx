@@ -36,26 +36,17 @@ ActorInstanceDeclaration:
 ;
 
 ContextDeclarationBlock:
-    // # TODO: should include the text from object model
-
     'context' (o_
-        contextActionDeclarations *= contextActionDeclaration
+        OBBody
     _o)
     X
 ;
 
-contextActionDeclaration:
-      ObjectDeclaration
-    | SlotDeclaration
-    | LinkDeclaration
-    // TODO: LinkObjectDeclaration
-;
 
 ActionDeclarationBlock:
-    'start' (o_
-        actionDeclarations *= ActionDeclaration
-    _o)
-    X
+    'start' X
+    actionDeclarations *= ActionDeclaration
+    'stop' X
 ;
 
 ActionDeclaration:
