@@ -68,17 +68,21 @@ class ScenarioModel(Model, Subject):
 
         super(ScenarioModel, self).__init__()
 
-        self.usecaseModel=None #type: Optional[UsecaseModel]
+        self.usecaseModel=None
+        #type: Optional[UsecaseModel]
         # set later
 
-        self.classModel=None #type: Optional[ClassModel]
+        self.classModel=None
+        #type: Optional[ClassModel]
         # set later
 
-        self.permissionModel=None #type: Optional[UCPermissionModel]
+        self.permissionModel=None
+        #type: Optional[UCPermissionModel]
         # set later
 
         self.actorInstanceNamed = collections.OrderedDict()
         #type: Dict[Text, ActorInstance]
+        # set later
 
         self.systemInstance=None
         #type: Optional[System]
