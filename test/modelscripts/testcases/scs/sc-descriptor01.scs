@@ -1,0 +1,14 @@
+scenario model Sc_main01
+    | This is a brief description of the scenario.
+    | More information can go in separate descriptions
+    | such as 'intention' or 'summary'.
+
+import usecase model from '../uss/us-main-CyberCompany01.uss'
+import class model from '../cls/cl-main-cybercompany-a.cls'
+
+intention
+    | Describes canonical flow with 1 actor.
+
+summary
+    | An employeeand a project registered.
+    | Its salary it then increased.
