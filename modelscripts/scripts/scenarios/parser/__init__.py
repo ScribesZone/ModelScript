@@ -14,6 +14,9 @@ from modelscripts.base.grammars import (
 from modelscripts.base.issues import (
     Levels,
 )
+from modelscripts.megamodels.elements import (
+    Descriptor
+)
 from modelscripts.metamodels.scenarios import (
     ScenarioModel,
     METAMODEL
@@ -47,7 +50,7 @@ DEBUG=0
 
 
 ISSUES={
-    # 'OBJECT_NO_CLASS':'o.res.Object.NoClass',
+   'DESCRIPTOR_TWICE':'sc.syn.Descriptor.Twice',
 }
 def icode(ilabel):
     return ISSUES[ilabel]
@@ -93,13 +96,34 @@ class ScenarioEvaluationModelSource(ASTBasedModelSourceFile):
         # TODO: the optional stuff should come from metamdel
         return self.importBox.model('pe', optional='True')
 
-
     @property
     def metamodel(self):
         return METAMODEL
 
     def fillModel(self):
-        pass
+
+        def define_descriptor(descriptor):
+            name=descriptor.name
+            tb=astTextBlockToTextBlock(
+                container=self.model,
+                astTextBlock=descriptor.textBlock)
+            if name in self.scenarioModel.descriptorNamed:
+                ASTNodeSourceIssue(
+                    code=icode('DESCRIPTOR_TWICE'),
+                    astNode=descriptor,
+                    level=Levels.Error,
+                    message=(
+                        'Descriptor "%s" already defined.'
+                        ' Ignored.' % (
+                            name)))
+            else:
+                d=Descriptor(name, tb)
+                print('II'*20, d)
+                self.scenarioModel.descriptorNamed[name]=d
+
+        for descriptor in self.ast.model.descriptors:
+            define_descriptor(descriptor)
+
 
     def resolve(self):
         pass
