@@ -49,7 +49,7 @@ class TextBlockPrinter(AbstractPrinter):
         self.out(_, indent=self.indent)
         for token in line.textTokens:
             self.doTextToken(token)
-        # self.outLine(_,lineNo=line.lineNo)
+        self.outLine(_)
         return self.output
 
     def doTextToken(self, token):

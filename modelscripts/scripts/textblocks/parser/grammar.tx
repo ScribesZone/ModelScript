@@ -2,7 +2,7 @@
 // ================== TextBlock grammar ===========================
 
 TextBlock:
-     textLines *= TextLine
+     /[\n ]*/ (textLines *= TextLine* [';_'])
 ;
 
 TextLine[noskipws]:
@@ -39,7 +39,7 @@ X:
 ;
 
 EndOfTextLine:
-    /\|_;_/
+    /\|_/  //   [\{;]_/
 ;
 
 
