@@ -1,11 +1,5 @@
 ObjectModel:
     megamodelPart = MegamodelPart
-    declarations *= Declaration
+    body = OBBody   // for some strange reason body can be None => test
 ;
 
-Declaration:
-      ObjectDeclaration
-    | SlotDeclaration
-    | LinkDeclaration
-//    | ObjectLinkDeclaration
-;

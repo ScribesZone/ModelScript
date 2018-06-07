@@ -3,6 +3,30 @@
 // Shared be objects/grammar.py and scenarios/grammar.py
 //
 
+OBBody:
+    declarations *= OBDeclaration
+;
+
+OBDeclaration:
+      CoreOBDeclaration
+    | ATextBlockOBDeclaration
+;
+
+CoreOBDeclaration:
+      ObjectDeclaration
+    | SlotDeclaration
+    | LinkDeclaration
+    // LinkObjectDeclaration
+;
+
+ATextBlockOBDeclaration:
+    textBlock=TextBlock
+    (o_
+        declarations *= CoreOBDeclaration
+    _o) ?
+    X ?
+;
+
 ObjectDeclaration:
       SpeechObjectDeclaration
     | SymbolicObjectDeclaration
