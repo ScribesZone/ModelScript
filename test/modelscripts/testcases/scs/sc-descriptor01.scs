@@ -1,10 +1,7 @@
     # check model descriptor
 
     #@Metric "model descriptor" 2
-    #@Metric "actorInstance" 0
-    #@Metric "contextBlock" 0
-    #@Metric "mainBlock" 0
-
+    #@Metric "actor instance" 0
 
 scenario model Sc_main01
     | This is a brief description of the scenario.

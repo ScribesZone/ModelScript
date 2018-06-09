@@ -1,0 +1,8 @@
+scenario model Sc_step30
+
+import usecase model from '../uss/us-main-CyberCompany01.uss'
+import class model from '../cls/cl-main-cybercompany-a.cls'
+start
+create computing : Department
+delete computing
+stop

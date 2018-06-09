@@ -50,9 +50,16 @@ create djamel : Employee
     set djamel.salary = 2600
     create (djamel, WorksIn, computing)
 
-check
 
-maria do RegisterNewEmployee
+now maria RegisterNewEmployee
+    create ioannis : Employee
+    set ioannis.name = 'Ioannis'
+    set ioannis.salary = 1900
+    | Something is happening, but nodbody knows what...
+    | Ioannis is assigned to the computing department
+        create (ioannis, WorksIn, computing)
+
+now maria RegisterNewEmployee
     create ioannis : Employee
     set ioannis.name = 'Ioannis'
     set ioannis.salary = 1900
@@ -62,6 +69,7 @@ maria do RegisterNewEmployee
 
 # assert 2+3*5=3
 
+| test
 | A new project is created, the Maxi turbo project
 | with a budget of 150 000 €.
 
@@ -71,11 +79,12 @@ maria do RegisterNewEmployee
     #create c1 : Control between (computing, turbo)
     #set c1.frequence =15
 
-| Time is passing...
-| 3 months after...
-    maria do IncreaseSalary
-        update sandrine.salary = 2600
+| text
+    create turbo : Project
 
+
+now maria IncreaseSalary
+    update sandrine.salary = 2600
 
 stop
 

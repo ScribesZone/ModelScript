@@ -1,0 +1,13 @@
+scenario model Sc_step06
+
+import usecase model from '../uss/us-main-CyberCompany01.uss'
+import class model from '../cls/cl-main-cybercompany-a.cls'
+actor instances
+    xao : Manager
+    joe : Manager
+
+start
+| Something interesting
+| with various lines
+    check
+stop

@@ -4,9 +4,7 @@
     #@Issue else *
 
     #@Metric "model descriptor" 1
-    #@Metric "actorInstance" 0
-    #@Metric "contextBlock" 0
-    #@Metric "mainBlock" 0
+    #@Metric "actor instance" 0
 
 
 scenario model Sc_main01
