@@ -18,15 +18,9 @@ from modelscripts.base.styles import Styles
 from modelscripts.metamodels.scenarios import (
     ScenarioModel,
     operations,
-    blocks,
     METAMODEL
 )
 from modelscripts.metamodels.textblocks import TextBlock
-from modelscripts.metamodels.scenarios.evaluations import (
-    ScenarioEvaluation,
-)
-from modelscripts.metamodels.scenarios.evaluations.operations import \
-    InvariantValidation, CardinalityViolation, AssertQueryEvaluation
 
 __all__ =(
     'ScenarioModelPrinter',
@@ -115,14 +109,7 @@ class ScenarioModelPrinter(ModelPrinter):
             config=config
         )
 
-    # def __init__(self,
-    #              theModel,
-    #              summary=False,
-    #              displayLineNos=True,
-    #              displayBlockSeparators=True,
-    #              displayEvaluation=True,
-    #              originalOrder=True):
-    #     #type: (Union[ScenarioModel, ScenarioEvaluation], bool, Text, bool, bool, bool, bool) -> None
+
         # Check if it make sense for ScenarioEvaluation
         assert isinstance(theModel, ScenarioModel)
         # super(ScenarioModelPrinter, self).__init__(
@@ -131,14 +118,14 @@ class ScenarioModelPrinter(ModelPrinter):
         #     displayLineNos=displayLineNos
         # )
         self.scenario=theModel
-        self.scenarioEvaluation=self.scenario.scenarioEvaluation
+        # self.scenarioEvaluation=self.scenario.scenarioEvaluation
         self.modelHeader=self.config.modelHeader
         self.displayBlockSeparators=self.config.displayBlockSeparators
 
-        self.doDisplayEvaluation=(
-            self.config.displayEvaluation
-            and self.scenarioEvaluation is not None)
-        self.originalOrder=self.config.originalOrder
+        # self.doDisplayEvaluation=(
+        #     self.config.displayEvaluation
+        #     and self.scenarioEvaluation is not None)
+        # self.originalOrder=self.config.originalOrder
 
     def doModelContent(self):
         super(ScenarioModelPrinter, self).doModelContent()
@@ -169,15 +156,15 @@ class ScenarioModelPrinter(ModelPrinter):
             for ai in scenario.actorInstanceNamed.values():
                 self.doActorInstance(ai)
 
-        if self.doDisplayEvaluation and self.scenario.scenarioEvaluation is not None:
-            self.doAccessSet(self.scenario.scenarioEvaluation.accessSet)
-
-        if self.originalOrder:
-            blocks = self.scenario.originalOrderBlocks
-        else:
-            blocks = self.scenario.logicalOrderBlocks
-        for b in blocks:
-            self.doBlock(b)
+        # if self.doDisplayEvaluation and self.scenario.scenarioEvaluation is not None:
+        #     self.doAccessSet(self.scenario.scenarioEvaluation.accessSet)
+        #
+        # if self.originalOrder:
+        #     blocks = self.scenario.originalOrderBlocks
+        # else:
+        #     blocks = self.scenario.logicalOrderBlocks
+        # for b in blocks:
+        #     self.doBlock(b)
         return self.output
 
     def doDescriptor(self, descriptor):
