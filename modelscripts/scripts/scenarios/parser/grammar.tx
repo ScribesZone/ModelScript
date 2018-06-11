@@ -1,9 +1,9 @@
 ScenarioModel:
     megamodelPart = MegamodelPart
     descriptors *= DescriptorDeclaration
-    actorPart = ActorInstanceDeclarationBlock ?
-    ContextDeclarationBlock ?
-    ActionDeclarationBlock ?
+    actorPart = ActorInstancePart ?
+    contextPart = ContextPart ?
+    storyPart = StoryPart ?
 ;
 
 DescriptorDeclaration:
@@ -13,7 +13,7 @@ DescriptorDeclaration:
     X
 ;
 
-ActorInstanceDeclarationBlock:
+ActorInstancePart:
     'actor' 'instances' (o_
         actorInstanceDeclarations *= ActorInstanceDeclaration
     _o) ?
@@ -27,7 +27,7 @@ ActorInstanceDeclaration:
     X
 ;
 
-ContextDeclarationBlock:
+ContextPart:
     'context' (o_
         OBBody
     _o)
@@ -35,65 +35,92 @@ ContextDeclarationBlock:
 ;
 
 
-ActionDeclarationBlock:
+//------------------------------------------------------------------
+//                          Story Part
+//------------------------------------------------------------------
+
+StoryPart:
     'start' X
-    actionDeclarations *= ActionDeclaration
+    steps *= TopLevelStep
     'stop' X
 ;
 
-ActionDeclaration:
-      ATextBlockActionDeclaration
-    | UsecaseActionDeclaration
-    | ObjectActionDeclaration
-    | SlotActionDeclaration
-    | LinkActionDeclaration
+TopLevelStep:
+        ATextBlockStep
+      | Operation
+      | UsecaseInstanceStep
     //  TODO: LinkObjectDeclaration
-    | CheckDeclaration
 ;
 
-ATextBlockActionDeclaration:
-    textBlock=TextBlock
+ATextBlockStep:
+    textBlock = TextBlock
     (o_
-        // To simplify the grammar the rule is fully recursive
-        // Inappropriate nest check are permformed by parser
-        declarations *= ActionDeclaration
-    _o) ? // Optional does not seems to work
-          // Currently a text block have to be followed by some action.
-
+        steps *= Operation
+    _o) ?  // FIXME: ? not working => impossible to have empty block
     X
 ;
 
-UsecaseActionDeclaration:
+InsideUsecaseStep:
+      ATextBlockStep
+    | Operation
+;
+
+UsecaseInstanceStep:
+    'now'
     actorInstanceName = ID
-    ('do'|'va')
-    usecaseName = ID (o_
-        // To simplify the grammar the rule is fully recursive
-        // Inappropriate nest check are permformed by parser
-        actionDeclarations *= ActionDeclaration
-    _o)
+    usecaseName = ID
+    (o_
+        steps *= InsideUsecaseStep
+    _o) ?
     X
 ;
 
-ObjectActionDeclaration:
-    verb=CreateOrDelete ObjectDeclaration
+
+//------------------------------------------------------------------
+//                        Operations
+//------------------------------------------------------------------
+
+
+Operation:
+      UpdateOperation
+    | ReadOperation
 ;
 
-SlotActionDeclaration:
+UpdateOperation:
+      ObjectCreation
+    | ObjectDeletion
+    | AttributeAssignment   // set | update
+    | LinkOperation         // create | delete
+    // TODO: LinkObject
+;
+
+ReadOperation:
+      CheckOperation
+;
+
+ObjectCreation:
+    'create' objectDeclaration = ObjectDeclaration
+;
+
+ObjectDeletion:
+    'delete' name = ID
+;
+
+AttributeAssignment:
     verb=SetOrUpdate SlotDeclaration
 ;
 
-LinkActionDeclaration:
+LinkOperation:
     verb=CreateOrDelete LinkDeclaration
 ;
 
-CheckDeclaration:
-    'check'
+CheckOperation:
+    'check' paramters ?= 'something'
     X
 ;
 
 CreateOrDelete:
       'create'
-    | 'delete'
 ;
 
 SetOrUpdate:
