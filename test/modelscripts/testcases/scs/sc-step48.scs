@@ -1,0 +1,15 @@
+    # Error Assoc not found
+    #@Issue sc.syn.LinkOperation.NoAssoc 1
+    #@Issue else *
+
+scenario model Sc_step30
+
+import usecase model from '../uss/us-main-CyberCompany01.uss'
+import class model from '../cls/cl-main-cybercompany-a.cls'
+
+start
+create computing : Department
+create elise : Employee
+create (elise, WorksIn, computing)
+delete (elise, Nothing, computing)
+stop
