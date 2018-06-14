@@ -96,15 +96,35 @@ task ChoisirSeance
                 task TelechargerUnDateDeSpectacle I
                 task TelechargerDescriptif I
 
+task tree
+    ChoisirSeance
+        S ConsulterLesProgrammes @
+            S AllerSurLeSiteInternet I
+            S ObtenirListeDesSpectacles @
+                P IndiquerDateDeDebut  @I
+                    Calendrier
+                    {Dates}
+                P IndiquerDateDeFin @OI
+                    Calendrier
+                    {Dates}
+                P IndiquerDateDeFin @OI
+                    {Horaire}
+                P IndiquerCategorieAge  @OI
+                P ConsulterInfoSurSpectacle @I
+                    {Spectacle.description}
+        S TelechargerInformations @OI
+            SO TelechargerUnDateDeSpectacle I
+            SO TelechargerDescriptif I
 
-space IndiquerCriters
+space IndiquerCriteres
     content
         {Calendrier}
         {Horaire}
     navigation
         AfficherListeDesRepresentation ->
-end
 
 space AfficherListeDesRepresentation
     content
     navigation
+
+

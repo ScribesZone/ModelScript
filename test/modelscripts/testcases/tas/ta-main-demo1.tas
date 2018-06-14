@@ -1,0 +1,21 @@
+task model Demo
+
+ChoisirSeance
+    : ConsulterLesProgrammes @
+        : AllerSurLeSiteInternet I
+        : ObtenirListeDesSpectacles @
+            = IndiquerDateDeDebut  @I
+                Calendrier
+                {Dates}
+            = IndiquerDateDeFin @OI
+                Calendrier
+                {Dates}
+            = IndiquerDateDeFin @OI
+                {Horaire}
+            = IndiquerCategorieAge  @OI
+            = ConsulterInfoSurSpectacle @I
+                {Spectacle.description}
+    : TelechargerInformations @OI
+        : TelechargerUnDateDeSpectacle I
+        : TelechargerDescriptif I
+
