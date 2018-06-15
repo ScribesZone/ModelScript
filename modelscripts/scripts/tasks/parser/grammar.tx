@@ -1,0 +1,51 @@
+TaskModel:
+    megamodelPart = MegamodelPart
+    rootTask = Task
+;
+
+Task:
+    parentDecomposition = TaskDecomposition ?
+    name = ID
+    decorations *= TaskDecoration
+    (o_
+        textBlock = TextBlock
+        conceptReferences *= ConceptReference
+        subtasks *= Task
+    _o) ?
+    X
+;
+
+ConceptExpression:
+    multiple ?= '{' names *= ID ['.'] '}'  X
+;
+
+ConceptReference:
+      ClassPathReferene
+    | LiteralPathReference
+;
+
+ClassPathReference:
+    names += ID ['.']
+;
+
+LiteralPathReference:
+    literal = STRING
+;
+
+ConceptReference:
+      names *= ID
+    | STRING
+    ;
+TaskDecomposition:
+      ':'
+    | '='
+    | '/'
+;
+
+TaskDecoration:
+      '@'
+    | 'O'
+    | 'I'
+    | 'P'
+;
+
