@@ -1,0 +1,5 @@
+permission model Pe_model01
+    | This is the document of the permission model
+
+import usecase model from '../uss/us-main-CyberCompany01.uss'
+import class model from '../cls/cl-main-cybercompany-a.cls'

@@ -1,0 +1,12 @@
+    # Error Usecase/Actor not found
+
+    #@Issue pe.syn.Rule.SubjectNotFound 1
+    #@Issue else *
+
+permission model Pe_model02
+    | This is the document of the permission model
+
+import class model from '../cls/cl-main-simple.cls'
+import usecase model from '../uss/us-main-CyberCompany01.uss'
+
+The usecase Nothing can create some Department.
