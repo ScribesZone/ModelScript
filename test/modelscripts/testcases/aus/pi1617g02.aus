@@ -1,0 +1,50 @@
+aui model Demo
+
+space EntrerLesInformations
+    concepts
+        email
+        numerotel
+    links
+        ChoisirTypeReservation
+        EntrerLesInformations
+
+space ChoisirTypeReservation
+    links
+        ReservationSansPayer
+        Reserver
+        back to EntrerLesInformations
+
+space ReservationSansPayer
+    links
+        back to ChoisirTypeReservation
+        PreciserCriteresDeRecherche
+
+space PreciserCriteresDeRecherche
+    links
+        EntrerLesInformations
+
+space Reserver
+    links
+        back to ChoisirTypeReservation
+        Payer
+
+
+space Payer
+    concepts
+        modeDePaimement
+        numeroDeCarte
+    links
+        ChoisirTypeDeBillet
+        Payer
+
+space ChoisirTypeDeBillet
+    concepts
+        pdf
+        mobile
+    links
+        back to PreciserCriteresDeRecherche
+
+
+space PreciserCriteresDeRecherche
+    links
+        EntrerLesInformations
