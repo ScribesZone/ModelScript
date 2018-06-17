@@ -4,7 +4,7 @@ interactions
     CEO can CreateDepartment
     CEO can BrowseBudget
     Manager can SetBudget
-    Employe can BrowDepartment
+    Employee can BrowseDepartment
 
 actor CEO
 actor Employee
