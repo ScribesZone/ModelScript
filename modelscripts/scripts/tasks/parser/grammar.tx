@@ -6,26 +6,43 @@ TaskModel:
 Task:
     parentDecomposition = TaskDecomposition ?
     name = ID
-    decorations *= TaskDecoration
+    decorations = TaskDecorations
     (o_
         textBlock = TextBlock
-        conceptReferences *= ConceptReference
+        conceptReferences *= ConceptExpression
         subtasks *= Task
     _o) ?
     X
 ;
 
+TaskDecorations:
+    (
+        (optional = 'O') ?
+        (interruptible = '@') ?
+        (executant = TaskExecutant) ?
+    )#
+;
+
 ConceptExpression:
-    multiple ?= '{' names *= ID ['.'] '}'  X
+       '-' ComplexConceptReference X
+    |  '-' AtomicConceptReference X
+;
+
+AtomicConceptReference:
+      reference=ConceptReference
+;
+
+ComplexConceptReference:
+      '{' reference=ConceptReference '}'
 ;
 
 ConceptReference:
-      ClassPathReferene
+      ClassPathReference
     | LiteralPathReference
 ;
 
 ClassPathReference:
-    names += ID ['.']
+    names += ID
 ;
 
 LiteralPathReference:
@@ -36,16 +53,22 @@ ConceptReference:
       names *= ID
     | STRING
     ;
+
 TaskDecomposition:
       ':'
     | '='
-    | '/'
+    | '<'
+    | '?'
+    | '#'
+    | '~'
 ;
 
-TaskDecoration:
-      '@'
-    | 'O'
+
+TaskExecutant:
+      'A'
     | 'I'
-    | 'P'
+    | 'U'
+    | 'S'
 ;
+
 

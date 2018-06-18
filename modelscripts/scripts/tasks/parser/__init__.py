@@ -24,6 +24,7 @@ from modelscripts.metamodels.tasks import (
     TaskModel,
     Task,
     TaskDecomposition,
+    TaskExecutant,
     METAMODEL
 )
 from modelscripts.megamodels.metamodels import Metamodel
@@ -36,7 +37,8 @@ from modelscripts.scripts.textblocks.parser import (
 )
 
 __all__=(
-    'TaskModelSource'
+    'TaskModelSource',
+    'ConcreteSyntax'
 )
 
 DEBUG=0
@@ -50,6 +52,58 @@ ISSUES={
 }
 def icode(ilabel):
     return ISSUES[ilabel]
+
+
+class ConcreteSyntax(object):
+
+    DECOMPOSITION= [
+        (':', TaskDecomposition.SEQUENTIAL),
+        ('=', TaskDecomposition.PARALLEL),
+        ('<', TaskDecomposition.ALTERNATIVE),
+        ('~', TaskDecomposition.NOORDER),
+        ('#', TaskDecomposition.ELEMENTARY),
+        ('?', TaskDecomposition.UNKNOWN),
+    ]
+    EXECUTANT=[
+        ('A', TaskExecutant.ABSTRACT),
+        ('I', TaskExecutant.INTERACTION),
+        ('U', TaskExecutant.USER),
+        ('S', TaskExecutant.SYSTEM),
+        ('?', TaskExecutant.UNKNOWN)
+    ]
+    CONCRETE_OPTIONAL='O'
+    CONCRETE_INTERRUPTIBLE='@'
+
+    @classmethod
+    def _find_forward(cls, pairs, concrete):
+        for (c,a) in pairs:
+            if c==concrete:
+                return a
+        raise NotImplementedError('"%s" is unexpected' % concrete)
+
+    @classmethod
+    def _find_backward(cls, pairs, abstract):
+        for (c,a) in pairs:
+            if a==abstract:
+                return c
+        raise NotImplementedError('"%s" is unexpected' % abstract)
+
+    @classmethod
+    def abstractDecomposition(cls, concrete):
+        return cls._find_forward(cls.DECOMPOSITION, concrete)
+
+    @classmethod
+    def concreteDecomposition(cls, abstract):
+        return cls._find_backward(cls.DECOMPOSITION, abstract)
+
+    @classmethod
+    def abstractExecutant(cls, concrete):
+        return cls._find_forward(cls.EXECUTANT, concrete)
+
+    @classmethod
+    def concreteExecutant(cls, abstract):
+        return cls._find_backward(cls.EXECUTANT, abstract)
+
 
 
 class TaskModelSource(ASTBasedModelSourceFile):
@@ -92,7 +146,8 @@ class TaskModelSource(ASTBasedModelSourceFile):
             parent_decomposition = task_node.parentDecomposition
             if super_task is None:
                 # This is the root node, just check that it has
-                # no parent decomposition indicator
+                # no parent decomposition indicator in the concrete
+                # syntax
                 if parent_decomposition is not None:
                     ASTNodeSourceIssue(
                         code=icode('DECOMPO_ROOT'),
@@ -109,7 +164,8 @@ class TaskModelSource(ASTBasedModelSourceFile):
             else:
                 # This is a subtask.
 
-                # Check that the decomposition indicator is there
+                # Check that the decomposition indicator is mentionned
+                # in the AST
                 if (parent_decomposition is None):
                     ASTNodeSourceIssue(
                         code=icode('NO_DECOMPO'),
@@ -122,13 +178,16 @@ class TaskModelSource(ASTBasedModelSourceFile):
                                 task_node.name)))
                     parent_decomp_enum=TaskDecomposition.SEQUENTIAL
                 else:
-                    parent_decomp_enum={
-                        '/' : TaskDecomposition.ALTERNATIVE,
-                        '=' : TaskDecomposition.PARALLEL,
-                        ':' : TaskDecomposition.SEQUENTIAL
-                    }[parent_decomposition]
-                # Check that the parent
-                if super_task.decomposition is None:
+                    parent_decomp_enum=(
+                        ConcreteSyntax.abstractDecomposition(
+                            parent_decomposition))
+                # the decomposition indicator (for the parent) is
+                # mentionned in the AST. So add it to the parent.
+                if (super_task.decomposition
+                    is TaskDecomposition.ELEMENTARY):
+                    # First time, this is ok.
+                    # Note that the node are set to unknown by default
+                    # this is why this is the first time.
                     super_task.decomposition=parent_decomp_enum
                 elif super_task.decomposition==parent_decomp_enum:
                     # repetition of same decomposition: ok
@@ -148,11 +207,40 @@ class TaskModelSource(ASTBasedModelSourceFile):
                             )))
 
             #------------- Deal with current task ----------------
+
+            #-- executant
+            if (task_node.decorations is None
+                or task_node.decorations.executant is None):
+                executant=TaskExecutant.UNKNOWN
+            else:
+                executant=ConcreteSyntax.abstractExecutant(
+                            task_node.decorations.executant)
+
+            #-- optional
+            optional=(
+                task_node.decorations is not None and
+                task_node.decorations.optional is not None)
+
+            #-- interruptible
+            interruptible=(
+                task_node.decorations is not None and
+                task_node.decorations.interruptible is not None)
+
+            #-- decomposition
+
+            # At this time we don't know if this task will have
+            # child, so we assign ELEMENTARY as its decomposition.
+            # This will be changed by this parser when children are
+            # discovered (see above).
+            this_node_decomposition=TaskDecomposition.ELEMENTARY
+
             task=Task(
                 taskModel=self.taskModel,
                 name=task_node.name,
-                decomposition=None, # set by subtask
-                decorations=task_node.decorations,
+                executant=executant,
+                optional=optional,
+                interruptible=interruptible,
+                decomposition=TaskDecomposition.ELEMENTARY,
                 superTask=super_task,
                 astNode=task_node,
             )
@@ -167,10 +255,8 @@ class TaskModelSource(ASTBasedModelSourceFile):
 
             return task
 
-        print('DD'*100, 'fillModel')
 
         root=define_task(self.ast.model.rootTask, super_task=None)
-        print('DD'*30, root)
 
         self.taskModel.rootTask=root
 
