@@ -69,6 +69,7 @@ ISSUES={
     'ACTOR_INSTANCE_NOT_FOUND':'sc.syn.Story.NoActorInstance',
     'USECASE_NOT_FOUND':'sc.syn.Story.NoUsecase',
     'OBJECT_CLASS_NOT_FOUND':'sc.syn.ObjectCreation.NoClass',
+    'LINK_ASSOC_NOT_FOUND':'sc.syn.LinkOperation.NoAssoc'
 }
 def icode(ilabel):
     return ISSUES[ilabel]
@@ -250,7 +251,6 @@ class ScenarioEvaluationModelSource(ASTBasedModelSourceFile):
                 raise NotImplementedError(
                     'AST type not expected: %s' % type_)
 
-
         def define_object_creation(parent, ast_operation):
             on=ast_operation.objectDeclaration.name
             cn=ast_operation.objectDeclaration.type
@@ -271,6 +271,10 @@ class ScenarioEvaluationModelSource(ASTBasedModelSourceFile):
                 return step
 
         def define_object_deletion(parent, ast_operation):
+            #TODO: check if binding object name is good
+            #   The name of the object is unique, but it might
+            #   be deleted. So replacing the name by the actual
+            #   object would imply having a minimal notion of state.
             step=ObjectDeletion(
                     parent=parent,
                     objectName=ast_operation.name,
@@ -279,21 +283,52 @@ class ScenarioEvaluationModelSource(ASTBasedModelSourceFile):
             return step
 
         def define_attribute_assignment(parent, ast_operation):
-            # TODO:
-            if ast_operation.verb=='set':
-                return None
-            elif ast_operation.verb=='update':
-                return None
-            else:
-                raise NotImplementedError(
-                    'Verb not expected: %s' % ast_operation.verb)
+            assert ast_operation.verb in ['set', 'update']
+            # TODO: should the name of the object be bound ?
+            #     This means checking that it has not been deleted
+            #     and therefore this necessitate the notion of
+            #     evaluation (this could be beyond simple parsing
+            #     as here).
+            slot_decl=ast_operation.slotDeclaration
+            step=AttributeAssignment(
+                parent=parent,
+                objectName=slot_decl.object,
+                attributeName=slot_decl.attribute,
+                value=slot_decl.value,
+                update=(ast_operation.verb=='update'),
+                astNode=ast_operation
+            )
+            return step
 
         def define_link_operation(parent, ast_operation):
-            # TODO:
+            link_decl=ast_operation.linkDeclaration
+            an=link_decl.association
+            if an not in self.classModel.associationNamed:
+                ASTNodeSourceIssue(
+                    code=icode('LINK_ASSOC_NOT_FOUND'),
+                    astNode=ast_operation,
+                    level=Levels.Fatal,
+                    message=(
+                        'Association "%s" does not exist.' % an))
+            assoc=self.classModel.associationNamed[an]
             if ast_operation.verb=='create':
-                return None
+                step=LinkCreation(
+                    parent=parent,
+                    sourceObjectName=link_decl.source,
+                    targetObjectName=link_decl.target,
+                    association=assoc,
+                    astNode=ast_operation
+                )
+                return step
             elif ast_operation.verb=='delete':
-                return None
+                step=LinkDeletion(
+                    parent=parent,
+                    sourceObjectName=link_decl.source,
+                    targetObjectName=link_decl.target,
+                    association=assoc,
+                    astNode=ast_operation
+                )
+                return step
             else:
                 raise NotImplementedError(
                     'Verb not expected: %s' % ast_operation.verb)
@@ -309,11 +344,13 @@ class ScenarioEvaluationModelSource(ASTBasedModelSourceFile):
         # descriptors
         for descriptor in ast_root.descriptors:
             define_descriptor(descriptor)
-        # actor istances
+        # actor instances
         ap = ast_root.actorPart
         if ap is not None:
             for actori_decl in ap.actorInstanceDeclarations:
                 define_actor_instance(actori_decl)
+        # context
+        # TODO: implement the interpretation of context block
         # story and step hierarchy
         if ast_root.storyPart is not None:
             self.scenarioModel.story=define_step_hierarchy(
