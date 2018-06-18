@@ -28,7 +28,7 @@ from modelscripts.base.files import (
     replaceExtension
 )
 
-from modelscripts.locallibs.termcolor import cprint
+from modelscripts.libs.termcolor import cprint
 from modelscripts.base.modelprinters import ModelPrinterConfig
 from modelscripts.megamodels import Megamodel
 from modelscripts.config import Config
