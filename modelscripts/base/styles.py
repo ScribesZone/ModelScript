@@ -1,4 +1,4 @@
-from modelscripts.locallibs.termcolor import colored
+from modelscripts.libs.termcolor import colored
 
 
 class Style(object):
