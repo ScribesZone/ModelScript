@@ -1,6 +1,7 @@
 build/
 .build/
 .mdl/tmp/
+play/
 
 *.tasb
 *.tas.dot
