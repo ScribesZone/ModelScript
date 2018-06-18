@@ -24,6 +24,30 @@ from modelscripts.scripts.tasks.parser import ConcreteSyntax
 
 class TaskModelPrinter(ModelPrinter):
 
+    @classmethod
+    def postOperators(self, task):
+        """
+        This method is exposed so that the graphviz printer
+        can reuse it.
+        """
+        optional=(
+            ConcreteSyntax.CONCRETE_OPTIONAL if task.optional
+            else '')
+        interruptible=(
+            ConcreteSyntax.CONCRETE_INTERRUPTIBLE if task.interruptible
+            else '')
+        executant=(
+            '' if task.executant==TaskExecutant.UNKNOWN
+            else ConcreteSyntax.concreteExecutant(task.executant)
+        )
+        return '%s%s%s' % (
+            interruptible,
+            optional,
+            executant
+        )
+
+
+
     def __init__(self,
                  theModel,
                  config=None):
@@ -48,22 +72,21 @@ class TaskModelPrinter(ModelPrinter):
         else:
             decomp=ConcreteSyntax.concreteDecomposition(
                 task.superTask.decomposition)
-        optional=(
-            ConcreteSyntax.CONCRETE_OPTIONAL if task.optional
-            else '')
-        interruptible=(
-            ConcreteSyntax.CONCRETE_INTERRUPTIBLE if task.interruptible
-            else '')
-        executant=(
-            '' if task.executant==TaskExecutant.UNKNOWN
-            else ConcreteSyntax.concreteExecutant(task.executant)
-        )
-        line='%s %s %s%s%s' % (
+        # optional=(
+        #     ConcreteSyntax.CONCRETE_OPTIONAL if task.optional
+        #     else '')
+        # interruptible=(
+        #     ConcreteSyntax.CONCRETE_INTERRUPTIBLE if task.interruptible
+        #     else '')
+        # executant=(
+        #     '' if task.executant==TaskExecutant.UNKNOWN
+        #     else ConcreteSyntax.concreteExecutant(task.executant)
+        # )
+        operators=self.postOperators(task)
+        line='%s %s %s' % (
             decomp,
             task.name,
-            interruptible,
-            optional,
-            executant
+            operators
         )
 
         self.outLine(line, indent=level)
