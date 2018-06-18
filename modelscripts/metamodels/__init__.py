@@ -13,21 +13,16 @@ META_PACKAGES=(
     'permissions.gpermissions',
     'permissions.sar',
     'scenarios',
-    # 'scenarios.assertions'  not yet
-    'scenarios.blocks',
     'scenarios.operations',
-    'scenarios.evaluations',
-    'scenarios.evaluations.blocks',
-    'scenarios.evaluations.operations',
     'textblocks',
     'usecases',
+    'tasks',
     'megamodels',
 )
 
 META_CHECKER_PACKAGES=(
     'classes.checkers',
     'usecases.checkers',
-    'scenarios.evaluations.checkers'
 )
 
 def loadMetaPackages():
