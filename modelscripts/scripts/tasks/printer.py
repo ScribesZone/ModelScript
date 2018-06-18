@@ -11,12 +11,16 @@ from modelscripts.base.modelprinters import (
 )
 from modelscripts.metamodels.tasks import (
     TaskModel,
+    TaskExecutant,
     METAMODEL
 )
 
 __all__ = [
     'TaskModelPrinter',
 ]
+
+from modelscripts.scripts.tasks.parser import ConcreteSyntax
+
 
 class TaskModelPrinter(ModelPrinter):
 
@@ -39,14 +43,31 @@ class TaskModelPrinter(ModelPrinter):
         return self.output
 
     def doTask(self, task, level):
-        line = '%s %s %s' % (
-            task.decomposition,
-            task.name,
-            ''.join(task.decorations)
+        if task.superTask is None:
+            decomp=''
+        else:
+            decomp=ConcreteSyntax.concreteDecomposition(
+                task.superTask.decomposition)
+        optional=(
+            ConcreteSyntax.CONCRETE_OPTIONAL if task.optional
+            else '')
+        interruptible=(
+            ConcreteSyntax.CONCRETE_INTERRUPTIBLE if task.interruptible
+            else '')
+        executant=(
+            '' if task.executant==TaskExecutant.UNKNOWN
+            else ConcreteSyntax.concreteExecutant(task.executant)
         )
+        line='%s %s %s%s%s' % (
+            decomp,
+            task.name,
+            interruptible,
+            optional,
+            executant
+        )
+
         self.outLine(line, indent=level)
         for subtask in task.subTasks:
-
             self.doTask(subtask, level+1)
         return self.output
 
