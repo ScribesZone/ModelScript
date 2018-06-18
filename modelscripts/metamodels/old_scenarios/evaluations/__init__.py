@@ -13,6 +13,7 @@ the Check/QueryEvaluation are in fact directly under
 the corresponding operations
 
     ScenarioEvaluation
+    ----- evaluate()
     <>--* CheckEvaluation   (soil command "check")
           <>--* CardinalityEvaluation
                 <|-- CardinalityViolation
