@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE kmad-model SYSTEM "file:KMADModelJT.dtd">
+<kmad-model version="1.3">
+    <project classkmad="project.Project" idkmad="K1"/>
+    <task classkmad="tache.Task" id-task-point="K15" id-task-subtasks-list="K4 K7 K10 K13 K23 " idkmad="K16">
+        <task-name>Inconnue-inconnu</task-name>
+        <task-numero>Racine   </task-numero>
+        <task-observation/>
+        <task-executant>UNK</task-executant>
+        <task-modality>COGN</task-modality>
+        <task-optional>false</task-optional>
+        <task-interruptible>false</task-interruptible>
+        <task-decomposition>SEQ</task-decomposition>
+        <task-precondition>true</task-precondition>
+        <task-effetsdebord>void</task-effetsdebord>
+        <task-iteration>[1]</task-iteration>
+        <point classkmad="tache.Point" idkmad="K15">
+            <point-x>525</point-x>
+            <point-y>45</point-y>
+        </point>
+        <task classkmad="tache.Task" id-task-point="K3" idkmad="K4">
+            <task-name>abst-elem</task-name>
+            <task-numero>1</task-numero>
+            <task-observation/>
+            <task-executant>SYS</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>false</task-optional>
+            <task-interruptible>false</task-interruptible>
+            <task-decomposition>LEAF</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[1]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K3">
+                <point-x>306</point-x>
+                <point-y>291</point-y>
+            </point>
+        </task>
+        <task classkmad="tache.Task" id-task-point="K6" idkmad="K7">
+            <task-name>Interaction-alt</task-name>
+            <task-numero>2</task-numero>
+            <task-observation/>
+            <task-executant>INT</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>false</task-optional>
+            <task-interruptible>false</task-interruptible>
+            <task-decomposition>ALT</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[1]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K6">
+                <point-x>441</point-x>
+                <point-y>291</point-y>
+            </point>
+        </task>
+        <task classkmad="tache.Task" id-task-point="K9" idkmad="K10">
+            <task-name>Utilisateur-par</task-name>
+            <task-numero>3</task-numero>
+            <task-observation>dfdf
+sdfsqdf
+dfqfd</task-observation>
+            <task-executant>INT</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>false</task-optional>
+            <task-interruptible>false</task-interruptible>
+            <task-decomposition>LEAF</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[1]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K9">
+                <point-x>569</point-x>
+                <point-y>291</point-y>
+            </point>
+        </task>
+        <task classkmad="tache.Task" id-task-point="K12" idkmad="K13">
+            <task-name>Systeme-pas ordre</task-name>
+            <task-numero>4</task-numero>
+            <task-observation/>
+            <task-executant>SYS</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>true</task-optional>
+            <task-interruptible>true</task-interruptible>
+            <task-decomposition>ENT</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-descriptionprecondition>fgdfgsdfgdfg</task-descriptionprecondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[1]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K12">
+                <point-x>699</point-x>
+                <point-y>291</point-y>
+            </point>
+        </task>
+        <task classkmad="tache.Task" id-task-point="K22" idkmad="K23">
+            <task-name>Systeme-seq</task-name>
+            <task-numero>5</task-numero>
+            <task-observation/>
+            <task-executant>SYS</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>false</task-optional>
+            <task-interruptible>false</task-interruptible>
+            <task-decomposition>SEQ</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[1]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K22">
+                <point-x>860</point-x>
+                <point-y>291</point-y>
+            </point>
+        </task>
+    </task>
+</kmad-model>

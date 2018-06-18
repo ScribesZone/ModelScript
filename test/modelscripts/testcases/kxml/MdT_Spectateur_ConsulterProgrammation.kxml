@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE kmad-model SYSTEM "file:KMADModelJT.dtd">
+<kmad-model version="1.3">
+    <project classkmad="project.Project" id-project-information="K2" idkmad="K1">
+        <projectinformation classkmad="project.GeneralInformation" idkmad="K2">
+            <projectinformation-compagny>MyTheatre_Prog</projectinformation-compagny>
+        </projectinformation>
+    </project>
+    <task classkmad="tache.Task" id-task-point="K3" id-task-subtasks-list="K7 K10 K81 K34 " idkmad="K4">
+        <task-name>Consulter la programmation</task-name>
+        <task-numero>Racine   </task-numero>
+        <task-observation/>
+        <task-executant>ABS</task-executant>
+        <task-modality>COGN</task-modality>
+        <task-optional>false</task-optional>
+        <task-interruptible>false</task-interruptible>
+        <task-decomposition>SEQ</task-decomposition>
+        <task-precondition>true</task-precondition>
+        <task-effetsdebord>void</task-effetsdebord>
+        <task-iteration>[1]</task-iteration>
+        <point classkmad="tache.Point" idkmad="K3">
+            <point-x>1233</point-x>
+            <point-y>28</point-y>
+        </point>
+        <task classkmad="tache.Task" id-task-point="K6" idkmad="K7">
+            <task-name>Accèder à l'application web "MyTheatre"</task-name>
+            <task-numero>1</task-numero>
+            <task-observation/>
+            <task-executant>USER</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>false</task-optional>
+            <task-interruptible>false</task-interruptible>
+            <task-decomposition>LEAF</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[1]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K6">
+                <point-x>26</point-x>
+                <point-y>199</point-y>
+            </point>
+        </task>
+        <task classkmad="tache.Task" id-task-point="K9" id-task-subtasks-list="K84 K105 " idkmad="K10">
+            <task-name>Préciser les critères de recherches</task-name>
+            <task-numero>2</task-numero>
+            <task-observation/>
+            <task-executant>ABS</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>false</task-optional>
+            <task-interruptible>false</task-interruptible>
+            <task-decomposition>ENT</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[6]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K9">
+                <point-x>638</point-x>
+                <point-y>199</point-y>
+            </point>
+            <task classkmad="tache.Task" id-task-point="K83" id-task-subtasks-list="K13 K16 " idkmad="K84">
+                <task-name>Préciser dates</task-name>
+                <task-numero>2.1</task-numero>
+                <task-observation/>
+                <task-executant>INT</task-executant>
+                <task-modality>COGN</task-modality>
+                <task-optional>true</task-optional>
+                <task-interruptible>false</task-interruptible>
+                <task-decomposition>ALT</task-decomposition>
+                <task-precondition>true</task-precondition>
+                <task-effetsdebord>void</task-effetsdebord>
+                <task-iteration>[1]</task-iteration>
+                <point classkmad="tache.Point" idkmad="K83">
+                    <point-x>262</point-x>
+                    <point-y>394</point-y>
+                </point>
+                <task classkmad="tache.Task" id-task-point="K12" idkmad="K13">
+                    <task-name>Préciser le critère "date"</task-name>
+                    <task-numero>2.1.1</task-numero>
+                    <task-observation/>
+                    <task-executant>INT</task-executant>
+                    <task-modality>COGN</task-modality>
+                    <task-optional>false</task-optional>
+                    <task-interruptible>false</task-interruptible>
+                    <task-decomposition>LEAF</task-decomposition>
+                    <task-precondition>true</task-precondition>
+                    <task-effetsdebord>void</task-effetsdebord>
+                    <task-iteration>[1]</task-iteration>
+                    <point classkmad="tache.Point" idkmad="K12">
+                        <point-x>94</point-x>
+                        <point-y>570</point-y>
+                    </point>
+                </task>
+                <task classkmad="tache.Task" id-task-point="K15" id-task-subtasks-list="K19 K22 " idkmad="K16">
+                    <task-name>Préciser le critère "période"</task-name>
+                    <task-numero>2.1.2</task-numero>
+                    <task-observation/>
+                    <task-executant>INT</task-executant>
+                    <task-modality>COGN</task-modality>
+                    <task-optional>false</task-optional>
+                    <task-interruptible>false</task-interruptible>
+                    <task-decomposition>ENT</task-decomposition>
+                    <task-precondition>true</task-precondition>
+                    <task-effetsdebord>void</task-effetsdebord>
+                    <task-iteration>[1]</task-iteration>
+                    <point classkmad="tache.Point" idkmad="K15">
+                        <point-x>354</point-x>
+                        <point-y>570</point-y>
+                    </point>
+                    <task classkmad="tache.Task" id-task-point="K18" idkmad="K19">
+                        <task-name>Préciser le critère date de début</task-name>
+                        <task-numero>2.1.2.1</task-numero>
+                        <task-observation/>
+                        <task-executant>INT</task-executant>
+                        <task-modality>COGN</task-modality>
+                        <task-optional>false</task-optional>
+                        <task-interruptible>false</task-interruptible>
+                        <task-decomposition>LEAF</task-decomposition>
+                        <task-precondition>true</task-precondition>
+                        <task-effetsdebord>void</task-effetsdebord>
+                        <task-iteration>[1]</task-iteration>
+                        <point classkmad="tache.Point" idkmad="K18">
+                            <point-x>190</point-x>
+                            <point-y>717</point-y>
+                        </point>
+                    </task>
+                    <task classkmad="tache.Task" id-task-point="K21" idkmad="K22">
+                        <task-name>Préciser le critère "date de fin"</task-name>
+                        <task-numero>2.1.2.2</task-numero>
+                        <task-observation/>
+                        <task-executant>INT</task-executant>
+                        <task-modality>COGN</task-modality>
+                        <task-optional>true</task-optional>
+                        <task-interruptible>false</task-interruptible>
+                        <task-decomposition>LEAF</task-decomposition>
+                        <task-precondition>true</task-precondition>
+                        <task-effetsdebord>void</task-effetsdebord>
+                        <task-iteration>[1]</task-iteration>
+                        <point classkmad="tache.Point" idkmad="K21">
+                            <point-x>484</point-x>
+                            <point-y>717</point-y>
+                        </point>
+                    </task>
+                </task>
+            </task>
+            <task classkmad="tache.Task" id-task-point="K104" id-task-subtasks-list="K25 K28 K31 " idkmad="K105">
+                <task-name>Préciser autres critères</task-name>
+                <task-numero>2.2</task-numero>
+                <task-observation/>
+                <task-executant>ABS</task-executant>
+                <task-modality>COGN</task-modality>
+                <task-optional>true</task-optional>
+                <task-interruptible>false</task-interruptible>
+                <task-decomposition>ALT</task-decomposition>
+                <task-precondition>true</task-precondition>
+                <task-effetsdebord>void</task-effetsdebord>
+                <task-iteration>[1]</task-iteration>
+                <task-descriptioniteration>Tant qu el'on veut des critères</task-descriptioniteration>
+                <point classkmad="tache.Point" idkmad="K104">
+                    <point-x>971</point-x>
+                    <point-y>355</point-y>
+                </point>
+                <task classkmad="tache.Task" id-task-point="K24" idkmad="K25">
+                    <task-name>Préciser le critère "promotion"</task-name>
+                    <task-numero>2.2.1</task-numero>
+                    <task-observation/>
+                    <task-executant>INT</task-executant>
+                    <task-modality>COGN</task-modality>
+                    <task-optional>false</task-optional>
+                    <task-interruptible>false</task-interruptible>
+                    <task-decomposition>LEAF</task-decomposition>
+                    <task-precondition>true</task-precondition>
+                    <task-effetsdebord>void</task-effetsdebord>
+                    <task-iteration>[1]</task-iteration>
+                    <point classkmad="tache.Point" idkmad="K24">
+                        <point-x>608</point-x>
+                        <point-y>521</point-y>
+                    </point>
+                </task>
+                <task classkmad="tache.Task" id-task-point="K27" idkmad="K28">
+                    <task-name>Préciser le critère "type spectacle"</task-name>
+                    <task-numero>2.2.2</task-numero>
+                    <task-observation/>
+                    <task-executant>INT</task-executant>
+                    <task-modality>COGN</task-modality>
+                    <task-optional>false</task-optional>
+                    <task-interruptible>false</task-interruptible>
+                    <task-decomposition>LEAF</task-decomposition>
+                    <task-precondition>true</task-precondition>
+                    <task-effetsdebord>void</task-effetsdebord>
+                    <task-iteration>[2]</task-iteration>
+                    <point classkmad="tache.Point" idkmad="K27">
+                        <point-x>907</point-x>
+                        <point-y>521</point-y>
+                    </point>
+                </task>
+                <task classkmad="tache.Task" id-task-point="K30" idkmad="K31">
+                    <task-name>Préciser le critère "type public"</task-name>
+                    <task-numero>2.2.3</task-numero>
+                    <task-observation/>
+                    <task-executant>INT</task-executant>
+                    <task-modality>COGN</task-modality>
+                    <task-optional>false</task-optional>
+                    <task-interruptible>false</task-interruptible>
+                    <task-decomposition>LEAF</task-decomposition>
+                    <task-precondition>true</task-precondition>
+                    <task-effetsdebord>void</task-effetsdebord>
+                    <task-iteration>[1]</task-iteration>
+                    <point classkmad="tache.Point" idkmad="K30">
+                        <point-x>1255</point-x>
+                        <point-y>521</point-y>
+                    </point>
+                </task>
+            </task>
+        </task>
+        <task classkmad="tache.Task" id-task-point="K80" idkmad="K81">
+            <task-name>Lancer la recherche</task-name>
+            <task-numero>3</task-numero>
+            <task-observation/>
+            <task-executant>INT</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>false</task-optional>
+            <task-interruptible>false</task-interruptible>
+            <task-decomposition>LEAF</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[1]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K80">
+                <point-x>1319</point-x>
+                <point-y>199</point-y>
+            </point>
+        </task>
+        <task classkmad="tache.Task" id-task-point="K33" id-task-subtasks-list="K47 K50 K56 K59 K53 K62 " idkmad="K34">
+            <task-name>Afficher les résultats de la recherche </task-name>
+            <task-numero>4</task-numero>
+            <task-observation>(liste représentations)</task-observation>
+            <task-executant>ABS</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>false</task-optional>
+            <task-interruptible>false</task-interruptible>
+            <task-decomposition>PAR</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[6]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K33">
+                <point-x>2054</point-x>
+                <point-y>150</point-y>
+            </point>
+            <task classkmad="tache.Task" id-task-point="K46" idkmad="K47">
+                <task-name>Afficher titre et auteur spectacle</task-name>
+                <task-numero>4.1</task-numero>
+                <task-observation/>
+                <task-executant>SYS</task-executant>
+                <task-modality>COGN</task-modality>
+                <task-optional>false</task-optional>
+                <task-interruptible>false</task-interruptible>
+                <task-decomposition>LEAF</task-decomposition>
+                <task-precondition>true</task-precondition>
+                <task-effetsdebord>void</task-effetsdebord>
+                <task-iteration>[1]</task-iteration>
+                <point classkmad="tache.Point" idkmad="K46">
+                    <point-x>1488</point-x>
+                    <point-y>394</point-y>
+                </point>
+            </task>
+            <task classkmad="tache.Task" id-task-point="K49" idkmad="K50">
+                <task-name>Afficher date et heure de représentation</task-name>
+                <task-numero>4.2</task-numero>
+                <task-observation/>
+                <task-executant>SYS</task-executant>
+                <task-modality>COGN</task-modality>
+                <task-optional>false</task-optional>
+                <task-interruptible>false</task-interruptible>
+                <task-decomposition>LEAF</task-decomposition>
+                <task-precondition>true</task-precondition>
+                <task-effetsdebord>void</task-effetsdebord>
+                <task-iteration>[1]</task-iteration>
+                <point classkmad="tache.Point" idkmad="K49">
+                    <point-x>1818</point-x>
+                    <point-y>394</point-y>
+                </point>
+            </task>
+            <task classkmad="tache.Task" id-task-point="K55" idkmad="K56">
+                <task-name>Afficher type spectacle</task-name>
+                <task-numero>4.3</task-numero>
+                <task-observation/>
+                <task-executant>SYS</task-executant>
+                <task-modality>COGN</task-modality>
+                <task-optional>false</task-optional>
+                <task-interruptible>false</task-interruptible>
+                <task-decomposition>LEAF</task-decomposition>
+                <task-precondition>true</task-precondition>
+                <task-effetsdebord>void</task-effetsdebord>
+                <task-iteration>[1]</task-iteration>
+                <point classkmad="tache.Point" idkmad="K55">
+                    <point-x>2221</point-x>
+                    <point-y>394</point-y>
+                </point>
+            </task>
+            <task classkmad="tache.Task" id-task-point="K58" idkmad="K59">
+                <task-name>Afficher type public</task-name>
+                <task-numero>4.4</task-numero>
+                <task-observation/>
+                <task-executant>SYS</task-executant>
+                <task-modality>COGN</task-modality>
+                <task-optional>false</task-optional>
+                <task-interruptible>false</task-interruptible>
+                <task-decomposition>LEAF</task-decomposition>
+                <task-precondition>true</task-precondition>
+                <task-effetsdebord>void</task-effetsdebord>
+                <task-iteration>[1]</task-iteration>
+                <point classkmad="tache.Point" idkmad="K58">
+                    <point-x>2449</point-x>
+                    <point-y>394</point-y>
+                </point>
+            </task>
+            <task classkmad="tache.Task" id-task-point="K52" idkmad="K53">
+                <task-name>Afficher tarif place par catégorie</task-name>
+                <task-numero>4.5</task-numero>
+                <task-observation>Afficher le tarif d'une place pour chaque categorie
+</task-observation>
+                <task-executant>SYS</task-executant>
+                <task-modality>COGN</task-modality>
+                <task-optional>false</task-optional>
+                <task-interruptible>false</task-interruptible>
+                <task-decomposition>LEAF</task-decomposition>
+                <task-precondition>true</task-precondition>
+                <task-effetsdebord>void</task-effetsdebord>
+                <task-iteration>[1]</task-iteration>
+                <point classkmad="tache.Point" idkmad="K52">
+                    <point-x>2651</point-x>
+                    <point-y>394</point-y>
+                </point>
+            </task>
+            <task classkmad="tache.Task" id-task-point="K61" idkmad="K62">
+                <task-name>Afficher montant promotion</task-name>
+                <task-numero>4.6</task-numero>
+                <task-observation/>
+                <task-executant>SYS</task-executant>
+                <task-modality>COGN</task-modality>
+                <task-optional>false</task-optional>
+                <task-interruptible>false</task-interruptible>
+                <task-decomposition>LEAF</task-decomposition>
+                <task-precondition>?BOOL</task-precondition>
+                <task-effetsdebord>void</task-effetsdebord>
+                <task-iteration>[1]</task-iteration>
+                <point classkmad="tache.Point" idkmad="K61">
+                    <point-x>2961</point-x>
+                    <point-y>394</point-y>
+                </point>
+            </task>
+        </task>
+    </task>
+</kmad-model>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE kmad-model SYSTEM "file:KMADModelJT.dtd">
+<kmad-model version="1.2">
+    <project classkmad="project.Project" idkmad="K1"/>
+    <task classkmad="tache.Tache" id-task-point="K3" id-task-subtasks-list="K7 K11 K14 K17 K20 K23 " idkmad="K4">
+        <task-name>Configuration salles pour le mois suivant</task-name>
+        <task-numero>Racine   </task-numero>
+        <task-observation/>
+        <task-executant>ABS</task-executant>
+        <task-modality>COGN</task-modality>
+        <task-optional>false</task-optional>
+        <task-interruptible>false</task-interruptible>
+        <task-decomposition>SEQ</task-decomposition>
+        <task-precondition>true</task-precondition>
+        <task-effetsdebord>void</task-effetsdebord>
+        <task-iteration>[1]</task-iteration>
+        <point classkmad="tache.Point" idkmad="K3">
+            <point-x>0</point-x>
+            <point-y>0</point-y>
+        </point>
+        <task classkmad="tache.Tache" id-task-point="K6" idkmad="K7">
+            <task-name>Afficher représentation</task-name>
+            <task-numero>1</task-numero>
+            <task-observation/>
+            <task-executant>SYS</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>false</task-optional>
+            <task-interruptible>false</task-interruptible>
+            <task-decomposition>LEAF</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[1]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K6">
+                <point-x>36</point-x>
+                <point-y>167</point-y>
+            </point>
+        </task>
+        <task classkmad="tache.Tache" id-task-point="K10" idkmad="K11">
+            <task-name>Identifier sièges non vendables</task-name>
+            <task-numero>2</task-numero>
+            <task-observation/>
+            <task-executant>INT</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>false</task-optional>
+            <task-interruptible>false</task-interruptible>
+            <task-decomposition>LEAF</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[1]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K10">
+                <point-x>131</point-x>
+                <point-y>302</point-y>
+            </point>
+        </task>
+        <task classkmad="tache.Tache" id-task-point="K13" idkmad="K14">
+            <task-name>Mise à jour places dispo</task-name>
+            <task-numero>3</task-numero>
+            <task-observation/>
+            <task-executant>SYS</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>false</task-optional>
+            <task-interruptible>false</task-interruptible>
+            <task-decomposition>LEAF</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[1]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K13">
+                <point-x>346</point-x>
+                <point-y>167</point-y>
+            </point>
+        </task>
+        <task classkmad="tache.Tache" id-task-point="K16" idkmad="K17">
+            <task-name>Réservation sans payer possible ?</task-name>
+            <task-numero>4</task-numero>
+            <task-observation/>
+            <task-executant>INT</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>false</task-optional>
+            <task-interruptible>false</task-interruptible>
+            <task-decomposition>LEAF</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[1]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K16">
+                <point-x>494</point-x>
+                <point-y>302</point-y>
+            </point>
+        </task>
+        <task classkmad="tache.Tache" id-task-point="K19" idkmad="K20">
+            <task-name>Réduction exceptionelle </task-name>
+            <task-numero>5</task-numero>
+            <task-observation/>
+            <task-executant>INT</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>true</task-optional>
+            <task-interruptible>false</task-interruptible>
+            <task-decomposition>LEAF</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[1]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K19">
+                <point-x>722</point-x>
+                <point-y>167</point-y>
+            </point>
+        </task>
+        <task classkmad="tache.Tache" id-task-point="K22" idkmad="K23">
+            <task-name>Representation suivante</task-name>
+            <task-numero>6</task-numero>
+            <task-observation/>
+            <task-executant>ABS</task-executant>
+            <task-modality>COGN</task-modality>
+            <task-optional>false</task-optional>
+            <task-interruptible>false</task-interruptible>
+            <task-decomposition>LEAF</task-decomposition>
+            <task-precondition>true</task-precondition>
+            <task-effetsdebord>void</task-effetsdebord>
+            <task-iteration>[1]</task-iteration>
+            <point classkmad="tache.Point" idkmad="K22">
+                <point-x>912</point-x>
+                <point-y>302</point-y>
+            </point>
+        </task>
+    </task>
+</kmad-model>
