@@ -73,7 +73,7 @@ class UsecasePlantUMLPrinter(object):
         puml_engine.generate(
             pumlFile=pumlFile,
             format=format,
-            outputDir=finalOutputDir)
+            finalOutputDir=finalOutputDir)
 
 
 METAMODEL.registerDiagramPrinter(UsecasePlantUMLPrinter)
