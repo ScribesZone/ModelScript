@@ -1,21 +1,12 @@
 #!/usr/bin/env bash
-#
-#
 
-
-#if [ "$#" -ne 2 ]; then
-#    echo "Illegal number of parameters."
-#    echo "Usage"
-#    echo "   model-textx usecases"
-#    echo "   model-textx usecases  uss/us-actor02.uss"
-#fi
 
 PLANTUML_FILE=$1
 
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PYTHONPATH=$THISDIR/..
 
-PYTHON_SCRIPT=$THISDIR/../modelscripts/diagrams/plantuml/engine/__init__.py
+PYTHON_SCRIPT=$THISDIR/../modelscripts/tools/plantuml/engine/__init__.py
 #if [ "${SCRIPT?}" == "" ]
 #then
 #    SCRIPT_FILE=""
