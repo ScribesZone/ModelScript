@@ -1,0 +1,12 @@
+@startuml
+class A [[http://something.org/A{tooltip\nwith\n  various\n  lines}test]]
+
+class B {
+    a:Integer [[[http://blabla{another\ntooltip\nnice}]]]
+}
+
+A -- B : R [[http://toto{A}.]]
+
+
+
+@enduml
