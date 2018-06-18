@@ -9,17 +9,36 @@ from modelscripts.base.files import (
 )
 
 
+def replaceExtension(filename, extension):
+    return os.path.splitext(filename)[0] + extension
 
 class Environment(object):
+    """
+    Given access to various directories. These
+    directories can serve for user preferences and configuration
+    files (~/.mdl directory), but also for the "worker" to
+    save final and intermediate files.
 
-    workerDirName='.mdls'
+    The last case is for the "worker". A worker can save files
+    in different "spaces", with 4 possible spaces:
+
+    *   "self". the same directory as the original files.
+    *   "inline". the ".mdl/tmp" in the original dir.
+    *   "tmp". the system temporary directory.
+    *   "home". the directory ~/.mdl/tmp
+    """
+
+    workerDirName='.mdl'
     workerSpace='inline' # inline | tmp | home | self
     _userHomeDir=os.path.expanduser("~")
-    _userModelDir=None
-    _workerDir=None
+    _userModelDir=None  # ~/.mdl
+    _workerDir=None     # ~/.mdl/tmp
 
     @classmethod
     def getUserModelDir(cls):
+        """
+        The user .mdl directory, "~/.mdl", created on demand
+        """
         if cls._userModelDir is not None:
             return cls._userModelDir
         dir=os.path.join(
@@ -30,7 +49,10 @@ class Environment(object):
         return cls._userModelDir
 
     @classmethod
-    def getHomeWorkerDir(cls):
+    def _getHomeWorkerDir(cls):
+        """
+        The worker directory with "home" option: ~/.mdl/tmp
+        """
         if cls._workerDir is not None:
             return cls._workerDir
         dir=os.path.join(
@@ -41,39 +63,60 @@ class Environment(object):
         return cls._workerDir
 
     @classmethod
-    def getInlineWorkerDir(cls, filename):
-        d=os.path.dirname(
+    def getWorkerFileName(cls,
+                          basicFileName,
+                          extension=None,
+                          workerSpace=None):
+        """
+        Return
+        :param basicFileName: The original filename.
+        :param workerSpace: the work space choosen ('inline', 'home', etc.)
+            If not given, select the environment wide default.
+        :return: The full file name for the worker.
+        """
+
+        def _getInlineWorkerDir(filename):
+            """
+            Return the directory .mdl/tmp relative to the file
+            given. Create the directory if not existing
+            """
+            d = os.path.dirname(
                 os.path.realpath(filename))
-        dir=os.path.join(d,cls.workerDirName, 'tmp')
-        ensureDir(dir)
-        return dir
+            dir = os.path.join(d, cls.workerDirName, 'tmp')
+            ensureDir(dir)
+            return dir
 
+        if extension is None:
+            filename=basicFileName
+        else:
+            filename=replaceExtension(basicFileName, extension)
 
-    @classmethod
-    def getWorkerFileName(cls, basicFileName, workerSpace=None):
         space=cls.workerSpace if workerSpace is None else workerSpace
+
         if space=='self':
             # do not change anything
-            return basicFileName
+            return filename
         elif space=='inline':
-            # basicFileName will go in .modelscripts/tmp/base
+            # filename will go in .mdl/tmp/base
             return os.path.join(
-                cls.getInlineWorkerDir(basicFileName),
-                os.path.basename(basicFileName)
+                _getInlineWorkerDir(filename),
+                os.path.basename(filename)
             )
+
         elif space=='tmp':
-            # basicFileName will go in temp directory with
+            # filename will go in temp directory with
             # arbitrary name
             # the extension if kept though from
-            # given basicFileName
+            # given filename
             try:
                 (f, tmp_file) = tempfile.mkstemp(
-                    suffix=extension(basicFileName),
+                    suffix=extension(filename),
                     text=True)
                 os.close(f)
                 return tmp_file
             except:
-                raise IOError('Cannot create worker file.')
+                raise IOError(
+                    'Cannot create worker file in system temp directory.')
         elif space=='home':
             # TODO:5 could be use if need to flatten names
             # @classmethod
@@ -83,15 +126,15 @@ class Environment(object):
             #         all=all[-last:]
             #     return '_'.join(all)
 
-            worker_home=cls.getHomeWorkerDir()
+            worker_home=cls._getHomeWorkerDir()
             # do not use os.path.join as it remove the first
             # dir if the second is absolute
             dir=os.path.normpath(os.path.sep.join(
                 [os.path.sep]
                 + worker_home.split(os.path.sep)
-                + os.path.dirname(basicFileName).split(os.path.sep)))
+                + os.path.dirname(filename).split(os.path.sep)))
             ensureDir(dir)
-            return os.path.join(dir, os.path.basename(basicFileName))
+            return os.path.join(dir, os.path.basename(filename))
         else:
             raise NotImplementedError(
                 'WorkerSpace not implemented: %s' % space )
