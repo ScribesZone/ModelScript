@@ -2,14 +2,29 @@
 """
 Code of the Scenario metamodel.
 
-The structure of this module is::
+The global structure of this metamodel is as following::
 
     ScenarioModel
-    <>--* ActorInstanceNamed
-    <>--* ContextBlock
-    <>--* MainBlock
+    <>--* ActorInstance
+    <>--1 Story
+          <>--* Step
+                <>--* Step
+    Step
+    <|-- Story
+    <|-- AnnotatedTextBlockStep
+    <|-- UsecaseInstanceStep
+    <|-- Operation
+
+Althougth the hierarchy of step is recursive the
+actual structure is only two-level deep :
+
+    Story
+    <>--* UsecaseInstanceStep
+        <>--* AnnotatedTextBlockStep
+        <>--* Operation
+    <>--* AnnotatedTextBlockStep
+        <>--* Operation
     <>--* Operation
-    --->0..1 ScenarioEvaluation
 """
 
 # TODO: add support for  'include <x.obs>
@@ -29,9 +44,6 @@ from modelscripts.megamodels.dependencies.metamodels import (
 from modelscripts.metamodels.classes import (
     ClassModel,
 )
-from modelscripts.metamodels.scenarios.evaluations import (
-    ScenarioEvaluation
-)
 from modelscripts.metamodels.permissions import (
     UCPermissionModel)
 from modelscripts.metamodels.permissions.sar import Subject
@@ -44,24 +56,22 @@ from modelscripts.metamodels.usecases import (
 META_CLASSES=(
     'ScenarioModel',
     'ActorInstance',
-    'SystemInstance',
+    'Step',
+    'Story',
+    'AnnotatedTextBlockStep',
+    'UsecaseInstanceStep'
 )
 
 __all__=META_CLASSES
 
 DEBUG=3
 
-Block='Block'
-MainBlock='MainBlock'
-ContextBlock='ContextBlock'
-
 class ScenarioModel(Model, Subject):
     META_COMPOSITIONS=[
         'actorInstances',
-        'systemInstance',
-        'originalOrderBlocks',
-        'scenarioEvaluation',
+        'story',
     ]
+    # TODO: add the inplace object model
 
     def __init__(self):
         #type: () -> None
@@ -80,21 +90,15 @@ class ScenarioModel(Model, Subject):
         #type: Optional[UCPermissionModel]
         # set later
 
+        #TODO: add the inplace object model
+
         self.actorInstanceNamed = collections.OrderedDict()
         #type: Dict[Text, ActorInstance]
         # set later
 
-        self.systemInstance=None
-        #type: Optional[System]
-
-        self.contextBlocks=[] #type: List[ContextBlock]
-        self.mainBlocks=[] #type: List[MainBlock]
-        self.originalOrderBlocks=[] #type:List[Block]
-
-        #--- evaluation
-        self.scenarioEvaluation=ScenarioEvaluation(self)
-        #type: 'ScenarioEvaluation'
-        # Create always an empty model to avoid None exception
+        self.story=None
+        #type: Optional[Story]
+        # set later. Will never be None. At worse it will contain no step.
 
     @property
     def metamodel(self):
@@ -102,9 +106,8 @@ class ScenarioModel(Model, Subject):
         return METAMODEL
 
     @property
-    def logicalOrderBlocks(self):
-        #type: () -> List[Block]
-        return self.contextBlocks+self.mainBlocks
+    def superSubjects(self):
+        return []
 
     @property
     def actorInstances(self):
@@ -119,40 +122,15 @@ class ScenarioModel(Model, Subject):
         #type: () -> Metrics
         ms=super(ScenarioModel, self).metrics
         ms.addList((
-            ('actorInstance', len(self.actorInstances)),
-            ('contextBlock', len(self.contextBlocks) ),
-            ('mainBlock', len(self.mainBlocks) ),
+            ('actor instance', len(self.actorInstances)),
         ))
         return ms
 
-    @property
-    def isEvaluated(self):
-        return self.scenarioEvaluation.isEvaluated
 
-    def evaluate(self, originalOrder=True):
-        self.scenarioEvaluation.evaluate(originalOrder)
-
-
-class ScenarioTopLevelElement(SourceModelElement):
-    __metaclass__ = ABCMeta
-
-    def __init__(self, model, name,
-                 astNode=None, lineNo=None,
-                 description=None):
-        self.scenario=model
-        #type: ScenarioModel
-        SourceModelElement.__init__(self,
-            model=model,
-            name=name,
-            astNode=astNode,
-            lineNo=lineNo,
-            description=description)
-
-
-class ActorInstance(ScenarioTopLevelElement, Subject):
+class ActorInstance(SourceModelElement, Subject):
     def __init__(self, model, name, actor,
                  astNode=None, lineNo=None, description=None):
-        ScenarioTopLevelElement.__init__(self,
+        super(ActorInstance, self).__init__(
             model=model,
             name=name,
             astNode=astNode,
@@ -161,27 +139,118 @@ class ActorInstance(ScenarioTopLevelElement, Subject):
 
         self.actor=actor
         # type: Actor
-        self.scenario.actorInstanceNamed[self.name]=self
+        model.actorInstanceNamed[self.name]=self
 
     @property
     def superSubjects(self):
         return [self.actor]
 
 
-class SystemInstance(ScenarioTopLevelElement): #TODO: check if Resource
-    def __init__(self, model, name, system,
-                 astNode=None, lineNo=None,
+class Step(SourceModelElement, Subject):
+    """
+    All elements in a story, including itself.
+    Steps forms a hierarchy of steps, although it is not
+    recursive but two levels.
+    """
+    __metaclass__ = ABCMeta
+
+
+    def __init__(self,
+                 model,
+                 astNode=None,
+                 lineNo=None,
                  description=None):
-        ScenarioTopLevelElement.__init__(self,
+        super(Step, self).__init__(
             model=model,
-            name=name,
+            name=None,
             astNode=astNode,
             lineNo=lineNo,
             description=description)
 
-        self.system = system
-        # type: System
-        self.scenario.systemInstance = self
+        self.parentStep=None
+        #type: Optional[Step]
+
+        self.steps=[]
+        #type: List[Step]
+
+    @property
+    def superSubjects(self):
+        """ Direct parents """
+        # type: () -> List[Subject]
+        return [self.parentStep]
+
+    @property
+    def subjectLabel(self):
+        parent_label=self.parentStep.subjectLabel
+        nth_label=self.parentStep.steps.index(self)
+        return '%s.%s' % (parent_label, nth_label)
+
+
+class Story(Step):
+
+    def __init__(self,
+                 model,
+                 astNode=None,
+                 lineNo=None,
+                 description=None):
+        super(Story, self).__init__(
+            model=model,
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description)
+
+        self.parentStep=None
+
+        model.story=self
+
+    @property
+    def superSubjects(self):
+        return [self.model]
+
+    @property
+    def subjectLabel(self):
+        return 'story'
+
+
+class AnnotatedTextBlockStep(Step):
+
+    def __init__(self,
+                 parent,
+                 textBlock,
+                 astNode=None,
+                 lineNo=None,
+                 description=None):
+        super(AnnotatedTextBlockStep, self).__init__(
+            model=parent.model,
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description)
+
+        self.textBlock=textBlock
+
+        self.parentStep=parent
+        parent.steps.append(self)
+
+
+class UsecaseInstanceStep(Step):
+    def __init__(self,
+                 parent,
+                 actorInstance,
+                 usecase,
+                 astNode=None,
+                 lineNo=None,
+                 description=None):
+        super(UsecaseInstanceStep, self).__init__(
+            model=parent.model,
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description)
+
+        self.actorInstance=actorInstance
+        self.usecase=usecase
+
+        self.parentStep = parent
+        parent.steps.append(self)
 
 
 METAMODEL = Metamodel(

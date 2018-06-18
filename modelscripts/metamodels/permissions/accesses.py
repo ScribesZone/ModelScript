@@ -11,18 +11,50 @@ from modelscripts.metamodels.permissions import (
 )
 from modelscripts.metamodels.permissions.gpermissions import Control, Authorisation, Denial
 from modelscripts.metamodels.permissions.sar import Subject, Action, Resource, SAR
+"""
+Classes to model access from subject to resources through actions.
 
+AccessModel
+--> AccessSet
+    -o> PermissionSet
+    <>- Access
+        -o> Control
+    
+"""
 
+__all__=(
+    # semantics
+    'AccessSet',
+    'Access',
+
+    # abstract syntax
+    'AcessModel',
+    ''
+
+)
 class AccessSet(object):
+    """
+    A set of access optionally controlled by a permission set.
+    """
 
     def __init__(self, permissionSet=None):
 
-        self.accesses=[] #type: List[Access]
-        self.permissionSet=permissionSet #type: Optional[PermissionSet]
+        self.accesses=[]
+        #type: List[Access]
+
+        self.permissionSet=permissionSet
+        #type: Optional[PermissionSet]
 
 
 
 class Access(SAR):
+    """
+    Triplet (subject, action, resource) meaning that the subject
+    do perform the action on the resource.
+    If a control is indicated it means that the access has already
+    been controlled by a permission set. Otherwise the access has not
+    been controlled yet.
+    """
 
     def __init__(self,
                  subject, action, resource,
@@ -33,14 +65,20 @@ class Access(SAR):
             action=action,
             resource=resource,
         )
-        self.accessSet=accessSet #type: AccessSet
+        self.accessSet=accessSet
+        #type: AccessSet
+        # The access set the access pertains to.
+
         self.accessSet.accesses.append(self)
-        self.control = None  #type: Optional[Control]
-        # None means that the access has not been controlled
+
+        self.control = None
+        #type: Optional[Control]
+        # None means that the access has not been controlled.
 
         ps=self.accessSet.permissionSet
         if ps is not None:
             self.control=ps.control(self)
+        # If a permission set is given for the
 
     def __str__(self):
         if self.control is None:
@@ -57,10 +95,16 @@ class Access(SAR):
 
 
 class AccessModel(Model):
+    """
+    A model of access, syntactically representing a access Set
+    """
 
     def __init__(self, permissionSet=None):
         super(AccessModel, self).__init__()
-        self.accessSet=AccessSet(permissionSet=permissionSet) #type:AccessSet
+
+        self.accessSet=AccessSet(
+            permissionSet=permissionSet)
+        #type:AccessSet
 
 
 METAMODEL = Metamodel(

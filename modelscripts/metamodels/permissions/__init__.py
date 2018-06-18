@@ -35,6 +35,14 @@ from modelscripts.metamodels.usecases import (
 )
 
 __all__=(
+    # Concrete actions
+    'CreateAction',
+    'ReadAction',
+    'UpdateAction',
+    'DeleteAction',
+    'ExecuteAction',
+
+    # Concrete models and rule
     'UCPermissionModel',
     'FactorizedPermissionRule'
 )
@@ -55,13 +63,27 @@ ExecuteAction = Action('execute', None)
 class FactorizedPermissionRule(PermissionRule):
     def __init__(self, model, subjects, actions, resources, astNode=None, lineNo=None):
         #type: (UCPermissionModel, List[Subject], List[Action], List[Resource], Optional['ASTNode'], Optional[int])->None
+        """
+        A concrete rule representing at the same time various
+        permissions thanks to the factorisation of
+        subjects, actors and resources.
+        For instance the rule
+            ((S1,S2), (A1,A2,A3), (R1))
+        represents 6 permissions.
+        """
         super(FactorizedPermissionRule, self).__init__(
             model=model,
             lineNo=lineNo,
             astNode=astNode)
-        self.subjects=subjects      #type: List[Subject]
-        self.actions=actions        #type: List[Action]
-        self.resources=resources    #type: List[Resource]
+
+        self.subjects=subjects
+        #type: List[Subject]
+
+        self.actions=actions
+        #type: List[Action]
+
+        self.resources=resources
+        #type: List[Resource]
 
     def __str__(self):
         return '%s %s %s' % (
@@ -72,19 +94,32 @@ class FactorizedPermissionRule(PermissionRule):
 
 
 class UCPermissionModel(PermissionModel):
-
+    """
+    A usecase-class permission model
+    """
     def __init__(self):
-        #type: (UsecaseModel, ClassModel, SourceFile) -> None
         super(UCPermissionModel, self).__init__()
 
-        self.usecaseModel=None #type: Optional[UsecaseModel]
+        self.usecaseModel=None
+        #type: Optional[UsecaseModel]
         #set later
 
-        self.classModel=None #type: Optional[ClassModel]
+        self.classModel=None
+        #type: Optional[ClassModel]
 
-        self.rules=[]             #type: List[FactorizedPermissionRule]
+        self.rules=[]
+        #type: List[FactorizedPermissionRule]
+        # The list of rules in the model. Actually the order
+        # in this list is not important.
+        # Note that "rules" is already defined in the superclass
+        # but defining it again here allow to have better typing
 
-        self._permissionSet=None   #type: Optional[PermissionSet]
+        self._permissionSet=None
+        #type: Optional[PermissionSet]
+        # The permission set, computed on demand.
+        # see permissionSet property.
+        # The permission set is just the expansion of the rule
+        # component in many different permissions.
 
     @property
     def metamodel(self):
@@ -94,6 +129,7 @@ class UCPermissionModel(PermissionModel):
     @property
     def permissionSet(self):
         #type: ()->PermissionSet
+
         if self._permissionSet is None:
             self._interpret()
         # noinspection PyTypeChecker
