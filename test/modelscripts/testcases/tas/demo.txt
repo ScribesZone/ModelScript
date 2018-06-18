@@ -107,7 +107,7 @@ task tree
                 P IndiquerDateDeFin @OI
                     Calendrier
                     {Dates}
-                P IndiquerDateDeFin @OI
+                P IndiquerHoraire @OI
                     {Horaire}
                 P IndiquerCategorieAge  @OI
                 P ConsulterInfoSurSpectacle @I
