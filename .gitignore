@@ -1,6 +1,6 @@
 build/
 .build/
-.mdl/tmp/
+tmp/
 play/
 
 *.tasb
@@ -42,7 +42,6 @@ play/
 
 _ARCHIVES/
 .venv/
-.mdls/
 
 # Python / Jython
 
