@@ -1,33 +1,21 @@
 # coding=utf-8
-
-#TODO: to be continued
-
-from typing import Optional
 import os
 import logging
-from modelscripts.tools.graphviz import Digraph, Mapping, imagePath
-
+from modelscripts.tools.graphviz import MDigraph, imagePath
 from modelscripts.metamodels.usecases import METAMODEL
-from modelscripts.tools.plantuml.engine import PlantUMLEngine
-
-# logging.basicConfig(level=logging.DEBUG)
-log = logging.getLogger('test.' + __name__)
-
-def indent(prefix,s):
-    return '\n'.join([ prefix+l for l in s.split('\n') ])
 
 
 class UsecaseGraphvizPrinter(object):
 
     def __init__(self, usecaseModel):
         self.usecaseModel = usecaseModel
+        self.graph=None
 
-    def do(self, outputFile=None):
-        g=Digraph('G', filename=outputFile)
-        self._genUsecaseModel(g)
-        g.view()
+    def do(self):
+        self.graph=MDigraph('G')
+        self._gen_model()
 
-    def _genUsecaseModel(self, g):
+    def _gen_model(self):
 
         def _actor_struct(actorName):
             image=imagePath('actor.png')
@@ -40,49 +28,38 @@ class UsecaseGraphvizPrinter(object):
                        >"""
                    ).format(name=actorName, image=image)
 
-        g.attr(rankdir='LR')
-        g.attr('node', shape='box', height='0.0',
+        self.graph.attr(rankdir='LR')
+        self.graph.attr('node', shape='box', height='0.0',
                style='filled', fillcolor='moccasin',
                fontname='Helvetica', fontsize='10')
 
-        m=Mapping()
-
         for a in self.usecaseModel.actors:
-            g.node(
-                m.id(a, prefix='actor'),
+            self.graph.node(
+                self.graph.id(a, prefixId='actor'),
                 label=_actor_struct(a.name),
                 shape='plaintext',
                 style='')
 
         for u in self.usecaseModel.system.usecases:
             # self._out('usecase %s\n' % u.name)
-            g.node(
-                m.id(u, prefix='usecase'),
+            self.graph.node(
+                self.graph.id(u, prefixId='usecase'),
                 shape='oval',
                 label=u.name)
 
             for a in u.actors:
-                g.edge(
-                    m.id(a), m.id(u)
+                self.graph.edge(
+                    self.graph.id(a), self.graph.id(u)
                     )
 
-        # self._out('}\n')
-        # self._out('@enduml\n')
-    # def generate(self, pumlFile, finalOutputDir=None, format='svg'):
-    #     """
-    #     Generate directly the .plantuml file and the output (e.g. .svg)
-    #     This is a shorthand method to avoid creating the plantUMLEngine
-    #     apart. OK if only one kind of generation is needed.
-    #     :param pumlFile: the name of the .puml file to be saved
-    #     :param format: the format (e.g. svg)
-    #     :param finalOutputDir: the place where the final output will be.
-    #     """
-    #     self.do(pumlFile)
-    #     puml_engine=PlantUMLEngine(checks=False)
-    #     puml_engine.generate(
-    #         pumlFile=pumlFile,
-    #         format=format,
-    #         outputDir=finalOutputDir)
+    def generate(self, gvFile, format='png'):
+        self.do()
+        self.graph.format=format
+        self.graph.render(
+            filename=os.path.basename(gvFile),
+            directory=os.path.dirname(gvFile),
+            view=False,
+            cleanup=False)
 
 
 METAMODEL.registerDiagramPrinter(UsecaseGraphvizPrinter)
