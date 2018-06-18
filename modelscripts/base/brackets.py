@@ -13,6 +13,12 @@
 
 import re
 
+# The following dependencies could be removed if necessary.
+# The environment is used only to save bracketed file in a
+# convenient way.
+
+from modelscripts.interfaces.environment import Environment
+
 class BracketedScript(object):
 
     SPACE_INDENT=4
@@ -25,14 +31,16 @@ class BracketedScript(object):
     DOC_LINE_CONTENT=' *\| ?(?P<content>.*)\|_;_(}_;_)*$'
 
 
-    def __init__(self, file, targetFilename=None):
+    def __init__(self, file):
         self.file=file
         self.lines=[line.rstrip('\n') for line in open(file)]
         self.bracketedLines=[]
-        self.targetFilename=(
-            self.file+'b' if targetFilename is None
-            else targetFilename
-        )
+        # basic_file_name=(
+        #     self.file+'b' if targetFilename is None
+        #     else targetFilename
+        # )
+        basic_file_name = self.file+'b'
+        self.targetFilename=Environment.getWorkerFileName(basic_file_name)
 
     def _is_blank_line(self, index):
         """ Check if the line is blank or a comment line """
