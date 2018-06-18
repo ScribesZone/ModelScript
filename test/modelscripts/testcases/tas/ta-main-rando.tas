@@ -1,0 +1,41 @@
+task model rando
+
+FaireUneSortieDeRandonneeASki
+    : AllerAuPointDeDepart I
+    : FaireLaRandonnee
+        = FaireLeTrajet I
+            = SeDeplacer @
+                < MonterALObjectif @
+                < DescendreALObjectif @
+            = ChoisirUnObjectif O@
+        = InterrompreLeTrajet
+            < FaireUnepause
+                < AdmirerLaVue
+                < Manger
+            < SubirUnIncident
+        = RencontrerDAutresRandonneurd O
+        = EvaluerLesConditionsDeRandonnee
+    : DescendreAuPointDeDepart
+
+#
+#Par exemple
+#le 22 janvier 2017, pour FaireUneSortieDeRandonneeASki
+#
+#
+#Pour FaireUneSortieDeRandoneeASki,
+#    le Randonneur
+#
+#
+#personae
+#    Catherine : Randonneur
+#
+#context
+#    arretDeBusDeLaCoche : PointDeDepart
+#
+#start
+## C'est le 22 janvier.
+#catherine va FaireUneSortieDeRandonneeASki
+#    Catherine va AllerAuPointDeDepart arretDeBusDeLaCoche
+#    Catherine va FaireLaRandonnee
+#    Catherine va DescendreALObjectif arretDeBusDeLaCoche
+#'

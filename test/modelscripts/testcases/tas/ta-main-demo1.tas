@@ -5,16 +5,16 @@ ChoisirSeance
         : AllerSurLeSiteInternet I
         : ObtenirListeDesSpectacles @
             = IndiquerDateDeDebut  @I
-                Calendrier
-                {Dates}
+                - Calendrier
+                - {Dates}
             = IndiquerDateDeFin @OI
-                Calendrier
-                {Dates}
+                - Calendrier
+                - {Dates}
             = IndiquerDateDeFin @OI
-                {Horaire}
+                - {Horaire}
             = IndiquerCategorieAge  @OI
             = ConsulterInfoSurSpectacle @I
-                {Spectacle.description}
+                - {Spectacle description}
     : TelechargerInformations @OI
         : TelechargerUnDateDeSpectacle I
         : TelechargerDescriptif I
