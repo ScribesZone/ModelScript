@@ -107,11 +107,11 @@ ObjectDeletion:
 ;
 
 AttributeAssignment:
-    verb=SetOrUpdate SlotDeclaration
+    verb=SetOrUpdate slotDeclaration = SlotDeclaration
 ;
 
 LinkOperation:
-    verb=CreateOrDelete LinkDeclaration
+    verb=CreateOrDelete linkDeclaration = LinkDeclaration
 ;
 
 CheckOperation:
@@ -121,6 +121,7 @@ CheckOperation:
 
 CreateOrDelete:
       'create'
+    | 'delete'
 ;
 
 SetOrUpdate:
