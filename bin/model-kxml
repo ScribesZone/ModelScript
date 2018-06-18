@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+
+PLANTUML_FILE=$1
+
+THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+PYTHONPATH=$THISDIR/..
+
+PYTHON_SCRIPT=$THISDIR/../modelscripts/tools/kmade/engine/__init__.py
+
+PYTHONPATH=$PYTHONPATH \
+    python \
+        $PYTHON_SCRIPT $*
+
