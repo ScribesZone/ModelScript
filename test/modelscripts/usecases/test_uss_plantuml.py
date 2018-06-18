@@ -4,10 +4,9 @@ import logging
 
 from nose.plugins.attrib import attr
 
-
+from modelscripts.interfaces.environment import Environment
 from test.modelscripts import (
     TEST_CASES_DIRECTORY,
-    getBuildDir,
 )
 
 import os
@@ -16,11 +15,8 @@ from modelscripts.scripts.usecases.plantuml import (
     UsecasePlantUMLPrinter
 )
 
-
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
-
-USD_DIR=getBuildDir('gen/tools/plantuml/usecases')
 
 # TODO: add this again
 # def test_UseOclModel_Simple():
@@ -54,11 +50,15 @@ def doBuildDiagram(filename):
 
         #--- diag generation: system -> .puml --------------
 
-        puml_file_path = os.path.join(
-            USD_DIR,
-            os.path.splitext(
-                os.path.basename(filename)) [0]+'.usd.puml'
-        )
+        # puml_file_path = os.path.join(
+        #     USD_DIR,
+        #     os.path.splitext(
+        #         os.path.basename(filename)) [0]+'.usd.puml'
+        # )
+        puml_file_path=Environment.getWorkerFileName(
+            filename,
+            extension='.usd.puml')
+
         print('TST: '+'='*80)
         print('TST: result in %s' % puml_file_path)
         print('TST: '+'='*80)
@@ -66,7 +66,7 @@ def doBuildDiagram(filename):
         # print(gen.do(outputFile=puml_file_path))
         # #--- plantuml: .puml -> .svg ----------------------
         # puml_engine.generate(puml_file_path)
-        gen.generate(puml_file_path, format='svg' )
-        print('TST: .svg generated')
+        gen.generate(puml_file_path, format='png' )
+        print('TST: .png generated')
         print('TST: '+'='*80)
 
