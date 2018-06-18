@@ -116,15 +116,18 @@ class PermissionModelSource(ASTBasedModelSourceFile):
             subjects=[ _find_subject(
                         usecaseModel=self.usecaseModel,
                         name=name,
-                        astNode=declaration.subjectNames)
+                        astNode=declaration)
                     for name in declaration.subjectNames]
+
             actions=[action(op)
                      for op in declaration.actionNames]
+
             resources=[ _find_resource(
                             classModel=self.classModel,
                             expr=expr,
                             astNode=expr)
                         for expr in declaration.resourceExprs]
+
             fpr=FactorizedPermissionRule(
                 model=self.permissionModel,
                 subjects=subjects,
@@ -168,13 +171,14 @@ def _find_subject(usecaseModel, name, astNode):
     elif name in usecaseModel.system.usecaseNamed:
         return usecaseModel.system.usecaseNamed[name]
     else:
+        print('QQ'*30,astNode)
         ASTNodeSourceIssue(
             code=icode('RULE_SUBJECT_NOT_FOUND'),
             astNode=astNode,
             level=Levels.Fatal,
             message=(
-                '"%s" is neither an actor nor a usecase.'))
-
+                '"%s" is neither an actor nor a usecase.'
+                % name))
 
 
 
