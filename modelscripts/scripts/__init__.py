@@ -7,4 +7,5 @@ import modelscripts.scripts.metamodels.all
 import modelscripts.scripts.objects.all
 import modelscripts.scripts.permissions.all
 import modelscripts.scripts.scenarios.all
+import modelscripts.scripts.tasks.all
 import modelscripts.scripts.usecases.all
