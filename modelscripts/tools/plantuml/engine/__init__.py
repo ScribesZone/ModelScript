@@ -18,14 +18,16 @@ class PlantUMLEngine(object):
         self.defaultFormat=format
         self.defaultOutputDir=outputDir
 
-    def generate(self, pumlFile, format=None, outputDir=None):
+    def generate(self, pumlFile, format=None, finalOutputDir=None):
         format=self.defaultFormat if format is None else format
-        outputDir=self.defaultOutputDir if outputDir is None else outputDir
+        finalOutputDir=(
+            self.defaultOutputDir if finalOutputDir is None
+            else finalOutputDir)
         cmd='java -jar %s %s -t%s -o %s' % (
             self.plantumlJar,
             pumlFile,
             format,
-            outputDir
+            finalOutputDir
         )
         errno=os.system(cmd)
         # TODO: check how to get errors from generation
