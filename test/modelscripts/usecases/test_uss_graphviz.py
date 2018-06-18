@@ -4,10 +4,9 @@ import logging
 
 from nose.plugins.attrib import attr
 
-
+from modelscripts.interfaces.environment import Environment
 from test.modelscripts import (
-    TEST_CASES_DIRECTORY,
-    getBuildDir,
+    TEST_CASES_DIRECTORY
 )
 
 import os
@@ -19,8 +18,6 @@ from modelscripts.scripts.usecases.graphviz import (
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
-
-USD_DIR=getBuildDir('gen/tools/usecases')
 
 # TODO: add this again
 # def test_UseOclModel_Simple():
@@ -54,11 +51,14 @@ def doBuildDiagram(filename):
 
         #--- diag generation: system -> .gv --------------
 
-        graphviz_file_path = os.path.join(
-            USD_DIR,
-            os.path.splitext(
-                os.path.basename(filename)) [0]+'.usd.gv'
-        )
+        # graphviz_file_path = os.path.join(
+        #     USD_DIR,
+        #     os.path.splitext(
+        #         os.path.basename(filename)) [0]+'.usd.gv'
+        # )
+        graphviz_file_path=Environment.getWorkerFileName(
+            filename,
+            extension='.usd.gv')
         print('TST: '+'='*80)
         print('TST: result in %s' % graphviz_file_path)
         print('TST: '+'='*80)
@@ -66,7 +66,7 @@ def doBuildDiagram(filename):
         # print(gen.do(outputFile=puml_file_path))
         # #--- plantuml: .puml -> .svg ----------------------
         # puml_engine.generate(puml_file_path)
-        gen.do()
+        gen.generate(graphviz_file_path, format='png')
         # gen.generate(puml_file_path, format='svg' )
         print('TST: generated')
         print('TST: '+'='*80)
