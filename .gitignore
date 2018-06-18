@@ -1,4 +1,11 @@
 build/
+.build/
+.mdl/tmp/
+
+*.tasb
+*.tas.dot
+*.tas.dot.png
+
 *.tx.dot
 *.tx.dot.png
 
