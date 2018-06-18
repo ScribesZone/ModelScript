@@ -10,7 +10,7 @@ ChoisirSeance
             = IndiquerDateDeFin @OI
                 - Calendrier
                 - {Dates}
-            = IndiquerDateDeFin @OI
+            = IndiquerDateDeHoraire @OI
                 - {Horaire}
             = IndiquerCategorieAge  @OI
             = ConsulterInfoSurSpectacle @I
