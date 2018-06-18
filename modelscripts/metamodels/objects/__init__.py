@@ -1,8 +1,8 @@
 # coding=utf-8
 
 """
-Simple metamodel for object states. The metamodel
-represents two views:
+Simple metamodel for object states.
+The metamodel represents two views:
 * an abstract view in which object/slots and links are
   represented without and order,
 * a story view that represents the same entities but
