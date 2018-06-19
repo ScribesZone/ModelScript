@@ -5,8 +5,8 @@ import os
 
 from nose.plugins.attrib import attr
 
-import modelscripts.tools.plantuml.engine
 import modelscripts.scripts.classes.plantuml
+import modelscripts.tools.plantuml.engine
 import modelscripts.use.use.parser
 from modelscripts.base.modelprinters import (
     ModelSourcePrinter

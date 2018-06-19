@@ -5,6 +5,7 @@ import logging
 
 import modelscripts.scripts.use_classes.parser
 import modelscripts.scripts.use_classes.printer
+
 from modelscripts.base.modelprinters import (
     ModelSourcePrinter
 )
@@ -15,13 +16,13 @@ from modelscripts.use.use.parser import (
     UseModelSource
 )
 from test.modelscripts import (
-    getTestFile
-)
-from test.modelscripts.assertions import (
     assertIssueBox,
     F, E, W, I, H,
     checkAllAssertionsForDirectory,
     checkValidIssues
+)
+from test.modelscripts import (
+    getTestFile
 )
 
 logging.basicConfig(level=logging.DEBUG)

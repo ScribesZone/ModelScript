@@ -1,16 +1,16 @@
 # coding=utf-8
 
 
-import modelscripts
 from modelscripts.metamodels import (
     scenarios
 )
-from test.modelscripts.assertions import (
+from modelscripts.scripts.megamodels.printer.megamodels import \
+    MegamodelPrinter
+from test.modelscripts import (
     F, E, W, I, H,
     checkAllAssertionsForDirectory,
     checkValidIssues
 )
-from modelscripts.scripts.megamodels.printer.megamodels import MegamodelPrinter
 
 EXPECTED_ISSUES={
 

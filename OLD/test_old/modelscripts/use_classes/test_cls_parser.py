@@ -1,18 +1,16 @@
 # coding=utf-8
 
 
-import modelscripts
-from modelscripts.scripts.megamodels.printer.megamodels import MegamodelPrinter
 from modelscripts.metamodels import (
     classes
 )
-from test.modelscripts.assertions import (
+from modelscripts.scripts.megamodels.printer.megamodels import \
+    MegamodelPrinter
+from test.modelscripts import (
     F, E, W, I, H,
     checkAllAssertionsForDirectory,
     checkValidIssues
 )
-
-
 
 EXPECTED_ISSUES={
     'ko-employee.cls':      {F: 0, E: 1, W: 0, I: 0, H: 0},

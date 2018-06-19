@@ -4,15 +4,12 @@ import logging
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
-from test.modelscripts import TEST_CASES_DIRECTORY
-
-import os
 import modelscripts.use.eval.evaluator
 import modelscripts.use.use.parser
 from test.modelscripts \
-    import getSoilFile, getUseFile, getZipFile, getSoilFileList
+    import getUseFile, getSoilFileList
 from pytesthelpers.datadriven import DataTestCase, DataTestSuite
-from collections import OrderedDict
+
 
 # class DataTestCase_UseEvaluationResults(DataTestCase):
 #

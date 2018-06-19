@@ -1,19 +1,15 @@
 # coding=utf-8
 from __future__ import print_function
-from nose.plugins.attrib import attr
 
-import modelscripts
-from modelscripts.scripts.megamodels.printer.megamodels import MegamodelPrinter
 from modelscripts.metamodels import (
     glossaries
 )
-from test.modelscripts.assertions import (
-    F, E, W, I, H,
+from modelscripts.scripts.megamodels.printer.megamodels import \
+    MegamodelPrinter
+from test.modelscripts import (
     checkAllAssertionsForDirectory,
     checkValidIssues
 )
-
-
 
 # EXPECTED_ISSUES={
 #     'err1.gls':         {F: 0, E: 0, W: 1, I: 0, H: 0},

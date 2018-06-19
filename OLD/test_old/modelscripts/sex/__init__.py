@@ -1,14 +1,15 @@
 # coding=utf-8
 import os
+
+from modelscripts.scripts.permissions.parser import (
+    PermissionModelSource
+)
+from modelscripts.scripts.usecases.parser import UsecaseModelSource
+from modelscripts.use.use.parser import UseModelSource
 from test.modelscripts import (
     getTestFile,
 )
 
-from modelscripts.scripts.usecases.parser import UsecaseModelSource
-from modelscripts.use.use.parser import UseModelSource
-from modelscripts.scripts.permissions.parser import (
-    PermissionModelSource
-)
 
 def _getModelsForScenario(soilDir, fuse, fusm=None, fpem=None):
     usefilename = getTestFile(os.path.join(soilDir, fuse))

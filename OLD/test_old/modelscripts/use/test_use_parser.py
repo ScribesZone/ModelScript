@@ -1,12 +1,11 @@
 # coding=utf-8
 
+import logging
+
 from nose.plugins.attrib import attr
 
-import logging
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
-
-from test.modelscripts import getUseFile
 
 import os
 

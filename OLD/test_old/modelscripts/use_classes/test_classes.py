@@ -1,9 +1,10 @@
 # coding=utf-8
 
+import os
+
+import modelscripts.use.use.parser
 from test.modelscripts import TEST_CASES_DIRECTORY
 
-import os
-import modelscripts.use.use.parser
 
 def test_UseOclModel_Simple():
     testFile = 'Demo.use'

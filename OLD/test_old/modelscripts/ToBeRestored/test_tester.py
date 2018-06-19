@@ -14,12 +14,11 @@ logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
 from test.modelscripts \
-    import getSoilFile, getSoilFileList, getUseFile, getZipFile
+    import getSoilFileList, getUseFile, getZipFile
 
 import os
 import modelscripts.use.eval.tester
 import modelscripts.use.use.parser
-import pytesthelpers
 
 from pytesthelpers.datadriven import DataTestCase, DataTestSuite
 

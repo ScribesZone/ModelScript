@@ -1,18 +1,15 @@
 # coding=utf-8
 
 
-import modelscripts
-from modelscripts.scripts.megamodels.printer.megamodels import MegamodelPrinter
 from modelscripts.metamodels import (
     objects
 )
-from test.modelscripts.assertions import (
-    F, E, W, I, H,
+from modelscripts.scripts.megamodels.printer.megamodels import \
+    MegamodelPrinter
+from test.modelscripts import (
     checkAllAssertionsForDirectory,
     checkValidIssues
 )
-
-
 
 EXPECTED_ISSUES={
     # 'us28.scs':         {F: 0, E: 0, W: 11, I: 0, H: 0},

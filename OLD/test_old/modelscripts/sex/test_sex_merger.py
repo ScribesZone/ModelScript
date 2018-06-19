@@ -1,16 +1,13 @@
 # coding=utf-8
 
 import logging
-from distutils.dir_util import mkpath
+import os
 
-
+import modelscripts.use.engine.merger
 from test.modelscripts import (
     getBuildDir,
     getTestDir,
 )
-
-import os
-import modelscripts.use.engine.merger
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)

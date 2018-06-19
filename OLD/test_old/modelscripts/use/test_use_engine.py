@@ -1,13 +1,15 @@
 # coding=utf-8
 
 from __future__ import print_function
+
 import os.path
 
-from test.modelscripts import TEST_CASES_DIRECTORY
+import modelscripts.use.engine
 from  modelscripts.use.engine import (
     USEEngine,
 )
-import modelscripts.use.engine
+from test.modelscripts import TEST_CASES_DIRECTORY
+
 
 def test_USEEngine_withUseOCL():
     assert USEEngine.withUseOCL()

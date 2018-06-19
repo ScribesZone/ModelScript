@@ -1,12 +1,13 @@
 # coding=utf-8
 
-from test.modelscripts import getUseFile
 # from  modelscripts.use.use.printer import (
 #     UseModelPrinter
 # )
 from modelscripts.use.use.parser import (
     UseModelSource
 )
+from test.modelscripts import getUseFile
+
 
 def testGenerator_UseOCLPrinter():
     test_cases = [
