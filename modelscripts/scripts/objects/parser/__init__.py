@@ -150,66 +150,65 @@ class ObjectModelSource(ASTBasedModelSourceFile):
                     astTextBlock=ast_node.textBlock)
 
 
-        def define_annotated_text_block_body(declaration):
+        def define_annotated_text_block_body(step):
             # create the Annotated Text Block but
             # do not add definitions in it
             atb=AnnotatedTextBlock(
                 model=self.objectModel,
-                astNode=declaration
+                astNode=step
             )
             atb.textBlock=astTextBlockToTextBlock(
                     container=self.objectModel,
-                    astTextBlock=declaration.textBlock)
+                    astTextBlock=step.textBlock)
             return atb
 
-        def define_core_declaration(declaration, container):
-            #type: ('ASTCoreOBDeclaration', Optional[AnnotatedTextBlock]) -> None
-            type_=declaration.__class__.__name__
-            if type_ in ['SymbolicObjectDeclaration',
-                        'SpeechObjectDeclaration']:
+        def define_core_step(step, container):
+            #type: ('ASTOperationStep', Optional[Step]) -> None
+            assert step.action is None, 'not allowed'  # TODO: error message
+            type_=step.__class__.__name__
+            if type_ == 'ObjectCreationStep':
                 define_plain_object(
-                    ast_node=declaration,
-                    name=declaration.name,
-                    class_name=declaration.type,
+                    ast_node=step.objectDeclaration,
+                    name=step.objectDeclaration.name,
+                    class_name=step.objectDeclaration.type,
                     container=container)
-            elif type_ in ['SymbolicSlotDeclaration',
-                           'SpeechSlotDeclaration']:
+            elif type_ == 'SlotStep':
                 define_slot(
-                    ast_node=declaration,
-                    object_name=declaration.object,
-                    attribute_name=declaration.attribute,
-                    value=declaration.value,
+                    ast_node=step.slotDeclaration,
+                    object_name=step.slotDeclaration.object,
+                    attribute_name=step.slotDeclaration.attribute,
+                    value=step.slotDeclaration.value,
                     container=container)
-            elif type_ in ['SpeechLinkDeclaration',
-                           'SymbolicLinkDeclaration']:
+            elif type_ == 'LinkOperationStep':
                 define_link(
-                    ast_node=declaration,
-                    source_name=declaration.source,
-                    target_name=declaration.target,
-                    association_name=declaration.association,
+                    ast_node=step.linkDeclaration,
+                    source_name=step.linkDeclaration.source,
+                    target_name=step.linkDeclaration.target,
+                    association_name=step.linkDeclaration.association,
                     container=container
                 )
             else:
                 raise NotImplementedError(
                     '%s is not a core definition' % type_)
 
-        # for some strange reason body can be None = > test
-        if self.ast.model.body is not None:
-            for declaration in self.ast.model.body.declarations:
+        # grammar changed to story =>
+        # not sure if following comment apply:
+        #      for some strange reason story can be None = > test
+        if self.ast.model.story is not None:
+            for step in self.ast.model.story.steps:
                 # pass
-                type_=declaration.__class__.__name__
+                type_=step.__class__.__name__
+                print('##'*20, type_)
                 if type_ in [
-                        'SymbolicObjectDeclaration',
-                        'SpeechObjectDeclaration',
-                        'SymbolicSlotDeclaration',
-                        'SpeechSlotDeclaration',
-                        'SpeechLinkDeclaration',
-                        'SymbolicLinkDeclaration']:
-                    define_core_declaration(declaration, container=None)
-                elif type_=='ATextBlockOBDeclaration':
-                    atb=define_annotated_text_block_body(declaration)
-                    for sub_decl in declaration.declarations:
-                        define_core_declaration(sub_decl, container=atb)
+                        'ObjectCreationStep',
+                        'ObjectDeletionStep',
+                        'SlotStep',
+                        'LinkOperationStep']:
+                    define_core_step(step, container=None)
+                elif type_=='ATextBlockStep':
+                    atb=define_annotated_text_block_body(step)
+                    for sub_decl in step.steps:
+                        define_core_step(sub_decl, container=atb)
                 else:
                     raise NotImplementedError(
                         'declaration of %s not implemented' % type_)
