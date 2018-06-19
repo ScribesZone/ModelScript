@@ -11,7 +11,7 @@ from modelscripts.base.issues import (
     Levels,
 )
 
-from test.modelscripts import (
+from test.modelscripts.drivers import (
     getTestFiles,
     getTestFile
 )

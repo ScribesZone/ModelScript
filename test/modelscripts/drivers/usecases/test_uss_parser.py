@@ -1,17 +1,13 @@
 # coding=utf-8
 from __future__ import print_function
 
-import modelscripts
 from modelscripts.metamodels import usecases
-from modelscripts.scripts.megamodels.printer.megamodels import MegamodelPrinter
-
-from test.modelscripts.assertions import (
-    F, E, W, I, H,
+from modelscripts.scripts.megamodels.printer.megamodels import \
+    MegamodelPrinter
+from test.modelscripts.drivers.assertions import (
     checkAllAssertionsForDirectory,
     checkValidIssues,
 )
-
-
 
 EXPECTED_ISSUES={
 }

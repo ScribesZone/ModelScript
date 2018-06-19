@@ -1,17 +1,5 @@
 # coding=utf-8
 from __future__ import print_function
-from nose.plugins.attrib import attr
-
-import modelscripts
-from modelscripts.scripts.megamodels.printer.megamodels import MegamodelPrinter
-from modelscripts.metamodels import (
-    permissions
-)
-from test.modelscripts.assertions import (
-    F, E, W, I, H,
-    checkAllAssertionsForDirectory,
-    checkValidIssues
-)
 
 
 

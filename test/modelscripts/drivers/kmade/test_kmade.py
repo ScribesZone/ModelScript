@@ -1,17 +1,17 @@
 # coding=utf-8
 from __future__ import print_function
 
-from modelscripts.tools.kmade.engine import (
-    KmadeReader
-)
 from modelscripts.scripts.tasks.printer import (
     TaskModelPrinter
 )
-
-from test.modelscripts import (
+from modelscripts.tools.kmade.engine import (
+    KmadeReader
+)
+from test.modelscripts.drivers import (
     getTestFiles,
     getTestFile
 )
+
 
 def testGenerator_Assertions():
     test_files=getTestFiles(

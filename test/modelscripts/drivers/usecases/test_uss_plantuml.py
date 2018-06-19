@@ -5,7 +5,7 @@ import logging
 from nose.plugins.attrib import attr
 
 from modelscripts.interfaces.environment import Environment
-from test.modelscripts import (
+from test.modelscripts.drivers import (
     TEST_CASES_DIRECTORY,
 )
 

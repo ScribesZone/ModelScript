@@ -1,14 +1,12 @@
 # coding=utf-8
 from __future__ import print_function
-from nose.plugins.attrib import attr
 
-import modelscripts
-from modelscripts.scripts.megamodels.printer.megamodels import MegamodelPrinter
 from modelscripts.metamodels import (
-    classes
+    permissions
 )
-from test.modelscripts.assertions import (
-    F, E, W, I, H,
+from modelscripts.scripts.megamodels.printer.megamodels import \
+    MegamodelPrinter
+from test.modelscripts.drivers.assertions import (
     checkAllAssertionsForDirectory,
     checkValidIssues
 )
@@ -16,8 +14,8 @@ from test.modelscripts.assertions import (
 
 def testGenerator_Assertions():
     res = checkAllAssertionsForDirectory(
-        relTestcaseDir='cls',
-        extension=['.cls'],
+        relTestcaseDir='pes',
+        extension=['.pes'],
         expectedIssuesFileMap={},
         expectedMetricsFileMap={})
 
@@ -25,7 +23,7 @@ def testGenerator_Assertions():
         yield (
             checkValidIssues,
             file,
-            classes.METAMODEL,
+            permissions.METAMODEL,
             expected_issue_map,
             expected_metrics_map)
 
