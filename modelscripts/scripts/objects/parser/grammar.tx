@@ -1,5 +1,7 @@
 ObjectModel:
     megamodelPart = MegamodelPart
-    body = OBBody   // for some strange reason body can be None => test
+    story = Story
+    //  comment still valid ?
+    //        for some strange reason story can be None => test
 ;
 
