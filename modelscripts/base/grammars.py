@@ -41,7 +41,7 @@ from modelscripts.scripts.textblocks.parser import (
 INCLUDES= (
     '../scripts/megamodels/parser/grammar.tx',
     '../scripts/textblocks/parser/grammar.tx',
-    '../scripts/objects/parser/common.tx'
+    '../scripts/story/parser/grammar.tx'
 )
 
 def _read_file(filename):
