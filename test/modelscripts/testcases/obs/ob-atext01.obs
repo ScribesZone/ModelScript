@@ -6,7 +6,7 @@
     #@Metric "plain link" 1
     #@Metric "linkObject" 0
     #@Metric "slot" 4
-    #@Metric "annotated text block" 4
+    #@Metric "annotated text block" 2
 
 object model Ob_slot01
 import class model from '../cls/cl-main-cybercompany-a.cls'
@@ -25,7 +25,3 @@ The salary of bob is 200.
     samira WorksIn computing.
     pauline is an Employee.
     The salary of pauline is 8000.
-| They work together.
-
-
-| There are other employee in the computing department.
