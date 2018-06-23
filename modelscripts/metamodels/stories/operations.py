@@ -259,8 +259,9 @@ class LinkDeletionStep(UpdateOperationStep):
 
 
 class CheckStep(ConsultOperationStep):
+
     def __init__(self,
-                 parent,
+                 parent, implicit=None,
                  astNode=None, lineNo=None, description=None):
         super(CheckStep, self).__init__(
             parent=parent,
@@ -268,8 +269,13 @@ class CheckStep(ConsultOperationStep):
             lineNo=lineNo,
             description=description)
 
-        # nothing to do, at least if no parameter is given
-        pass
+        self.implicit=implicit
+        #type: Optional['before','after']
+        """ 
+        Indicates if the check statement is explicit (None)
+        or implicit 'before' or 'after' a block. These implicit
+        checks step are automatically added by the parser.
+        """
 
 
 class ReadStep(ConsultOperationStep):
