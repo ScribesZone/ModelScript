@@ -10,7 +10,7 @@ The global structure of this metamodel is as following::
 
 # TODO: add support for  'include <x.obs>
 
-import collections
+from collections import OrderedDict
 
 from typing import Optional, Dict, List, Text
 from abc import ABCMeta
@@ -72,17 +72,16 @@ class ScenarioModel(Model, Subject):
         self._permissionModel='*not yet*'
         # see property
 
-        self.actorInstanceNamed = collections.OrderedDict()
+        self.actorInstanceNamed=OrderedDict()
         #type: Dict[Text, ActorInstance]
         # set later
 
-        self.contextStory=None
-        #type: Optional[Story]
-        # set later. It can remain none if an error is produced.
+        self._contextNamed=OrderedDict()
+        #type: Dict[Text, Context]
 
-        self.mainStory=None
-        #type: Optional[Story]
-        # set later. It can remain none if an error is produced.
+        self._scenarioNamed=OrderedDict()
+        #type: Dict[Text, Scenario]
+
 
     @property
     def metamodel(self):
@@ -119,6 +118,28 @@ class ScenarioModel(Model, Subject):
     @property
     def superSubjects(self):
         return []
+
+    def context(self, name):
+        if name in self._contextNamed:
+            return self._contextNamed[name]
+        else:
+            return None
+
+    @property
+    def contexts(self):
+        #type: () -> List[Context]
+        return self._contextNamed.values()
+
+    def scenario(self, name):
+        if name in self._scenarioNamed:
+            return self._scenarioNamed[name]
+        else:
+            return None
+
+    @property
+    def scenarios(self):
+        #type: () -> List[Context]
+        return self._scenarioNamed.values()
 
     @property
     def actorInstances(self):
@@ -158,111 +179,29 @@ class ActorInstance(SourceModelElement, Subject):
         return [self.actor]
 
 
-class Step(SourceModelElement, Subject):
-    """
-    All elements in a tory, including itself.
-    Steps forms a hierarchy of steps, although it is not
-    recursive but two levels.
-    """
-    __metaclass__ = ABCMeta
-
-
-    def __init__(self,
-                 model,
-                 astNode=None,
-                 lineNo=None,
-                 description=None):
-        super(Step, self).__init__(
+class Context(SourceModelElement):
+    def __init__(self, model, name, story, storyEvaluation,
+                 astNode=None, lineNo=None, description=None):
+        super(Context, self).__init__(
             model=model,
-            name=None,
+            name=name,
             astNode=astNode,
             lineNo=lineNo,
             description=description)
+        self.story=story
+        self.storyEvaluation=storyEvaluation
 
-        self.parentStep=None
-        #type: Optional[Step]
-
-        self.steps=[]
-        #type: List[Step]
-
-    @property
-    def superSubjects(self):
-        """ Direct parents """
-        # type: () -> List[Subject]
-        return [self.parentStep]
-
-    @property
-    def subjectLabel(self):
-        parent_label=self.parentStep.subjectLabel
-        nth_label=self.parentStep.steps.index(self)
-        return '%s.%s' % (parent_label, nth_label)
-
-
-# class Story(Step):
-#
-#     def __init__(self,
-#                  model,
-#                  astNode=None,
-#                  lineNo=None,
-#                  description=None):
-#         super(Story, self).__init__(
-#             model=model,
-#             astNode=astNode,
-#             lineNo=lineNo,
-#             description=description)
-#
-#         self.parentStep=None
-#
-#         model.story=self
-#
-#     @property
-#     def superSubjects(self):
-#         return [self.model]
-#
-#     @property
-#     def subjectLabel(self):
-#         return 'story'
-#
-#
-# class AnnotatedTextBlockStep(Step):
-#
-#     def __init__(self,
-#                  parent,
-#                  textBlock,
-#                  astNode=None,
-#                  lineNo=None,
-#                  description=None):
-#         super(AnnotatedTextBlockStep, self).__init__(
-#             model=parent.model,
-#             astNode=astNode,
-#             lineNo=lineNo,
-#             description=description)
-#
-#         self.textBlock=textBlock
-#
-#         self.parentStep=parent
-#         parent.steps.append(self)
-#
-#
-# class UsecaseInstanceStep(Step):
-#     def __init__(self,
-#                  parent,
-#                  actorInstance,
-#                  usecase,
-#                  astNode=None,
-#                  lineNo=None,
-#                  description=None):
-#         super(UsecaseInstanceStep, self).__init__(
-#             model=parent.model,
-#             astNode=astNode,
-#             lineNo=lineNo,
-#             description=description)
-#
-#         self.actorInstance=actorInstance
-#         self.usecase=usecase
-#
-#         self.parentStep = parent
-#         parent.steps.append(self)
+class Scenario(SourceModelElement):
+    def __init__(self, model, name, story, storyEvaluation,
+                 astNode=None, lineNo=None, description=None):
+        super(Scenario, self).__init__(
+            model=model,
+            name=name,
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description)
+        self.story=story
+        self.storyEvaluation=storyEvaluation
 
 
 METAMODEL = Metamodel(
