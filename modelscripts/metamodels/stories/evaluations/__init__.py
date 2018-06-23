@@ -85,6 +85,7 @@ class StepEvaluation(SourceModelElement, Subject):
                  step,
                  accesses=[],
                  name=None):
+        #type: (Optional[CompositeStepEvaluation], Step, List[Access], Optional[Text]) -> None
         super(StepEvaluation, self).__init__(
             model=step.model,
             name=None,
@@ -97,7 +98,8 @@ class StepEvaluation(SourceModelElement, Subject):
         # Origin of this evaluation.
         # This is always defined.
 
-        self.parent=parent  #type: Optional[StepEvaluation]
+        self.parent=parent
+        #type: Optional[CompositeStepEvaluation]
         # The parent evaluation.
         # Not defined in the case of StoryEvaluation as this is the root.
         # This parent mimics steps' parent, but it is
@@ -129,7 +131,7 @@ class StepEvaluation(SourceModelElement, Subject):
         # Wrt to access control, the evaluation is related
         # to the corresponding step. Not to the hierarchy of
         # evaluation which is not really meaningful.
-        return self.step.subperSubjects
+        return self.step.superSubjects
 
     @property
     def subjectLabel(self):
@@ -154,8 +156,16 @@ class CompositeStepEvaluation(StepEvaluation):
 
 
 class StoryEvaluation(CompositeStepEvaluation):
-    """ Just for nice typing at story level """
+    """
+    The evaluation of the story.
+    This particular case of CompositeStepEvaluation is
+    (1) handy for typing at the story level
+    (2) contains a reference to the object model created by the evaluation
+     """
     def __init__(self, step):
         super(StoryEvaluation, self).__init__(
             parent=None,
             step=step)
+
+        self.finalState=None
+        # This will be filled by the evaluator, at the end of the eval.
