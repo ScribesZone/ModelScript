@@ -103,22 +103,31 @@ class AbstractPrinter(object):
         # self.eolAtEOF=eolAtEOF
 
     def kwd(self, text):
-        return Styles.keyword.do(
-            text,
-            styled=self.config.styled
-        )
+        if text=='':  # necessary, otherwise style go to next string
+            return ''
+        else:
+            return Styles.keyword.do(
+                text,
+                styled=self.config.styled
+            )
 
     def cmt(self, text):
-        return Styles.comment.do(
-            text,
-            styled=self.config.styled
-        )
+        if text=='':  # necessary, otherwise style go to next string
+            return ''
+        else:
+            return Styles.comment.do(
+                text,
+                styled=self.config.styled
+            )
 
     def ann(self, text):
-        return Styles.annotate.do(
-            text,
-            styled=self.config.styled
-        )
+        if text=='':  # necessary, otherwise style go to next string
+            return ''
+        else:
+            return Styles.annotate.do(
+                text,
+                styled=self.config.styled
+            )
 
 
     def indent(self, n=1):

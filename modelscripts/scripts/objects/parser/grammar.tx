@@ -1,7 +1,6 @@
 ObjectModel:
     megamodelPart = MegamodelPart
     story = Story
-    //  comment still valid ?
-    //        for some strange reason story can be None => test
+    //  for some strange reason story can be None => test
 ;
 

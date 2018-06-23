@@ -24,8 +24,8 @@ def test_UseOclModel_Simple():
     assert ac.name == 'Controls'
     assert ac.roles[0].name == 'department'
     assert ac.sourceRole.name == 'department'
-    assert ac.roles[1].name == 'project'
-    assert ac.targetRole.name == 'project'
+    assert ac.roles[1].name == 'projects'
+    assert ac.targetRole.name == 'projects'
     assert ac.sourceRole.isSource
     assert ac.targetRole.isTarget
     assert ac.isBinary
@@ -52,6 +52,6 @@ def test_UseOclModel_Simple():
 
 
     department=classModel.classNamed['Department']
-    assert set(r.name for r in department.outgoingRoles) == set(['employee', 'project'])
+    assert set(r.name for r in department.outgoingRoles) == set(['employee', 'projects'])
     assert set(r.name for r in department.incomingRoles) == set(['department'])
 

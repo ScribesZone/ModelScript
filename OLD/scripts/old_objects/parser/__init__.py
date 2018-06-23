@@ -7,7 +7,7 @@ from modelscripts.metamodels.objects import (
 )
 
 from modelscripts.scripts.scenarios.parser import (
-    ScenarioEvaluationModelSource
+    ScenarioModelSource
 )
 
 from modelscripts.metamodels.scenarios import (
@@ -48,7 +48,7 @@ from modelscripts.metamodels.scenarios import (
 #     def metamodel(self):
 #         return METAMODEL
 
-class ObjectModelSource(ScenarioEvaluationModelSource):
+class ObjectModelSource(ScenarioModelSource):
 
     def __init__(self, originalFileName):
 

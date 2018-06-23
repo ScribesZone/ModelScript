@@ -5,6 +5,5 @@ import class model from '../cls/cl-main-cybercompany-a.cls'
 actor instances
     xao : Manager
 
-start
-now xao IncreaseSalary
-stop
+scenario
+    xao do IncreaseSalary

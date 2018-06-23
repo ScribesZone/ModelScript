@@ -10,15 +10,16 @@ Story:
 //............................ Steps .........................
 
 Step:
-        ATextBlockStep
-      | OperationStep
+        TextStep
       | VerbStep
+      | OperationStep
+
 ;
 
 //............. Annotated text block steps ...................
 
 
-ATextBlockStep:
+TextStep:
     textBlock = TextBlock
     (o_
         steps *= Step
@@ -31,10 +32,9 @@ ATextBlockStep:
 //...................... Verb steps ...........................
 
 VerbStep:
-    ('now'|'maintenant')
-    actorInstanceName = ID
-    'va' ?
-    verb = ID
+    subjectName = ID
+    ('va'|'do') ?
+    verbName = ID
     (o_
         steps *= Step
     _o) ?
@@ -66,13 +66,13 @@ ConsultStep:
 //...................... Consult steps ...........................
 
 CheckStep:
-    action = 'check'
+    action = CheckVerb
     parameters ?= 'something'      // TODO: define Check syntax
     X
 ;
 
 ReadStep:
-    action = 'read'
+    action = ReadVerb
     parameters ?= 'something'       // TODO: define READ syntax
     X
 ;
@@ -80,34 +80,66 @@ ReadStep:
 //...................... Update steps ............................
 
 ObjectCreationStep:
-    (action = 'create')?
+    (action = CreateVerb)?
     objectDeclaration = ObjectDeclaration
 ;
 
 ObjectDeletionStep:
-    (action = 'delete')?
+    action = DeleteVerb
     name = ID
+    X
 ;
 
 SlotStep:
-    (action = SetOrUpdate)?
+    (action = SetOrUpdateVerb)?
     slotDeclaration = SlotDeclaration
 ;
 
 LinkOperationStep:
-    (action = CreateOrDelete)?
+    (action = CreateOrDeleteVerb)?
     linkDeclaration = LinkDeclaration
 ;
 
-CreateOrDelete:
-      'create'
-    | 'delete'
+CheckVerb:
+      'check'
+    | 'verifie'
 ;
 
-SetOrUpdate:
-      'set'
-    | 'update'
+ReadVerb:
+      'Read'
+    | 'Lire'
 ;
+
+CreateVerb:
+      'create'
+    | 'cree'
+;
+
+DeleteVerb:
+      'delete'
+    | 'detruit'
+;
+
+CreateOrDeleteVerb:
+      CreateVerb
+    | DeleteVerb
+;
+
+SetOrUpdateVerb:
+      SetVerb
+    | UpdateVerb
+;
+
+SetVerb:
+      'init'
+    | 'set'
+;
+
+UpdateVerb:
+      'update'
+    | 'modifie'
+;
+
 
 //...................... Object declaration ........................
 
@@ -217,34 +249,5 @@ SymbolicLinkDeclaration:
 
 
 
-
-
-
-
-/*
-OBBody:
-    declarations *= OBDeclaration
-;
-
-OBDeclaration:
-      CoreOBDeclaration
-    | ATextBlockOBDeclaration
-;
-
-CoreOBDeclaration:
-      ObjectDeclaration
-    | SlotDeclaration
-    | LinkDeclaration
-    // LinkObjectDeclaration
-;
-
-ATextBlockOBDeclaration:
-    textBlock=TextBlock
-    (o_
-        declarations *= CoreOBDeclaration
-    _o) ?
-    X ?
-;
-*/
 
 

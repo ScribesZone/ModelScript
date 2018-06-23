@@ -45,11 +45,11 @@ HEADER='''
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE kmad-model SYSTEM "file:KMADModelJT.dtd">
 <kmad-model version="1.3">
-    <project classkmad="project.Project" id-project-information="K2" idkmad="K1">
-        <projectinformation classkmad="project.GeneralInformation" idkmad="K2">
+    <projects classkmad="projects.Project" id-projects-information="K2" idkmad="K1">
+        <projectinformation classkmad="projects.GeneralInformation" idkmad="K2">
             <projectinformation-compagny>MyTheatre_ConfiguReduc</projectinformation-compagny>
         </projectinformation>
-    </project>
+    </projects>
 '''
 FOOTER='''
 </kmad-model>

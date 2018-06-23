@@ -1,0 +1,14 @@
+    # usecase does not exist
+
+    #@Issue sc.syn.Story.NoUsecase 1
+    #@Issue else *
+
+scenario model Sc_step02
+
+import usecase model from '../uss/us-main-CyberCompany01.uss'
+import class model from '../cls/cl-main-cybercompany-a.cls'
+actor instances
+    xao : Manager
+
+scenario
+    xao do Nothing

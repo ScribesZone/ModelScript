@@ -6,7 +6,6 @@
     #@Metric "plain link" 1
     #@Metric "linkObject" 0
     #@Metric "slot" 4
-    #@Metric "annotated text block" 4
 
 object model Ob_slot01
 import class model from '../cls/cl-main-cybercompany-a.cls'

@@ -1,6 +1,6 @@
     # attribute that does not exist
 
-    #@Issue o.res.Slot.NoAttribute 1
+    #@Issue st.eval.Slot.NoAtt 1
     #@Issue else *
 
 object model Ob_slot02

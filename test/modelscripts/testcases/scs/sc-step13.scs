@@ -6,8 +6,7 @@ actor instances
     xao : Manager
     joe : Manager
 
-start
-| Something interesting
-| with various lines
-    check
-stop
+scenario
+    | Something interesting
+    | with various lines
+        check

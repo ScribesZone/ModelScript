@@ -1,0 +1,16 @@
+RelationModel:
+    megamodelPart = MegamodelPart
+    declarations *= Declaration
+;
+
+Declaration:
+      Relation
+;
+
+Relation:
+    'relation' name=ID
+    (o_
+        textBlock=TextBlock
+    _o)? X
+;
+

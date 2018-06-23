@@ -2,8 +2,8 @@ ScenarioModel:
     megamodelPart = MegamodelPart
     descriptors *= DescriptorDeclaration
     actorPart = ActorInstancePart ?
-    contextPart = ContextPart ?
-    storyPart = StoryPart ?
+    contextStoryPart = ContextStoryPart ?
+    mainStoryPart = MainStoryPart ?
 ;
 
 DescriptorDeclaration:
@@ -27,104 +27,16 @@ ActorInstanceDeclaration:
     X
 ;
 
-ContextPart:
+ContextStoryPart:
     'context' (o_
-        OBBody
-    _o)
-    X
-;
-
-
-//------------------------------------------------------------------
-//                          Story Part
-//------------------------------------------------------------------
-
-StoryPart:
-    'start' X
-    steps *= TopLevelStep
-    'stop' X
-;
-
-TopLevelStep:
-        ATextBlockStep
-      | Operation
-      | UsecaseInstanceStep
-    //  TODO: LinkObjectDeclaration
-;
-
-ATextBlockStep:
-    textBlock = TextBlock
-    (o_
-        steps *= Operation
-    _o) ?  // FIXME: ? not working => impossible to have empty block
-    X
-;
-
-InsideUsecaseStep:
-      ATextBlockStep
-    | Operation
-;
-
-UsecaseInstanceStep:
-    'now'
-    actorInstanceName = ID
-    usecaseName = ID
-    (o_
-        steps *= InsideUsecaseStep
+        story = Story
     _o) ?
     X
 ;
 
-
-//------------------------------------------------------------------
-//                        Operations
-//------------------------------------------------------------------
-
-
-Operation:
-      UpdateOperation
-    | ReadOperation
-;
-
-UpdateOperation:
-      ObjectCreation
-    | ObjectDeletion
-    | AttributeAssignment   // set | update
-    | LinkOperation         // create | delete
-    // TODO: LinkObject
-;
-
-ReadOperation:
-      CheckOperation
-;
-
-ObjectCreation:
-    'create' objectDeclaration = ObjectDeclaration
-;
-
-ObjectDeletion:
-    'delete' name = ID
-;
-
-AttributeAssignment:
-    verb=SetOrUpdate slotDeclaration = SlotDeclaration
-;
-
-LinkOperation:
-    verb=CreateOrDelete linkDeclaration = LinkDeclaration
-;
-
-CheckOperation:
-    'check' paramters ?= 'something'
+MainStoryPart:
+    'scenario' (o_
+        story = Story
+    _o) ?
     X
-;
-
-CreateOrDelete:
-      'create'
-    | 'delete'
-;
-
-SetOrUpdate:
-      'set'
-    | 'update'
 ;

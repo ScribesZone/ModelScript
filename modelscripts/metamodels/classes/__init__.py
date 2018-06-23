@@ -556,6 +556,12 @@ class Class(PackagableElement, Entity):
     def attributes(self):
         return self.attributeNamed.values()
 
+    def attribute(self, name):
+        if name in self.attributeNamed:
+            return self.attributeNamed[name]
+        else:
+            return None
+
     @property
     def attributeNames(self):
         return self.attributeNamed.keys()
