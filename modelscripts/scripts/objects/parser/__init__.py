@@ -62,15 +62,13 @@ class ObjectModelSource(ASTBasedModelSourceFile):
             grammarFile=os.path.join(this_dir, 'grammar.tx')
         )
 
-        # objectModel is defined below
-
         self.storyModel=None
         #type: Optional['Story']
-        # The story filled by fillModel
+        # The story filled by "fillModel"
 
         self.storyEvaluation=None
         #type: Optional['StoryEvaluation']
-        # Filled by resolve()
+        # The evaluation of the story filled by "fillModel"
 
     @property
     def objectModel(self):
@@ -88,12 +86,15 @@ class ObjectModelSource(ASTBasedModelSourceFile):
         return METAMODEL
 
     def fillModel(self):
+        # The model "self.model" (e.g. "self.objectModel" is filled
+        # "inplace" by the execution below).
+
         # First fill the story model  with StoryFiller
         # then evaluate the story model leading to the object model
 
         #--- (1) fill the story model
         filler=StoryFiller(
-            model=self.objectModel,
+            model=self.objectModel,         # use this actual object model
             contextName='object models',
             allowDefinition=True,
             allowAction=False,
@@ -105,8 +106,11 @@ class ObjectModelSource(ASTBasedModelSourceFile):
         evaluator=StoryEvaluator(
             initialState=self.objectModel,
             permissionSet=None)
-        evaluator.evaluateStory(self.storyModel)
-        self.storyEvaluation=evaluator.storyEvaluation
+        self.storyEvaluation=evaluator.evaluateStory(self.storyModel)
+
+        # At this point the object model contains the final state
+        # This is due to the face that the model self.objectModel
+        # as been given from the beginning to the StoryFiller
 
         self.objectModel.storyEvaluation=self.storyEvaluation
         # register this evaluation so that the model know from
