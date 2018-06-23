@@ -130,50 +130,51 @@ class ScenarioModelPrinter(ModelPrinter):
         self.scenarioModel(self.theModel)
         return self.output
 
-    def scenarioModel(self, scenario):
+    def scenarioModel(self, scenarioModel):
 
         #---- descriptors
-        for d in scenario.descriptors:
+        for d in scenarioModel.descriptors:
             self.doDescriptor(d)
 
         #---- actor instances
-        if len(scenario.actorInstanceNamed.values())>=1:
+        if len(scenarioModel.actorInstanceNamed.values())>=1:
             self.outLine(self.kwd('actor instances'))
-            for ai in scenario.actorInstanceNamed.values():
+            for ai in scenarioModel.actorInstanceNamed.values():
                 self.doActorInstance(ai)
 
-        #---- context story
-        self.doContextStory(scenario)
+        #---- contexts
+        for c in scenarioModel.contexts:
+            self.doContext(c)
 
-        #---- main story
-        self.doMainStory(scenario)
+        #---- scenarios
+        for s in scenarioModel.scenarios:
+            self.doScenario(s)
 
         return self.output
 
-    def doContextStory(self, scenario):
-        self.outLine(self.kwd('context'))
-        # The scenario is not None, but the contextStory
-        # could be in case or error, so add a test
-        if scenario.contextStory is not None:
-            storyPrinter = StoryPrinter(
-                story=scenario.contextStory,
-                indent=1
-            )
-            text = storyPrinter.do()
-            self.out(text)
+    def doContext(self, context):
+        self.outLine('%s %s' % (
+            self.kwd('context'),
+            context.name)
+        )
+        storyPrinter = StoryPrinter(
+            story=context.story,  #TODO: print evaluation if any
+            indent=1
+        )
+        text = storyPrinter.do()
+        self.out(text)
 
-    def doMainStory(self, scenario):
-        self.outLine(self.kwd('scenario'))
-        # The scenario is not None, but the contextStory
-        # could be in case or error, so add a test
-        if scenario.mainStory is not None:
-
-            storyPrinter = StoryPrinter(
-                story=scenario.mainStory,
-                indent=0
-            )
-            text = storyPrinter.do()
-            self.out(text)
+    def doScenario(self, scenario):
+        self.outLine('%s %s' % (
+            self.kwd('scenario'),
+            scenario.name)
+        )
+        storyPrinter = StoryPrinter(
+            story=scenario.story,  #TODO: print evaluation if any
+            indent=1
+        )
+        text = storyPrinter.do()
+        self.out(text)
 
     def doDescriptor(self, descriptor):
         #TODO: generalize the value of descriptor

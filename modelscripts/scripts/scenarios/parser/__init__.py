@@ -20,6 +20,8 @@ from modelscripts.megamodels.elements import (
 from modelscripts.metamodels.scenarios import (
     ScenarioModel,
     ActorInstance,
+    Context,
+    Scenario,
     METAMODEL
 )
 # from modelscripts.metamodels.scenarios.operations import (
@@ -199,148 +201,56 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
             )
             return step
 
-        # def define_story_node(astStep):
-        #     # do not define children steps here
-        #     step= Story(
-        #         model=self.model,
-        #         astNode=astStep)
-        #     return step
-        # def define_text_block_node(parent, astStep):
-        #     # do not define children steps here
-        #     text_block = astTextBlockToTextBlock(
-        #         container=parent,
-        #         astTextBlock=astStep.textBlock)
-        #     step = AnnotatedTextBlockStep(
-        #         parent=parent,
-        #         textBlock=text_block,
-        #         astNode=astStep)
-        #     return step
-        #
-        # def define_step_hierarchy(parent, astNode):
-        #     #type: (Optional[Step], 'ASTStep') -> Step
-        #     # The parameter parent will be None only for the story
-        #     type_ = astNode.__class__.__name__
-        #     if type_ in [
-        #         'StoryPart',
-        #         'ATextBlockStep',
-        #         'UsecaseInstanceStep']:
-        #         if type_=='StoryPart':
-        #             step=define_story_node(astNode)
-        #         elif type_=='ATextBlockStep':
-        #             step=define_text_block_node(parent, astNode)
-        #         elif type_=='UsecaseInstanceStep':
-        #             step=define_usecase_node(parent, astNode)
-        #         else:
-        #             raise NotImplementedError(
-        #                 'AST type not expected: %s' % type_)
-        #         for child_ast_step in astNode.steps:
-        #             define_step_hierarchy(
-        #                 parent=step,
-        #                 astNode=child_ast_step
-        #             )
-        #         return step
-        #     elif type_=='ObjectCreation':
-        #         return define_object_creation(parent, astNode)
-        #     elif type_=='ObjectDeletion':
-        #         return define_object_deletion(parent, astNode)
-        #     elif type_=='AttributeAssignment':
-        #         return define_attribute_assignment(parent, astNode)
-        #     elif type_=='LinkOperation':
-        #         return define_link_operation(parent, astNode)
-        #     elif type_=='CheckOperation':
-        #         return define_check_operation(parent, astNode)
-        #     else:
-        #         raise NotImplementedError(
-        #             'AST type not expected: %s' % type_)
-        #
-        # def define_object_creation(parent, ast_operation):
-        #     on=ast_operation.objectDeclaration.name
-        #     cn=ast_operation.objectDeclaration.type
-        #     if cn not in self.classModel.classNamed:
-        #         ASTNodeSourceIssue(
-        #             code=icode('OBJECT_CLASS_NOT_FOUND'),
-        #             astNode=ast_operation,
-        #             level=Levels.Fatal,
-        #             message=(
-        #                 'Class "%s" does not exist.' % cn))
-        # #     else:
-        #         step=ObjectCreation(
-        #             parent=parent,
-        #             objectName=on,
-        #             class_=self.classModel.classNamed[cn],
-        #             astNode=ast_operation
-        #         )
-        #         return step
-        #
-        # def define_object_deletion(parent, ast_operation):
-        #     #TODO: check if binding object name is good
-        #     #   The name of the object is unique, but it might
-        #     #   be deleted. So replacing the name by the actual
-        #     #   object would imply having a minimal notion of state.
-        #     step=ObjectDeletion(
-        #             parent=parent,
-        #             objectName=ast_operation.name,
-        #             astNode=ast_operation
-        #     )
-        # #     return step
-        #
-        # def define_attribute_assignment(parent, ast_operation):
-        #     assert ast_operation.verb in ['set', 'update']
-        #     # TODO: should the name of the object be bound ?
-        #     #     This means checking that it has not been deleted
-        #     #     and therefore this necessitate the notion of
-        #     #     evaluation (this could be beyond simple parsing
-        #     #     as here).
-        #     slot_decl=ast_operation.slotDeclaration
-        #     step=AttributeAssignment(
-        #         parent=parent,
-        #         objectName=slot_decl.object,
-        #         attributeName=slot_decl.attribute,
-        #         value=slot_decl.value,
-        #         update=(ast_operation.verb=='update'),
-        #         astNode=ast_operation
-        #     )
-        #     return step
-        #
-        # def define_link_operation(parent, ast_operation):
-        #     link_decl=ast_operation.linkDeclaration
-        #     an=link_decl.association
-        #     if an not in self.classModel.associationNamed:
-        #         ASTNodeSourceIssue(
-        #             code=icode('LINK_ASSOC_NOT_FOUND'),
-        #             astNode=ast_operation,
-        #             level=Levels.Fatal,
-        #             message=(
-        #                 'Association "%s" does not exist.' % an))
-        #     assoc=self.classModel.associationNamed[an]
-        #     if ast_operation.verb=='create':
-        #         step=LinkCreation(
-        #             parent=parent,
-        #             sourceObjectName=link_decl.source,
-        #             targetObjectName=link_decl.target,
-        #             association=assoc,
-        #             astNode=ast_operation
-        #         )
-        #         return step
-        #     elif ast_operation.verb=='delete':
-        #         step=LinkDeletion(
-        #             parent=parent,
-        #             sourceObjectName=link_decl.source,
-        #             targetObjectName=link_decl.target,
-        #             association=assoc,
-        #             astNode=ast_operation
-        #         )
-        #         return step
-        #     else:
-        #         raise NotImplementedError(
-        #             'Verb not expected: %s' % ast_operation.verb)
-        #
-        # def define_check_operation(parent, ast_operation):
-        #     step=Check(
-        #         parent=parent,
-        #         astNode=ast_operation
-        #     )
-        #     return step
+
+        def define_actor_part(ast_actor_part):
+            # ap = ast_actor_part.actorPart
+            # if ap is not None:
+                for actori_decl in ast_actor_part.actorInstanceDeclarations:
+                    define_actor_instance(actori_decl)
+
+        def define_context(ast_context):
+            name='' if ast_context.name is None else ast_context.name
+            context_filler = StoryFiller(
+                model=self.scenarioModel,
+                contextName='contexts',
+                allowDefinition=True,
+                allowAction=False,
+                allowVerb=False,
+                astStory=ast_context.story)
+            story=context_filler.story()
+            #TODO: check for existing name -> error
+            self.scenarioModel._contextNamed[name]=(
+                Context(
+                    model=self.scenarioModel,
+                    name=name,
+                    story=story,
+                    # TODO: launch evaluation
+                    storyEvaluation=None,
+                    astNode=ast_context
+                )
+            )
+
+        def define_scenario(ast_scenario):
+            name='' if ast_scenario.name is None else ast_scenario.name
+            scenario_filler = StoryFiller(
+                model=self.scenarioModel,
+                contextName='contexts',
+                allowDefinition=False,
+                allowAction=True,
+                allowVerb=True,
+                astStory=ast_scenario.story)
+            story=scenario_filler.story()
+            #TODO: check for existing name -> error
+            self.scenarioModel._scenarioNamed[name]=(
+                Scenario(
+                    model=self.scenarioModel,
+                    name=name,
+                    story=story,
+                    # TODO: launch evaluation
+                    storyEvaluation=None,
+                    astNode=ast_scenario
+                )
+            )
 
         ast_root=self.ast.model
 
@@ -348,42 +258,17 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
         for descriptor in ast_root.descriptors:
             define_descriptor(descriptor)
 
-        #---- actor instances -------------------------------
-        ap = ast_root.actorPart
-        if ap is not None:
-            for actori_decl in ap.actorInstanceDeclarations:
-                define_actor_instance(actori_decl)
-
-        #--- context story ----------------------------------
-        if self.ast.model.contextStoryPart is None:
-            context_ast_story=None
-        else:
-            context_ast_story=self.ast.model.contextStoryPart.story
-        context_filler=StoryFiller(
-            model=self.scenarioModel,
-            contextName='contexts',
-            allowDefinition=True,
-            allowAction=False,
-            allowVerb=False,
-            astStory=context_ast_story)
-        self.scenarioModel.contextStory=context_filler.story()
-
-
-        #--- main story ----------------------------------
-        if self.ast.model.mainStoryPart is None:
-            main_ast_story=None
-        else:
-            main_ast_story=self.ast.model.mainStoryPart.story
-        main_story_filler=StoryFiller(
-            model=self.scenarioModel,
-            contextName='stories',
-            allowDefinition=False,
-            allowAction=True,
-            allowVerb=True,
-            astStory=main_ast_story)
-        self.scenarioModel.mainStory=main_story_filler.story()
-
-
+        for declaration in ast_root.declarations:
+            type_=declaration.__class__.__name__
+            if type_=='ActorInstancePart':
+                define_actor_part(declaration)
+            elif type_=='Context':
+                define_context(declaration)
+            elif type_=='Scenario':
+                define_scenario(declaration)
+            else:
+                raise NotImplementedError(
+                    'AST type not expected: %s' % type_)
 
     def resolve(self):
         pass

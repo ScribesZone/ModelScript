@@ -52,12 +52,24 @@ class StoryFiller():
         #type: ('Model', Union['definition','action'], 'ASTStory') -> None
         self.astStory=astStory
         self.model=model
+
         self.contextName=contextName
-        # something like "object model" or "context"
+        # some string like "object model" or "context"
         # string used for error message
+
         self.allowDefinition=allowDefinition
         self.allowAction=allowAction
         self.allowVerb=allowVerb
+
+        self._is_check_needed=False
+        # This is used to control the creation of implicit check
+        # statement and create these statements only if at least
+        # an operation was issued before the potential check point.
+        # Variable to keep along the creation of statements the
+        # need to create an implict check statement. This is the
+        # case when a new operation occur. Otherwise text block
+        # don't count, and check statements set it to no.
+        # See _add_check_if_needed.
 
     def story(self):
         self.story=Story(
@@ -70,11 +82,13 @@ class StoryFiller():
                     parent=self.story,
                     astStep=ast_step
                 )
+        self._add_check_if_needed(self.story, 'after', self.astStory)
         return self.story
+
+
 
     def _fill_step(self, parent, astStep):
         type_ = astStep.__class__.__name__
-        print('!!'*10, type_)
         if type_=='TextStep':
             step=self._fill_text_step(
                 parent, astStep)
@@ -121,6 +135,10 @@ class StoryFiller():
 
     def _fill_verb_step(self, parent, astStep):
         if self.allowVerb:
+            self._add_check_if_needed(
+                parent,
+                'before',
+                astStep)
             step=VerbStep(
                 parent=parent,
                 subjectName=astStep.subjectName,
@@ -131,6 +149,10 @@ class StoryFiller():
                     parent=step,
                     astStep=sub_ast_step
                 )
+            self._add_check_if_needed(
+                parent,
+                'after',
+                astStep)
             return step
         else:
             ASTNodeSourceIssue(
@@ -142,14 +164,13 @@ class StoryFiller():
                     % self.contextName))
 
     def _fill_object_creation_step(self, parent, astStep):
+        self._is_check_needed=True
         self._check_definition_action(astStep)
         self._check_class_model(astStep)
         on = astStep.objectDeclaration.name
         cn = astStep.objectDeclaration.type
         class_model=self.model.classModel
 
-        print('CC'*20,self.model, type(self.model))
-        print('CC'*20,class_model, type(class_model))
         if cn not in class_model.classNamed:
             ASTNodeSourceIssue(
                 code=icode('OBJECT_CLASS_NOT_FOUND'),
@@ -168,6 +189,7 @@ class StoryFiller():
             return step
 
     def _fill_object_deletion_step(self, parent, astStep):
+        self._is_check_needed=True
         self._check_definition_action(astStep)
         self._check_class_model(astStep)
         on = astStep.objectDeclaration.name
@@ -180,6 +202,7 @@ class StoryFiller():
         return step
 
     def _fill_slot_step(self, parent, astStep):
+        self._is_check_needed=True
         self._check_definition_action(astStep)
         self._check_class_model(astStep)
         slot_decl = astStep.slotDeclaration
@@ -195,6 +218,7 @@ class StoryFiller():
         return step
 
     def _fill_link_operation_step(self, parent, astStep):
+        self._is_check_needed=True
         self._check_definition_action(astStep)
         self._check_class_model(astStep)
         link_decl = astStep.linkDeclaration
@@ -240,11 +264,12 @@ class StoryFiller():
         return step
 
     def _fill_check_step(self, parent, astStep):
-        print('%%'*10, astStep)
         step=CheckStep(
             parent=parent,
+            implicit=None,
             astNode=astStep
         )
+        self._is_check_needed=False
         return step
 
     def _check_class_model(self, astStep):
@@ -282,3 +307,14 @@ class StoryFiller():
                 message=(
                     'Definitions are forbidden in %s.' % (
                         self.contextName)))
+
+
+
+    def _add_check_if_needed(self, parent, kind, astNode):
+        if self._is_check_needed:
+            CheckStep(
+                parent=parent,
+                implicit=kind,
+                astNode=astNode
+            )
+        self._is_check_needed=False

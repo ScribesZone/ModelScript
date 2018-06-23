@@ -1,16 +1,20 @@
 ScenarioModel:
     megamodelPart = MegamodelPart
-    descriptors *= DescriptorDeclaration
-    actorPart = ActorInstancePart ?
-    contextStoryPart = ContextStoryPart ?
-    mainStoryPart = MainStoryPart ?
+    descriptors *= Descriptor
+    declarations *= Declaration
 ;
 
-DescriptorDeclaration:
+Descriptor:
     name=ID (o_
         (textBlock = TextBlock)
     _o)
     X
+;
+
+Declaration:
+      ActorInstancePart
+    | Context
+    | Scenario
 ;
 
 ActorInstancePart:
@@ -27,15 +31,15 @@ ActorInstanceDeclaration:
     X
 ;
 
-ContextStoryPart:
-    'context' (o_
+Context:
+    'context' (name = ID) ? (o_
         story = Story
     _o) ?
     X
 ;
 
-MainStoryPart:
-    'scenario' (o_
+Scenario:
+    'scenario' (name = ID) ? (o_
         story = Story
     _o) ?
     X

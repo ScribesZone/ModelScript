@@ -186,10 +186,15 @@ class StoryPrinter(AbstractPrinter):
         return self.output
 
     def doCheck(self, step, indent):
+        _={
+            None:'',
+            'before': ' (before)',
+            'after': ' (after)'
+        }[step.implicit]
         self.outLine(
-            # create (a,R,b)
-            '%s' % (
-                self.kwd('check')),
+            '%s%s' % (
+                self.kwd('check'),
+                self.kwd(_)),
             indent=indent)
         return self.output
 
