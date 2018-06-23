@@ -176,6 +176,22 @@ class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
                     printer_class.__class__.__name__,
                     method))
 
+    def theModel(self, targetMetamodel, acceptNone=False):
+        lm=self.usedModels(targetMetamodel=targetMetamodel)
+        if len(lm)==0:
+            if acceptNone:
+                return None
+            else:
+                raise ValueError(
+                    'No %s model found. Expected one.'
+                    % targetMetamodel.name)
+        elif len(lm)>=2:
+            raise ValueError(
+                '%i %s models found. Expected one.'
+                % (len(lm), targetMetamodel.name))
+        else:
+            return lm[0]
+
     def usedModels(self,
                    targetMetamodel=None,
                    metamodelDependency=None):
@@ -183,6 +199,8 @@ class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
             targetMetamodel=targetMetamodel,
             metamodelDependency=metamodelDependency)
         return [dep.targetModel for dep in outdeps]
+
+
 
     def clientModels(self,
                      targetMetamodel=None,

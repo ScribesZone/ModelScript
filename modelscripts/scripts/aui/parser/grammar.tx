@@ -1,0 +1,34 @@
+RelationModel:
+    megamodelPart = MegamodelPart
+    declarations *= Declaration
+;
+
+Declaration:
+      Space
+;
+
+Space:
+    'space' name=ID
+    (o_
+        textBlock=TextBlock
+        (conceptsDepartment = ConceptsDepartment) ?
+        (linksDepartment = LinksDepartment) ?
+    _o)?
+
+    X
+;
+
+ConceptsDepartment:
+    'concepts' (o_
+        concepts *= Concept
+    _o)
+    X
+;
+
+LinksDepartment:
+    'links' (o_
+        links *= Link
+    _o)
+    X
+;
+

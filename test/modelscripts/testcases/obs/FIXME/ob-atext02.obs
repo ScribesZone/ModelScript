@@ -1,0 +1,31 @@
+    # Annotated text blocks
+
+    #@Metric "object" 4
+    #@Metric "link" 1
+    #@Metric "plain object" 4
+    #@Metric "plain link" 1
+    #@Metric "linkObject" 0
+    #@Metric "slot" 4
+
+object model Ob_slot01
+import class model from '../cls/cl-main-cybercompany-a.cls'
+
+computing is a Department.
+| Samira earn 2500€.
+| And that's enough for living.
+    samira is an Employee.
+    The name of samira is 'Samira'.
+    The salary of samira is 2500.
+bob : Employee
+The salary of bob is 200.
+
+| Samira works at ACME, in the computing department.
+| She works with pauline, but pauline earns 8000€ per month.
+    samira WorksIn computing.
+    pauline is an Employee.
+    The salary of pauline is 8000.
+
+| They work together.
+
+
+| There are other employee in the computing department.

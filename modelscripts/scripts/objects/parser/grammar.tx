@@ -1,5 +1,6 @@
 ObjectModel:
     megamodelPart = MegamodelPart
-    body = OBBody   // for some strange reason body can be None => test
+    story = Story
+    //  for some strange reason story can be None => test
 ;
 

@@ -171,7 +171,6 @@ def _find_subject(usecaseModel, name, astNode):
     elif name in usecaseModel.system.usecaseNamed:
         return usecaseModel.system.usecaseNamed[name]
     else:
-        print('QQ'*30,astNode)
         ASTNodeSourceIssue(
             code=icode('RULE_SUBJECT_NOT_FOUND'),
             astNode=astNode,

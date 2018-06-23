@@ -1,0 +1,253 @@
+
+//------------------------------------------------------------------
+//                              Story
+//------------------------------------------------------------------
+
+Story:
+    steps *= Step
+;
+
+//............................ Steps .........................
+
+Step:
+        TextStep
+      | VerbStep
+      | OperationStep
+
+;
+
+//............. Annotated text block steps ...................
+
+
+TextStep:
+    textBlock = TextBlock
+    (o_
+        steps *= Step
+    _o) ?
+    // FIXME: ? not working => impossible to have empty block
+    X
+;
+
+
+//...................... Verb steps ...........................
+
+VerbStep:
+    subjectName = ID
+    ('va'|'do') ?
+    verbName = ID
+    (o_
+        steps *= Step
+    _o) ?
+    X
+;
+
+
+//...................... Operation steps ...........................
+
+OperationStep:
+      UpdateStep
+    | ConsultStep
+;
+
+UpdateStep:
+    // ORDER IS IMPORTANT
+      LinkOperationStep         // create | delete
+    | SlotStep                  // set | update
+    | ObjectCreationStep
+    | ObjectDeletionStep
+    // TODO: LinkObject
+;
+
+ConsultStep:
+      CheckStep
+    | ReadStep
+;
+
+//...................... Consult steps ...........................
+
+CheckStep:
+    action = CheckVerb
+    parameters ?= 'something'      // TODO: define Check syntax
+    X
+;
+
+ReadStep:
+    action = ReadVerb
+    parameters ?= 'something'       // TODO: define READ syntax
+    X
+;
+
+//...................... Update steps ............................
+
+ObjectCreationStep:
+    (action = CreateVerb)?
+    objectDeclaration = ObjectDeclaration
+;
+
+ObjectDeletionStep:
+    action = DeleteVerb
+    name = ID
+    X
+;
+
+SlotStep:
+    (action = SetOrUpdateVerb)?
+    slotDeclaration = SlotDeclaration
+;
+
+LinkOperationStep:
+    (action = CreateOrDeleteVerb)?
+    linkDeclaration = LinkDeclaration
+;
+
+CheckVerb:
+      'check'
+    | 'verifie'
+;
+
+ReadVerb:
+      'Read'
+    | 'Lire'
+;
+
+CreateVerb:
+      'create'
+    | 'cree'
+;
+
+DeleteVerb:
+      'delete'
+    | 'detruit'
+;
+
+CreateOrDeleteVerb:
+      CreateVerb
+    | DeleteVerb
+;
+
+SetOrUpdateVerb:
+      SetVerb
+    | UpdateVerb
+;
+
+SetVerb:
+      'init'
+    | 'set'
+;
+
+UpdateVerb:
+      'update'
+    | 'modifie'
+;
+
+
+//...................... Object declaration ........................
+
+ObjectDeclaration:
+      SpeechObjectDeclaration
+    | SymbolicObjectDeclaration
+;
+
+
+SpeechObjectDeclaration:
+    name = ID
+    ('est'|'is')
+    ('une'|'un'|'an'|'a')  // order is important
+    type = ID
+    '.'
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
+    X
+;
+
+SymbolicObjectDeclaration:
+    name = ID
+    ':'
+    type = ID
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
+    X
+;
+
+
+//....................... Slot declaration ........................
+
+
+SlotDeclaration:
+      SpeechSlotDeclaration
+    | SymbolicSlotDeclaration
+;
+
+SpeechSlotDeclaration:
+    DefiniteArticle ?
+    attribute = ID
+    ('of'|'de')
+    object = ID
+    ('is'|'est')
+    value = BASETYPE
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
+    '.'
+    X
+;
+
+
+SymbolicSlotDeclaration:
+    object = ID
+    '.'
+    attribute = ID
+    '='
+    value = BASETYPE
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
+    X
+;
+
+//....................... Link declaration ........................
+
+
+LinkDeclaration:
+      SpeechLinkDeclaration
+    | SymbolicLinkDeclaration
+;
+
+SpeechLinkDeclaration:
+    source = ID
+    association = ID
+    target = ID
+    '.'
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
+    X
+;
+
+SymbolicLinkDeclaration:
+    '('
+    source = ID
+    ','
+    association = ID
+    ','
+    target = ID
+    ')'
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
+    X
+;
+
+
+//................... Link object declaration .....................
+
+
+
+    // TODO: LinkObjectDeclaration
+
+
+
+
+

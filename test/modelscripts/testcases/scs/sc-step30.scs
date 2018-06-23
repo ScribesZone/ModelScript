@@ -6,6 +6,5 @@ actor instances
     xao : Manager
     joe : Manager
 
-start
-create computing : Department
-stop
+scenario
+    create computing : Department

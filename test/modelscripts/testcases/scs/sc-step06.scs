@@ -6,7 +6,6 @@ actor instances
     xao : Manager
     joe : Manager
 
-start
-now xao IncreaseSalary
-now joe IncreaseSalary
-stop
+scenario
+    xao do IncreaseSalary
+    joe do IncreaseSalary

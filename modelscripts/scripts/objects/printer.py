@@ -18,13 +18,17 @@ from modelscripts.metamodels.objects import (
     Slot,
     Link,
     LinkObject,
-    AnnotatedTextBlock,
     METAMODEL
 )
 from modelscripts.megamodels.models import (
     Placeholder
 )
-
+from modelscripts.scripts.stories.printer import (
+    StoryPrinter
+)
+from modelscripts.scripts.stories.printer.evaluation import (
+    StoryEvaluationPrinter
+)
 
 class ObjectModelPrinter(ModelPrinter):
 
@@ -37,12 +41,45 @@ class ObjectModelPrinter(ModelPrinter):
             config=config
         )
 
+
+
     def doModelContent(self):
         super(ObjectModelPrinter, self).doModelContent()
-        self.doStoryObjectModel(self.theModel)
-        self.outLine(self.kwd('-'*80))
-        self.doAbstractObjectModel(self.theModel)
-        return self.output
+
+        if self.theModel.storyEvaluation is not None:
+            # print the story of the model
+            if True:
+                printer=StoryEvaluationPrinter(
+                    storyEvaluation=self.theModel.storyEvaluation,
+                    indent=0
+                )
+                text = printer.do()
+            else:
+                storyPrinter=StoryPrinter(
+                    story=self.theModel.storyEvaluation.step,
+                    indent=0
+                )
+                text = storyPrinter.do()
+            self.outLine(text)
+            return self.output
+        else:
+            # the model does not come from a story
+            # It can still be printed, using the code below
+            # TODO: reimplement the raw object model printer
+            raise NotImplementedError(
+                """*** NO STORY TO PRINT"""
+            )
+
+
+
+
+
+    #-------------------------------------------------------------------
+    #                The code below is not used anymore.
+    #  Some parts could be interesting (?) to print the object model
+    #  as is, and not with a story, e.g. all objects, all
+
+
 
     def doStoryObjectModel(self, objectModel):
         for d in objectModel.definitions:

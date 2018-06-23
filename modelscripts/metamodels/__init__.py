@@ -4,20 +4,25 @@ from modelscripts.megamodels.metametamodel import MetaPackage
 from modelscripts.megamodels.metametamodel import MetaCheckerPackage
 from modelscripts.scripts.metamodels.parser import PyMetamodelParser
 META_PACKAGES=(
-    'glossaries',
+    'aui',
     'classes',
     'classes.expressions',
+    'glossaries',
+    'megamodels',
     'objects',
     'permissions',
     'permissions.accesses',
     'permissions.gpermissions',
     'permissions.sar',
+    'relations',
     'scenarios',
-    'scenarios.operations',
+    'stories',
+    'stories.operations',
+    'stories.evaluations',
+    'stories.evaluations.operations',
+    'tasks',
     'textblocks',
     'usecases',
-    'tasks',
-    'megamodels',
 )
 
 META_CHECKER_PACKAGES=(
