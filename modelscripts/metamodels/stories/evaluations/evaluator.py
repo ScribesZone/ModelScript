@@ -83,6 +83,13 @@ class StoryEvaluator(object):
 
     def __init__(self, initialState, permissionSet=None):
         #type: (ObjectModel) -> None
+        """
+        Create a story evaluation given an initial state (an object model).
+        All steps in the story are executed one after the other.
+        The object model is modified in place.
+        :param initialState:
+        :param permissionSet:
+        """
         self.state=initialState
         self.permissionSet=permissionSet
         self.accessSet=AccessSet(permissionSet)
@@ -92,6 +99,8 @@ class StoryEvaluator(object):
         self.storyEvaluation=(
             self._eval_step(storyStep, parent=None)
         )
+        self.storyEvaluation.finalState=self.state
+        return self.storyEvaluation
 
     def _eval_step(self, step, parent):
         #type: (Step, Optional[StepEvaluation]) -> StepEvaluation
