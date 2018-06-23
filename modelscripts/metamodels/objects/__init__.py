@@ -107,8 +107,7 @@ class ObjectModel(Model):
 
         self.storyEvaluation=None
         #type: Optional['StoryEvaluation']
-        #type
-        # filled only if this model is the result of a story evaluation.
+        # Filled only if this model is the result of a story evaluation.
         # Otherwise this is most probably a handmade model.
 
     @property
@@ -178,7 +177,12 @@ class ObjectModel(Model):
 
 class ElementFromStep(SourceModelElement):
     """
-    All elements that can come from a story step
+    All elements that can come from a story step.
+    Serve as a superclass of other class and add
+    a step attribut. This attribute could be None.
+    If this attribute exist its astNode is taken
+    to locate the element, unless a new position
+    is defined.
     """
     __metaclass__ = ABCMeta
 
