@@ -58,12 +58,12 @@ scenario
             create (ioannis, WorksIn, computing)
 
     maria do RegisterNewEmployee
-        create ioannis : Employee
-        set ioannis.name = 'Ioannis'
-        set ioannis.salary = 1900
+        create sophie : Employee
+        set sophie.name = 'Paul'
+        set sophie.salary = 1800
         | Something is happening, but nodbody knows what...
         | Ioannis is assigned to the computing department
-            create (ioannis, WorksIn, computing)
+            create (sophie, WorksIn, computing)
 
     # assert 2+3*5=3
 
@@ -78,9 +78,9 @@ scenario
         #set c1.frequence =15
 
     | text
-        create turbo : Project
+        create memphis : Project
 
 
     maria do IncreaseSalary
-        update xuon.salary = 2600
+        update sophie.salary = 2600
 
