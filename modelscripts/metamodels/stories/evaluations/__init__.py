@@ -90,8 +90,16 @@ class StepEvaluation(SourceModelElement, Subject):
         #type: List[Issue]
         # The list of issues raised by this step evaluation
 
-        if parent is not None:
+        if self.parent is not None:
             self.parent.stepEvaluations.append(self)
+
+    @property
+    def storyEvaluation(self):
+        if self.parent is None:
+            # This object is the storyEvaluation
+            return self
+        else:
+            return self.parent.storyEvaluation
 
     @property
     def superSubjects(self):
