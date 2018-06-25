@@ -1,5 +1,7 @@
 # coding=utf-8
-
+"""
+Parser of scenario. This parser package creates ScenarioModelSource.
+"""
 
 from __future__ import unicode_literals, print_function, absolute_import, division
 from typing import Text, Union, Optional
@@ -51,7 +53,6 @@ from modelscripts.metamodels.permissions import (
 from modelscripts.megamodels.sources import (
     ASTBasedModelSourceFile
 )
-from modelscripts.megamodels.metamodels import Metamodel
 from modelscripts.scripts.textblocks.parser import (
     astTextBlockToTextBlock
 )
