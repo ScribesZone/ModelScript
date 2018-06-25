@@ -12,6 +12,7 @@ The structure of this package is the following::
             <|-- SlotStep
             <|-- LinkCreationStep
             <|-- LinkDeletionStep
+            <|-- LinkObjectCreationStep
         <|-- ConsultStep
             <|-- CheckStep
             <|-- ReadStep
@@ -257,6 +258,10 @@ class LinkDeletionStep(UpdateOperationStep):
 #         # type: AssociationClass
 #
 
+
+#--------------------------------------------------------------
+#   Consult operations
+#--------------------------------------------------------------
 
 class CheckStep(ConsultOperationStep):
 
