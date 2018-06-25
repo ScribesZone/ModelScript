@@ -1,11 +1,24 @@
 # coding=utf-8
 """
-The global structure of this metamodel is as following::
+Metamodel representing scenarios.
+
+The structure of is the following::
 
     ScenarioModel
+    ---> ClassModel
+    ---> UseCaseModel
+    ---> PermissionModel
     <>--* ActorInstance
-    <>--1 Story (contextStory)
-    <>--1 Story (mainStory)
+    <>--* Story (contexts)
+    <>--1 Story (scenarios)
+
+    ActorInstance
+    ---- name
+    ---- Actor
+
+    StoryBlock A
+    ---> Story
+    ---> StoryEvaluation
 """
 
 # TODO: add support for  'include <x.obs>
@@ -182,6 +195,16 @@ class ActorInstance(SourceModelElement, Subject):
 
 
 class StoryBlock(SourceModelElement):
+    """
+    Container of story. This abstract class is useful to
+    deal with common characteristics of Context and Scenario
+    at the same time, since both are basically StoryContainer.
+    A story block contains:
+    *   a story
+    *   a story evaluation. This makes sense since there is only
+        one evaluation for the context and for one main scenario.
+    """
+    __metaclass__ = ABCMeta
 
     def __init__(self, model, name, story,
                  storyEvaluation=None,
