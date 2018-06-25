@@ -40,7 +40,9 @@ from modelscripts.metamodels.usecases import (
 from modelscripts.metamodels.stories import (
     Story
 )
-
+from modelscripts.metamodels.stories.evaluations import (
+    StoryEvaluation
+)
 META_CLASSES=(
     'ScenarioModel',
     'ActorInstance',
@@ -179,29 +181,55 @@ class ActorInstance(SourceModelElement, Subject):
         return [self.actor]
 
 
-class Context(SourceModelElement):
-    def __init__(self, model, name, story, storyEvaluation,
+class StoryBlock(SourceModelElement):
+
+    def __init__(self, model, name, story,
+                 storyEvaluation=None,
+                 astNode=None, lineNo=None, description=None):
+        super(StoryBlock, self).__init__(
+            model=model,
+            name=name,
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description)
+
+        self.story=story
+        #type: Story
+
+        self.storyEvaluation=storyEvaluation
+        #type: Optional[StoryEvaluation]
+
+
+class Context(StoryBlock):
+    def __init__(self, model, name, story,
+                 storyEvaluation=None,
                  astNode=None, lineNo=None, description=None):
         super(Context, self).__init__(
             model=model,
             name=name,
+            story=story,
+            storyEvaluation=storyEvaluation,
             astNode=astNode,
             lineNo=lineNo,
             description=description)
-        self.story=story
-        self.storyEvaluation=storyEvaluation
 
-class Scenario(SourceModelElement):
-    def __init__(self, model, name, story, storyEvaluation,
+
+
+class Scenario(StoryBlock):
+    def __init__(self, model, name, story,
+                 storyEvaluation=None,
                  astNode=None, lineNo=None, description=None):
         super(Scenario, self).__init__(
             model=model,
             name=name,
+            story=story,
+            storyEvaluation=storyEvaluation,
             astNode=astNode,
             lineNo=lineNo,
             description=description)
-        self.story=story
-        self.storyEvaluation=storyEvaluation
+
+
+
 
 
 METAMODEL = Metamodel(
@@ -220,6 +248,12 @@ MetamodelDependency(
 MetamodelDependency(
     sourceId='sc',
     targetId='cl',
+    optional=True,
+    multiple=False,
+)
+MetamodelDependency(
+    sourceId='sc',
+    targetId='ob',
     optional=True,
     multiple=False,
 )
