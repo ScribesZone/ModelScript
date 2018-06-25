@@ -390,7 +390,6 @@ class Slot(ElementFromStep, Member):
                  step=None,
                  description=None, lineNo=None, astNode=None):
         #type: (Object, Union[Attribute, Placeholder], BasicValue,  Optional['Step'], Optional[TextBlock], Optional[int], 'ASTNode') -> None
-        print('PP'*30,  attribute)
         attribute_name=(
             attribute.placeholderValue
                 if isinstance(attribute, Placeholder)
