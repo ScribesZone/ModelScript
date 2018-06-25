@@ -33,6 +33,9 @@ from modelscripts.metamodels.scenarios import (
 #     # TODO: LinkObject
 #     Check
 # )
+from modelscripts.metamodels.objects import (
+    ObjectModel,
+)
 from modelscripts.metamodels.classes import (
     ClassModel
 )
@@ -54,6 +57,9 @@ from modelscripts.scripts.textblocks.parser import (
 )
 from modelscripts.scripts.stories.parser import (
     StoryFiller
+)
+from modelscripts.metamodels.stories.evaluations.evaluator import (
+    StoryEvaluator
 )
 
 __all__=(
@@ -116,6 +122,12 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
         #type: () -> Optional[PermissionModel]
         # TODO: the optional stuff should come from metamdel
         return self.importBox.model('pe', optional='True')
+
+    @property
+    def objectModel(self):
+        #type: () -> Optional[ObjectModel]
+        # TODO: the optional stuff should come from metamdel
+        return self.importBox.model('ob', optional='True')
 
     @property
     def metamodel(self):
@@ -225,7 +237,7 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
                     name=name,
                     story=story,
                     # TODO: launch evaluation
-                    storyEvaluation=None,
+                    storyEvaluation=None, # filled in resolve
                     astNode=ast_context
                 )
             )
@@ -247,7 +259,7 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
                     name=name,
                     story=story,
                     # TODO: launch evaluation
-                    storyEvaluation=None,
+                    storyEvaluation=None, # filled in resolve
                     astNode=ast_scenario
                 )
             )
@@ -271,6 +283,28 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
                     'AST type not expected: %s' % type_)
 
     def resolve(self):
-        pass
+
+        def resolve_context(context):
+            state=ObjectModel()
+            evaluator = StoryEvaluator(
+                initialState=state,
+                permissionSet=None)
+            context.storyEvaluation = evaluator.evaluateStory(
+                context.story)
+
+        def resolve_scenario(scenario):
+            state=ObjectModel()
+            print('ZZ'*10, 'Evaluation scenario', scenario)
+            evaluator = StoryEvaluator(
+                initialState=state,
+                permissionSet=None)
+            scenario.storyEvaluation = evaluator.evaluateStory(
+                scenario.story)
+
+        for context in self.scenarioModel.contexts:
+            resolve_context(context)
+
+        for scenario in self.scenarioModel.scenarios:
+            resolve_context(scenario)
 
 METAMODEL.registerSource(ScenarioModelSource)

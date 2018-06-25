@@ -4,12 +4,6 @@ Code of the Scenario metamodel.
 
 The global structure of this metamodel is as following::
 
-TODO: UPDATE
-
-    StepEvaluation
-    <|-- CompositeEvaluation
-        <>--* StepEvaluation
-    <|-- OperationEvaluation
 
 """
 
@@ -28,22 +22,6 @@ from modelscripts.metamodels.stories import (
 from modelscripts.metamodels.stories.evaluations import (
     StepEvaluation
 )
-# from modelscripts.metamodels.stories.operations import (
-#     ObjectCreationStep,
-#     ObjectDeletionStep,
-#     SlotStep,
-#     LinkCreationStep,
-#     LinkDeletionStep,
-#     CheckStep,
-#     ReadStep
-# )
-# from modelscripts.metamodels.objects import (
-#     ObjectModel,
-#     Object,
-#     Slot,
-#     Link,
-#     LinkObject
-# )
 
 
 class OperationStepEvaluation(StepEvaluation):
