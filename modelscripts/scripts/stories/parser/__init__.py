@@ -51,7 +51,7 @@ class StoryFiller():
 
     def __init__(self,
                  model,
-                 contextName,
+                 contextMessage,
                  allowDefinition,
                  allowAction,
                  allowVerb,
@@ -65,7 +65,7 @@ class StoryFiller():
         self.astStory=astStory
         self.model=model
 
-        self.contextName=contextName
+        self.contextMessage=contextMessage
         # some string like "object model" or "context"
         # string used for error message
 

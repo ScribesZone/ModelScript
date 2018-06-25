@@ -95,7 +95,7 @@ class ObjectModelSource(ASTBasedModelSourceFile):
         #--- (1) fill the story model
         filler=StoryFiller(
             model=self.objectModel,         # use this actual object model
-            contextName='object models',
+            contextMessage='object models',
             allowDefinition=True,
             allowAction=False,
             allowVerb=False,
