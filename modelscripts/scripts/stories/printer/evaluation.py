@@ -97,3 +97,29 @@ class StoryEvaluationPrinter(AbstractPrinter):
 
     def doCheckStepEvaluation(self, stepEval, indent):
         return self.output
+
+
+def StoryBestPrinter(
+        story,
+        storyEvaluation=None,
+        useStory=False,
+        indent=0):
+    """
+    Return the most appropriate printer among the
+    evaluation printer and regular story printer.
+    If the storyEvaluation is None or useStory is True
+    then select the StoryPrinter, otherwise select
+    StoryEvaluationPrinter.
+    """
+    choose_story=(
+        storyEvaluation is None
+        or useStory)
+    if choose_story:
+        return StoryPrinter(
+            story=story,
+            indent=indent)
+    else:
+        return StoryEvaluationPrinter(
+            storyEvaluation=storyEvaluation,
+            indent=indent
+        )
