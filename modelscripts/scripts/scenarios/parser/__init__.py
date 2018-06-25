@@ -225,7 +225,7 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
             name='' if ast_context.name is None else ast_context.name
             context_filler = StoryFiller(
                 model=self.scenarioModel,
-                contextName='contexts',
+                contextMessage='contexts',
                 allowDefinition=True,
                 allowAction=False,
                 allowVerb=False,
@@ -247,7 +247,7 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
             name='' if ast_scenario.name is None else ast_scenario.name
             scenario_filler = StoryFiller(
                 model=self.scenarioModel,
-                contextName='contexts',
+                contextMessage='scenarios',
                 allowDefinition=False,
                 allowAction=True,
                 allowVerb=True,
@@ -306,6 +306,6 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
             resolve_context(context)
 
         for scenario in self.scenarioModel.scenarios:
-            resolve_context(scenario)
+            resolve_scenario(scenario)
 
 METAMODEL.registerSource(ScenarioModelSource)
