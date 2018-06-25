@@ -23,11 +23,12 @@ from modelscripts.metamodels.objects import (
 from modelscripts.megamodels.models import (
     Placeholder
 )
-from modelscripts.scripts.stories.printer import (
-    StoryPrinter
-)
+# from modelscripts.scripts.stories.printer import (
+#     StoryPrinter
+# )
 from modelscripts.scripts.stories.printer.evaluation import (
-    StoryEvaluationPrinter
+    #StoryEvaluationPrinter
+    StoryBestPrinter
 )
 
 class ObjectModelPrinter(ModelPrinter):
@@ -48,18 +49,24 @@ class ObjectModelPrinter(ModelPrinter):
 
         if self.theModel.storyEvaluation is not None:
             # print the story of the model
-            if True:
-                printer=StoryEvaluationPrinter(
-                    storyEvaluation=self.theModel.storyEvaluation,
-                    indent=0
-                )
-                text = printer.do()
-            else:
-                storyPrinter=StoryPrinter(
-                    story=self.theModel.storyEvaluation.step,
-                    indent=0
-                )
-                text = storyPrinter.do()
+            # if True:
+            #     printer=StoryEvaluationPrinter(
+            #         storyEvaluation=self.theModel.storyEvaluation,
+            #         indent=0
+            #     )
+            #     text = printer.do()
+            # else:
+            #     storyPrinter=StoryPrinter(
+            #         story=self.theModel.storyEvaluation.step,
+            #         indent=0
+            #     )
+            #     text = storyPrinter.do()
+            text=StoryBestPrinter(
+                story=self.theModel.storyEvaluation.step,
+                storyEvaluation=self.theModel.storyEvaluation,
+                # TODO: add selection to configuraiton
+                # useStory=XXX
+            ).do()
             self.outLine(text)
             return self.output
         else:
