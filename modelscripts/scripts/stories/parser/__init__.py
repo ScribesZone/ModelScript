@@ -1,5 +1,12 @@
 # coding=utf-8
 
+"""
+Parser package dealing with the paring of stories.
+This package provides a single class StoryFiller that allow to
+get a "Story" giving a AST Story. This allow to share this
+parsing among various parser. At the moment stories are used
+inside ObjectModel parser and Scenario parser.
+"""
 from typing import Union
 from modelscripts.base.grammars import (
     ASTNodeSourceIssue
@@ -50,6 +57,11 @@ class StoryFiller():
                  allowVerb,
                  astStory):
         #type: ('Model', Union['definition','action'], 'ASTStory') -> None
+        """
+        Create a StoryFiller with various parameters controlling what
+        is accepted or not. The AST story to be parsed must be given.
+        use story() method to launch the parsing and get the result.
+        """
         self.astStory=astStory
         self.model=model
 
@@ -72,6 +84,7 @@ class StoryFiller():
         # See _add_check_if_needed.
 
     def story(self):
+        #type: () -> Story
         self.story=Story(
             model=self.model,
             astNode=self.astStory)
