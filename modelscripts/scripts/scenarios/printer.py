@@ -17,6 +17,9 @@ from modelscripts.scripts.textblocks.printer import (
 from modelscripts.scripts.stories.printer import (
     StoryPrinter
 )
+from modelscripts.scripts.stories.printer.evaluation import (
+    StoryBestPrinter
+)
 from modelscripts.base.styles import Styles
 from modelscripts.metamodels.scenarios import (
     ScenarioModel,
@@ -157,11 +160,12 @@ class ScenarioModelPrinter(ModelPrinter):
             self.kwd('context'),
             context.name)
         )
-        storyPrinter = StoryPrinter(
-            story=context.story,  #TODO: print evaluation if any
-            indent=1
-        )
-        text = storyPrinter.do()
+        text = StoryBestPrinter(
+            story=context.story,
+            storyEvaluation=context.storyEvaluation,
+            # TODO: add selection to configuraiton
+            # useStory=XXX
+        ).do()
         self.out(text)
 
     def doScenario(self, scenario):
@@ -169,11 +173,12 @@ class ScenarioModelPrinter(ModelPrinter):
             self.kwd('scenario'),
             scenario.name)
         )
-        storyPrinter = StoryPrinter(
-            story=scenario.story,  #TODO: print evaluation if any
-            indent=1
-        )
-        text = storyPrinter.do()
+        text = StoryBestPrinter(
+            story=scenario.story,
+            storyEvaluation=scenario.storyEvaluation,
+            # TODO: add selection to configuraiton
+            # useStory=XXX
+        ).do()
         self.out(text)
 
     def doDescriptor(self, descriptor):
