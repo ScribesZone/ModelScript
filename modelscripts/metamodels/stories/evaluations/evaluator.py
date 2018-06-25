@@ -104,7 +104,6 @@ class StoryEvaluator(object):
 
     def _eval_step(self, step, parent):
         #type: (Step, Optional[StepEvaluation]) -> StepEvaluation
-        print('VV'*10, type(step).__name__ )
         if isinstance(step, Story):
             return self._eval_story(step)
         elif isinstance(step, TextStep):
@@ -142,9 +141,7 @@ class StoryEvaluator(object):
         seval=CompositeStepEvaluation(
             parent=parent,
             step=step)
-        print('JJ'*10, type(step).__name__, len(step.steps) )
         for substep in step.steps:
-            print('    ', 'II' * 10, type(substep))
             self._eval_step(substep, seval)
         return seval
 
