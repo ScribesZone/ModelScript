@@ -1,0 +1,4 @@
+object model Ob_model01
+
+import class model from '../cls/cl-main-cybercompany-a.cls'
+computing is a Department.
