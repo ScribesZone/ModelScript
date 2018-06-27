@@ -1,0 +1,6 @@
+    # error, class model declare twice
+    
+object model Ob_model01
+
+import class model from '../cls/cl-main-cybercompany-a.cls'
+import class model from '../cls/cl-main-cybercompany-a.cls'

@@ -1,0 +1,5 @@
+    # error no class model provided
+
+object model Ob_model01
+
+computing is a Department.

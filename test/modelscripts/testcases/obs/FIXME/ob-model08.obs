@@ -1,0 +1,3 @@
+object model Ob_model01
+
+import object model from '../cls/ob-model01.obs'

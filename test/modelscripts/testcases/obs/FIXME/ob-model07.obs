@@ -1,0 +1,4 @@
+object model Ob_model07
+
+import class model from '../cls/cl-main-cybercompany-a.cls'
+import class model from '../cls/ob-model07.cls'
