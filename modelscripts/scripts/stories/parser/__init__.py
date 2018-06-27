@@ -174,7 +174,7 @@ class StoryFiller():
                 level=Levels.Fatal,
                 message=(
                     'Statement not allowed in %s'
-                    % self.contextName))
+                    % self.contextMessage))
 
     def _fill_object_creation_step(self, parent, astStep):
         self._is_check_needed=True
@@ -311,7 +311,7 @@ class StoryFiller():
                 message=(
                     '"%s" actions are forbidden in %s.' % (
                         astStep.action,
-                        self.contextName)))
+                        self.contextMessage)))
         if not self.allowDefinition and not isAction:
             ASTNodeSourceIssue(
                 code=icode('NO_DEFINITION'),
@@ -319,7 +319,7 @@ class StoryFiller():
                 level=Levels.Fatal,
                 message=(
                     'Definitions are forbidden in %s.' % (
-                        self.contextName)))
+                        self.contextMessage)))
 
 
 
