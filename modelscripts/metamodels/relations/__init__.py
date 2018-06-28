@@ -179,7 +179,6 @@ class Column(SourceModelElement, Member):
 class Constraint(SourceModelElement):
     pass
 
-print('AA'*20,'register re')
 METAMODEL = Metamodel(
     id='re',
     label='relation',
