@@ -31,3 +31,7 @@ association WorksOn
         employees : Employee[*]
         projects : Project[*]
 
+association Supervise
+    roles
+        subordinates : Employee[*]
+        supervisor : Employee[1]
