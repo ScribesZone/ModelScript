@@ -1,16 +1,6 @@
 # coding=utf-8
 
 """
-Simple metamodel for object states.
-The metamodel represents two views:
-* an abstract view in which object/slots and links are
-  represented without and order,
-* a story view that represents the same entities but
-  as they are defined, as in a story, in a sequential order
-  and with Annotated OBject (AOB) text blocks, that is text
-  blocks nested definitions.
-
-
     Abstract view
         ObjectModel
         <>--* Object
@@ -25,17 +15,9 @@ The metamodel represents two views:
         Link, Object
         <|-- LinkObject
 
-    Story view
-        Definition
-        <|-- CoreDefinition
-             <|-- Object
-             <|-- Slot
-             <|-- Link
-        <|-- AnnotatedTextBlock
-            <>--* CoreDefinition
 """
 
-
+from __future__ import print_function
 from collections import OrderedDict
 from typing import List, Optional, Dict, Text, Union
 from abc import ABCMeta, abstractmethod
@@ -110,6 +92,9 @@ class ObjectModel(Model):
         # Filled only if this model is the result of a story evaluation.
         # Otherwise this is most probably a handmade model.
 
+    def copy(self):
+        return ObjectModelCopier(self).copy()
+
     @property
     def classModel(self):
         #type: ()-> ClassModel
@@ -151,6 +136,12 @@ class ObjectModel(Model):
         return [
             l for l in self._links if isinstance(l, PlainLink) ]
 
+    # def selectLinks(self, source=None, association=None, target=None):
+    #     #type: (Optional[Object], Optional[Association], Optional[Object]) -> List[Link]
+    #     """
+    #     Return all the links that satisfy all the criteria specified
+    #     """
+    #     result=
 
     @property
     def metrics(self):
@@ -172,7 +163,6 @@ class ObjectModel(Model):
     def metamodel(self):
         #type: () -> Metamodel
         return METAMODEL
-
 
 
 class ElementFromStep(SourceModelElement):
@@ -243,8 +233,6 @@ class PackagableElement(ElementFromStep):
                 self.name)
         else:
             return self.name
-
-
 
 
 class ResourceInstance(object):
@@ -351,12 +339,6 @@ class Object(PackagableElement, Entity):
         # (ABCMeta is not enough)
         raise NotImplementedError()
 
-    # def delete(self):
-    #     #TODO:  implement delete operation on objects
-    #
-    #     raise NotImplementedError('Delete operation on objects is not implemented')
-
-
 
 class PlainObject(Object):
 
@@ -409,7 +391,6 @@ class Slot(ElementFromStep, Member):
         self.attribute=attribute
         self.value=value
         object._slotNamed[attribute_name]=self
-
 
 
 class Link(PackagableElement, Entity):
@@ -485,7 +466,6 @@ class PlainLink(Link):
     #     self.state.links=[l for l in self.state.links if l != self]
 
 
-
 class LinkObject(Object, Link):
 
     def __init__(self, model, associationClass,
@@ -538,6 +518,82 @@ class LinkObject(Object, Link):
 
     def isPlainObject(self):
         return False
+
+
+
+class ObjectModelCopier(object):
+
+    def __init__(self, source):
+        self.o=source
+        #type: ObjectModel
+
+        self.t=ObjectModel()
+        #type: ObjectModel
+
+        self._object_map=dict()
+
+        #TODO: implement LinkObject
+
+    def copy(self):
+        print('SS'*10, 'copy')
+        self.t._classModel=self.o._classModel
+        self.t.storyEvaluation=self.o.storyEvaluation
+        for po in self.o.plainObjects:
+            self._copy_plain_object(po)
+        for l in self.o.plainLinks:
+            self._copy_plain_link(l)
+            # TODO: implement LinkObject
+        return self.t
+
+    def _copy_plain_object(self, plain_object):
+        print('SS'*10, 'copy plain object')
+
+        if plain_object.package is not None:
+            raise NotImplementedError(
+                'The usage of package is not supported yet')
+        new_object = \
+            PlainObject(
+                model=self.t,
+                name=plain_object.name,
+                class_=plain_object.class_,
+                package=plain_object.package,   # See exception above
+                step=plain_object.step,   # this is ok since an object
+                                    # is created only once
+                lineNo=plain_object.lineNo,
+                description=plain_object.description,
+                astNode=plain_object.astNode)
+        self._object_map[plain_object]=new_object
+        for slot in plain_object.slots:
+            self._copy_slot(slot, new_object)
+
+    def _copy_slot(self, old_slot, new_object):
+        new_slot=\
+            Slot(
+                object=new_object,
+                attribute=old_slot.attribute,
+                value=old_slot.value,
+                step=old_slot.step,
+                description=old_slot.description,
+                lineNo=old_slot.lineNo,
+                astNode=old_slot.astNode)
+
+    def _copy_plain_link(self, plain_link):
+        if plain_link.package is not None:
+            raise NotImplementedError(
+                'The usage of package is not supported yet')
+        new_link= \
+            PlainLink(
+                model=self.t,
+                name=plain_link.name,
+                association=plain_link.association,
+                sourceObject=self._object_map[plain_link.sourceObject],
+                targetObject=self._object_map[plain_link.targetObject],
+                package=plain_link.package,
+                step=plain_link.step,
+                astNode=plain_link.astNode,
+                lineNo=plain_link.lineNo,
+                description=plain_link.description)
+
 
 
 METAMODEL = Metamodel(
