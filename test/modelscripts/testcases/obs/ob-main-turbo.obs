@@ -1,0 +1,18 @@
+object model Ob_object03
+import class model from '../cls/cl-main-cybercompany-a.cls'
+
+zoe is an Employee.
+babako is an Employee.
+hardware is a Department.
+computing is a Department.
+micro is a Project.
+astra is a Project.
+turbo is a Project.
+zoe WorksIn hardware.
+zoe WorksIn computing.
+zoe Supervise babako.
+zoe Supervise zoe.
+babako WorksIn computing.
+babako WorksOn astra.
+babako WorksOn turbo.
+zoe WorksOn turbo.
