@@ -184,11 +184,11 @@ class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
             else:
                 raise ValueError(
                     'No %s model found. Expected one.'
-                    % targetMetamodel.name)
+                    % targetMetamodel.label)
         elif len(lm)>=2:
             raise ValueError(
                 '%i %s models found. Expected one.'
-                % (len(lm), targetMetamodel.name))
+                % (len(lm), targetMetamodel.label))
         else:
             return lm[0]
 
