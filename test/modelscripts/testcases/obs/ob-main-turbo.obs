@@ -1,18 +1,53 @@
-object model Ob_object03
+object model Ob_main_turbo
 import class model from '../cls/cl-main-cybercompany-a.cls'
 
 zoe is an Employee.
+The name of zoe is "Zoe Zarwin".
+The salary of zoe is 3500.
+
 babako is an Employee.
+The name of babako is "Babako Schmitt".
+The salary of babako is 1800.
+
 hardware is a Department.
+The name of hardware is "hardware".
+The location of hardware is "Manive".
+The budget of hardware is 800000.
+
 computing is a Department.
+The name of computing is "computing".
+The location of computing is "Amsterdam".
+The budget of computing is 500000.
+
+perspective is a Department.
+The name of perspective is "perspective 2030".
+The location of perspective is "Grenoble".
+The budget of perspective is 10000.
+
 micro is a Project.
+The name of micro is "micro for all".
+The budget of micro is 80000.
+
 astra is a Project.
+The name of astra is "astra".
+The budget of astra is 50000.
+
 turbo is a Project.
-zoe WorksIn hardware.
-zoe WorksIn computing.
+The name of turbo is "turbo V".
+The budget of turbo is 100000.
+
+
 zoe Supervise babako.
 zoe Supervise zoe.
+
+zoe WorksIn hardware.
+zoe WorksIn computing.
 babako WorksIn computing.
+
 babako WorksOn astra.
 babako WorksOn turbo.
 zoe WorksOn turbo.
+
+hardware Controls micro.
+computing Controls astra.
+computing Controls turbo.
