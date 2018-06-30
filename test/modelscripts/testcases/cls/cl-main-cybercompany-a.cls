@@ -33,5 +33,5 @@ association WorksOn
 
 association Supervise
     roles
-        subordinates : Employee[*]
         supervisor : Employee[1]
+        subordinates : Employee[*]
