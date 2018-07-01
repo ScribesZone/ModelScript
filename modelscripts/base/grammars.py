@@ -128,6 +128,10 @@ class AST(object):
         return AST.ast(astNode).line(astNode)
 
     @classmethod
+    def nodeLineEnd(cls, astNode):
+        return AST.ast(astNode).lineEnd(astNode)
+
+    @classmethod
     def extractErrorFields(cls, e):
 
         # TEXTX CODE PRODUCING THE ERROR MESSAGE:
@@ -199,6 +203,15 @@ class AST(object):
         (l,c)=self.pos(astNode)
         return c
 
+    def lineEnd(self, astNode):
+        (l,c)=self.posEnd(astNode)
+        return l
+
+    def columnEnd(self, astNode):
+        (l,c)=self.posEnd(astNode)
+        return l
+
+
     def visualize(self):
         dot_file=self.file+'.dot'
         model_export(self.model, dot_file)
@@ -263,15 +276,28 @@ class ASTNodeSourceIssue(LocalizedSourceIssue):
     """
     An issue based on a ASTNode.
     """
-    def __init__(self, astNode, level, message, code=None):
+    def __init__(self, astNode, level, message, code=None,
+                 position=None):
         ast=AST.ast(astNode)
+        if position==None:
+            line=line=ast.line(astNode)
+            column=ast.column(astNode)
+        elif position=='before':
+            line=line=ast.line(astNode)
+            column=ast.column(astNode)
+        elif position=='after':
+            line=line=ast.lineEnd(astNode)
+            column=ast.columnEnd(astNode)
+        else:
+            raise NotImplementedError(
+                'unexpected position: %s' % position)
         super(ASTNodeSourceIssue, self).__init__(
             code=code,
             sourceFile=ast.sourceFile,
             level=level,
             message=message,
-            line=ast.line(astNode),
-            column=ast.column(astNode)
+            line=line,
+            column=column
         )
 
 if __name__ == "__main__":
@@ -288,3 +314,5 @@ if __name__ == "__main__":
         ast=AST(grammar, script_file)
         ast.visualize()
         print('OK')
+
+
