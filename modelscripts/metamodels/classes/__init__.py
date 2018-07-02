@@ -265,6 +265,13 @@ class ClassModel(Model):
         ))
         return ms
 
+    def globalNames(self):
+        return (
+            self.enumerationNames
+            + self.classNames
+            + self.associationNames
+            + self.dataTypeNames)
+
     def __str__(self):
         # TODO: move this to printer
         def category_line(label,elems):
@@ -315,7 +322,7 @@ class ClassModel(Model):
         elif name in self.associationClassNamed:
             return self.associationClassNamed[name]
         else:
-            raise Exception('ERROR - %s : No association or association class'
+            raise ValueError('ERROR - %s : No association or association class'
                             % name )
 
     def _findClassOrAssociationClass(self, name):
@@ -326,7 +333,7 @@ class ClassModel(Model):
         elif name in self.associationClassNamed:
             return self.associationClassNamed[name]
         else:
-            raise Exception('ERROR - %s : No class or association class'
+            raise ValueError('ERROR - %s : No class or association class'
                             % name)
 
     def _findRole(self, associationOrAssociationClassName, roleName):
@@ -342,7 +349,7 @@ class ClassModel(Model):
         if roleName in a.roleNamed:
             return a.roleNamed[roleName]
         else:
-            raise Exception('ERROR - No "%s" role on association(class) %s' %
+            raise ValueError('ERROR - No "%s" role on association(class) %s' %
                             (roleName, associationOrAssociationClassName)  )
 
     def _findInvariant(self, classOrAssociationClassName, invariantName):
@@ -352,7 +359,7 @@ class ClassModel(Model):
         if invariantName in c.invariantNamed:
             return c.invariantNamed[invariantName]
         else:
-            raise Exception('ERROR - No "%s" invariant on class %s' %
+            raise ValueError('ERROR - No "%s" invariant on class %s' %
                             (invariantName, classOrAssociationClassName))
 
 
@@ -508,6 +515,10 @@ class Enumeration(SimpleType):
     def literals(self):
         return self._literals
 
+    @property
+    def literalNames(self):
+        return [l.name for l in self.literals]
+
     # def addLiteral(self, name):
     #     self.literals.append(name)
 
@@ -557,8 +568,10 @@ class Class(PackagableElement, Entity):
         #FIXME: add support for inheritance
         self.attributeNamed = collections.OrderedDict()
 
+        # TODO: deal with operation and operation names
         # Signature looks like op(p1:X):Z
-        self.operationWithSignature = collections.OrderedDict()
+        self.operationNamed = collections.OrderedDict()
+
         # Anonymous invariants are indexed with id like _inv2
         # but their name (in Invariant) is always ''
         # This id is just used internaly
@@ -583,7 +596,11 @@ class Class(PackagableElement, Entity):
 
     @property
     def operations(self):
-        return self.operationWithSignature.values()
+        return self.operationNamed.values()
+
+    @property
+    def operationNames(self):
+        return self.invariantNamed.keys()
 
     @property
     def invariants(self):
@@ -600,6 +617,13 @@ class Class(PackagableElement, Entity):
     @property
     def playedRoles(self):
         return self._playedRoles
+
+    @property
+    def names(self):
+        return (
+            self.attributeNames
+            +self.operationNames
+            +self.invariantNames)
 
 
 class Attribute(SourceModelElement, Member):
@@ -735,7 +759,7 @@ class Association(PackagableElement, Entity):
 
     @property
     def roleNames(self):
-        return self.roleNamed.values()
+        return self.roleNamed.keys()
 
     @MAttribute('Integer')
     def arity(self):
@@ -977,23 +1001,4 @@ MetamodelDependency(
     optional=True,
     multiple=True,
 )
-
-# http://pythex.org
-# TODO
-#   (self\.[\w.]+ |\w +::\w + |\$\w +\.\w + [\w.] * | \$\w +: \w +)
-# model
-
-# class ExpressionPath(object):
-#     """
-#     Expression paths.
-#     """
-#     def __init__(self, startClass, pathString):
-#         self.pathString = pathString
-#         self.startClass = startClass
-#         self.elements = self._evaluate(startClass, pathString.split('.'))
-#
-#
-#     def _evaluate(self, current, names):
-#         return NotImplementedError() # TODO
-
 
