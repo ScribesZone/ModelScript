@@ -4,17 +4,16 @@ Model elements resulting from the evaluation of a story.
 The global structure of this metamodel package is as following::
 
     StepEvaluation
-    ---1 Step (step)
-    ---* Access
-    ---* Issue
-    ---1 StepEvaluation (parent)
+    --->1 Step (step)
+    --->* Access
+    --->* Issue
+    <--->0..1 StepEvaluation (parent)
 
     StepEvaluation
     <|-- CompositeStepEvaluation
         <>--* StepEvaluation (stepEvaluations)
-    <|-- StoryEvaluation
-        ----1 ObjectModel (finalState)
-        <>--* StepEvaluation (stepEvaluations)
+        <|-- StoryEvaluation
+            ----1 ObjectModel (finalState)
     <|-- OperationStepEvaluation  (see "operations" package)
 
 
@@ -58,11 +57,11 @@ class StepEvaluation(SourceModelElement, Subject):
             description=step.description)
 
         self.step=step
-        #type: StepEvaluation
-        # Origin of this evaluation.
-        # This is always defined as all StepEvaluations results from
+        #type: Step
+        # Step at the origin of this evaluation.
+        # The "step" is always defined as all StepEvaluations result from
         # a Step. The opposite of this reference is not stored and
-        # not really usefull since a Step can have various StepEvaluation.
+        # not really useful since a Step can have various StepEvaluation.
 
         self.parent=parent
         #type: Optional[CompositeStepEvaluation]
@@ -128,8 +127,9 @@ class CompositeStepEvaluation(StepEvaluation):
 
         self.stepEvaluations=[]
         #type: List[Step]
-        # Composite evaluations have substeps evaluation,
-        # but all step evaluation have parents (see stepEvaluation).
+        # Composite evaluations have substeps "stepEvaluations".
+        # On the opposite, all step evaluation have parents
+        # (see stepEvaluation).
 
 
 class StoryEvaluation(CompositeStepEvaluation):
@@ -144,5 +144,9 @@ class StoryEvaluation(CompositeStepEvaluation):
             parent=None,
             step=step)
 
-        self.finalState=None
-        # This will be filled by the evaluator, at the end of the eval.
+        self.checkEvaluations=[]
+        #type: List['CheckStepEvaluation']
+
+    @property
+    def finalState(self):
+        return self.checkEvaluations[-1].frozenState
