@@ -70,6 +70,8 @@ META_CLASSES=( # could be in __all__ (not used by PyParse)
     'Operation',
     'Association',
     'Role',
+    'RolePosition',
+    'opposite',
     'AssociationClass',
 )
 
@@ -293,6 +295,15 @@ class ClassModel(Model):
         lines.append('% 3d' % total)
         return  '\n'.join(lines)
 
+    def finalize(self):
+        super(ClassModel, self).finalize()
+        for a in self.associations:
+            source_class=a.sourceRole.type
+            target_class=a.targetRole.type
+            source_class._ownedRoles.append(a.targetRole)
+            source_class._playedRoles.append(a.sourceRole)
+            target_class._ownedRoles.append(a.sourceRole)
+            target_class._playedRoles.append(a.targetRole)
 
     def _findAssociationOrAssociationClass(self, name):
         # TODO: check this implementation
@@ -333,9 +344,6 @@ class ClassModel(Model):
         else:
             raise Exception('ERROR - No "%s" role on association(class) %s' %
                             (roleName, associationOrAssociationClassName)  )
-
-
-
 
     def _findInvariant(self, classOrAssociationClassName, invariantName):
         #type: (Text, Text) -> 'Invariant'
@@ -378,6 +386,7 @@ class PackagableElement(SourceModelElement):
         else:
             return self.name
 
+
 class Entity(Resource):
     __metaclass__ = abc.ABCMeta
 
@@ -409,7 +418,9 @@ class SimpleType(PackagableElement):
     def label(self):
         return self.name
 
-
+def isConformToType(simpleType, value):
+    # TODO: to implement type conformity
+    return True
 
 class DataType(SimpleType):
     """
@@ -504,6 +515,7 @@ class Enumeration(SimpleType):
     def __repr__(self):
         return '%s(%s)' % (self.name, repr(self.literals))
 
+
 class EnumerationLiteral(SourceModelElement):
 
     def __init__(self, name, enumeration, astNode=None, lineNo=None,
@@ -541,16 +553,19 @@ class Class(PackagableElement, Entity):
         self.model.classNamed[name] = self
         self.isAbstract = isAbstract
         self.superclasses = superclasses  # strings resolved as classes
+
         #FIXME: add support for inheritance
         self.attributeNamed = collections.OrderedDict()
+
         # Signature looks like op(p1:X):Z
         self.operationWithSignature = collections.OrderedDict()
         # Anonymous invariants are indexed with id like _inv2
         # but their name (in Invariant) is always ''
         # This id is just used internaly
         self.invariantNamed = collections.OrderedDict()   # after resolution
-        self.outgoingRoles = [] # after resolution
-        self.incomingRoles = [] # after resolution
+
+        self._ownedRoles = [] # after resolution
+        self._playedRoles = [] # after resolution
 
     @property
     def attributes(self):
@@ -577,6 +592,14 @@ class Class(PackagableElement, Entity):
     @property
     def invariantNames(self):
         return self.invariantNamed.keys()
+
+    @property
+    def ownedRoles(self):
+        return self._ownedRoles
+
+    @property
+    def playedRoles(self):
+        return self._playedRoles
 
 
 class Attribute(SourceModelElement, Member):
@@ -671,6 +694,18 @@ class Operation(SourceModelElement, Member):
         return self.expression is not None
 
 
+RolePosition=Union['source','target']
+
+def opposite(rolePosition):
+    if rolePosition=='source':
+        return 'target'
+    elif rolePosition=='target':
+        return 'source'
+    else:
+        raise NotImplementedError(
+            "Position %s doesn't exists." % rolePosition)
+
+
 class Association(PackagableElement, Entity):
     """
     Associations.
@@ -731,6 +766,16 @@ class Association(PackagableElement, Entity):
                     self.name
                 ))
         return self.roles[1]
+
+    def role(self, position):
+        #type: (RolePosition) -> Role
+        if position=='source':
+            return self.roles[0]
+        elif position=='target':
+            return self.roles[1]
+        else:
+            raise NotImplementedError(
+                'role position "%s" is not implemented' % position)
 
     @MAttribute('Boolean')
     def isManyToMany(self):
@@ -795,7 +840,6 @@ class Role(SourceModelElement, Member):
         self.cardinalityMin = cardMin
         self.cardinalityMax = cardMax
         self.type = type        # string to be resolved in Class
-        #type:
         self.isOrdered = isOrdered
 
         # (str,str) to be resolved in (str,SimpleType)
@@ -861,8 +905,31 @@ class Role(SourceModelElement, Member):
             and self.association.roles[0] == self
         )
 
+    @property
+    def position(self):
+        #type: () -> RolePosition
+        if self.association.isBinary:
+            if self.association.roles[0]==self:
+                return 'source'
+            else:
+                return 'target'
+        else:
+            raise NotImplementedError(
+                'role.position() not implemented'
+                ' for n-ary association')
+
     def __str__(self):
         return '%s::%s' % (self.association.name, self.name)
+
+
+    def acceptCardinality(self, actualCardinality):
+        if actualCardinality < self.cardinalityMin:
+            return False
+        elif (self.cardinalityMax is not None
+              and actualCardinality > self.cardinalityMax ):
+            return False
+        else:
+            return True
 
 
 class AssociationClass(Class, Association):
