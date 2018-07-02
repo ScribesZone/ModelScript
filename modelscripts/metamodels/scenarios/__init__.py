@@ -171,6 +171,9 @@ class ScenarioModel(Model, Subject):
         ms.addList((
             #TODO: add metrics
             ('actor instance', len(self.actorInstances)),
+            ('scenario', len(self.scenarios)),
+            ('context', len(self.contexts)),
+
         ))
         return ms
 
