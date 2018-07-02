@@ -150,7 +150,7 @@ RoleCompartment:
 ;
 
 Role:
-    name=ID ':' type=[Class] cardinality=Cardinality ?
+    name=ID ':' type=ID cardinality=Cardinality
     (o_
         textBlock=TextBlock
     _o)?
