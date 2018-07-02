@@ -27,9 +27,7 @@ from modelscripts.base.printers import (
 from modelscripts.metamodels.classes import (
     ClassModel
 )
-from modelscripts.metamodels.classes.expressions import (
-    PreCondition,
-)
+
 
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
@@ -128,9 +126,9 @@ class ClassModelPrinter(ModelPrinter):
             for operation in class_.operations:
                 self.doOperation(operation)
 
-        if class_.invariants:
-            for invariant in class_.invariants:
-                self.doInvariant(invariant)
+        # if class_.invariants:
+        #     for invariant in class_.invariants:
+        #         self.doInvariant(invariant)
 
         return self.output
 
@@ -211,8 +209,8 @@ class ClassModelPrinter(ModelPrinter):
             self.outLine(indent('        ',operation.expression)+'\n')
         self.doModelTextBlock(operation.description)
 
-        for condition in operation.conditions:
-            self.doOperationCondition(condition)
+        # for condition in operation.conditions:
+        #     self.doOperationCondition(condition)
         return self.output
 
     def doInvariant(self, invariant):
@@ -240,7 +238,7 @@ class ClassModelPrinter(ModelPrinter):
         _=('%s %s %s%s%s%s%s%s' % (
             role.name,
             self.kwd(':'),
-            role.type.name,
+            role.type,
             self.kwd('['),
             role.cardinalityMin,
             self.kwd('..'),
@@ -250,19 +248,19 @@ class ClassModelPrinter(ModelPrinter):
         self.doModelTextBlock(role.description)
         return self.output
 
-    def doOperationCondition(self, condition):
-        prefix_first = '        '
-        prefix_rest  = '            '
-        keyword='pre' if isinstance(condition,PreCondition) else 'post'
-        self.doModelTextBlock(condition.description)
-        self.outLine('%s%s %s:' % (
-            prefix_first,
-            self.kwd(keyword),
-            condition.name,
-        ))
-        self.doModelTextBlock(condition.description)
-        self.out(indent(prefix_rest,condition.expression)+'\n')
-        return self.output
+    # def doOperationCondition(self, condition):
+    #     prefix_first = '        '
+    #     prefix_rest  = '            '
+    #     keyword='pre' if isinstance(condition,PreCondition) else 'post'
+    #     self.doModelTextBlock(condition.description)
+    #     self.outLine('%s%s %s:' % (
+    #         prefix_first,
+    #         self.kwd(keyword),
+    #         condition.name,
+    #     ))
+    #     self.doModelTextBlock(condition.description)
+    #     self.out(indent(prefix_rest,condition.expression)+'\n')
+    #     return self.output
 
 
 
