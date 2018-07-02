@@ -50,7 +50,8 @@ from modelscripts.metamodels.stories.evaluations import (
     StoryEvaluation
 )
 from modelscripts.metamodels.stories.evaluations.operations import (
-    OperationStepEvaluation
+    OperationStepEvaluation,
+    CheckStepEvaluation
 )
 
 
@@ -66,14 +67,6 @@ ISSUES={
     'LINK_NO_SOURCE':'st.eval.Link.NoSource',
     'LINK_NO_TARGET':'st.eval.Link.NoTarget',
     'LINKDEL_NOT_IMPL':'st.eval.LinkDeletion.NoImpl',
-
-
-
-    # 'NO_VERB':'st.syn.Story.NoVerb',
-    # 'NO_ACTION':'st.syn.Story.NoAction',
-    # 'NO_DEFINITION':'st.syn.Story.NoDefinition',
-    # 'OBJECT_CLASS_NOT_FOUND':'st.syn.ObjectCreation.NoClass',
-    # 'LINK_ASSOC_NOT_FOUND':'st.syn.LinkOperation.NoAssoc'
 }
 def icode(ilabel):
     return ISSUES[ilabel]
@@ -90,6 +83,7 @@ class StoryEvaluator(object):
         :param initialState:
         :param permissionSet:
         """
+        assert initialState is not None
         self.state=initialState
         self.permissionSet=permissionSet
         self.accessSet=AccessSet(permissionSet)
@@ -99,7 +93,6 @@ class StoryEvaluator(object):
         self.storyEvaluation=(
             self._eval_step(storyStep, parent=None)
         )
-        self.storyEvaluation.finalState=self.state
         return self.storyEvaluation
 
     def _eval_step(self, step, parent):
@@ -283,7 +276,7 @@ class StoryEvaluator(object):
             step=step)
         assoc=step.association
         source= self.state.object(step.sourceObjectName)
-        target= self.state.object(step.sourceObjectName)
+        target= self.state.object(step.targetObjectName)
         if source is None:
             i = ASTNodeSourceIssue(
                 code=icode('LINK_NO_SOURCE'),
@@ -302,7 +295,7 @@ class StoryEvaluator(object):
                 level=Levels.Error,
                 message=(
                     'Target object "%s" does not exist.'
-                    ' Link ignored.' % step.sourceObjectName))
+                    ' Link ignored.' % step.targetObjectName))
             step_eval.issues.append(i)
             self.accesses=[]
             return step_eval
@@ -342,7 +335,8 @@ class StoryEvaluator(object):
         return step_eval
 
     def _eval_check(self, step, parent):
-        seval=OperationStepEvaluation(
+        seval=CheckStepEvaluation(
             parent=parent,
-            step=step)
+            step=step,
+            currentState=self.state)
         return seval
