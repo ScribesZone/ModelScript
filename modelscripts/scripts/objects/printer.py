@@ -60,13 +60,8 @@ class ObjectModelPrinter(ModelPrinter):
             # the model does not come from a story
             # It can still be printed, using the code below
             # TODO: reimplement the raw object model printer
-            raise NotImplementedError(
-                """*** NO STORY TO PRINT"""
-            )
-
-
-
-
+            print(('^^'*40+'\n')*20)
+            print( """*** NO STORY TO PRINT. See TODO""" )
 
     #-------------------------------------------------------------------
     #                The code below is not used anymore.
