@@ -28,6 +28,8 @@ from modelscripts.metamodels.classes import (
     Association,
 
 )
+from modelscripts.base.grammars import AST
+
 from modelscripts.metamodels.stories import Step
 
 META_CLASSES=[
@@ -266,15 +268,12 @@ class LinkDeletionStep(UpdateOperationStep):
 class CheckStep(ConsultOperationStep):
 
     def __init__(self,
-                 parent, implicit=None,
-                 astNode=None, lineNo=None, description=None):
+                 parent, astNode=None, position=None):
         super(CheckStep, self).__init__(
             parent=parent,
-            astNode=astNode,
-            lineNo=lineNo,
-            description=description)
+            astNode=astNode)
 
-        self.implicit=implicit
+        self.position=position
         #type: Optional['before','after']
         """ 
         Indicates if the check statement is explicit (None)
