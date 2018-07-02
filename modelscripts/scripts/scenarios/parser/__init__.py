@@ -7,6 +7,7 @@ from __future__ import unicode_literals, print_function, absolute_import, divisi
 from typing import Text, Union, Optional
 import os
 
+from modelscripts.base.grammars import AST
 from modelscripts.megamodels.models import Model, Placeholder
 from modelscripts.base.grammars import (
     # ModelSourceAST, \
@@ -285,17 +286,26 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
 
     def resolve(self):
 
+        def state_after_object_model():
+            if self.objectModel is not None:
+                state=self.objectModel.copy()
+            else:
+                state=ObjectModel()
+            return state
+
         def resolve_context(context):
-            state=ObjectModel()
             evaluator = StoryEvaluator(
-                initialState=state,
+                initialState=state_after_object_model(),
                 permissionSet=None)
             context.storyEvaluation = evaluator.evaluateStory(
                 context.story)
 
         def resolve_scenario(scenario):
-            state=ObjectModel()
-            print('ZZ'*10, 'Evaluation scenario', scenario)
+            context=self.scenarioModel.context(scenario.name)
+            if context is None:
+                state=state_after_object_model()
+            else:
+                state=context.storyEvaluation.finalState.copy()
             evaluator = StoryEvaluator(
                 initialState=state,
                 permissionSet=None)
