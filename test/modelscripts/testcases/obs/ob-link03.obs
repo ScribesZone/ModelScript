@@ -1,0 +1,6 @@
+object model A
+import class model from '../cls/cl-main-cybercompany-a.cls'
+
+computing : Department
+paul : Employee
+(paul, Supervise, computing)

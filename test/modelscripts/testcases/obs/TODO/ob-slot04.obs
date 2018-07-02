@@ -1,0 +1,5 @@
+object model A
+import class model from '../cls/cl-main-cybercompany-a.cls'
+
+paul : Employee
+paul.name=True    # Should raise a type error

@@ -1,0 +1,8 @@
+object model Ob_main_turbo
+import class model from '../cls/cl-main-cybercompany-a.cls'
+
+zoe is an Employee.
+babako is an Employee.
+
+zoe Supervise babako.
+zoe Supervise zoe.
