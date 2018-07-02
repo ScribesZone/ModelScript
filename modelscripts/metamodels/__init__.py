@@ -6,7 +6,6 @@ from modelscripts.scripts.metamodels.parser import PyMetamodelParser
 META_PACKAGES=(
     'aui',
     'classes',
-    'classes.expressions',
     'glossaries',
     'megamodels',
     'objects',
