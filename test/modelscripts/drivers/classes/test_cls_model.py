@@ -5,13 +5,15 @@ from modelscripts.scripts.classes.parser import ClassModelSource
 from test.modelscripts.drivers import getTestFile
 
 class TestClassModel(object):
+    THE_MODEL=None
 
     def __init__(self):
-        cls_File = getTestFile('cls/cl-main-cybercompany-a.cls')
-        source_file = ClassModelSource(cls_File)
-        assert source_file.isValid
-
-        self.model=source_file.classModel
+        if TestClassModel.THE_MODEL is None:
+            cls_File = getTestFile('cls/cl-main-cybercompany-a.cls')
+            source_file = ClassModelSource(cls_File)
+            assert source_file.isValid
+            TestClassModel.THE_MODEL=source_file.classModel
+        self.model=TestClassModel.THE_MODEL
 
     def testClasses(self):
         r={'Employee', 'Department', 'Project'}
@@ -23,7 +25,6 @@ class TestClassModel(object):
     def testAssocs(self):
         r={'WorksIn','WorksOn','Controls', 'Supervise'}
         assoc_names = {c.name for c in self.model.associations}
-        print('SS'*10, assoc_names)
         assert assoc_names==r
         assert set(self.model.associationNames)==r
 
