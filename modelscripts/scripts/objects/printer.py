@@ -48,19 +48,6 @@ class ObjectModelPrinter(ModelPrinter):
         super(ObjectModelPrinter, self).doModelContent()
 
         if self.theModel.storyEvaluation is not None:
-            # print the story of the model
-            # if True:
-            #     printer=StoryEvaluationPrinter(
-            #         storyEvaluation=self.theModel.storyEvaluation,
-            #         indent=0
-            #     )
-            #     text = printer.do()
-            # else:
-            #     storyPrinter=StoryPrinter(
-            #         story=self.theModel.storyEvaluation.step,
-            #         indent=0
-            #     )
-            #     text = storyPrinter.do()
             text=StoryBestPrinter(
                 story=self.theModel.storyEvaluation.step,
                 storyEvaluation=self.theModel.storyEvaluation,
