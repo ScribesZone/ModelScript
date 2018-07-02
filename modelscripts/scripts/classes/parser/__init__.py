@@ -42,10 +42,15 @@ __all__=(
 DEBUG=0
 
 ISSUES={
+    'GNAME_TWICE': 'cl.syn.GlobalName.Twice',
+    'ENUMLIT_TWICE': 'cl.syn.EnumLit.Twice',
+    'ATT_DEFINED': 'cl.syn.Attribute.Defined',
+    'ROLE_DEFINED': 'cl.syn.Role.Defined',
+    'CARDINALITY_ERROR': 'cl.syn.Cardinality.Error',
+
     'CLASS_NO_SUPER':'cl.res.Class.NoSuper',
     'ATTRIBUTE_NO_TYPE':'cl.res.Attribute.NoType',
     'ROLE_NO_CLASS':'cl.res.Role.NoClass',
-    'CARDINALITY_ERROR':'cl.syn.Cardinality.Error'
 }
 
 def icode(ilabel):
@@ -77,6 +82,22 @@ class ClassModelSource(ASTBasedModelSourceFile):
 
     def fillModel(self):
 
+        def check_if_global_name(name, ast_node, message):
+            if name in self.classModel.globalNames():
+                ASTNodeSourceIssue(
+                    code=icode('GNAME_TWICE'),
+                    astNode=ast_node,
+                    level=Levels.Error,
+                    message=(
+                        'Symbol "%s" is already defined'
+                        ' in class model. %s' % (
+                            name,
+                            message
+                        )))
+                return True
+            else:
+                return False
+
         def cardinality_min_max(ast_cardinality):
 
             min=ast_cardinality.min
@@ -97,121 +118,169 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     astNode=ast_cardinality,
                     level=Levels.Fatal,
                     message=(
-                        'Malformed cardinality "[%s..%s]".'
-                        % (ast_cardinality.min, ast_cardinality)))
+                        'Wrong cardinality "[%s..%s]".'
+                        % (ast_cardinality.min,
+                           ast_cardinality.max)))
             return (
                 min,
                 max if max!='*' else None)
 
-        # TODO: add check to avoid duplicate
         def define_datatype(ast_datatype):
-            d=DataType(
-                name=ast_datatype.name,
-                model=self.model,
-                astNode=ast_datatype
-            )
-            d.description=astTextBlockToTextBlock(
-                container=d,
-                astTextBlock=ast_datatype.textBlock)
-
-        # TODO: add check to avoid duplicate
-        def define_enumeration(ast_enumeration):
-            e=Enumeration(
-                name=ast_enumeration.name,
-                model=self.model,
-                package=None,
-                astNode=ast_enumeration)
-            e.description=astTextBlockToTextBlock(
-                container=e,
-                astTextBlock=ast_enumeration.textBlock)
-            for ast_el in ast_enumeration.literals:
-                define_enumeration_literal(e, ast_el)
-
-        # TODO: add a check to avoid duplicate name
-        #   in global space, enumerations, etc.
-        def define_enumeration_literal(enumeration, ast_literal):
-                el=EnumerationLiteral(
-                    name=ast_literal.name,
-                    enumeration=enumeration,
-                    astNode=ast_literal
+            if check_if_global_name(
+                    ast_datatype.name,
+                    ast_datatype,
+                    'Datatype ignored.' ):
+                pass
+            else:
+                d=DataType(
+                    name=ast_datatype.name,
+                    model=self.model,
+                    astNode=ast_datatype
                 )
-                el.description=astTextBlockToTextBlock(
-                    container=el,
-                    astTextBlock=ast_literal.textBlock)
+                d.description=astTextBlockToTextBlock(
+                    container=d,
+                    astTextBlock=ast_datatype.textBlock)
 
-        # TODO: add a check to avoid duplicate name
+        def define_enumeration(ast_enumeration):
+            if check_if_global_name(
+                    ast_enumeration.name,
+                    ast_enumeration,
+                    'Enumeration ignored.' ):
+                pass
+            else:
+                e=Enumeration(
+                    name=ast_enumeration.name,
+                    model=self.model,
+                    package=None,
+                    astNode=ast_enumeration)
+                e.description=astTextBlockToTextBlock(
+                    container=e,
+                    astTextBlock=ast_enumeration.textBlock)
+                for ast_el in ast_enumeration.literals:
+                    define_enumeration_literal(e, ast_el)
+
+        def define_enumeration_literal(enumeration, ast_literal):
+                if ast_literal.name in enumeration.literalNames:
+                    ASTNodeSourceIssue(
+                        code=icode('ENUMLIT_TWICE'),
+                        astNode=ast_literal,
+                        level=Levels.Warning,
+                        message=(
+                            'Enumeration literal "%s" already defined.'
+                            ' Ignored.'
+                            % (ast_literal.name)))
+                else:
+                    el=EnumerationLiteral(
+                        name=ast_literal.name,
+                        enumeration=enumeration,
+                        astNode=ast_literal
+                    )
+                    el.description=astTextBlockToTextBlock(
+                        container=el,
+                        astTextBlock=ast_literal.textBlock)
+
         def define_class(ast_class):
-            c=Class(
-                name=ast_class.name,
-                model=self.model,
-                astNode=ast_class,
-                isAbstract=ast_class.isAbstract,
-                superclasses=[
-                    Placeholder(s, 'Classifier')
-                    for s in ast_class.superclasses]
-            )
-            c.description=astTextBlockToTextBlock(
-                container=c,
-                astTextBlock=ast_class.textBlock)
+            if check_if_global_name(
+                    ast_class.name,
+                    ast_class,
+                    'Class ignored.' ):
+                pass
+            else:
+                c=Class(
+                    name=ast_class.name,
+                    model=self.model,
+                    astNode=ast_class,
+                    isAbstract=ast_class.isAbstract,
+                    superclasses=[
+                        Placeholder(s, 'Classifier')
+                        for s in ast_class.superclasses]
+                )
+                c.description=astTextBlockToTextBlock(
+                    container=c,
+                    astTextBlock=ast_class.textBlock)
 
 
-            # attributes
-            ast_ac=ast_class.attributeCompartment
-            if ast_ac is not None:
-                for ast_att in ast_ac.attributes:
-                    define_attribute(c, ast_att)
+                # attributes
+                ast_ac=ast_class.attributeCompartment
+                if ast_ac is not None:
+                    for ast_att in ast_ac.attributes:
+                        define_attribute(c, ast_att)
 
-        # TODO: add check to avoid duplicate
         def define_attribute(class_, ast_attribute):
-            visibility= {
-                None:'public',
-                '+':'public',
-                '-':'private',
-                '%':'protected',
-                '~':'package' } [ast_attribute.visibility]
+            if ast_attribute.name in class_.names:
+                ASTNodeSourceIssue(
+                    code=icode('ATT_DEFINED'),
+                    astNode=ast_attribute,
+                    level=Levels.Error,
+                    message=(
+                        '"%s" already defined in class "%s".'
+                        ' Attribute ignored.'
+                        % (ast_attribute.name, class_.name)))
+            else:
 
-            # TODO: implement isOptional, isInit
-            # TODO: implement isId, readonly,
-            a=Attribute(
-                name=ast_attribute.name,
-                class_=class_,
-                astNode=ast_attribute,
-                isDerived=ast_attribute.isDerived,
-                visibility=visibility,
-                type=Placeholder((ast_attribute.type),'Classifier')
-            )
-            # TODO: convert visibiliy + to public, etc.
-            a.description=astTextBlockToTextBlock(
-                container=class_,
-                astTextBlock=ast_attribute.textBlock)
+                visibility= {
+                    None:'public',
+                    '+':'public',
+                    '-':'private',
+                    '%':'protected',
+                    '~':'package' } [ast_attribute.visibility]
 
-        # TODO: add a check to avoid duplicate name
+                # TODO: implement isOptional, isInit
+                # TODO: implement isId, readonly,
+                a=Attribute(
+                    name=ast_attribute.name,
+                    class_=class_,
+                    astNode=ast_attribute,
+                    isDerived=ast_attribute.isDerived,
+                    visibility=visibility,
+                    type=Placeholder((ast_attribute.type),'Classifier')
+                )
+                # TODO: convert visibiliy + to public, etc.
+                a.description=astTextBlockToTextBlock(
+                    container=class_,
+                    astTextBlock=ast_attribute.textBlock)
+
         def define_association(ast_association):
-            a=Association(
-                name=ast_association.name,
-                model=self.classModel,
-                astNode=ast_association,
-                kind=ast_association.kind
-            )
-            a.description = astTextBlockToTextBlock(
-                container=a,
-                astTextBlock=ast_association.textBlock)
-            define_role(a, ast_association.roleCompartment.source)
-            define_role(a, ast_association.roleCompartment.target)
+            if check_if_global_name(
+                    ast_association.name,
+                    ast_association,
+                    'Association ignored.' ):
+                pass
+            else:
+                a=Association(
+                    name=ast_association.name,
+                    model=self.classModel,
+                    astNode=ast_association,
+                    kind=ast_association.kind
+                )
+                a.description = astTextBlockToTextBlock(
+                    container=a,
+                    astTextBlock=ast_association.textBlock)
+                define_role(a, ast_association.roleCompartment.source)
+                define_role(a, ast_association.roleCompartment.target)
 
         def define_role(association, ast_role):
-            (min, max)=cardinality_min_max(ast_role.cardinality)
-            r=Role(
-                astNode=ast_role,
-                association=association,
-                name=ast_role.name,
-                type=Placeholder(ast_role.type.name,'Classifier'),
-                cardMin=min,
-                cardMax=max
-            )
-            r.description = astTextBlockToTextBlock(
-                container=r,
-                astTextBlock=ast_role.textBlock)
+            if ast_role.name in association.roleNames:
+                ASTNodeSourceIssue(
+                    code=icode('ROLE_DEFINED'),
+                    astNode=ast_role,
+                    level=Levels.Fatal,
+                    message=(
+                        'Role "%s" already defined.'
+                        ' Role names must be different.'
+                        % (ast_role.name)))
+            else:
+                (min, max)=cardinality_min_max(ast_role.cardinality)
+                r=Role(
+                    astNode=ast_role,
+                    association=association,
+                    name=ast_role.name,
+                    type=Placeholder(ast_role.type,'Classifier'),
+                    cardMin=min,
+                    cardMax=max)
+                r.description = astTextBlockToTextBlock(
+                    container=r,
+                    astTextBlock=ast_role.textBlock)
 
         def define_invariant(declaration):
             pass
@@ -271,13 +340,11 @@ class ClassModelSource(ASTBasedModelSourceFile):
                         astNode=class_.astNode,
                         level=Levels.Error,
                         message=(
-                            'Datatype "%s" does not exist. '
-                            "'Can't be the type of %s."
-                            "Replaced by 'String'."
-                            % (type_name, attribute.name)))
+                            'Datatype "%s" does not exist.'
+                            " Trying with 'String'."
+                            % (type_name)))
                     attribute.type=(
                         self.classModel.simpleTypeNamed['String'])
-
 
             resolve_superclasses()
             for a in class_.attributes:
@@ -322,6 +389,5 @@ class ClassModelSource(ASTBasedModelSourceFile):
 
         for a in self.classModel.associations:
             resolve_association_content(a)
-
 
 METAMODEL.registerSource(ClassModelSource)
