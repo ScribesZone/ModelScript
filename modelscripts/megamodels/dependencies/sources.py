@@ -120,10 +120,19 @@ class SourceImport(SourceFileDependency):
             from modelscripts.megamodels import Megamodel
             importedSourceFile=Megamodel.source(
                 importStmt.absoluteTargetFilename)
-        except:
+        except ValueError :
             # Not registered yet:
             # actually perform the import
             importedSourceFile=self._doImport(importStmt)
+            # XXXXXXZZZZZZZ
+        except:
+            import traceback
+            for i in range(0, 10):
+                print('ZZ'*80)
+            print(traceback.format_exc())
+            for i in range(0, 10):
+                print('ZZ'*80)
+            raise
 
         super(SourceImport, self).__init__(
             self.importStmt.modelSourceFile,
