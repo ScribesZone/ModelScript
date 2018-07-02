@@ -94,6 +94,8 @@ def assertIssueBox(
             for code in issueBox.summaryCodeMap:
                 print('    #@Issue %s %i' % (
                     code, issueBox.summaryCodeMap[code]))
+            print('    #@Issue else *')
+            print('')
             for level in issueBox.summaryLevelMap:
                 print('    #@Issue %s %i' % (
                     level.code, issueBox.summaryLevelMap[level]))
