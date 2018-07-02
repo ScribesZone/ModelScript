@@ -48,6 +48,11 @@ def icode(ilabel):
 
 
 class StoryFiller():
+    """
+    Creator of stories AST model.
+    Various parameters allows to tune what story steps are valid or not.
+    Virtual "check" statements are added where appropriate.
+    """
 
     def __init__(self,
                  model,
@@ -279,7 +284,7 @@ class StoryFiller():
     def _fill_check_step(self, parent, astStep):
         step=CheckStep(
             parent=parent,
-            implicit=None,
+            position=None,
             astNode=astStep
         )
         self._is_check_needed=False
@@ -327,7 +332,7 @@ class StoryFiller():
         if self._is_check_needed:
             CheckStep(
                 parent=parent,
-                implicit=kind,
-                astNode=astNode
+                position=kind,
+                astNode=astNode,
             )
         self._is_check_needed=False

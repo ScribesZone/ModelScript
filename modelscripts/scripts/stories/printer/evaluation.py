@@ -96,6 +96,11 @@ class StoryEvaluationPrinter(AbstractPrinter):
         return self.output
 
     def doCheckStepEvaluation(self, stepEval, indent):
+        self.outLine('CHECK ---------------- >>>', indent)
+        self.outLine(str(stepEval.metrics), indent)
+        analysis_messages=stepEval.frozenState.analyzis.messages
+        self.outLine('%s analysis issues' % len(analysis_messages))
+        self.outLine('\n    ->  '.join(analysis_messages))
         return self.output
 
 
@@ -111,10 +116,10 @@ def StoryBestPrinter(
     then select the StoryPrinter, otherwise select
     StoryEvaluationPrinter.
     """
-    choose_story=(
+    choosen_story=(
         storyEvaluation is None
         or useStory)
-    if choose_story:
+    if choosen_story:
         return StoryPrinter(
             story=story,
             indent=indent)

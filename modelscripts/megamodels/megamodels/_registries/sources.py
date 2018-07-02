@@ -130,7 +130,7 @@ class _SourceRegistry(object):
         try:
             return cls._sourceFileByPath[path]
         except:
-            raise ValueError('No source at "%s" % path')
+            raise ValueError('No source at "%s"' % path)
 
     @classmethod
     def _outSourceDependencies(cls, source):
