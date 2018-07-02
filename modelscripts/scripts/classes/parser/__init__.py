@@ -219,7 +219,6 @@ class ClassModelSource(ASTBasedModelSourceFile):
         for declaration in self.ast.model.declarations:
             # pass
             type_=declaration.__class__.__name__
-            print(type_)
             if type_=='DataType':
                 define_datatype(declaration)
             elif type_=='Enumeration':
@@ -256,7 +255,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                             level=Levels.Error,
                             message=(
                                 'Class "%s" does not exist. '
-                                "'Can't be a as a superclass of %s."
+                                "'Can't be the superclass of %s."
                                 % (name, class_.name)))
                 class_.superclasses=actual_super_classes
 
@@ -273,7 +272,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                         level=Levels.Error,
                         message=(
                             'Datatype "%s" does not exist. '
-                            "'Can't be a the type of %s."
+                            "'Can't be the type of %s."
                             "Replaced by 'String'."
                             % (type_name, attribute.name)))
                     attribute.type=(
@@ -305,28 +304,24 @@ class ClassModelSource(ASTBasedModelSourceFile):
             for r in association.roles:
                 resolve_role(r)
 
-        self.registerBasicDataTypes()
+        def registerBasicDataTypes():
+            DATATYPES =   'Integer Boolean Real' \
+                        + ' String Date DateTime Time'
+            for name in DATATYPES.split(' '):
+                DataType(
+                    model=self.model,
+                    name=name,
+                    astNode=None,
+                    package=None
+                )
+
+        registerBasicDataTypes()
 
         for c in self.classModel.classes:
             resolve_class_content(c)
 
         for a in self.classModel.associations:
             resolve_association_content(a)
-
-    def registerBasicDataTypes(self):
-        DATATYPES='Integer Boolean Real String Date DateTime Time'
-        for name in DATATYPES.split(' '):
-            DataType(
-                model=self.model,
-                name=name,
-                astNode=None,
-                package=None
-            )
-
-
-
-
-
 
 
 METAMODEL.registerSource(ClassModelSource)
