@@ -1,14 +1,20 @@
 # coding=utf-8
 """
 Metamodel package representing the evaluation of operations.
-This goes with stories.evaluation.
-The evaluation of operation is not detailled, one operation
-after each other. This avoids repeating the hierarchy of
+This goes with the package "stories.evaluation".
+
+The evaluation of operations is not detailled. That is, there
+is not one class for all operation evaluation.
+
+This avoids repeating the hierarchy of
 Operation class, with only few additional information.
+
 For instance instead of keeping for the deletion of an
 object, the reference to this object (which depends on
 the evaluation), a generic OperationStepEvaluation is
-used instead. This is due to the fact that the details
+used instead.
+
+This strategy is good enough since the details
 of the evaluation is not so important. What is important
 is the evaluation of "check" operations and the
 final state (stored in the StoryEvaluation).
@@ -23,8 +29,9 @@ from typing import Optional, List, Text
 from abc import ABCMeta
 from modelscripts.megamodels.elements import SourceModelElement
 from modelscripts.metamodels.permissions.sar import Subject
-
-
+from modelscripts.metamodels.objects import (
+    ObjectModel
+)
 from modelscripts.metamodels.stories import (
     Story,
     Step,
@@ -41,8 +48,8 @@ class OperationStepEvaluation(StepEvaluation):
     The evaluation of an operation. Note that this class
     is concrete while OperationStep is abstract. This is
     due to the fact that we make no difference between
-    many operations. OperationStepEvaluation are
-    indeed instanciated for all operations apart
+    many operations. OperationStepEvaluation is indeed
+    instanciated for operations of all kind ; apart from
     CheckStep which contains interesting information.
     """
 
@@ -55,6 +62,30 @@ class OperationStepEvaluation(StepEvaluation):
             step=step,
             name=name)
 
+
 class CheckStepEvaluation(OperationStepEvaluation):
-    pass
+
+    def __init__(self,
+                 parent,
+                 step,
+                 currentState,
+                 name=None,
+                 ):
+        #type: (Optional[StepEvaluation], Step, ObjectModel, Optional[Text]) -> None
+        """
+        Create a check evaluation by :
+        (1) creating a (frozen) copy of the current state
+        (2) making a analysis of it
+        """
+        super(OperationStepEvaluation, self).__init__(
+            parent=parent,
+            step=step,
+            name=name)
+        self.frozenState=currentState.copy()
+        self.frozenState.storyEvaluation=self.storyEvaluation
+        self.frozenState.checkStepEvaluation=self
+        self.frozenState.finalize()
+        self.metrics=self.frozenState.metrics
+
+        self.storyEvaluation.checkEvaluations.append(self)
 
