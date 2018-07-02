@@ -41,6 +41,9 @@ from modelscripts.metamodels.classes import (
     Class,
     Attribute,
     Association,
+    Role,
+    RolePosition,
+    opposite,
     METAMODEL as CLASS_METAMODEL
 )
 from modelscripts.metamodels.textblocks import (
@@ -57,11 +60,16 @@ __all__=(
     'Slot',
     'Link',
     'PlainLink',
+    'LinkRole',
     'LinkObject',
 )
 
 
 class ObjectModel(Model):
+
+    """
+    Object model, either create "manually" or via a story evaluation.
+    """
 
     def __init__(self):
         super(ObjectModel, self).__init__()
@@ -85,12 +93,23 @@ class ObjectModel(Model):
 
         self._classModel=None
         #type: Optional[ClassModel]
-        # filled by property
+        # filled by property classModel
 
         self.storyEvaluation=None
         #type: Optional['StoryEvaluation']
-        # Filled only if this model is the result of a story evaluation.
+        # Filled only if this model is the result of a
+        # story evaluation.
         # Otherwise this is most probably a handmade model.
+        # Filled by object parser.
+
+        self.checkStepEvaluation=None
+        #type: Optional['CheckStepEvaluation']
+        # Filled only if this model is the result of a Check
+        # evaluation in a story.
+
+        self.analyzis=None
+        #type: Optional['ObjectModelAnalyzis']
+        # Filled by finalize()
 
     def copy(self):
         return ObjectModelCopier(self).copy()
@@ -136,12 +155,6 @@ class ObjectModel(Model):
         return [
             l for l in self._links if isinstance(l, PlainLink) ]
 
-    # def selectLinks(self, source=None, association=None, target=None):
-    #     #type: (Optional[Object], Optional[Association], Optional[Object]) -> List[Link]
-    #     """
-    #     Return all the links that satisfy all the criteria specified
-    #     """
-    #     result=
 
     @property
     def metrics(self):
@@ -164,15 +177,20 @@ class ObjectModel(Model):
         #type: () -> Metamodel
         return METAMODEL
 
+    def finalize(self):
+        from modelscripts.metamodels.objects.analyzis import (
+            ObjectModelAnalyzis
+        )
+        self.analyzis=ObjectModelAnalyzis(self)
+        self.analyzis.analyze()
+        super(ObjectModel, self).finalize()
+
 
 class ElementFromStep(SourceModelElement):
     """
-    All elements that can come from a story step.
-    Serve as a superclass of other class and add
-    a step attribut. This attribute could be None.
-    If this attribute exist its astNode is taken
-    to locate the element, unless a new position
-    is defined.
+    Superclass of all source model elements that can come
+    from a story step. Basically add a "step" attribute to all
+    subclasses.
     """
     __metaclass__ = ABCMeta
 
@@ -183,6 +201,18 @@ class ElementFromStep(SourceModelElement):
                  astNode=None,
                  lineNo=None, description=None):
         #type: (Optional['Step']) -> None
+        """
+        :param name: The name of the source element.
+        :param model: The object model
+        :param step: The step, if any, from where this element
+            originates/
+        :param astNode: The ast node, or None.
+            step.astNode takes precedence.
+        :param lineNo: lineNo for this element.
+            step.lineNo take precendence.
+        :param description: Description of the element.
+            step take precendence
+        """
         if astNode is None and step is not None:
             ast_node=step.astNode
         else:
@@ -243,6 +273,7 @@ class ResourceInstance(object):
     This corresponds to the instance level of Resource.
     See modelscripts.metamodels.permissions.sar.Resource
     """
+
 
 class Entity(ResourceInstance):
     __metaclass__ = ABCMeta
@@ -320,8 +351,28 @@ class Object(PackagableElement, Entity):
         # Slots of the object indexed by attribute name (not attribute)
 
         #TODO: check for duplicates to avoid loosing objects
-        # Register the object in the model for the abstract view
+        #      Register the object in the model
         model._objectNamed[name]=self
+
+        self._link_roles_per_role=OrderedDict()
+        #type: Dict[Role, LinkRole]
+        """
+        The links roles "opposite" to the objects sorted by 
+        the "owned" roles. Note that the direction of the
+        association is not taken into account. Only owned
+        roles count to group links. Only valid linked role are 
+        in this list. This variable is set by the object
+        analyzer.
+        """
+
+    def cardinality(self, role):
+        if role in self._link_roles_per_role:
+            return len(self._link_roles_per_role[role])
+        else:
+            raise ValueError(
+                'Unexpected role "%s" for an object of class "%s"' % (
+                    role.name,
+                    self.class_.name))
 
     @property
     def slots(self):
@@ -333,11 +384,23 @@ class Object(PackagableElement, Entity):
         else:
             return None
 
+    def links(role):
+        #type: (Role) -> List[Link]
+        """
+        The list of links that are connected to the object and
+        that are owned by the role.
+        """
+
     @abstractmethod
     def isPlainObject(self):
-        # just used to prevent creating object of this class
-        # (ABCMeta is not enough)
+        # This method is not really useful as isinstance can be used.
+        # It is just used to prevent creating object of this class
+        # (using ABCMeta is not enough to prevent this).
         raise NotImplementedError()
+
+
+    def __str__(self):
+        return self.name
 
 
 class PlainObject(Object):
@@ -363,7 +426,6 @@ class PlainObject(Object):
 
 
 BasicValue=Union[Text, 'Bool', int, float]
-
 
 
 class Slot(ElementFromStep, Member):
@@ -392,6 +454,13 @@ class Slot(ElementFromStep, Member):
         self.value=value
         object._slotNamed[attribute_name]=self
 
+    def __str__(self):
+        return '%s.%s=%s' % (
+            self.object.name,
+            self.attribute.name,
+            str(self.value)
+        )
+
 
 class Link(PackagableElement, Entity):
     __metaclass__ = ABCMeta
@@ -417,6 +486,7 @@ class Link(PackagableElement, Entity):
         )
         Entity.__init__(self)
 
+
         self.association=association
         #type: association
 
@@ -428,11 +498,85 @@ class Link(PackagableElement, Entity):
 
         model._links.append(self)
 
+        # Singleton-like link roles to allow direct comparison
+        # of link role instances. (see linkRole method)
+        self._linkRole=OrderedDict()
+        self._linkRole['source']=LinkRole(self, 'source')
+        self._linkRole['target']=LinkRole(self, 'target')
+
     @abstractmethod
     def isPlainLink(self):
         # just used to prevent creating object of this class
         # (ABCMeta is not enough)
         raise NotImplementedError()
+
+    def object(self, position):
+        #type: () -> RolePosition
+        if position=='source':
+            return self.sourceObject
+        elif position=='target':
+            return self.targetObject
+        else:
+            raise NotImplementedError(
+                'role position "%s" is not implemented' % position)
+
+    def linkRole(self, position):
+        return self._linkRole[position]
+
+    def __str__(self):
+        return '(%s,%s,%s)' % (
+            self.sourceObject.name,
+            self.association.name,
+            self.targetObject.name
+        )
+
+
+class LinkRole(object):
+
+    def __init__(self, link, position):
+        self.link=link
+        self.position=position
+
+    @property
+    def object(self):
+        return self.link.object(self.position)
+
+    @property
+    def association(self):
+        return self.link.association
+
+    @property
+    def role(self):
+        return self.link.association.role(self.position)
+
+    @property
+    def roleType(self):
+        return self.role.type
+
+    @property
+    def objectType(self):
+        return self.object.class_
+
+    @property
+    def opposite(self):
+        return self.link.linkRole(opposite(self.position))
+
+    def __str__(self):
+        if self.position=='source':
+            return '([[%s]],%s,%s)' % (
+                self.link.sourceObject.name,
+                self.association.name,
+                self.link.targetObject.name
+            )
+        elif self.position=='target':
+            return '(%s,%s,[[%s]])' % (
+                self.link.sourceObject.name,
+                self.association.name,
+                self.link.targetObject.name
+            )
+        else:
+            raise NotImplementedError(
+                'Unexpected position: %s' % self.position)
 
 
 class PlainLink(Link):
@@ -535,7 +679,6 @@ class ObjectModelCopier(object):
         #TODO: implement LinkObject
 
     def copy(self):
-        print('SS'*10, 'copy')
         self.t._classModel=self.o._classModel
         self.t.storyEvaluation=self.o.storyEvaluation
         for po in self.o.plainObjects:
@@ -546,7 +689,6 @@ class ObjectModelCopier(object):
         return self.t
 
     def _copy_plain_object(self, plain_object):
-        print('SS'*10, 'copy plain object')
 
         if plain_object.package is not None:
             raise NotImplementedError(
