@@ -1,6 +1,19 @@
+    #@Metric "object" 2
+    #@Metric "link" 2
+    #@Metric "plain object" 2
+    #@Metric "plain link" 2
+    #@Metric "link object" 0
+    #@Metric "slot" 5
+
 object model A
 import class model from '../cls/cl-main-cybercompany-a.cls'
 
 computing is a Department.
-paul is an Employee.
-paul WorksIn computing.
+The name of computing is "Computing".
+The location of computing is "Valencia".
+The budget of computing is 200000.
+bob is an Employee.
+bob WorksIn computing.
+bob Supervise bob.
+The name of bob is "Robert".
+The salary of bob is 200.

@@ -6,4 +6,7 @@ import class model from '../cls/cl-main-cybercompany-a.cls'
 
 scenario
     create computing : Department
+    set computing.name = "Computing"
+    set computing.budget = 300000
+    set computing.location = "Paris"
     delete computing

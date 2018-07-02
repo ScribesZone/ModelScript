@@ -1,9 +1,0 @@
-object model Sc_object01
-import class model from '../cls/cl-main-cybercompany-a.cls'
-
-computing : Department
-computing.name = 'Computing departement'
-computing.location = 'Los alambritos'
-xuon : Employee
-xuon.name = 'Xuon'
-xuon.salary = 2000

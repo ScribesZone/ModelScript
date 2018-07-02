@@ -1,7 +1,10 @@
+    #@Issue ob.ana.Link.WrongType 1
+    #@Issue else *
+
 object model A
-import class model from '../cls/cl-main-cybercompany-a.cls'
+import class model from '../cls/cl-main-cybercompany-01.cls'
 
 computing : Department
 paul : Employee
-(paul, Controls, computing)
-(computing, Controls, computing)
+(paul, WorksIn, computing)
+(computing, WorksIn, computing)

@@ -27,6 +27,8 @@ context
     | Samira earn 2000€.
     | And that's enough for living since she is single.
         samira : Employee
+        samira.name="Samira"
+        samira.salary=2500
     | Samira loves pasta.
     | Nobody care that she loves pasta.
     |
@@ -79,7 +81,8 @@ scenario
 
     | text
         create memphis : Project
-
+        set memphis.name="Memphis"
+        set memphis.budget=140000
 
     maria do IncreaseSalary
         update sophie.salary = 2600

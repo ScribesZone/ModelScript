@@ -1,5 +1,5 @@
 object model Ob_slot01
-import class model from '../cls/cl-main-cybercompany-a.cls'
+import class model from '../cls/cl-main-cybercompany-04.cls'
 
 samira is an Employee.
 The name of samira is 'Samira'.

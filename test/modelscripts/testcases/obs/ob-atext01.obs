@@ -1,22 +1,26 @@
     # Annotated text blocks
 
     #@Metric "object" 4
-    #@Metric "link" 1
+    #@Metric "link" 6
     #@Metric "plain object" 4
-    #@Metric "plain link" 1
+    #@Metric "plain link" 6
     #@Metric "link object" 0
-    #@Metric "slot" 4
+    #@Metric "slot" 9
 
 object model Ob_slot01
 import class model from '../cls/cl-main-cybercompany-a.cls'
 
 computing is a Department.
+The name of computing is "Computing".
+The location of computing is "Valencia".
+The budget of computing is 200000.
 | Samira earn 2500€.
 | And that's enough for living.
     samira is an Employee.
     The name of samira is 'Samira'.
     The salary of samira is 2500.
 bob : Employee
+The name of bob is "Robert".
 The salary of bob is 200.
 
 | Samira works at ACME, in the computing department.
@@ -24,3 +28,11 @@ The salary of bob is 200.
     samira WorksIn computing.
     pauline is an Employee.
     The salary of pauline is 8000.
+    The name of pauline is "Pauline".
+| The boss of samira is pauline, but she does not like her.
+    pauline Supervise samira.
+    pauline WorksIn computing.
+
+bob WorksIn computing.
+bob Supervise bob.
+bob Supervise pauline.

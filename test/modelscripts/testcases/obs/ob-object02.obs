@@ -1,5 +1,9 @@
-object model A
-import class model from '../cls/cl-main-cybercompany-a.cls'
+    #@Issue st.eval.ObjectCreation.Twice 1
+    #@Issue else *
 
-paul is an Employee.
-plo2020 is a Project.
+
+object model A
+import class model from '../cls/cl-main-cybercompany-02.cls'
+
+computing is a Department.
+computing is a Department.

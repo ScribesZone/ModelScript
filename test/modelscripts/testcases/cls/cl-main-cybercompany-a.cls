@@ -19,11 +19,11 @@ class Project
 association WorksIn
     roles
         employees : Employee[*]
-        departments : Department[1..*]
+        departments : Department[0..*]
 
 association Controls
     roles
-        department : Department[1]
+        department : Department[*]
         projects : Project[*]
 
 association WorksOn
@@ -33,5 +33,5 @@ association WorksOn
 
 association Supervise
     roles
-        supervisor : Employee[1]
+        supervisor : Employee[*]
         subordinates : Employee[*]

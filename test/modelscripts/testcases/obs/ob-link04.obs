@@ -1,6 +1,13 @@
+    # Issues when bad reverse link
+
+    #@Issue ob.ana.Link.WrongType 2
+    #@Issue ob.ana.Link.BadCardinality 1
+    #@Issue else *
+
+
 object model A
-import class model from '../cls/cl-main-cybercompany-a.cls'
+import class model from '../cls/cl-main-cybercompany-01.cls'
 
 computing : Department
 paul : Employee
-(computing, Supervise, paul)
+(computing, WorksIn, paul)

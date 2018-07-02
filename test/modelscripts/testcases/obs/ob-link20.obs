@@ -1,5 +1,6 @@
+
 object model Ob_main_turbo
-import class model from '../cls/cl-main-cybercompany-a.cls'
+import class model from '../cls/cl-main-cybercompany-02.cls'
 
 zoe is an Employee.
 babako is an Employee.

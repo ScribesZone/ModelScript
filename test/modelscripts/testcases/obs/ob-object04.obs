@@ -1,0 +1,11 @@
+    #@Issue st.eval.ObjectCreation.Twice 3
+    #@Issue else *
+
+object model A
+import class model from '../cls/cl-main-cybercompany-02.cls'
+
+computing is a Department.
+computing is a Department.
+computing is a Department.
+computing is a Department.
+

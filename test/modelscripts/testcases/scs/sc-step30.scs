@@ -8,3 +8,6 @@ actor instances
 
 scenario
     create computing : Department
+    set computing.name = "Computing"
+    set computing.budget = 300000
+    set computing.location = "Paris"

@@ -1,7 +1,13 @@
+    #@Metric "actor instance" 0
+    #@Metric "scenario" 0
+    #@Metric "context" 1
+
+
 scenario model Sc_main01
 import usecase model from '../uss/us-main-CyberCompany01.uss'
-import class model from '../cls/cl-main-cybercompany-a.cls'
-import object model from 'sc-object01.obs'
+import class model from '../cls/cl-main-cybercompany-01.cls'
+import object model from '../obs/ob-object01.obs'
 
 context
+    xuon is an Employee.
     (xuon, WorksIn, computing)
