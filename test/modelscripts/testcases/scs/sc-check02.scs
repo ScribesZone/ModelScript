@@ -1,0 +1,11 @@
+scenario model Sc_check01
+
+import usecase model from '../uss/us-main-CyberCompany01.uss'
+import class model from '../cls/cl-main-cybercompany-a.cls'
+
+scenario
+    create computing : Department
+    set computing.name = 'Computing'
+    set computing.location = 'Persepolis'
+    set computing.budget = 200000
+    check
