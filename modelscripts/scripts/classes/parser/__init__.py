@@ -371,19 +371,6 @@ class ClassModelSource(ASTBasedModelSourceFile):
             for r in association.roles:
                 resolve_role(r)
 
-        def registerBasicDataTypes():
-            DATATYPES =   'Integer Boolean Real' \
-                        + ' String Date DateTime Time'
-            for name in DATATYPES.split(' '):
-                DataType(
-                    model=self.model,
-                    name=name,
-                    astNode=None,
-                    package=None
-                )
-
-        registerBasicDataTypes()
-
         for c in self.classModel.classes:
             resolve_class_content(c)
 

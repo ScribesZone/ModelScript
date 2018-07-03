@@ -1,12 +1,16 @@
 # coding=utf-8
 
 """
-Parser package dealing with the paring of stories.
-This package provides a single class StoryFiller that allow to
-get a "Story" giving a AST Story. This allow to share this
-parsing among various parser. At the moment stories are used
-inside ObjectModel parser and Scenario parser.
+Parser package dealing with the parsing of stories.
+This package provides a single class StoryFiller that allow,
+given an AST Story provided by the parser, to get a "Story".
+
+This module allows to share this parsing among various parsers.
+At the moment stories are used inside ObjectModel parser
+and Scenario parser. Both module call the StoryFiller to parse
+the subset(s) of the AST corresponding to the story.
 """
+
 from typing import Union
 from modelscripts.base.grammars import (
     ASTNodeSourceIssue
@@ -16,6 +20,9 @@ from modelscripts.base.issues import (
 )
 from modelscripts.scripts.textblocks.parser import (
     astTextBlockToTextBlock
+)
+from modelscripts.metamodels.classes.core import (
+    dataTypeFromDataValueName
 )
 from modelscripts.metamodels.stories import (
     Story,
@@ -41,7 +48,8 @@ ISSUES={
     'NO_DEFINITION':'st.syn.Story.NoDefinition',
     'NO_CLASS_MODEL':'st.syn.Story.NoClassModel',
     'OBJECT_CLASS_NOT_FOUND':'st.syn.ObjectCreation.NoClass',
-    'LINK_ASSOC_NOT_FOUND':'st.syn.LinkOperation.NoAssoc'
+    'LINK_ASSOC_NOT_FOUND':'st.syn.LinkOperation.NoAssoc',
+    'BAD_VALUE':'st.syn.Value.Bad'
 }
 def icode(ilabel):
     return ISSUES[ilabel]
@@ -220,6 +228,25 @@ class StoryFiller():
         return step
 
     def _fill_slot_step(self, parent, astStep):
+
+        def get_value(ast_value):
+            repr=ast_value.repr
+            datavalue_name = ast_value.__class__.__name__
+            datatype=dataTypeFromDataValueName(
+                model=self.model.classModel,
+                datavalue_name=datavalue_name)
+            print('DD'*10, ast_value.repr, ast_value)
+            try:
+                datavalue=datatype.implementationClass(repr)
+                print('DD' * 10, '   ', str(datavalue))
+                return datavalue
+            except ValueError as e:
+                ASTNodeSourceIssue(
+                    code=icode('BAD_VALUE'),
+                    astNode=astStep,
+                    level=Levels.Fatal,
+                    message=e.message)
+
         self._is_check_needed=True
         self._check_definition_action(astStep)
         self._check_class_model(astStep)
@@ -229,7 +256,7 @@ class StoryFiller():
             isAction=astStep.action is not None,
             objectName=slot_decl.object,
             attributeName=slot_decl.attribute,
-            value=slot_decl.value,
+            value=get_value(slot_decl.value),
             isUpdate=(astStep.action in ['update', 'modifie']),
             astNode=astStep
         )

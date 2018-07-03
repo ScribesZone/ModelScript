@@ -151,6 +151,10 @@ class ClassModel(Model):
         #  Used for resolution.
         self._conditions = [] #type: List['Condition']
 
+        # Register core datatypes
+        from modelscripts.metamodels.classes.core import \
+            registerDataTypes
+        registerDataTypes(self)
 
     @property
     def metamodel(self):
@@ -432,23 +436,37 @@ def isConformToType(simpleType, value):
 class DataType(SimpleType):
     """
     Data types such as integer.
-    Data types are not explicitly defined in the source
+    Built-in data types are not explicitly defined in the source
     file, but they are used after after symbol resolution.
     """
     # not in sources, but used created during symbol resolution
     type = 'DataType'
 
-    def __init__(self, model, name, astNode=None, package=None):
+    def __init__(self,
+                 model,
+                 name,
+                 astNode=None,
+                 package=None,
+                 implementationClass=None):
         super(DataType, self).__init__(
             model=model,
             name=name,
             astNode=astNode,
             package=package
         )
+        self.implementationClass=implementationClass
+        if implementationClass is not None:
+            implementationClass.dataType=self
         self.model.dataTypeNamed[name]=self
 
     def __repr__(self):
         return self.name
+
+
+class DataValue(object):
+
+    __metaclass__ = abc.ABCMeta
+
 
 
 class Package(PackagableElement, Entity):

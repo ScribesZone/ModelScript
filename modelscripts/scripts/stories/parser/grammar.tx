@@ -50,7 +50,7 @@ OperationStep:
 ;
 
 UpdateStep:
-    // ORDER IS IMPORTANT
+    // ############# ORDER IS IMPORTANT ######################
       LinkOperationStep         // create | delete
     | SlotStep                  // set | update
     | ObjectCreationStep
@@ -186,7 +186,7 @@ SpeechSlotDeclaration:
     ('of'|'de')
     object = ID
     ('is'|'est')
-    value = BASETYPE
+    value = DataValue
     (o_
         (textBlock = TextBlock)
     _o) ?
@@ -200,12 +200,55 @@ SymbolicSlotDeclaration:
     '.'
     attribute = ID
     '='
-    value = BASETYPE
+    value = DataValue
     (o_
         (textBlock = TextBlock)
     _o) ?
     X
 ;
+
+DataValue:
+      StringValue
+    | BooleanValue
+    | DateTimeValue
+    | DateValue
+    | TimeValue
+    | RealValue
+    | IntegerValue
+;
+
+StringValue:
+      repr=/"[^\n"]*"/
+    | repr=/'[^\n']*'/
+;
+
+BooleanValue:
+      repr="true"
+    | repr="false"
+    | repr="vrai"
+    | repr="faux"
+;
+
+RealValue:
+    repr=/-?[0-9]+\.[0-9]+/
+;
+
+IntegerValue:
+    repr=/-?[0-9]+/
+;
+
+DateValue:
+    repr=/[0-9]{2}\/[0-9]{2}\/[0-9]{4}/
+;
+
+DateTimeValue:
+    repr=/[0-9]{2}\/[0-9]{2}\/[0-9]{4}-[0-9]{2}:[0-9]{2}(:[0-9]{2})?/
+;
+
+TimeValue:
+    repr=/[0-9]{2}:[0-9]{2}(:[0-9]{2})?/
+;
+
 
 //....................... Link declaration ........................
 
