@@ -2,6 +2,7 @@ from modelscripts.metamodels.classes import (
     DataType,
     DataValue
 )
+from datetime import datetime
 
 
 def registerDataTypes(model):
@@ -80,7 +81,15 @@ class BooleanValue(DataValue):
 class DateValue(DataValue):
 
     def __init__(self, stringRepr):
-        self.value=stringRepr
+        try:
+            # currenty the datetime value is not used
+            # the string is just left untouched
+            # but this allow validation
+            date=datetime.strptime(stringRepr, '%d/%m/%Y')
+            self.value = stringRepr
+        except ValueError:
+            raise ValueError('Invalid date value: "%s"' % stringRepr)
+
 
     def __str__(self):
         return str(self.value)
@@ -89,7 +98,15 @@ class DateValue(DataValue):
 class DateTimeValue(DataValue):
 
     def __init__(self, stringRepr):
-        self.value=stringRepr
+        try:
+            # currenty the datetime value is not used
+            # the string is just left untouched
+            # but this allow validation
+            date=datetime.strptime(stringRepr, '%d/%m/%Y-%H:%M:%S')
+            self.value = stringRepr
+        except ValueError:
+            raise ValueError('Invalid datetime value: "%s"'
+                             % stringRepr)
 
     def __str__(self):
         return str(self.value)
@@ -98,7 +115,16 @@ class DateTimeValue(DataValue):
 class TimeValue(DataValue):
 
     def __init__(self, stringRepr):
-        self.value=stringRepr
+        try:
+            # currenty the datetime value is not used
+            # the string is just left untouched
+            # but this allow validation
+            date=datetime.strptime(stringRepr, '%H:%M:%S')
+            self.value = stringRepr
+        except ValueError:
+            raise ValueError('Invalid time value: "%s"'
+                             % stringRepr)
+
 
     def __str__(self):
         return str(self.value)

@@ -16,7 +16,6 @@ from modelscripts.base.issues import (
 from modelscripts.metamodels.objects import (
     ObjectModel,
     PlainObject,
-    BasicValue,
     Slot,
     PlainLink,
     LinkObject,

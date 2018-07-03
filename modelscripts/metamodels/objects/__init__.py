@@ -44,6 +44,7 @@ from modelscripts.metamodels.classes import (
     Role,
     RolePosition,
     opposite,
+    DataValue,
     METAMODEL as CLASS_METAMODEL
 )
 from modelscripts.metamodels.textblocks import (
@@ -56,7 +57,6 @@ __all__=(
     'Object',
     'AOBTextBlock',
     'PlainObject',
-    'BasicValue',
     'Slot',
     'Link',
     'PlainLink',
@@ -425,15 +425,12 @@ class PlainObject(Object):
         return True
 
 
-BasicValue=Union[Text, 'Bool', int, float]
-
-
 class Slot(ElementFromStep, Member):
 
     def __init__(self, object, attribute, value,
                  step=None,
                  description=None, lineNo=None, astNode=None):
-        #type: (Object, Union[Attribute, Placeholder], BasicValue,  Optional['Step'], Optional[TextBlock], Optional[int], 'ASTNode') -> None
+        #type: (Object, Union[Attribute, Placeholder], DataValue,  Optional['Step'], Optional[TextBlock], Optional[int], 'ASTNode') -> None
         attribute_name=(
             attribute.placeholderValue
                 if isinstance(attribute, Placeholder)

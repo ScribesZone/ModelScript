@@ -32,6 +32,7 @@ from modelscripts.metamodels.classes import (
     Class,
     Association,
     AssociationClass,
+    DataValue
 )
 from modelscripts.metamodels.permissions.sar import (
     Subject,
@@ -64,7 +65,6 @@ def icode(ilabel):
 
 DEBUG=3
 
-BasicValue=Union[Text, 'Bool', int, float]
 
 class PermissionModelSource(ASTBasedModelSourceFile):
 
