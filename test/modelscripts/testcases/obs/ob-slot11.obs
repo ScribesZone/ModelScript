@@ -1,0 +1,11 @@
+object model A
+import class model from '../cls/cl-datatype10.cls'
+
+thing : Something
+thing.int=2500
+thing.real=1.0
+thing.str="hello world"
+thing.bool=true
+thing.date=99/99/2018
+thing.dt=12/02/2018-15:30
+thing.time=15:30

@@ -8,7 +8,7 @@
     #@Metric "slot" 9
 
 object model Ob_slot01
-import class model from '../cls/cl-main-cybercompany-a.cls'
+import class model from "../cls/cl-main-cybercompany-a.cls"
 
 computing is a Department.
 The name of computing is "Computing".
@@ -17,7 +17,7 @@ The budget of computing is 200000.
 | Samira earn 2500€.
 | And that's enough for living.
     samira is an Employee.
-    The name of samira is 'Samira'.
+    The name of samira is "Samira".
     The salary of samira is 2500.
 bob : Employee
 The name of bob is "Robert".

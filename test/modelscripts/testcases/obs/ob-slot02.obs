@@ -7,5 +7,5 @@ object model Ob_slot02
 import class model from '../cls/cl-main-cybercompany-a.cls'
 
 samira is an Employee.
-The name of samira is 'Samira'.
+The name of samira is "Samira".
 The nothing of samira is 2500.

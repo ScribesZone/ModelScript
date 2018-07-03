@@ -10,7 +10,3 @@ import class model from '../cls/cl-main-cybercompany-01.cls'
 
 computing is a Department.
 
-def globalNames(self):
-    return (
-    self.enumerationNames
-    +self.classNames+self.associationNames+self.dataTypeNames)

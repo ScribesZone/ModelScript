@@ -1,6 +1,6 @@
 object model A
-import class model from '../cls/cl-main-cybercompany-a.cls'
+import class model from '../cls/cl-main-cybercompany-04.cls'
 
 paul : Employee
-paul.name='Paul'
+paul.name="Paul"
 paul.salary=3200

@@ -29,6 +29,8 @@ context
         samira : Employee
         samira.name="Samira"
         samira.salary=2500
+        (samira, WorksIn, computing)
+        (samira, Supervise, samira)
     | Samira loves pasta.
     | Nobody care that she loves pasta.
     |
@@ -39,6 +41,7 @@ context
     xuon.name = 'Xuon'
     xuon.salary = 2000
     (xuon, WorksIn, computing)
+    (samira, Supervise, xuon)
 
 
 scenario
@@ -49,7 +52,7 @@ scenario
         set djamel.name = 'Djamel'
         set djamel.salary = 2600
         create (djamel, WorksIn, computing)
-
+        create (djamel, Supervise, djamel)
 
     maria do RegisterNewEmployee
         create ioannis : Employee
@@ -58,6 +61,7 @@ scenario
         | Something is happening, but nodbody knows what...
         | Ioannis is assigned to the computing department
             create (ioannis, WorksIn, computing)
+            create (ioannis, Supervise, ioannis)
 
     maria do RegisterNewEmployee
         create sophie : Employee
@@ -66,6 +70,7 @@ scenario
         | Something is happening, but nodbody knows what...
         | Ioannis is assigned to the computing department
             create (sophie, WorksIn, computing)
+            create (sophie, Supervise, sophie)
 
     # assert 2+3*5=3
 
@@ -76,6 +81,7 @@ scenario
         create turbo : Project
         set turbo.name = 'Maxi turbo project'
         set turbo.budget = 5000
+        create (computing, Controls, turbo)
         #create c1 : Control between (computing, turbo)
         #set c1.frequence =15
 
@@ -83,6 +89,8 @@ scenario
         create memphis : Project
         set memphis.name="Memphis"
         set memphis.budget=140000
+        create (computing, Controls, memphis)
+
 
     maria do IncreaseSalary
         update sophie.salary = 2600
