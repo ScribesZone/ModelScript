@@ -2,7 +2,7 @@ object model Ob_main_turbo
 import class model from '../cls/cl-main-cybercompany-a.cls'
 
 zoe is an Employee.
-The name of zoe is "Zoe Zarwin".
+The name of zoe is 'Zoe Zarwin'.
 The salary of zoe is 3500.
 
 babako is an Employee.

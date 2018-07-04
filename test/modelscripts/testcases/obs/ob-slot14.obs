@@ -1,6 +1,5 @@
-    #@Issue st.syn.Value.Bad 1
+    #@Issue st.syn.Value.NoEnum 1
     #@Issue else *
-
 
 object model A
 import class model from '../cls/cl-datatype10.cls'
@@ -12,6 +11,6 @@ thing.str="hello world"
 thing.bool=true
 thing.date=12/02/2018
 thing.dt=12/02/2018-10:45:00
-thing.time=99:99:99
-thing.mode=Mode.before
+thing.time=12:59:00
+thing.mode=Nothing.before
 

@@ -2,6 +2,11 @@
 
 class model Cl_datatype10
 
+enumeration Mode
+    during
+    before
+    after
+
 class Something
     attributes
         int : Integer
@@ -11,3 +16,4 @@ class Something
         date : Date
         dt : DateTime
         time : Time
+        mode : Mode
