@@ -19,20 +19,55 @@ class PlantUMLEngine(object):
         self.defaultOutputDir=outputDir
 
     def generate(self, pumlFile, format=None, finalOutputDir=None):
+
+        def rename_output_file(outputdir, format, file):
+            """
+            Rename something like
+                /outputdir/file.png
+            into
+                /outputdir/file.puml.png
+            """
+            print('FF'*10, 'file', outputdir)
+            print('FF'*10, 'ouputdir', outputdir)
+
+            abs_outputdir=os.path.abspath(
+                os.path.join(
+                    os.path.dirname(file),
+                    outputdir))
+            print('FF'*10, 'abs_outputdir', outputdir)
+            base_file=os.path.splitext(
+                os.path.basename(file))[0]
+            generated_file_name=os.path.join(
+                abs_outputdir,
+                base_file+'.'+format)
+            new_file_name=os.path.join(
+                abs_outputdir,
+                base_file+'.puml.'+ format
+            )
+            print('FF'*10, generated_file_name)
+            assert os.path.isfile(generated_file_name)
+            os.rename(generated_file_name, new_file_name)
+
         format=self.defaultFormat if format is None else format
-        finalOutputDir=(
+        outputDir=(
             self.defaultOutputDir if finalOutputDir is None
             else finalOutputDir)
+
         cmd='java -jar %s %s -t%s -o %s' % (
             self.plantumlJar,
             pumlFile,
             format,
-            finalOutputDir
+            outputDir
         )
         errno=os.system(cmd)
+        print('FF' * 10, 'outputDir',outputDir)
+
         # TODO: check how to get errors from generation
         if errno != 0:
             RuntimeError('Error in plantuml generation')
+        rename_output_file(outputDir, format, pumlFile)
+
+
 
 if __name__ == "__main__":
     import sys
