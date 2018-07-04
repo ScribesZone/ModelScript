@@ -6,5 +6,5 @@ class model Simple
 enumeration Simple
     foo
 
-class Department extends Simple
+class Department < Simple
 

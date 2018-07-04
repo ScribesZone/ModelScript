@@ -10,7 +10,7 @@ class Employee
     # operations
     #    raiseSalary(amount : Real) : Real
 
-class Manager extends Employee
+class Manager < Employee
     attributes
         office : Integer
 

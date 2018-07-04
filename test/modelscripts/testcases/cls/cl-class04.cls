@@ -4,8 +4,8 @@
 
 class model Cl_class01
 
-abstract class A extends Nothing
+abstract class A < Nothing
 
-class B extends A
+class B < A
 
-class C extends B, Nothing, A
+class C < B, Nothing, A

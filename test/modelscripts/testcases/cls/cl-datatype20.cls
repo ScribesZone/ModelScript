@@ -1,4 +1,4 @@
-    #@Metric "data type" 7
+    #@Metric "data type" 8
 
 class model Cl_datatype10
 

@@ -3,5 +3,5 @@
 
 class model Simple
 
-class Department extends Nothing
+class Department < Nothing
 
