@@ -26,7 +26,7 @@ from modelscripts.metamodels.textblocks import TextBlock
 from modelscripts.metamodels.classes import (
     Class,
     Association,
-
+    SimpleValue
 )
 from modelscripts.base.grammars import AST
 
@@ -154,8 +154,8 @@ class SlotStep(UpdateOperationStep):
         self.attributeName=attributeName
         #type: Text
 
-        self.value=value
-        #type: 'BasicValue'
+        self.simpleValue=value
+        #type: SimpleValue
 
         self.isUpdate=isUpdate
         #type: Optional[bool]

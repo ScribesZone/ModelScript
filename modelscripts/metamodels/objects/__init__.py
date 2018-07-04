@@ -427,7 +427,7 @@ class PlainObject(Object):
 
 class Slot(ElementFromStep, Member):
 
-    def __init__(self, object, attribute, value,
+    def __init__(self, object, attribute, simpleValue,
                  step=None,
                  description=None, lineNo=None, astNode=None):
         #type: (Object, Union[Attribute, Placeholder], DataValue,  Optional['Step'], Optional[TextBlock], Optional[int], 'ASTNode') -> None
@@ -448,14 +448,14 @@ class Slot(ElementFromStep, Member):
         self.object=object
 
         self.attribute=attribute
-        self.value=value
+        self.simpleValue=simpleValue
         object._slotNamed[attribute_name]=self
 
     def __str__(self):
         return '%s.%s=%s' % (
             self.object.name,
             self.attribute.name,
-            str(self.value)
+            str(self.simpleValue)
         )
 
 
@@ -710,7 +710,7 @@ class ObjectModelCopier(object):
             Slot(
                 object=new_object,
                 attribute=old_slot.attribute,
-                value=old_slot.value,
+                simpleValue=old_slot.simpleValue,
                 step=old_slot.step,
                 description=old_slot.description,
                 lineNo=old_slot.lineNo,

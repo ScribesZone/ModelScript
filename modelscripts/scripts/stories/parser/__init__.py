@@ -29,6 +29,8 @@ from modelscripts.metamodels.stories import (
     TextStep,
     VerbStep,
 )
+from modelscripts.metamodels.classes import EnumerationValue
+
 from modelscripts.metamodels.stories.operations import (
     ObjectCreationStep,
     ObjectDeletionStep,
@@ -49,7 +51,11 @@ ISSUES={
     'NO_CLASS_MODEL':'st.syn.Story.NoClassModel',
     'OBJECT_CLASS_NOT_FOUND':'st.syn.ObjectCreation.NoClass',
     'LINK_ASSOC_NOT_FOUND':'st.syn.LinkOperation.NoAssoc',
-    'BAD_VALUE':'st.syn.Value.Bad'
+    'BAD_VALUE':'st.syn.Value.Bad',
+    'NO_ENUM':'st.syn.Value.NoEnum',
+    'NO_LITERAL':'st.syn.Value.NoLiteral',
+
+
 }
 def icode(ilabel):
     return ISSUES[ilabel]
@@ -110,8 +116,6 @@ class StoryFiller():
                 )
         self._add_check_if_needed(self.story, 'after', self.astStory)
         return self.story
-
-
 
     def _fill_step(self, parent, astStep):
         type_ = astStep.__class__.__name__
@@ -229,23 +233,64 @@ class StoryFiller():
 
     def _fill_slot_step(self, parent, astStep):
 
-        def get_value(ast_value):
-            repr=ast_value.repr
-            datavalue_name = ast_value.__class__.__name__
-            datatype=dataTypeFromDataValueName(
-                model=self.model.classModel,
-                datavalue_name=datavalue_name)
-            print('DD'*10, ast_value.repr, ast_value)
-            try:
-                datavalue=datatype.implementationClass(repr)
-                print('DD' * 10, '   ', str(datavalue))
-                return datavalue
-            except ValueError as e:
-                ASTNodeSourceIssue(
-                    code=icode('BAD_VALUE'),
-                    astNode=astStep,
-                    level=Levels.Fatal,
-                    message=e.message)
+        def get_simple_value(ast_simple_value):
+            simple_value_type = \
+                ast_simple_value.__class__.__name__
+            print('DD' * 10,
+                  ast_simple_value)
+            if simple_value_type=='EnumerationValue':
+                #-- process EnumerationValue
+                enum_name=ast_simple_value.enumerationName
+                enum_literal_name=ast_simple_value.literalName
+                class_model = self.model.classModel
+                if enum_name not in class_model.enumerationNamed:
+                    ASTNodeSourceIssue(
+                        code=icode('NO_ENUM'),
+                        astNode=astStep,
+                        level=Levels.Fatal,
+                        message='Enumeration "%s" does not exist.'
+                                % enum_name)
+                enum=class_model.enumerationNamed[enum_name]
+                print("RR"*10, enum)
+                enum_literal=enum.literal(enum_literal_name)
+                if enum_literal is None:
+                    ASTNodeSourceIssue(
+                        code=icode('NO_LITERAL'),
+                        astNode=astStep,
+                        level=Levels.Fatal,
+                        message='Enumeration literal '
+                                '"%s" does not exist.'
+                                % enum_literal_name)
+
+                return EnumerationValue(
+                    literal=enum_literal)
+            else:
+                #-- process DataValue
+                repr = ast_simple_value.repr
+                # get the datatype, for example the instance of
+                # DataType (see metamodel) with name 'StringValue'.
+                # The result is an instance of DataType.
+                datatype=dataTypeFromDataValueName(
+                    model=self.model.classModel,
+                    datavalue_name=simple_value_type)
+                print('GG'*10,'datatype',datatype, type(datatype))
+                try:
+                    # Instanciate an object via the python
+                    # implementation class.
+                    pyclass=datatype.implementationClass
+                    print('GG' * 10, 'pyclass', pyclass, type(pyclass))
+
+                    datavalue=pyclass(
+                        stringRepr=repr,
+                        type=datatype)
+                    print('VV' * 10, '   ', datavalue)
+                    return datavalue
+                except ValueError as e:
+                    ASTNodeSourceIssue(
+                        code=icode('BAD_VALUE'),
+                        astNode=astStep,
+                        level=Levels.Fatal,
+                        message=e.message)
 
         self._is_check_needed=True
         self._check_definition_action(astStep)
@@ -256,7 +301,7 @@ class StoryFiller():
             isAction=astStep.action is not None,
             objectName=slot_decl.object,
             attributeName=slot_decl.attribute,
-            value=get_value(slot_decl.value),
+            value=get_simple_value(slot_decl.simpleValue),
             isUpdate=(astStep.action in ['update', 'modifie']),
             astNode=astStep
         )
@@ -352,8 +397,6 @@ class StoryFiller():
                 message=(
                     'Definitions are forbidden in %s.' % (
                         self.contextMessage)))
-
-
 
     def _add_check_if_needed(self, parent, kind, astNode):
         if self._is_check_needed:

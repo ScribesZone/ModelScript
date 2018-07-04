@@ -142,6 +142,7 @@ class StoryPrinter(AbstractPrinter):
             action='set '
         else:
             action=''
+            print('NN'*10, type(step.simpleValue))
         self.outLine(
             '%s%s%s%s %s %s' % (
                 self.kwd(action),
@@ -149,7 +150,7 @@ class StoryPrinter(AbstractPrinter):
                 self.kwd('.'),
                 step.attributeName,
                 self.kwd('='),
-                str(step.value)),
+                str(step.simpleValue)),
             indent=indent)
         return self.output
 

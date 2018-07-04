@@ -260,7 +260,7 @@ class StoryEvaluator(object):
         Slot(   # TODO: (?) check old self.object.assign
             object=obj,
             attribute=att,
-            value=step.value,
+            simpleValue=step.simpleValue,
             step=step)
         step_eval.accesses=[
             Access(

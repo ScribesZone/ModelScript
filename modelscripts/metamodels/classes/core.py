@@ -19,112 +19,113 @@ def dataTypeFromDataValueName(model, datavalue_name):
     datatype_name=datavalue_name[:-len('Value')]
     return model.dataTypeNamed[datatype_name]
 
+
 class StringValue(DataValue):
 
-    def __init__(self, stringRepr):
-        self.value=stringRepr[1:-1]
+    # TODO: implement isConformToType see YYY
 
-    def __str__(self):
-        if '"' in self.value:
-            return "'%s'" % self.value
-        else:
-            return '"%s"' % self.value
+    def __init__(self, stringRepr, type):
+        # remove quotes
+        value=stringRepr[1:-1]
+        super(StringValue, self).__init__(
+            stringRepr=stringRepr,
+            value=value,
+            type=type
+        )
 
 
 class IntegerValue(DataValue):
 
-    def __init__(self, stringRepr):
+    def __init__(self, stringRepr, type):
         try:
-            self.value=int(stringRepr)
+            value=int(stringRepr)
         except ValueError:
             raise ValueError(
                 'Invalid integer value: "%s"' % stringRepr)
-
-    def __str__(self):
-        return str(self.value)
+        super(IntegerValue, self).__init__(
+            stringRepr=stringRepr,
+            value=value,
+            type=type
+        )
 
 
 class RealValue(DataValue):
 
-    def __init__(self, stringRepr):
+    def __init__(self, stringRepr, type):
         try:
-            self.value=float(stringRepr)
+            value=float(stringRepr)
         except ValueError:
             raise ValueError(
                 'Invalid real value: "%s"' % stringRepr)
-
-    def __str__(self):
-        return str(self.value)
+        super(RealValue, self).__init__(
+            stringRepr=stringRepr,
+            value=value,
+            type=type
+        )
 
 
 class BooleanValue(DataValue):
 
-    def __init__(self, stringRepr):
+    def __init__(self, stringRepr, type):
         try:
-            self.value={
+            value={
                 'true': True,
                 'vrai': True,
                 'false': False,
                 'faux': False
             }[stringRepr]
+            self.stringRepr = stringRepr
         except KeyError:
             raise ValueError(
                 'Invalid boolean value: "%s"' % stringRepr)
-
-    def __str__(self):
-        if self.value:
-            return 'true'
-        else:
-            return 'false'
+        super(BooleanValue, self).__init__(
+            stringRepr=stringRepr,
+            value=value,
+            type=type
+        )
 
 
 class DateValue(DataValue):
 
-    def __init__(self, stringRepr):
+    def __init__(self, stringRepr, type):
         try:
-            # currenty the datetime value is not used
-            # the string is just left untouched
-            # but this allow validation
-            date=datetime.strptime(stringRepr, '%d/%m/%Y')
-            self.value = stringRepr
+            value = datetime.strptime(stringRepr, '%d/%m/%Y')
         except ValueError:
             raise ValueError('Invalid date value: "%s"' % stringRepr)
-
-
-    def __str__(self):
-        return str(self.value)
+        super(DateValue, self).__init__(
+            stringRepr=stringRepr,
+            value=value,
+            type=type
+        )
 
 
 class DateTimeValue(DataValue):
 
-    def __init__(self, stringRepr):
+    def __init__(self, stringRepr, type):
         try:
-            # currenty the datetime value is not used
-            # the string is just left untouched
-            # but this allow validation
-            date=datetime.strptime(stringRepr, '%d/%m/%Y-%H:%M:%S')
-            self.value = stringRepr
+            value = datetime.strptime(
+                stringRepr,
+                '%d/%m/%Y-%H:%M:%S')
         except ValueError:
             raise ValueError('Invalid datetime value: "%s"'
                              % stringRepr)
-
-    def __str__(self):
-        return str(self.value)
+        super(DateTimeValue, self).__init__(
+            stringRepr=stringRepr,
+            value=value,
+            type=type
+        )
 
 
 class TimeValue(DataValue):
 
-    def __init__(self, stringRepr):
+    def __init__(self, stringRepr, type):
         try:
-            # currenty the datetime value is not used
-            # the string is just left untouched
-            # but this allow validation
-            date=datetime.strptime(stringRepr, '%H:%M:%S')
-            self.value = stringRepr
+            value = datetime.strptime(stringRepr, '%H:%M:%S')
         except ValueError:
             raise ValueError('Invalid time value: "%s"'
                              % stringRepr)
-
-
-    def __str__(self):
-        return str(self.value)
+        super(TimeValue, self).__init__(
+            stringRepr=stringRepr,
+            value=value,
+            type=type
+        )

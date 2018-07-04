@@ -186,7 +186,7 @@ SpeechSlotDeclaration:
     ('of'|'de')
     object = ID
     ('is'|'est')
-    value = DataValue
+    simpleValue = SimpleValue
     (o_
         (textBlock = TextBlock)
     _o) ?
@@ -200,11 +200,20 @@ SymbolicSlotDeclaration:
     '.'
     attribute = ID
     '='
-    value = DataValue
+    simpleValue = SimpleValue
     (o_
         (textBlock = TextBlock)
     _o) ?
     X
+;
+
+SimpleValue:
+      EnumerationValue
+    | DataValue
+;
+
+EnumerationValue:
+      enumerationName=ID '.' literalName=ID
 ;
 
 DataValue:

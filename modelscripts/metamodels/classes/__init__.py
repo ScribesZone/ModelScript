@@ -429,9 +429,6 @@ class SimpleType(PackagableElement):
     def label(self):
         return self.name
 
-def isConformToType(simpleType, value):
-    # TODO: to implement type conformity
-    return True
 
 class DataType(SimpleType):
     """
@@ -455,18 +452,58 @@ class DataType(SimpleType):
             package=package
         )
         self.implementationClass=implementationClass
-        if implementationClass is not None:
-            implementationClass.dataType=self
         self.model.dataTypeNamed[name]=self
 
     def __repr__(self):
         return self.name
 
 
-class DataValue(object):
+class SimpleValue(object):
 
     __metaclass__ = abc.ABCMeta
 
+    @abc.abstractproperty
+    def type(self):
+        raise NotImplementedError('type not implemented')
+
+
+class EnumerationValue(object):
+
+    def __init__(self, literal):
+        self.value=literal
+        #type: EnumerationLiteral
+
+    def __str__(self):
+        return "%s.%s" % (
+            self.value.enumeration.name,
+            self.value.name)
+
+    @property
+    def type(self):
+        return self.value.enumeration
+
+
+class DataValue(SimpleValue):
+
+    __metaclass__ = abc.ABCMeta
+
+    def __init__(self, stringRepr, value, type):
+        self.stringRepr=stringRepr
+        self.value=value
+        self._type=type
+
+    @property
+    def type(self):
+        return self._type
+
+    def __str__(self):
+        return self.stringRepr
+
+
+def isSimpleValueConformToSimpleType(simpleValue, simpleType):
+    # TODO: to implement type conformity
+    valueType=simpleValue.type
+    return valueType==simpleType
 
 
 class Package(PackagableElement, Entity):
@@ -528,6 +565,7 @@ class Enumeration(SimpleType):
             description=description)
         self.model.enumerationNamed[name] = self
         self._literals=[]
+        # Not sure to understand why this is not a Dict
 
     @MComposition('EnumerationLiteral[*] inv enumeration')
     def literals(self):
@@ -537,9 +575,13 @@ class Enumeration(SimpleType):
     def literalNames(self):
         return [l.name for l in self.literals]
 
-    # def addLiteral(self, name):
-    #     self.literals.append(name)
-
+    def literal(self, name):
+        # Not sure to understand why this is not a Dict
+        for literal in self.literals:
+            if literal.name==name:
+                return literal
+        else:
+            return None
 
     def __repr__(self):
         return '%s(%s)' % (self.name, repr(self.literals))

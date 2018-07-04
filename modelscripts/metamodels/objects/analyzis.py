@@ -21,7 +21,7 @@ from modelscripts.metamodels.classes import (
     Association,
     Role,
     RolePosition,
-    isConformToType,
+    isSimpleValueConformToSimpleType,
 )
 from modelscripts.metamodels.textblocks import (
     TextBlock
@@ -203,12 +203,10 @@ class SlotValueTypeViolation(ConformityViolation):
     @property
     def message(self):
         return (
-            '"%s": illegal value for attribute'
-            ' "%s" of "%s". %s expected' % (
-                self.slot.value,
+            'Illegal value for attribute "%s : %s" : %s' % (
                 self.slot.name,
-                self.slot.object.name,
-                self.expectedType))
+                self.expectedType,
+                self.slot.simpleValue,))
 
     @property
     def issueCode(self):
@@ -303,15 +301,14 @@ class ObjectModelAnalyzis(object):
         """
         for slot in object.slots:
             #TODO: implement type conformity and check this below
-            # print('XX'*10, 'Checking slot ', slot)
-            if not isConformToType(
-                    slot.attribute.type,
-                    slot.value):
+            if not isSimpleValueConformToSimpleType(
+                    simpleValue=slot.simpleValue,
+                    simpleType=slot.attribute.type):
                 SlotValueTypeViolation(
                     omAnalysis=self,
                     slot=slot,
                     expectedType=slot.attribute.type,
-                    actualType=type(slot.value))
+                    actualType=type(slot.simpleValue))
 
     def _analyze_missing_slots(self, object):
         """
