@@ -27,10 +27,20 @@ class TestObjectModel(object):
     def testSlot(self):
         o=self.model.object('zoe')
         assert len(o.slots)==2
-        assert o.slot('name').value=='Zoe Zarwin'
+        assert str(o.slot('name').dataValue)=="'Zoe Zarwin'"
+        assert o.slot('name').dataValue.stringRepr=="'Zoe Zarwin'"
+        assert o.slot('name').dataValue.value=="Zoe Zarwin"
         assert o.slot('name').attribute.name=='name'
         assert o.slot('name').object==o
+        assert o.slot('salary').dataValue.stringRepr=="3500"
+        assert o.slot('salary').dataValue.value==3500
 
+
+        o=self.model.object('micro')
+        assert len(o.slots)==2
+        assert o.slot('name').dataValue.stringRepr=='"micro for all"'
+        assert o.slot('name').attribute.name=='name'
+        assert o.slot('name').object==o
 
 
 
