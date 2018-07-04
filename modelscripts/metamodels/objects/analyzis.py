@@ -300,7 +300,6 @@ class ObjectModelAnalyzis(object):
         Check that all slots values have a correct type.
         """
         for slot in object.slots:
-            #TODO: implement type conformity and check this below
             if not isSimpleValueConformToSimpleType(
                     simpleValue=slot.simpleValue,
                     simpleType=slot.attribute.type):
