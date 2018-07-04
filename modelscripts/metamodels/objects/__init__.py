@@ -378,6 +378,11 @@ class Object(PackagableElement, Entity):
     def slots(self):
         return list(self._slotNamed.values())
 
+    @property
+    def slotNames(self):
+        return list(self._slotNamed.keys())
+
+
     def slot(self, name):
         if name in self._slotNamed:
             return self._slotNamed[name]
