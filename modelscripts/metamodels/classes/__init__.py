@@ -435,6 +435,7 @@ class DataType(SimpleType):
     Data types such as integer.
     Built-in data types are not explicitly defined in the source
     file, but they are used after after symbol resolution.
+    See "core" module.
     """
     # not in sources, but used created during symbol resolution
     type = 'DataType'
@@ -442,6 +443,7 @@ class DataType(SimpleType):
     def __init__(self,
                  model,
                  name,
+                 superDataType=None,  # Not used yet
                  astNode=None,
                  package=None,
                  implementationClass=None):
@@ -451,6 +453,7 @@ class DataType(SimpleType):
             astNode=astNode,
             package=package
         )
+        self.superDataType=superDataType
         self.implementationClass=implementationClass
         self.model.dataTypeNamed[name]=self
 
@@ -498,6 +501,19 @@ class DataValue(SimpleValue):
 
     def __str__(self):
         return self.stringRepr
+
+
+class UserDefinedDataValue(DataValue):
+    """
+    Not used in practice so far.
+    """
+
+    def __init__(self, stringRepr, value, type):
+        super(UserDefinedDataValue, self).__init__(
+            stringRepr=stringRepr,
+            value=value,
+            type=type
+        )
 
 
 def isSimpleValueConformToSimpleType(simpleValue, simpleType):

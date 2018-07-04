@@ -217,6 +217,15 @@ EnumerationValue:
 ;
 
 DataValue:
+      CoreDataValue
+    | UserDefinedDataValue  // Not used yet
+;
+
+UserDefinedDataValue:
+    dataTypeName=ID '(' dataValue=CoreDataValue ')'
+;
+
+CoreDataValue:
       StringValue
     | BooleanValue
     | DateTimeValue

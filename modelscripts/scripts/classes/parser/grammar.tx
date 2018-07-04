@@ -22,7 +22,9 @@ EntitydDeclaration:
 ;
 
 DataType:
-    'datatype' name=ID (o_
+    'datatype' name=ID
+    ('<' superDataType = ID)?   // Not used yet
+    (o_
         (textBlock = TextBlock)
     _o) ?
     X
@@ -50,7 +52,7 @@ EnumerationLiteral:
 Class:  // common
     (isAbstract ?= 'abstract')
     'class' name=ID
-    ('extends' superclasses *= ID [',']) ?
+    ('<' (superclasses += ID [','])) ?   // Not used yet
     (o_
         (textBlock = TextBlock)?
         attributeCompartment=AttributesCompartment ?
