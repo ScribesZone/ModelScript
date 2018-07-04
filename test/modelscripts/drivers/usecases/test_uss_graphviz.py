@@ -24,7 +24,7 @@ log = logging.getLogger('test.'+__name__)
 #     check_isValid('Demo.use')
 
 @attr('slow')
-def testGenerator_UseOclModel_full():
+def testGenerator_UssGraphviz():
     test_dir=os.path.join(
         TEST_CASES_DIRECTORY,'uss')
 
