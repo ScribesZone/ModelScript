@@ -37,10 +37,11 @@ def doBuildDiagram(filename):
 
     #--- parser: .obs -> system -------------------
     source = modelscripts.scripts.classes.parser.ClassModelSource(
-        fileName=filename,
-    )
+        fileName=filename,)
     if not source.isValid:
-        raise RuntimeError('#'*10+' ignore invalid file  %s' % filename)
+        print(('##'*40+'\n')*10)
+        print('==> IGNORING INVALID MODEL')
+        print(('##'*40+'\n')*10)
     else:
         obm = source.classModel
 
