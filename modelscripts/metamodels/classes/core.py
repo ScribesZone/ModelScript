@@ -6,13 +6,34 @@ from datetime import datetime
 
 
 def registerDataTypes(model):
-    DataType(model, name='String', implementationClass=StringValue)
-    DataType(model, name='Integer', implementationClass=IntegerValue)
-    DataType(model, name='Real', implementationClass=RealValue)
-    DataType(model, name='Boolean', implementationClass=BooleanValue)
-    DataType(model, name='Date', implementationClass=DateValue)
-    DataType(model, name='DateTime', implementationClass=DateTimeValue)
-    DataType(model, name='Time', implementationClass=TimeValue)
+    DataType(model,
+             name='String',
+             implementationClass=StringValue,
+             isCore=True)
+    DataType(model,
+             name='Integer',
+             implementationClass=IntegerValue,
+             isCore = True)
+    DataType(model,
+             name='Real',
+             implementationClass=RealValue,
+             isCore=True)
+    DataType(model,
+             name='Boolean',
+             implementationClass=BooleanValue,
+             isCore=True)
+    DataType(model,
+             name='Date',
+             implementationClass=DateValue,
+             isCore=True)
+    DataType(model,
+             name='DateTime',
+             implementationClass=DateTimeValue,
+             isCore=True)
+    DataType(model,
+             name='Time',
+             implementationClass=TimeValue,
+             isCore=True)
 
 def dataTypeFromDataValueName(model, datavalue_name):
     assert datavalue_name.endswith('Value')
@@ -20,7 +41,14 @@ def dataTypeFromDataValueName(model, datavalue_name):
     return model.dataTypeNamed[datatype_name]
 
 
-class StringValue(DataValue):
+class CoreDataValue(DataValue):
+
+    @property
+    def isCore(self):
+        return True
+
+
+class StringValue(CoreDataValue):
 
     # TODO: implement isConformToType see YYY
 
@@ -34,7 +62,7 @@ class StringValue(DataValue):
         )
 
 
-class IntegerValue(DataValue):
+class IntegerValue(CoreDataValue):
 
     def __init__(self, stringRepr, type):
         try:
@@ -49,7 +77,7 @@ class IntegerValue(DataValue):
         )
 
 
-class RealValue(DataValue):
+class RealValue(CoreDataValue):
 
     def __init__(self, stringRepr, type):
         try:
@@ -64,7 +92,7 @@ class RealValue(DataValue):
         )
 
 
-class BooleanValue(DataValue):
+class BooleanValue(CoreDataValue):
 
     def __init__(self, stringRepr, type):
         try:
@@ -85,7 +113,7 @@ class BooleanValue(DataValue):
         )
 
 
-class DateValue(DataValue):
+class DateValue(CoreDataValue):
 
     def __init__(self, stringRepr, type):
         try:
@@ -99,7 +127,7 @@ class DateValue(DataValue):
         )
 
 
-class DateTimeValue(DataValue):
+class DateTimeValue(CoreDataValue):
 
     def __init__(self, stringRepr, type):
         try:
@@ -116,7 +144,7 @@ class DateTimeValue(DataValue):
         )
 
 
-class TimeValue(DataValue):
+class TimeValue(CoreDataValue):
 
     def __init__(self, stringRepr, type):
         try:

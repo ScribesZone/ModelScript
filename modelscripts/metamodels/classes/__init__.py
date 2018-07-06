@@ -399,10 +399,12 @@ class PackagableElement(SourceModelElement):
 
 
 class Entity(Resource):
+
     __metaclass__ = abc.ABCMeta
 
 
 class Member(Resource):
+
     __metaclass__ = abc.ABCMeta
 
 
@@ -446,7 +448,8 @@ class DataType(SimpleType):
                  superDataType=None,  # Not used yet
                  astNode=None,
                  package=None,
-                 implementationClass=None):
+                 implementationClass=None,
+                 isCore=False):
         super(DataType, self).__init__(
             model=model,
             name=name,
@@ -456,6 +459,7 @@ class DataType(SimpleType):
         self.superDataType=superDataType
         self.implementationClass=implementationClass
         self.model.dataTypeNamed[name]=self
+        self.isCore=isCore
 
     def __repr__(self):
         return self.name
@@ -502,6 +506,10 @@ class DataValue(SimpleValue):
     def __str__(self):
         return self.stringRepr
 
+    @property
+    def isCore(self):
+        return False    # will be refined for core
+
 
 class UserDefinedDataValue(DataValue):
     """
@@ -539,7 +547,7 @@ class Package(PackagableElement, Entity):
             package=package,
             lineNo=lineNo, description=description,)
         self._elememts=[]
-        self.model.packageNamed[name]=self
+        model.packageNamed[name]=self
 
 
     @property
@@ -633,7 +641,7 @@ class Class(PackagableElement, Entity):
         super(Class, self).__init__(
             name=name,
             model=model,
-            package=None,
+            package=package,
             astNode=astNode,
             lineNo=lineNo,
             description=description)
@@ -817,7 +825,7 @@ class Association(PackagableElement, Entity):
     def __init__(self,
                  name, model, kind=None, package=None,
                  lineNo=None, description=None, astNode=None):
-        # type: (Text,ClassModel,Optional[Text],Optional[int],Optional[Text],Optional[Text]) -> None
+        # type: (Text,ClassModel,Optional[Text], Optional[Package] ,Optional[int],Optional[Text],Optional[Text]) -> None
         super(Association, self).__init__(
             name=name,
             model=model,
@@ -913,20 +921,20 @@ class Association(PackagableElement, Entity):
     def isOneToMany(self):
         return self.isForwardOneToMany or self.isBackwardOneToMany
 
-
 class Role(SourceModelElement, Member):
     """
     Roles.
     """
 
     def __init__(self, name, association, astNode=None,
-                 cardMin=None, cardMax=None, type=None, isOrdered=False,
+                 cardMin=None, cardMax=None, type=None,
+                 isOrdered=False,
                  qualifiers=None, subsets=None, isUnion=False,
                  expression=None,
                  lineNo=None, description=None):
 
         # unamed role get the name of the class with lowercase for the first letter
-        if name=='' or name is None:
+        if name == '' or name is None:
             if type is not None:
                 name = type[:1].lower() + type[1:]
         SourceModelElement.__init__(
@@ -939,7 +947,7 @@ class Role(SourceModelElement, Member):
         self.association.roleNamed[name] = self
         self.cardinalityMin = cardMin
         self.cardinalityMax = cardMax
-        self.type = type        # string to be resolved in Class
+        self.type = type  # string to be resolved in Class
         self.isOrdered = isOrdered
 
         # (str,str) to be resolved in (str,SimpleType)
@@ -958,11 +966,12 @@ class Role(SourceModelElement, Member):
             return None
         if self.cardinalityMin == self.cardinalityMax:
             return str(self.cardinalityMin)
-        if self.cardinalityMin==0 and self.cardinalityMax is None:
+        if self.cardinalityMin == 0 and self.cardinalityMax is None:
             return '*'
-        return ('%s..%s' %(
+        return ('%s..%s' % (
             str(self.cardinalityMin),
-            '*' if self.cardinalityMax is None else str(self.cardinalityMax)
+            '*' if self.cardinalityMax is None else str(
+                self.cardinalityMax)
 
         ))
 
@@ -1007,9 +1016,9 @@ class Role(SourceModelElement, Member):
 
     @property
     def position(self):
-        #type: () -> RolePosition
+        # type: () -> RolePosition
         if self.association.isBinary:
-            if self.association.roles[0]==self:
+            if self.association.roles[0] == self:
                 return 'source'
             else:
                 return 'target'
@@ -1021,12 +1030,11 @@ class Role(SourceModelElement, Member):
     def __str__(self):
         return '%s::%s' % (self.association.name, self.name)
 
-
     def acceptCardinality(self, actualCardinality):
         if actualCardinality < self.cardinalityMin:
             return False
         elif (self.cardinalityMax is not None
-              and actualCardinality > self.cardinalityMax ):
+              and actualCardinality > self.cardinalityMax):
             return False
         else:
             return True
