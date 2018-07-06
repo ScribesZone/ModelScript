@@ -57,9 +57,11 @@ class ClassModelPrinter(ModelPrinter):
     def doUseModel(self, model):
         self.doModelTextBlock(model.description)
 
+        for p in model.packages:
+            self.doPackage(p)
+
         for d in model.dataTypes:
             self.doDataType(d)
-
 
         for e in model.enumerations:
             self.doEnumeration(e)
@@ -76,16 +78,34 @@ class ClassModelPrinter(ModelPrinter):
         # TODO: invariants, operationConditions, dataTypes
         return self.output
 
+    def qualified(self, element):
+        print('::'*10, element, type(element), element.package)
+        if element.package is None:
+            return element.name
+        elif element.package.name=='':
+            return element.name
+        else:
+            return '%s.%s'% (
+                element.package.name,
+                element.name
+            )
+
+    def doPackage(self, package):
+        self.outLine('%s %s' %(
+            self.kwd('package'),
+            package.name))
+
     def doDataType(self, datatype):
+
         self.outLine('%s %s' % (
             self.kwd('datatype'),
-            datatype.name))
+            self.qualified(datatype)))
         self.doModelTextBlock(datatype.description, indent=1)
 
     def doEnumeration(self, enumeration):
         self.outLine('%s %s' % (
             self.kwd('enumeration'),
-            enumeration.name))
+            self.qualified(enumeration)))
         self.doModelTextBlock(enumeration.description, indent=1)
         for (i,el) in enumerate(enumeration.literals):
             self.doEnumerationLiteral(el)
@@ -112,7 +132,7 @@ class ClassModelPrinter(ModelPrinter):
         self.outLine(' '.join(filter(None,[
             (self.kwd('abstract') if class_.isAbstract else ''),
             self.kwd('class'),
-            class_.name,
+            self.qualified(class_),
             sc])))
 
         # self.doModelTextBlock(class_.description)
@@ -135,7 +155,7 @@ class ClassModelPrinter(ModelPrinter):
     def doAssociation(self, association):
         self.outLine('%s %s' % (
             self.kwd(association.kind),
-            association.name,
+            self.qualified(association),
         ))
         self.doModelTextBlock(association.description, indent=1)
         self.outLine(self.kwd('roles'), indent=1)
@@ -152,7 +172,7 @@ class ClassModelPrinter(ModelPrinter):
             sc = ''
         self.out('%s %s%s %s' % (
             self.kwd('associationclass'),
-            associationClass.name,
+            self.qualified(associationClass),
             sc,
             self.kwd('between')))
         self.doModelTextBlock(associationClass.description)
