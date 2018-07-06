@@ -40,7 +40,7 @@ def doBuildDiagram(filename):
         fileName=filename,
     )
     if not source.isValid:
-        print('#'*10+' ignore invalid file  %s' % filename )
+        raise RuntimeError('#'*10+' ignore invalid file  %s' % filename)
     else:
         obm = source.classModel
 
