@@ -10,6 +10,8 @@ This is currently only a preliminary version.
 import os
 import logging
 from modelscripts.metamodels.classes import METAMODEL
+from modelscripts.tools.plantuml.engine import PlantUMLEngine
+
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
@@ -20,7 +22,7 @@ def indent(prefix,s):
 
 
 
-class ClassDiagramPrinter(object):
+class ClassPlantUMLPrinter(object):
     def __init__(self, classModel):
         self.classModel = classModel
         self.output = ''
@@ -28,7 +30,7 @@ class ClassDiagramPrinter(object):
 
     def do(self, outputFile=None):
         self.output = ''
-        self.model(self.classModel)
+        self.doModel(self.classModel)
         if outputFile:
             with open(outputFile, 'w') as f:
                 f.write(self.output)
@@ -51,58 +53,60 @@ class ClassDiagramPrinter(object):
     #     self.out('\n')
 
 
-    def model(self, model):
+    def doModel(self, model):
 
         self.out('@startuml')
         self.out('\n\n')
+        self.out('hide empty members\n')
 
         for e in model.enumerations:
-            self.enumeration(e)
+            self.doEnumeration(e)
+
+        for d in model.dataTypes:
+            if not d.isCore:
+                self.doDataType(d)
 
         for c in model.classes:
-            self.class_(c)
+            self.doClass(c)
 
         for a in model.associations:
-            self.association(a)
+            self.doAssociation(a)
 
         for ac in model.associationClasses:
-            self.associationClass(ac)
+            self.doAssociationClass(ac)
 
         # TODO: invariants, operationConditions
 
         self.out('@enduml')
 
-    def enumeration(self, enumeration):
+    def doEnumeration(self, enumeration):
         self.out('enum %s {\n' % enumeration.name)
         self.out(
             '\n'.join(
-                ['    %s' % l
+                ['    %s' % l.name
                  for l in enumeration.literals]
             )
         )
         self.out('\n}\n\n')
 
-    def class_(self, class_):
+    def doDataType(self, datatype):
+        self.out('class %s << (D,orchid) >> {\n}\n\n' % datatype.name)
+
+    def doClass(self, class_):
 
         self.out('class %s [[%s{%s}]]\n' %(
             class_.name,
             'http://something.org/'+class_.name,
-            'tooltoip for %s' %class_.name
+            'tooltip for %s' %class_.name
         ))
         self.out("class %s {\n" % class_.name)
 
         for attribute in class_.attributes:
-            self.attribute(attribute)
-
+            self.doAttribute(attribute)
 
         self.out('--\n')
         for operation in class_.operations:
-            self.operation(operation)
-
-        if class_.invariants:
-            self.out('--\n')
-            for invariant in class_.invariants:
-                 self.invariant(invariant)
+            self.doOperation(operation)
 
         self.out('}\n\n')
 
@@ -111,11 +115,13 @@ class ClassDiagramPrinter(object):
 
         self.out('\n\n')
 
-
-    def association(self, association):
+    def doAssociation(self, association):
+        # The rendering is better with vertical layout (--) for
+        # associations because roles+assoc names creates a lot
+        # of horizontal text.
         kindrepr = {
-                'association' : '-',
-                'associationclass' : '-',
+                'association' : '--',    # better rendering --
+                'associationclass' : '--',
                 'composition': '*--',
                 'aggregation': 'o--',
             } [association.kind]
@@ -127,16 +133,16 @@ class ClassDiagramPrinter(object):
         r1 = association.roles[0]
         r2 = association.roles[1]
         self.out(r1.type.name+' ')
-        # self.out(self.roleText(r1))
+        self.out(self.roleText(r1))
         self.out(' '+kindrepr+' ')
-        # self.out(self.roleText(r2))
+        self.out(self.roleText(r2))
         self.out(' '+r2.type.name+' : ')
-        self.out(association.name)
-        self.out('[[http://something{%s -- %s -- %s}.]]' % (
-            self.roleText(r1),
-            association.name,
-            self.roleText(r2),
-        ))
+        self.out(association.name+' >')
+        # self.out('[[http://something{%s -- %s -- %s}.]]' % (
+        #     self.roleText(r1),
+        #     association.name+' >',
+        #     self.roleText(r2),
+        # ))
         self.out('\n\n')
         #     '%s %s %s %s %s : %s\n\n' %(
         #         r1.type.name,
@@ -148,9 +154,9 @@ class ClassDiagramPrinter(object):
         #     )
         # )
 
-    def associationClass(self, associationClass):
-        self.association(associationClass)
-        self.class_(associationClass)
+    def doAssociationClass(self, associationClass):
+        self.doAssociation(associationClass)
+        self.doClass(associationClass)
         r1 = associationClass.roles[0]
         r2 = associationClass.roles[1]
         self.out('( %s, %s) .. %s\n\n' %(
@@ -159,17 +165,14 @@ class ClassDiagramPrinter(object):
             associationClass.name
         ))
 
-
-
-
-    def attribute(self, attribute):
+    def doAttribute(self, attribute):
         self.out('{field} %s %s : %s\n' % (
             '/' if attribute.isDerived else '',
             attribute.name,
             attribute.type.name,
         ))
 
-    def operation(self, operation):
+    def doOperation(self, operation):
         self.out('{method}    %s%s\n' % (
             operation.signature,
             ' =' if operation.hasImplementation else ''
@@ -179,29 +182,6 @@ class ClassDiagramPrinter(object):
         # for condition in operation.conditions:
         #     self.operationCondition(condition)
 
-    def invariant(self, invariant):
-        self.out('%sinv %s\n' % (
-            'existential ' if invariant.isExistential else '',
-            invariant.name,
-        ))
-
-    # def invariant(self, invariant):
-    #     if invariant.class_ is None:
-    #         prefix_comment = ''
-    #         prefix_first = 'context '
-    #         prefix_rest = '    '
-    #     else:
-    #         prefix_comment = '    '
-    #         prefix_first = '    '
-    #         prefix_rest  = '        '
-    #     self.description(invariant, '    ')
-    #     self.out('%s%sinv %s:' % (
-    #         prefix_first,
-    #         'existential ' if invariant.isExistential else '',
-    #         invariant.name,
-    #     ))
-    #     self.eolComment(invariant)
-    #     self.out(indent(prefix_rest,invariant.expression)+'\n')
 
     def roleText(self, role):
         return ('"%s..%s %s"' % (
@@ -210,23 +190,23 @@ class ClassDiagramPrinter(object):
             role.name,
     ))
 
-    # def operationCondition(self, condition):
-    #     # if invariant.class_ is None:
-    #     #     prefix_comment = ''
-    #     #     prefix_first = 'context '
-    #     #     prefix_rest = '    '
-    #     # else:
-    #     prefix_comment = '        '
-    #     prefix_first = '        '
-    #     prefix_rest  = '            '
-    #     keyword='pre' if isinstance(condition,PreCondition) else 'post'
-    #     self.description(condition, '    ')
-    #     self.out('%s%s %s:' % (
-    #         prefix_first,
-    #         keyword,
-    #         condition.name,
-    #     ))
-    #     self.eolComment(condition)
-    #     self.out(indent(prefix_rest,condition.expression)+'\n')
 
-METAMODEL.registerDiagramPrinter(ClassDiagramPrinter)
+    ## TODO: remove code duplication (class, object, usecase)
+    def generate(self, pumlFile, finalOutputDir=None, format='svg'):
+        """
+        Generate directly the .plantuml file and the output (e.g. .svg)
+        This is a shorthand method to avoid creating the plantUMLEngine
+        apart. OK if only one kind of generation is needed.
+        :param pumlFile: the name of the .puml file to be saved
+        :param format: the format (e.g. svg)
+        :param finalOutputDir: the place where the final output will be.
+        """
+        self.do(pumlFile)
+        puml_engine=PlantUMLEngine(checks=False)
+        puml_engine.generate(
+            pumlFile=pumlFile,
+            format=format,
+            finalOutputDir=finalOutputDir)
+
+
+METAMODEL.registerDiagramPrinter(ClassPlantUMLPrinter)
