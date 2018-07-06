@@ -14,11 +14,17 @@ Declaration:
 //====================================================================
 
 EntitydDeclaration:
-      DataType
+      Package
+    | DataType
     | Enumeration
     | Class
     | Association
     | Invariant
+;
+
+Package:
+    'package' names *= ID ['.']
+    X
 ;
 
 DataType:
