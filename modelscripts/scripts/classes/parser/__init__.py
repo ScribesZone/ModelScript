@@ -14,6 +14,7 @@ from modelscripts.base.issues import (
 )
 from modelscripts.metamodels.classes import (
     ClassModel,
+    Package,
     DataType,
     Enumeration,
     EnumerationLiteral,
@@ -62,10 +63,19 @@ class ClassModelSource(ASTBasedModelSourceFile):
     def __init__(self, fileName):
         #type: (Text) -> None
         this_dir=os.path.dirname(os.path.realpath(__file__))
+
+        # used just during parsing to have a class level access to
+        # the current package.
+
+
         super(ClassModelSource, self).__init__(
             fileName=fileName,
             grammarFile=os.path.join(this_dir, 'grammar.tx')
         )
+
+        # used just during parsing to have a class level access to
+        # the current package.
+        self.__current_package = None
 
 
     @property
@@ -81,6 +91,39 @@ class ClassModelSource(ASTBasedModelSourceFile):
         return METAMODEL
 
     def fillModel(self):
+
+        def define_package(ast_package):
+            full_name='.'.join(ast_package.names)
+            if full_name in self.classModel.packageNamed:
+                # package already exists : reuse it
+                print('AA'*10,'reuse')
+                self.__current_package=\
+                    self.classModel.packageNamed[full_name]
+            else:
+                if len(ast_package.names)==0:
+                    # this case must not exist anyway since
+                    # the default package is create at the beginning.
+                    pass
+                    print('BB'*10,'!!!')
+
+                else:
+                    if check_if_global_name(
+                            ast_package.names[0],
+                            ast_package,
+                            'Package ignored.'):
+                        # the first name of the package is already
+                        # defined in the model. Just ignore the package
+                        pass
+                        print('CC'*10,'!!!')
+
+                    else:
+                        # define the new package
+                        print('DD'*10,'new', full_name)
+
+                        self.__current_package=\
+                            Package(
+                                name=full_name,
+                                model=self.classModel)
 
         def check_if_global_name(name, ast_node, message):
             if name in self.classModel.globalNames():
@@ -132,9 +175,11 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     'Datatype ignored.' ):
                 pass
             else:
+                print('ZZ'*10, self.__current_package, type(self.__current_package))
                 d=DataType(
                     name=ast_datatype.name,
                     model=self.model,
+                    package=self.__current_package,
                     astNode=ast_datatype
                 )
                 d.description=astTextBlockToTextBlock(
@@ -151,7 +196,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 e=Enumeration(
                     name=ast_enumeration.name,
                     model=self.model,
-                    package=None,
+                    package=self.__current_package,
                     astNode=ast_enumeration)
                 e.description=astTextBlockToTextBlock(
                     container=e,
@@ -186,6 +231,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     'Class ignored.' ):
                 pass
             else:
+                print('ZZ'*10, self.__current_package, type(self.__current_package))
                 c=Class(
                     name=ast_class.name,
                     model=self.model,
@@ -193,12 +239,14 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     isAbstract=ast_class.isAbstract,
                     superclasses=[
                         Placeholder(s, 'Classifier')
-                        for s in ast_class.superclasses]
+                        for s in ast_class.superclasses],
+                    package=self.__current_package,
                 )
                 c.description=astTextBlockToTextBlock(
                     container=c,
                     astTextBlock=ast_class.textBlock)
 
+                print('CC'*10, '"', c.package,'"')
 
                 # attributes
                 ast_ac=ast_class.attributeCompartment
@@ -251,7 +299,8 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     name=ast_association.name,
                     model=self.classModel,
                     astNode=ast_association,
-                    kind=ast_association.kind
+                    kind=ast_association.kind,
+                    package=self.__current_package
                 )
                 a.description = astTextBlockToTextBlock(
                     container=a,
@@ -285,10 +334,16 @@ class ClassModelSource(ASTBasedModelSourceFile):
         def define_invariant(declaration):
             pass
 
+        self.__current_package=\
+            Package(
+                name='',
+                model=self.classModel)
+
         for declaration in self.ast.model.declarations:
-            # pass
             type_=declaration.__class__.__name__
-            if type_=='DataType':
+            if type_=='Package':
+                define_package(declaration)
+            elif type_=='DataType':
                 define_datatype(declaration)
             elif type_=='Enumeration':
                 define_enumeration(declaration)
@@ -301,7 +356,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
             else:
                 raise NotImplementedError(
                     'declaration of %s not implemented' % type_)
-
+            #
     #----------------------------------------------------------------
     #                          Resolution
     #----------------------------------------------------------------
