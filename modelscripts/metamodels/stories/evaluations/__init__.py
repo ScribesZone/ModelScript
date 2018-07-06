@@ -65,6 +65,8 @@ class StepEvaluation(SourceModelElement, Subject):
 
         self.parent=parent
         #type: Optional[CompositeStepEvaluation]
+        #assoc: HasParentEvaluation
+
         # The parent evaluation.
         # Not defined in the case of StoryEvaluation as this is the root.
         # This parent mimics steps' parent, but it is
@@ -82,11 +84,13 @@ class StepEvaluation(SourceModelElement, Subject):
 
         self.accesses=accesses
         #type: List[Access]
+        #assoc: Accesses
         # TODO: check how it works
         # Not sure if it should be on leaf steps or composite as well.
 
         self.issues=[]
         #type: List[Issue]
+        #assoc: hasIssues
         # The list of issues raised by this step evaluation
 
         if self.parent is not None:
@@ -126,7 +130,8 @@ class CompositeStepEvaluation(StepEvaluation):
             step=step)
 
         self.stepEvaluations=[]
-        #type: List[Step]
+        #type: List[StepEvaluation]
+        #assoc: HasParentEvaluation
         # Composite evaluations have substeps "stepEvaluations".
         # On the opposite, all step evaluation have parents
         # (see stepEvaluation).
@@ -146,6 +151,7 @@ class StoryEvaluation(CompositeStepEvaluation):
 
         self.checkEvaluations=[]
         #type: List['CheckStepEvaluation']
+        #assoc: IsCheckedAt
 
     @property
     def finalState(self):

@@ -82,10 +82,14 @@ class CheckStepEvaluation(OperationStepEvaluation):
             step=step,
             name=name)
         self.frozenState=currentState.copy()
-        self.frozenState.storyEvaluation=self.storyEvaluation
+        #assoc: FrozesState
         self.frozenState.checkStepEvaluation=self
+        #assoc FrozesState~
         self.frozenState.finalize()
+
+        self.frozenState.storyEvaluation=self.storyEvaluation
         self.metrics=self.frozenState.metrics
 
         self.storyEvaluation.checkEvaluations.append(self)
+        #assoc IsCheckedAt
 
