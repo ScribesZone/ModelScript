@@ -71,6 +71,8 @@ class TextStep < CompositeStep
     attributes
         textBlocK : TextBlock
 
+package stories.operations
+
 class OperationStep < Step
 
 class UpdateOperationStep < OperationStep
