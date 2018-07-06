@@ -94,6 +94,9 @@ class ClassModelPrinter(ModelPrinter):
         self.outLine('%s %s' %(
             self.kwd('package'),
             package.name))
+        for element in package.elements:
+            self.outLine(element.name, indent=1)
+
 
     def doDataType(self, datatype):
 

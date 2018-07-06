@@ -9,7 +9,9 @@ This is currently only a preliminary version.
 
 import os
 import logging
-from modelscripts.metamodels.classes import METAMODEL
+from modelscripts.metamodels.classes import (
+    Association,
+    METAMODEL)
 from modelscripts.tools.plantuml.engine import PlantUMLEngine
 
 # logging.basicConfig(level=logging.DEBUG)
@@ -58,6 +60,7 @@ class ClassPlantUMLPrinter(object):
         self.out('@startuml')
         self.out('\n\n')
         self.out('hide empty members\n')
+        self.doPackages(model)
 
         for e in model.enumerations:
             self.doEnumeration(e)
@@ -78,6 +81,20 @@ class ClassPlantUMLPrinter(object):
         # TODO: invariants, operationConditions
 
         self.out('@enduml')
+
+    def doPackages(self, model):
+        if len(model.packages)>=2:
+            for package in model.packages:
+                if package.name=='':
+                    pname='.'
+                else:
+                    pname=package.name
+                self.out('package "%s" {\n' % pname)
+                for element in package.elements:
+                    if not isinstance(element, Association):
+                        self.out('    class %s\n' % element.name)
+                self.out('}\n\n')
+
 
     def doEnumeration(self, enumeration):
         self.out('enum %s {\n' % enumeration.name)
