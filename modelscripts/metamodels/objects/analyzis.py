@@ -394,15 +394,15 @@ class ObjectModelAnalyzis(object):
     def _analyze_unique_links(self):
         pass # TODO: implement unique links if necessary
 
-    def XXX(self):
-        for object in self.objectModel.objects:
-            for role in object._link_roles_per_role.keys():
-                print('GG'*20, '%s.%s=%s' % (
-                    object.name,
-                    role.name,
-                    object.cardinality(role)))
-                for link_role in object._link_roles_per_role[role]:
-                    print('GG'*20,' '*10, str(link_role))
+    # def XXX(self):
+    #     for object in self.objectModel.objects:
+    #         for role in object._link_roles_per_role.keys():
+    #             print('GG'*20, '%s.%s=%s' % (
+    #                 object.name,
+    #                 role.name,
+    #                 object.cardinality(role)))
+    #             for link_role in object._link_roles_per_role[role]:
+    #                 print('GG'*20,' '*10, str(link_role))
 
 
     @property
