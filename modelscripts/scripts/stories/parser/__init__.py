@@ -273,17 +273,14 @@ class StoryFiller():
                 datatype=dataTypeFromDataValueName(
                     model=self.model.classModel,
                     datavalue_name=simple_value_type)
-                print('GG'*10,'datatype',datatype, type(datatype))
                 try:
                     # Instanciate an object via the python
                     # implementation class.
                     pyclass=datatype.implementationClass
-                    print('GG' * 10, 'pyclass', pyclass, type(pyclass))
 
                     datavalue=pyclass(
                         stringRepr=repr,
                         type=datatype)
-                    print('VV' * 10, '   ', datavalue)
                     return datavalue
                 except ValueError as e:
                     ASTNodeSourceIssue(
