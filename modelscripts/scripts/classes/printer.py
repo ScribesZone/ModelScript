@@ -198,18 +198,38 @@ class ClassModelPrinter(ModelPrinter):
         return self.output
 
     def doAttribute(self, attribute):
-        visibility={
-            'public':None,
+        visibility=self.kwd({
+            'public':'+',
             'private':'-',
             'protected':'%',
             'package':'~'
-        }[attribute.visibility]
+        }[attribute.visibility])
+        derived=self.kwd('/') if attribute.isDerived else None
+        id=self.kwd('{id}') if attribute.isId else None
+
+        read_only=\
+            self.kwd('{readOnly}') if attribute.isReadOnly else None
+        optional=self.kwd('[0..1]') if attribute.isOptional \
+                else None
+        #TODO: extract this to a method (see role)
+        stereotypes='<<%s>>' % ','.join(attribute.stereotypes) \
+                if attribute.stereotypes \
+                else ''
+        tags='{%s}' % ','.join(attribute.tags) \
+                if attribute.tags \
+                else ''
+
         _=' '.join(filter(None,[
-                self.kwd('/') if attribute.isDerived else None,
+                id,
+                read_only,
+                derived,
                 visibility,
                 attribute.name,
                 self.kwd(':'),
-                attribute.type.name]))
+                attribute.type.name,
+                optional,
+                stereotypes,
+                tags]))
         self.outLine(_, indent=2)
         self.doModelTextBlock(attribute.description, indent=3)
         # if attribute.isDerived:
@@ -258,15 +278,31 @@ class ClassModelPrinter(ModelPrinter):
 
     def doRole(self, role):
         self.doModelTextBlock(role.description)
-        _=('%s %s %s%s%s%s%s%s' % (
+
+        # move this code to a method, refactoring
+        stereotypes='<<%s>>' % ','.join(role.stereotypes) \
+                if role.stereotypes \
+                else ''
+        tags='{%s}' % ','.join(role.tags) \
+                if role.tags \
+                else ''
+        navigabilty='' if role.navigability is None \
+                    else role.navigability
+        cardinalities=''.join([
+            self.kwd('['),
+            str(role.cardinalityMin),
+            self.kwd('..'),
+            '*' if role.cardinalityMax is None
+                else str(role.cardinalityMax),
+            self.kwd(']')])
+        _=' '.join(filter(None,[
+            navigabilty,
             role.name,
             self.kwd(':'),
-            role.type,
-            self.kwd('['),
-            role.cardinalityMin,
-            self.kwd('..'),
-            '*' if role.cardinalityMax is None else role.cardinalityMax,
-            self.kwd(']')))
+            str(role.type),
+            cardinalities,
+            stereotypes,
+            tags]))
         self.outLine(_, indent=2)
         self.doModelTextBlock(role.description)
         return self.output

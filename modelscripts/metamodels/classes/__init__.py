@@ -720,8 +720,8 @@ class Attribute(SourceModelElement, Member):
                  visibility='public',
                  isDerived=False,
                  isOptional=False,
-                 isId=False,
-                 isReadOnly=False,
+                 tags=(),
+                 stereotypes=(),
                  isInit=False, expression=None,
                  lineNo=None, astNode=None):
         SourceModelElement.__init__(
@@ -736,10 +736,10 @@ class Attribute(SourceModelElement, Member):
         self._isDerived = isDerived
         self.visibility=visibility
         self.isOptional = isOptional
-        self.isInit = isInit
+        self.isInit = isInit  # ?
         self.expression = expression
-        self.isId=isId
-        self.isReadOnly=isReadOnly
+        self.tags=tags
+        self.stereotypes=stereotypes
 
     @MAttribute('Boolean')
     def isDerived(self):
@@ -752,6 +752,18 @@ class Attribute(SourceModelElement, Member):
     @property
     def label(self):
         return '%s.%s' % (self.class_.label, self.name)
+
+    @property
+    def isId(self):
+        return 'id' in self.tags
+
+    @property
+    def isReadOnly(self):
+        return 'readOnly' in self.tags
+
+    @property
+    def isClass(self):
+        return 'isClass' in self.tags
 
 # class Parameter
 
@@ -921,6 +933,15 @@ class Association(PackagableElement, Entity):
     def isOneToMany(self):
         return self.isForwardOneToMany or self.isBackwardOneToMany
 
+    @property
+    def navigability(self):
+        return {
+            (True, True) : 'both',
+            (True, False) : 'backward',
+            (False, True) : 'forward',
+            (False, False) : 'none'
+        }[(self.roles[0].isNavigable, self.roles[1].isNavigable)]
+
 class Role(SourceModelElement, Member):
     """
     Roles.
@@ -928,9 +949,11 @@ class Role(SourceModelElement, Member):
 
     def __init__(self, name, association, astNode=None,
                  cardMin=None, cardMax=None, type=None,
-                 isOrdered=False,
+                 navigability=None,
                  qualifiers=None, subsets=None, isUnion=False,
                  expression=None,
+                 tags=(),
+                 stereotypes=(),
                  lineNo=None, description=None):
 
         # unamed role get the name of the class with lowercase for the first letter
@@ -948,13 +971,27 @@ class Role(SourceModelElement, Member):
         self.cardinalityMin = cardMin
         self.cardinalityMax = cardMax
         self.type = type  # string to be resolved in Class
-        self.isOrdered = isOrdered
 
         # (str,str) to be resolved in (str,SimpleType)
         self.qualifiers = qualifiers
         self.subsets = subsets
         self.isUnion = isUnion
         self.expression = expression
+        self.tags=tags
+        self.navigability=navigability
+        self.stereotypes=stereotypes
+
+    @property
+    def isOrdered(self):
+        return 'ordered' in self.tags
+
+    @property
+    def isNavigable(self):
+        return self.navigability != 'x'
+
+    @property
+    def isNavigabilitySpecified(self):
+        return self.navigability is not None
 
     @property
     def label(self):

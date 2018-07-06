@@ -24,12 +24,14 @@ EntitydDeclaration:
 
 Package:
     'package' names *= ID ['.']
+    metaPart = MetaPart ?
     X
 ;
 
 DataType:
     'datatype' name=ID
     ('<' superDataType = ID)?   // Not used yet
+    metaPart = MetaPart ?
     (o_
         (textBlock = TextBlock)
     _o) ?
@@ -37,7 +39,9 @@ DataType:
 ;
 
 Enumeration:
-    'enumeration' name=ID o_
+    'enumeration' name=ID
+    metaPart = MetaPart ?
+    o_
         (textBlock = TextBlock) ?
         literals += EnumerationLiteral
     _o
@@ -46,6 +50,8 @@ Enumeration:
 
 EnumerationLiteral:
     name=ID
+    metaPart = MetaPart ?
+
         (o_
             textBlock=TextBlock
         _o)?
@@ -58,7 +64,8 @@ EnumerationLiteral:
 Class:  // common
     (isAbstract ?= 'abstract')
     'class' name=ID
-    ('<' (superclasses += ID [','])) ?   // Not used yet
+    ('<' (superclasses += ID [','])) ?
+    metaPart = MetaPart ?
     (o_
         (textBlock = TextBlock)?
         attributeCompartment=AttributesCompartment ?
@@ -78,15 +85,22 @@ AttributesCompartment:  // common
 ;
 
 Attribute:
-    (isDerived ?= '/') ?
-    (visibility = Visibility) ?
+    decorations = AttributeDecorations
     name=ID ':' type=ID
-    (cardinality=Cardinality) ?
-    ( '{' tags += ID [','] '}' )?
+    // to simplify (cardinality=Cardinality) ?
+    ( isOptional = '[' '0' '..' '1' ']' )?
+    metaPart = MetaPart ?
     (o_
         textBlock=TextBlock
     _o)?
     X
+;
+
+AttributeDecorations:
+    (
+        (isDerived = '/') ?
+        (visibility = Visibility) ?
+    ) #
 ;
 
 OperationsCompartment:
@@ -103,6 +117,8 @@ Operation:
         arguments*=Argument[',']
     ')'
     (':' returnType=ID)?
+    metaPart = MetaPart ?
+
     (o_
         textBlock=TextBlock
     _o)?
@@ -134,7 +150,9 @@ PermissionsCompartment:
 
 
 Association:
-    kind=AssociationKind name=ID o_
+    kind=AssociationKind name=ID
+    metaPart = MetaPart
+    o_
         (textBlock=TextBlock) ?
         roleCompartment=RoleCompartment
         attributeCompartment=AttributesCompartment ?
@@ -158,13 +176,19 @@ RoleCompartment:
 ;
 
 Role:
+    (navigability = Navigability )?
     name=ID ':' type=ID cardinality=Cardinality
     (o_
         textBlock=TextBlock
     _o)?
+    metaPart = MetaPart
     X
 ;
 
+Navigability:
+      'x'
+    | '>'
+;
 
 // TODO; add syntax for association class
 
@@ -172,6 +196,11 @@ Role:
 
 Invariant:
     'invariant' X
+;
+
+MetaPart:
+    ('<<' stereotypes += ID [','] '>>') ?
+    ('{' tags += ID [','] '}') ?
 ;
 
 Cardinality:

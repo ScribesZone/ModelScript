@@ -265,23 +265,34 @@ class ClassModelSource(ASTBasedModelSourceFile):
                         ' Attribute ignored.'
                         % (ast_attribute.name, class_.name)))
             else:
-
-                visibility= {
-                    None:'public',
-                    '+':'public',
-                    '-':'private',
-                    '%':'protected',
-                    '~':'package' } [ast_attribute.visibility]
-
-                # TODO: implement isOptional, isInit
-                # TODO: implement isId, readonly,
+                deco=ast_attribute.decorations
+                if deco is None:
+                    visibility='public'
+                    is_derived=False
+                else:
+                    visibility={
+                        None:'public',
+                        '+':'public',
+                        '-':'private',
+                        '%':'protected',
+                        '~':'package' } [deco.visibility]
+                    is_derived=deco.isDerived is not None
+                if ast_attribute.metaPart is None:
+                    tags=[]
+                    stereotypes=[]
+                else:
+                    tags=ast_attribute.metaPart.tags
+                    stereotypes=ast_attribute.metaPart.stereotypes
                 a=Attribute(
                     name=ast_attribute.name,
                     class_=class_,
                     astNode=ast_attribute,
-                    isDerived=ast_attribute.isDerived,
                     visibility=visibility,
-                    type=Placeholder((ast_attribute.type),'Classifier')
+                    isDerived=is_derived,
+                    type=Placeholder((ast_attribute.type),'Classifier'),
+                    tags=tags,
+                    stereotypes=stereotypes,
+                    isOptional=ast_attribute.isOptional is not None
                 )
                 # TODO: convert visibiliy + to public, etc.
                 a.description=astTextBlockToTextBlock(
@@ -320,13 +331,23 @@ class ClassModelSource(ASTBasedModelSourceFile):
                         % (ast_role.name)))
             else:
                 (min, max)=cardinality_min_max(ast_role.cardinality)
+                if ast_role.metaPart is None:
+                    tags=[]
+                    stereotypes=[]
+                else:
+                    tags=ast_role.metaPart.tags
+                    stereotypes=ast_role.metaPart.stereotypes
+                print('LL'*20,ast_role.name,ast_role.navigability)
                 r=Role(
                     astNode=ast_role,
                     association=association,
                     name=ast_role.name,
                     type=Placeholder(ast_role.type,'Classifier'),
                     cardMin=min,
-                    cardMax=max)
+                    cardMax=max,
+                    navigability=ast_role.navigability,
+                    tags=tags,
+                    stereotypes=stereotypes)
                 r.description = astTextBlockToTextBlock(
                     container=r,
                     astTextBlock=ast_role.textBlock)

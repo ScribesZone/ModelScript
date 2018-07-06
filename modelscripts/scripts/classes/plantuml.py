@@ -135,13 +135,27 @@ class ClassPlantUMLPrinter(object):
     def doAssociation(self, association):
         # The rendering is better with vertical layout (--) for
         # associations because roles+assoc names creates a lot
-        # of horizontal text.
-        kindrepr = {
-                'association' : '--',    # better rendering --
-                'associationclass' : '--',
-                'composition': '*--',
-                'aggregation': 'o--',
-            } [association.kind]
+        # # of horizontal text.
+        # basic_kindrepr = {
+        #         'association' : 'x-->',    # better rendering --
+        #         'associationclass' : '--',
+        #         'composition': '*--x',
+        #         'aggregation': 'o--',
+        #     } [association.kind]
+        kindrepr={
+            ('association','both') : '--',
+            ('association','none') : 'x--x',
+            ('association','backward') : '<--x',
+            ('association','forward') : 'x-->',
+            ('composition','both') : '*--',
+            ('composition','none') : '*--x',
+            ('composition','backward') : '*--x',
+            ('composition','forward') : '*-->',
+            ('aggregation','both') : 'o--',
+            ('aggregation','none') : 'o--x',
+            ('aggregation','backward') : 'o--x',
+            ('aggregation','forward') : 'o-->',
+        }[ (association.kind, association.navigability)]
         if len(association.roles) >= 3:
             raise NotImplementedError('%s have %i roles. n-ary association are not implemented' % (
                 association.name,
