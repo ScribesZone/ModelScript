@@ -1,0 +1,21 @@
+object model A
+import class model from '../cls/cl-datatype20.cls'
+
+thing : Something
+thing.int=100
+thing.int0=null
+thing.real=10.0
+thing.real0=null
+thing.str="hello"
+thing.str0=null
+thing.bool=true
+thing.bool0=null
+thing.date=12/02/2018
+thing.date0=null
+thing.dt=12/02/2018-12:25:10
+thing.dt0=null
+thing.time=12:25:10
+thing.time0=null
+thing.mode=Mode.during
+thing.mode0=null
+thing.url0=null

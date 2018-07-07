@@ -408,8 +408,11 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 type_name=attribute.type.placeholderValue
 
                 if type_name in self.classModel.simpleTypeNamed:
-                    attribute.type=(
+                    type=(
                         self.classModel.simpleTypeNamed[type_name])
+                    # Optional : Attribute to type
+                    type.isOptional=attribute.isOptional
+                    attribute.type=type
                 else:
                     ASTNodeSourceIssue(
                         code=icode('ATTRIBUTE_NO_TYPE'),

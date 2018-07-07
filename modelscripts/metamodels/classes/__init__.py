@@ -417,6 +417,8 @@ class SimpleType(PackagableElement):
     def __init__(self,
                  name,
                  model,
+                 isMultiple=False,
+                 isOptional=False,
                  astNode=None,
                  package=None,
                  lineNo=None, description=None):
@@ -526,8 +528,19 @@ class UserDefinedDataValue(DataValue):
 
 def isSimpleValueConformToSimpleType(simpleValue, simpleType):
     # TODO: to implement type conformity
+    null_type=simpleType.model.dataTypeNamed['NullType']
     valueType=simpleValue.type
-    return valueType==simpleType
+    print('KK'*10,
+          str(simpleValue),
+          valueType,
+          'with',
+          simpleType.name,
+          simpleType.isOptional,
+          str(simpleType))
+    return (
+        (valueType==null_type and simpleType.isOptional)
+        or valueType==simpleType
+    )
 
 
 class Package(PackagableElement, Entity):

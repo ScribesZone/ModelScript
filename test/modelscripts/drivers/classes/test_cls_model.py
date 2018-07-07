@@ -32,7 +32,7 @@ class TestClassModel(object):
 
     def testDataTypes(self):
         r={'Integer', 'Real', 'Boolean', 'String',
-           'Date', 'Time', 'DateTime'}
+           'Date', 'Time', 'DateTime', 'NullType'}
         assert set(self.model.dataTypeNames)==r
 
     def testRolesShapes(self):

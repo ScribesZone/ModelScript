@@ -267,8 +267,9 @@ class StoryFiller():
             else:
                 #-- process DataValue
                 repr = ast_simple_value.repr
-                # get the datatype, for example the instance of
-                # DataType (see metamodel) with name 'StringValue'.
+                # get the datatype, for example the instance
+                # of DataType (see metamodel) with name
+                # 'StringValue' or 'NullValue'.
                 # The result is an instance of DataType.
                 datatype=dataTypeFromDataValueName(
                     model=self.model.classModel,
@@ -277,7 +278,13 @@ class StoryFiller():
                     # Instanciate an object via the python
                     # implementation class.
                     pyclass=datatype.implementationClass
-
+                    #TODO: optimize creation if required
+                    # here we create a distinct
+                    # datavalue for each occurence.
+                    # This means that there will be
+                    # many 5 integer values and many null
+                    # values. Care should be taken with
+                    # comparisons.
                     datavalue=pyclass(
                         stringRepr=repr,
                         type=datatype)

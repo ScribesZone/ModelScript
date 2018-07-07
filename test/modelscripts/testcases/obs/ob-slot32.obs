@@ -1,0 +1,25 @@
+    #@Issue ob.ana.Slot.BadType 1
+    #@Issue else *
+
+
+object model A
+import class model from '../cls/cl-datatype20.cls'
+
+thing : Something
+thing.int=null
+thing.int0=10
+thing.real=null
+thing.real0=10.0
+thing.str="hello"
+thing.str0="hello"
+thing.bool=true
+thing.bool0=true
+thing.date=12/02/2018
+thing.date0=12/02/2018
+thing.dt=12/02/2018-12:25:10
+thing.dt0=12/02/2018-12:25:10
+thing.time=12:25:10
+thing.time0=12:25:10
+thing.mode=Mode.during
+thing.mode0=Mode.during
+thing.url0=null

@@ -225,6 +225,9 @@ composition HasPackage
         packages : Package[*]
 
 class SimpleType
+    attributes
+        isOptional : Boolean
+        isMultiple : Boolean
 
 class Enumeration < SimpleType
 

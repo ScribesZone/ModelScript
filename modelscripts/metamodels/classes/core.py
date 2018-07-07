@@ -34,6 +34,10 @@ def registerDataTypes(model):
              name='Time',
              implementationClass=TimeValue,
              isCore=True)
+    DataType(model,
+             name='NullType',
+             implementationClass=NullTypeValue,
+             isCore=True)
 
 def dataTypeFromDataValueName(model, datavalue_name):
     assert datavalue_name.endswith('Value')
@@ -46,6 +50,20 @@ class CoreDataValue(DataValue):
     @property
     def isCore(self):
         return True
+
+
+class NullTypeValue(CoreDataValue):
+
+    # TODO: implement isConformToType see YYY
+
+    def __init__(self, stringRepr, type):
+        # remove quotes
+        value=stringRepr[1:-1]
+        super(NullTypeValue, self).__init__(
+            stringRepr=stringRepr,
+            value=value,
+            type=type
+        )
 
 
 class StringValue(CoreDataValue):

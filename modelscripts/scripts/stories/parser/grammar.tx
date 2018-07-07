@@ -233,6 +233,7 @@ CoreDataValue:
     | TimeValue
     | RealValue
     | IntegerValue
+    | NullTypeValue
 ;
 
 StringValue:
@@ -267,6 +268,9 @@ TimeValue:
     repr=/[0-9]{2}:[0-9]{2}:[0-9]{2}/
 ;
 
+NullTypeValue:
+    repr='null'
+;
 
 //....................... Link declaration ........................
 
