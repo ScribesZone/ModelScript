@@ -88,10 +88,3 @@ class TestClassModel(object):
     def testEnumeration(self):
         assert len(self.model.enumerations)==0
 
-#
-#     department=classModel.classNamed['Department']
-#     print('AA'* 10, department._ownedRoles)
-#
-#     assert set(r.name for r in department._ownedRoles) == set(['employee', 'projects'])
-#     assert set(r.name for r in department._playedRoles) == set(['department'])
-#
