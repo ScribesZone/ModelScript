@@ -295,7 +295,7 @@ class ImportBox(ModelDescriptor):
         # as models can be build without any source
         # This cannot be avoided via a property for instance
         # because the model may exist independently from
-        # the source. KKK
+        # the source.
         self.modelSource.model.name = modelName
         self.modelSource.model.description = modelDescription
         self.modelSource.model.kinds = modelKinds

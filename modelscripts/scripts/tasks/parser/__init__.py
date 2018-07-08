@@ -111,7 +111,6 @@ class TaskModelSource(ASTBasedModelSourceFile):
     def __init__(self, taskFileName):
         #type: (Text) -> None
         this_dir=os.path.dirname(os.path.realpath(__file__))
-        print('KK'*40)
         super(TaskModelSource, self).__init__(
             fileName=taskFileName,
             grammarFile=os.path.join(this_dir, 'grammar.tx')

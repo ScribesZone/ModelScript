@@ -236,8 +236,6 @@ class StoryFiller():
         def get_simple_value(ast_simple_value):
             simple_value_type = \
                 ast_simple_value.__class__.__name__
-            print('DD' * 10,
-                  ast_simple_value)
             if simple_value_type=='EnumerationValue':
                 #-- process EnumerationValue
                 enum_name=ast_simple_value.enumerationName

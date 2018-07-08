@@ -417,8 +417,6 @@ class SimpleType(PackagableElement):
     def __init__(self,
                  name,
                  model,
-                 isMultiple=False,
-                 isOptional=False,
                  astNode=None,
                  package=None,
                  lineNo=None, description=None):
@@ -466,6 +464,36 @@ class DataType(SimpleType):
     def __repr__(self):
         return self.name
 
+
+class AttributeType(object):
+
+    def __init__(self,
+                 simpleType,
+                 isOptional=False,
+                 isMultiple=False):
+        self.simpleType=simpleType
+        self.isOptional=isOptional
+        self.isMultiple=isMultiple
+
+    def accept(self, simpleValue):
+        null_type=self.simpleType.model.dataTypeNamed['NullType']
+        valueType=simpleValue.type
+        print('KK'*10,
+              str(simpleValue)+':'+ str(valueType),
+              'with var',
+              id(self.simpleType),
+              self.simpleType.name,
+              self.isOptional)
+        return (
+            (valueType==null_type and self.isOptional)
+            or valueType==self.simpleType
+        )
+
+    def __str__(self):
+        return (
+              str(self.simpleType)
+            + ('[0..1]' if self.isOptional else '')
+        )
 
 class SimpleValue(object):
 
@@ -526,21 +554,7 @@ class UserDefinedDataValue(DataValue):
         )
 
 
-def isSimpleValueConformToSimpleType(simpleValue, simpleType):
-    # TODO: to implement type conformity
-    null_type=simpleType.model.dataTypeNamed['NullType']
-    valueType=simpleValue.type
-    print('KK'*10,
-          str(simpleValue),
-          valueType,
-          'with',
-          simpleType.name,
-          simpleType.isOptional,
-          str(simpleType))
-    return (
-        (valueType==null_type and simpleType.isOptional)
-        or valueType==simpleType
-    )
+
 
 
 class Package(PackagableElement, Entity):
@@ -619,6 +633,9 @@ class Enumeration(SimpleType):
                 return literal
         else:
             return None
+
+    def __str__(self):
+        return self.name
 
     def __repr__(self):
         return '%s(%s)' % (self.name, repr(self.literals))

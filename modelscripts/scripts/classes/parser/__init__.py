@@ -16,6 +16,7 @@ from modelscripts.metamodels.classes import (
     ClassModel,
     Package,
     DataType,
+    AttributeType,
     Enumeration,
     EnumerationLiteral,
     Class,
@@ -118,7 +119,6 @@ class ClassModelSource(ASTBasedModelSourceFile):
 
                     else:
                         # define the new package
-                        print('DD'*10,'new', full_name)
 
                         self.__current_package=\
                             Package(
@@ -175,7 +175,6 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     'Datatype ignored.' ):
                 pass
             else:
-                print('ZZ'*10, self.__current_package, type(self.__current_package))
                 d=DataType(
                     name=ast_datatype.name,
                     model=self.model,
@@ -231,7 +230,6 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     'Class ignored.' ):
                 pass
             else:
-                print('ZZ'*10, self.__current_package, type(self.__current_package))
                 c=Class(
                     name=ast_class.name,
                     model=self.model,
@@ -283,6 +281,9 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 else:
                     tags=ast_attribute.metaPart.tags
                     stereotypes=ast_attribute.metaPart.stereotypes
+                is_optional=ast_attribute.isOptional is not None
+                # The fact that the type is optional will come
+                # later at resolution time.
                 a=Attribute(
                     name=ast_attribute.name,
                     class_=class_,
@@ -292,7 +293,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     type=Placeholder((ast_attribute.type),'Classifier'),
                     tags=tags,
                     stereotypes=stereotypes,
-                    isOptional=ast_attribute.isOptional is not None
+                    isOptional=is_optional
                 )
                 # TODO: convert visibiliy + to public, etc.
                 a.description=astTextBlockToTextBlock(
@@ -406,13 +407,14 @@ class ClassModelSource(ASTBasedModelSourceFile):
 
             def resolve_attribute(attribute):
                 type_name=attribute.type.placeholderValue
-
                 if type_name in self.classModel.simpleTypeNamed:
-                    type=(
+                    simple_type=(
                         self.classModel.simpleTypeNamed[type_name])
-                    # Optional : Attribute to type
-                    type.isOptional=attribute.isOptional
-                    attribute.type=type
+                    att_type=AttributeType(
+                        simpleType=simple_type,
+                        isOptional=attribute.isOptional
+                    )
+                    attribute.type=att_type
                 else:
                     ASTNodeSourceIssue(
                         code=icode('ATTRIBUTE_NO_TYPE'),
