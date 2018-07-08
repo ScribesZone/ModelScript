@@ -419,14 +419,10 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     ASTNodeSourceIssue(
                         code=icode('ATTRIBUTE_NO_TYPE'),
                         astNode=class_.astNode,
-                        level=Levels.Error,
+                        level=Levels.Fatal,
                         message=(
                             'Datatype "%s" does not exist.'
-                            " Trying with 'String'."
                             % (type_name)))
-                    attribute.type=(
-                        self.classModel.simpleTypeNamed['String'])
-
             resolve_superclasses()
             for a in class_.attributes:
                 resolve_attribute(a)

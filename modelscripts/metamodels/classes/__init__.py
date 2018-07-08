@@ -489,6 +489,11 @@ class AttributeType(object):
             or valueType==self.simpleType
         )
 
+    @property
+    def name(self):
+        return self.simpleType.name
+
+
     def __str__(self):
         return (
               str(self.simpleType)
@@ -738,6 +743,13 @@ class Class(PackagableElement, Entity):
             self.attributeNames
             +self.operationNames
             +self.invariantNames)
+
+    @property
+    def idPrint(self):
+        #type: () -> List[Attribute]
+        return [
+            a for a in self.attributes
+                if a.isId ]
 
 
 class Attribute(SourceModelElement, Member):

@@ -218,7 +218,6 @@ class ClassModelPrinter(ModelPrinter):
         tags='{%s}' % ','.join(attribute.tags) \
                 if attribute.tags \
                 else ''
-
         _=' '.join(filter(None,[
                 id,
                 read_only,
@@ -226,7 +225,7 @@ class ClassModelPrinter(ModelPrinter):
                 visibility,
                 attribute.name,
                 self.kwd(':'),
-                attribute.type.name,
+                str(attribute.type),
                 optional,
                 stereotypes,
                 tags]))

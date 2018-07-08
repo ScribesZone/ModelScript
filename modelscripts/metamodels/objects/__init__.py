@@ -45,6 +45,7 @@ from modelscripts.metamodels.classes import (
     RolePosition,
     opposite,
     DataValue,
+    SimpleValue,
     METAMODEL as CLASS_METAMODEL
 )
 from modelscripts.metamodels.textblocks import (
@@ -403,6 +404,28 @@ class Object(PackagableElement, Entity):
         # (using ABCMeta is not enough to prevent this).
         raise NotImplementedError()
 
+    def _class_print(self, onlyIds=False):
+        #type: (bool) -> Dict[Text, Optional[SimpleValue]]
+        """
+        Return a Dict[attname,Optional[SimpleValue]] for each
+        attributes in the class. If a value has no slot return None.
+        If "onlyIds" are specified only these attributes are selected.
+        :param onlyIds:
+        :return:
+        """
+        cprint=OrderedDict()
+        for att in self.class_.attributes:
+            if not onlyIds or att.isId:
+                s=self.slot(att.name)
+                if s is None:
+                    cprint[att.name]=None
+                else:
+                    cprint[att.name]=s.value
+        return cprint
+
+    @property
+    def idPrint(self):
+        return
 
     def __str__(self):
         return self.name
