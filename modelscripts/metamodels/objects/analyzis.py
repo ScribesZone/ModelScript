@@ -1,6 +1,11 @@
 # coding=utf-8
 
 """
+Define a series of object violations with respect to a class
+model and gather all this analysis in an ObjectModelAnalyzis
+object.
+There is one class for all kind of violations. The Analysis
+class contains a register for each kind of violations.
 """
 
 from __future__ import print_function
@@ -118,6 +123,7 @@ class UniqueLinkViolation(ConformityViolation):
         # add the violation to the analysis
         self.omAnalysis.uniqueLinkViolations.append(self)
 
+    #TODO: unique link
     @property
     def message(self):
         return 'TODO: UniqueLinkViolation'
@@ -144,7 +150,7 @@ class CardinalityViolation(ConformityViolation):
         self.role=role
         #type: Role
 
-        # add the violation to the analysis
+        # add the violation to the analysis object
         v_per_object=omAnalysis.cardinalityViolationsPerObject
         if self.object not in v_per_object:
             v_per_object[self.object]=[]
@@ -162,8 +168,8 @@ class CardinalityViolation(ConformityViolation):
     @property
     def message(self):
         return (
-            'The "%s" has %i "%s".'
-            ' This is incompatible with the cardinality %s' % (
+            '"%s" has %i "%s".'
+            ' Cardinality is %s' % (
                 self.object.name,
                 self.object.cardinality(self.role),
                 self.role.name,
@@ -217,12 +223,31 @@ class IdViolation(ConformityViolation):
     Violation of {id} property due to various object having
     the same id.
     """
+    def __init__(self, omAnalysis, class_, objects):
+        super(IdViolation, self).__init__(omAnalysis)
 
-    pass # TODO: implement id
+        self.class_=class_
+        self.idPrint=objects[0].idPrint
+        self.objects=objects
+
+        v_per_class=self.omAnalysis.idViolationsPerClass
+        if self.class_ not in v_per_class:
+            v_per_class[class_]=[]
+        v_per_class[class_].append(self)
 
     @property
     def message(self):
-        return 'XXX'
+        onames=[o.name for o in self.objects]
+        if len(self.objects)<=3:
+            objects=','.join(onames)
+        else:
+            objects = (
+                ','.join(onames[:2])
+                +'... (%i more)' % (len(onames)-3))
+        return (
+            'Duplicate ids for class %s. See %s' %(
+                self.class_,
+                objects))
 
     @property
     def issueCode(self):
@@ -278,8 +303,8 @@ class ObjectModelAnalyzis(object):
         self.uniqueLinkViolations=[]
         #type: List[UniqueLinkViolation]
 
-        self.idViolationsPerClass=OrderedDict()  # TODO: to implement
-        #type: Dict[Object, IdViolation]   # TODO: class -> id -> object
+        self.idViolationsPerClass=OrderedDict()
+        #type: Dict[Class, List[IdViolation]]
         # filled by _analyze_object_ids
 
         self.slotValueTypeViolationPerObject=OrderedDict()
@@ -329,7 +354,29 @@ class ObjectModelAnalyzis(object):
             self._analyze_missing_slots(object)
 
     def _analyze_object_ids(self):
-        pass
+        om=self.objectModel
+        if om.classModel is not None:
+            has_none=False
+            for class_ in om.classModel.classes:
+                if len(class_.idPrint)>=1:
+                    remaining_objects=om.classExtension(class_)[::-1]
+                    while len(remaining_objects)>=2:
+                        o1=remaining_objects.pop()
+                        like_o1=[o1]
+                        for o2 in remaining_objects:
+                            eq=o1.idPrint.equals(o2.idPrint)
+                            if eq==True:
+                                like_o1.append(o2)
+                                remaining_objects.remove(o2)
+                            elif eq==False:
+                                pass
+                            else:
+                                has_none=True
+                        if len(like_o1)>=2:
+                            IdViolation(
+                                omAnalysis=self,
+                                class_=class_,
+                                objects=like_o1)
 
     def _analyze_link_role_types(self):
         """
