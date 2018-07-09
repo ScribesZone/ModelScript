@@ -145,6 +145,11 @@ class ObjectModel(Model):
         return [
             o for o in self.objects if isinstance(o, LinkObject) ]
 
+    def classExtension(self, class_): #TODO: inheritance
+        #type: (Class)-> List[Object]
+        return [
+            o for o in self.objects if o.class_==class_]
+
     @property
     def links(self):
         #type: () -> List[Link]
@@ -404,31 +409,82 @@ class Object(PackagableElement, Entity):
         # (using ABCMeta is not enough to prevent this).
         raise NotImplementedError()
 
-    def _class_print(self, onlyIds=False):
-        #type: (bool) -> Dict[Text, Optional[SimpleValue]]
-        """
-        Return a Dict[attname,Optional[SimpleValue]] for each
-        attributes in the class. If a value has no slot return None.
-        If "onlyIds" are specified only these attributes are selected.
-        :param onlyIds:
-        :return:
-        """
-        cprint=OrderedDict()
-        for att in self.class_.attributes:
-            if not onlyIds or att.isId:
-                s=self.slot(att.name)
-                if s is None:
-                    cprint[att.name]=None
-                else:
-                    cprint[att.name]=s.value
-        return cprint
+    # def _class_print(self, onlyIds=False):
+    #     #type: (bool) -> Dict[Text, Optional[SimpleValue]]
+    #     """
+    #     Return a Dict[attname,Optional[SimpleValue]] for each
+    #     attributes in the class. If a value has no slot return None.
+    #     If "onlyIds" are specified only these attributes are selected.
+    #     :param onlyIds:
+    #     :return:
+    #     """
+    #     id_print=IdPrint()
+    #     for att in self.class_.attributes:
+    #         if not onlyIds or att.isId:
+    #             s=self.slot(att.name)
+    #             if s is None:
+    #                 cprint[att.name]=None
+    #             else:
+    #                 cprint[att.name]=s.value
+    #     return cprint
 
     @property
     def idPrint(self):
-        return
+        return _ClassPrint(
+            object=self,
+            onlyIds=False
+        )
 
     def __str__(self):
         return self.name
+
+
+class _ClassPrint(object):
+    """
+    For a given object this is basically a
+        Dict[attname,Optional[Text]] for each
+    that is, a optional value for each attributes in the class.
+    The value of slots are converted to Text to simplify implementation.
+    This may cause problem with multiple textual representation but this
+    is good enough at the time beeing.
+    If an attribute has no slot return None.
+    If "onlyIds" are specified only these attributes are selected.
+    This class is usefull to compare objects and there ids.
+    """
+    def __init__(self, object, onlyIds=False, inherited=False):
+        # TODO: care should be taken with inheritance (additional param?)
+        self.object=object
+        self.attVal=OrderedDict()
+        #type: Dict[Text, Optional[Text]]
+        # add all attribute/values pairs to attVal
+        for att in self.object.class_.attributes:
+            if not onlyIds or att.isId:
+                s=self.object.slot(att.name)
+                if s is None:
+                    self.attVal[att.name]=None
+                else:
+                    self.attVal[att.name]=str(s.simpleValue)
+
+    def equals(self, classPrint2):
+        """
+        If two valued attributes differ return False.
+        If there is at least one None, then return None.
+        Otherwise return false.
+        """
+        has_none=False
+        for att in self.attVal.keys():
+            v1=self.attVal[att]
+            v2=classPrint2.attVal[att]
+            if v1 is not None and v2 is not None and v1!=v2:
+                return False
+            if v1 is None or v2 is None:
+                has_none=True
+        else:
+            if has_none:
+                return None
+            else:
+                return True
+
 
 
 class PlainObject(Object):
@@ -689,7 +745,6 @@ class LinkObject(Object, Link):
         return False
 
 
-
 class ObjectModelCopier(object):
 
     def __init__(self, source):
@@ -760,7 +815,6 @@ class ObjectModelCopier(object):
                 astNode=plain_link.astNode,
                 lineNo=plain_link.lineNo,
                 description=plain_link.description)
-
 
 
 METAMODEL = Metamodel(
