@@ -1,0 +1,28 @@
+object model A
+import class model from '../cls/cl-ids01.cls'
+
+paul1 : Employee
+paul1.firstName="Paul"
+paul1.lastName="Zarwin"
+paul1.age=21
+paul1.country='Belgium'
+
+paul2 : Employee
+paul2.firstName="Paul"
+paul2.lastName="Zarwin"
+paul2.age=23
+paul2.country='France'
+
+france : Country
+france.name='France'
+
+germany:Country
+germany.name='Germany'
+
+banana:Food
+banana.yummy=true
+banana.name='Banana'
+
+banana2:Food
+banana2.yummy=true
+banana2.name='Banana'
