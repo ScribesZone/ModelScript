@@ -46,6 +46,7 @@ from modelscripts.metamodels.classes import (
     opposite,
     DataValue,
     SimpleValue,
+    UNSPECIFIED,
     METAMODEL as CLASS_METAMODEL
 )
 from modelscripts.metamodels.textblocks import (
@@ -432,7 +433,7 @@ class Object(PackagableElement, Entity):
     def idPrint(self):
         return _ClassPrint(
             object=self,
-            onlyIds=False
+            onlyIds=True
         )
 
     def __str__(self):
@@ -461,7 +462,7 @@ class _ClassPrint(object):
             if not onlyIds or att.isId:
                 s=self.object.slot(att.name)
                 if s is None:
-                    self.attVal[att.name]=None
+                    self.attVal[att.name]=UNSPECIFIED
                 else:
                     self.attVal[att.name]=str(s.simpleValue)
 
@@ -471,19 +472,33 @@ class _ClassPrint(object):
         If there is at least one None, then return None.
         Otherwise return false.
         """
-        has_none=False
+        has_unspecified=False
         for att in self.attVal.keys():
             v1=self.attVal[att]
             v2=classPrint2.attVal[att]
-            if v1 is not None and v2 is not None and v1!=v2:
+            if (v1 is not UNSPECIFIED
+                and v2 is not UNSPECIFIED
+                and v1!=v2):
                 return False
-            if v1 is None or v2 is None:
-                has_none=True
+            if v1 is UNSPECIFIED or v2 is UNSPECIFIED:
+                has_unspecified=True
         else:
-            if has_none:
-                return None
+            if has_unspecified:
+                return UNSPECIFIED
             else:
                 return True
+
+    def __str__(self):
+        if len(self.attVal)==0:
+            return ()
+        elif len(self.attVal)==1:
+            return str(self.attVal[self.attVal.keys()[0]])
+        else:
+            return '(%s)' % (','.join([
+                '%s=%s' % (att, str(val))
+                for (att, val) in self.attVal.items()
+            ]))
+
 
 
 
