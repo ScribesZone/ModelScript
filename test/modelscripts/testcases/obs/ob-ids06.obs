@@ -1,0 +1,21 @@
+object model A
+import class model from '../cls/cl-ids01.cls'
+
+paul : Employee
+paul.firstName="Paul"
+paul.lastName="Zarwin"
+paul.age=21
+paul.country='Belgium'
+
+paolo : Employee
+paolo.firstName="Paulo"
+paolo.lastName="Zarwin"
+paolo.age=21
+paolo.country='Belgium'
+
+marie : Employee
+marie.firstName="Marie"
+marie.lastName="Zarwin"
+marie.age=21
+marie.country='France'
+

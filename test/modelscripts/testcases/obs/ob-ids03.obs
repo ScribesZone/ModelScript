@@ -1,0 +1,41 @@
+    #@Issue ob.ana.Object.BadId 2
+    #@Issue else *
+
+object model A
+import class model from '../cls/cl-ids01.cls'
+
+# No ids => no errors
+banana:Food
+banana.yummy=true
+banana.name='Banana'
+
+banana2:Food
+banana2.yummy=true
+banana2.name='Banana'
+
+# All attributes are ids
+france : Country
+france.name='France'
+
+spain : Country
+spain.name='Spain'
+
+france2:Country
+france2.name='France'
+
+belgium : Country
+belgium.name='Belgium'
+
+spain2 : Country
+spain2.name='Spain'
+
+france3:Country
+france3.name='France'
+
+uno : Number
+uno.name='uno'
+uno.value=1
+
+dos : Number
+dos.name='dos'
+dos.value=2

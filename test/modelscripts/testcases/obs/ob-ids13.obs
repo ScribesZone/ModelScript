@@ -1,10 +1,11 @@
+    #@Issue ob.ana.Slot.Missing 2
+    #@Issue else *
+
 object model A
 import class model from '../cls/cl-ids01.cls'
 
 uno : Number
 uno.name='uno'
-uno.value=1
 
 dos : Number
 dos.name='dos'
-dos.value=2

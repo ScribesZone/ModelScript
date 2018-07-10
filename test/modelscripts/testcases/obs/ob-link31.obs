@@ -1,0 +1,19 @@
+
+object model Ob_main_turbo
+import class model from '../cls/cl-main-cybercompany-02.cls'
+
+zoe is an Employee.
+babako is an Employee.
+ralf is an Employee.
+
+computing is a Department.
+hardware is a Department.
+
+zoe Supervise babako.
+zoe Supervise zoe.
+zoe Supervise ralf.
+
+zoe WorksIn computing.
+zoe WorksIn hardware.
+babako WorksIn computing.
+babako WorksIn hardware.

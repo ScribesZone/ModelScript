@@ -1,0 +1,20 @@
+    #@Issue ob.ana.Link.Many 2
+    #@Issue else *
+
+object model Ob_main_turbo
+import class model from '../cls/cl-main-cybercompany-02.cls'
+
+zoe is an Employee.
+babako is an Employee.
+ralf is an Employee.
+
+computing is a Department.
+hardware is a Department.
+
+zoe Supervise babako.
+zoe Supervise zoe.
+zoe Supervise ralf.
+zoe Supervise babako.
+zoe Supervise zoe.
+zoe Supervise babako.
+

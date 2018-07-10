@@ -1,0 +1,25 @@
+    #@Issue ob.ana.Object.BadId 2
+    #@Issue else *
+
+object model A
+import class model from '../cls/cl-ids01.cls'
+
+uno : Number
+uno.name='uno'
+uno.value=1
+
+dos2 : Number
+dos2.name='dos'
+dos2.value=2
+
+uno2 : Number
+uno2.name='uno'
+uno2.value=1
+
+dos : Number
+dos.name='dos'
+dos.value=2
+
+tres : Number
+tres.name='tres'
+tres.value=3

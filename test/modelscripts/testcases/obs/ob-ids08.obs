@@ -1,0 +1,3 @@
+object model A
+import class model from '../cls/cl-ids01.cls'
+
