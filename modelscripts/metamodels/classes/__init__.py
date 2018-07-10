@@ -41,7 +41,7 @@ import logging
 
 from typing import Text, Optional, Union, List, Dict
 
-# TODO: to be continued
+# TODO: metastuff to be continued
 from modelscripts.megamodels.py import (
     MComposition,
     MReference,
@@ -478,12 +478,12 @@ class AttributeType(object):
     def accept(self, simpleValue):
         null_type=self.simpleType.model.dataTypeNamed['NullType']
         valueType=simpleValue.type
-        print('KK'*10,
-              str(simpleValue)+':'+ str(valueType),
-              'with var',
-              id(self.simpleType),
-              self.simpleType.name,
-              self.isOptional)
+        # print('KK'*10,
+        #       str(simpleValue)+':'+ str(valueType),
+        #       'with var',
+        #       id(self.simpleType),
+        #       self.simpleType.name,
+        #       self.isOptional)
         return (
             (valueType==null_type and self.isOptional)
             or valueType==self.simpleType
@@ -500,6 +500,16 @@ class AttributeType(object):
             + ('[0..1]' if self.isOptional else '')
         )
 
+class UnspecifiedValue(object):
+    """
+    This value just represents that a slot has not specified.
+    There is only one value.
+    """
+    def __str__(self):
+        return '?'
+
+UNSPECIFIED=UnspecifiedValue()
+
 class SimpleValue(object):
 
     __metaclass__ = abc.ABCMeta
@@ -507,6 +517,10 @@ class SimpleValue(object):
     @abc.abstractproperty
     def type(self):
         raise NotImplementedError('type not implemented')
+
+    @abc.abstractmethod
+    def equals(self, simpleValue):
+        raise NotImplementedError('compare() not implemented')
 
 
 class EnumerationValue(object):
@@ -524,6 +538,9 @@ class EnumerationValue(object):
     def type(self):
         return self.value.enumeration
 
+    def equals(self, enumValue):
+        return self.value==enumValue.value
+
 
 class DataValue(SimpleValue):
 
@@ -540,6 +557,9 @@ class DataValue(SimpleValue):
 
     def __str__(self):
         return self.stringRepr
+
+    def equals(self, enumValue):
+        return self.value==enumValue.value
 
     @property
     def isCore(self):
