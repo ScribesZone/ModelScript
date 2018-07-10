@@ -4,12 +4,14 @@
 Define a series of object violations with respect to a class
 model and gather all this analysis in an ObjectModelAnalyzis
 object.
-There is one class for all kind of violations. The Analysis
+There is one class for each kind of violation. The Analysis
 class contains a register for each kind of violations.
+The violation objects are first created, and then at the end the
+violations are converted to issues.
 """
 
 from __future__ import print_function
-from collections import OrderedDict
+from collections import OrderedDict, Counter
 from typing import List, Optional, Dict, Text, Union, Tuple
 from abc import ABCMeta, abstractmethod, abstractproperty
 
@@ -27,9 +29,6 @@ from modelscripts.metamodels.classes import (
     Role,
     RolePosition,
 )
-from modelscripts.metamodels.textblocks import (
-    TextBlock
-)
 from modelscripts.metamodels.objects import (
     ObjectModel,
     Object,
@@ -45,6 +44,7 @@ ISSUES={
     'BAD_CARD':'ob.ana.Link.BadCardinality',
     'BAD_ATT_TYPE':'ob.ana.Slot.BadType',
     'OBJ_BAD_ID':'ob.ana.Object.BadId',
+    'OBJ_UNKNOWED_BAD_ID':'ob.ana.Object.UnknownedId',
     'MISSING_SLOT':'ob.ana.Slot.Missing'
 }
 
@@ -72,6 +72,11 @@ class ConformityViolation(object):
     @abstractproperty
     def issueCode(self):
         pass
+
+    @property
+    def level(self):
+        # default to Error
+        return Levels.Error
 
 
 class LinkRoleTypeViolation(ConformityViolation):
@@ -123,10 +128,25 @@ class UniqueLinkViolation(ConformityViolation):
         # add the violation to the analysis
         self.omAnalysis.uniqueLinkViolations.append(self)
 
-    #TODO: unique link
+    @property
+    def source(self):
+        return self.duplicatedLinks[0].sourceObject
+
+    @property
+    def target(self):
+        return self.duplicatedLinks[0].targetObject
+
+    @property
+    def association(self):
+        return self.duplicatedLinks[0].association
+
     @property
     def message(self):
-        return 'TODO: UniqueLinkViolation'
+        return '%i duplicated links (%s, %s, %s)' % (
+            len(self.duplicatedLinks),
+            self.source.name,
+            self.association.name,
+            self.target.name)
 
     @property
     def issueCode(self):
@@ -168,8 +188,8 @@ class CardinalityViolation(ConformityViolation):
     @property
     def message(self):
         return (
-            '"%s" has %i "%s".'
-            ' Cardinality is %s' % (
+            '"%s" has %i "%s" but'
+            ' cardinality is %s.' % (
                 self.object.name,
                 self.object.cardinality(self.role),
                 self.role.name,
@@ -245,13 +265,35 @@ class IdViolation(ConformityViolation):
                 ','.join(onames[:2])
                 +'... (%i more)' % (len(onames)-3))
         return (
-            'Duplicate ids for class %s. See %s' %(
-                self.class_,
-                objects))
+            'Duplicated ids for %s' % objects)
 
     @property
     def issueCode(self):
         return 'OBJ_BAD_ID'
+
+
+class UndefinedIdViolation(ConformityViolation):
+    """
+    Violation of {id} cannot be computed due to unspecified
+    values.
+    """
+    def __init__(self, omAnalysis, class_):
+        super(UndefinedIdViolation, self).__init__(omAnalysis)
+        self.class_=class_
+        self.omAnalysis.undefinedIdViolation.append(class_)
+
+    @property
+    def message(self):
+        return 'Some unspecified values makes it impossible ' \
+               'to check {id}s for class %s' % self.class_.name
+
+    @property
+    def issueCode(self):
+        return 'OBJ_UNKNOWED_BAD_ID'
+
+    @property
+    def level(self):
+        return Levels.Info
 
 
 class MissingSlotViolation(ConformityViolation):
@@ -259,6 +301,7 @@ class MissingSlotViolation(ConformityViolation):
     Unspecified value for an attribute.
     According to the class of an object the object should have
     a slot, but there is none.
+    Computed by
     """
     def __init__(self, omAnalysis, object, attribute):
         super(MissingSlotViolation, self).__init__(omAnalysis)
@@ -302,6 +345,9 @@ class ObjectModelAnalyzis(object):
 
         self.uniqueLinkViolations=[]
         #type: List[UniqueLinkViolation]
+
+        self.undefinedIdViolation=[]
+        #type: List[Class]
 
         self.idViolationsPerClass=OrderedDict()
         #type: Dict[Class, List[IdViolation]]
@@ -356,9 +402,11 @@ class ObjectModelAnalyzis(object):
     def _analyze_object_ids(self):
         om=self.objectModel
         if om.classModel is not None:
-            has_none=False
+            # check ids for all classes
             for class_ in om.classModel.classes:
+                has_unspecified = False
                 if len(class_.idPrint)>=1:
+                    # more that one object, check ids
                     remaining_objects=om.classExtension(class_)[::-1]
                     while len(remaining_objects)>=2:
                         o1=remaining_objects.pop()
@@ -371,12 +419,16 @@ class ObjectModelAnalyzis(object):
                             elif eq==False:
                                 pass
                             else:
-                                has_none=True
+                                has_unspecified=True
                         if len(like_o1)>=2:
                             IdViolation(
                                 omAnalysis=self,
                                 class_=class_,
                                 objects=like_o1)
+                if has_unspecified:
+                    UndefinedIdViolation(
+                        omAnalysis=self,
+                        class_=class_)
 
     def _analyze_link_role_types(self):
         """
@@ -436,17 +488,39 @@ class ObjectModelAnalyzis(object):
                     #     role.cardinalityLabel))
 
     def _analyze_unique_links(self):
-        pass # TODO: implement unique links if necessary
-
-    # def XXX(self):
-    #     for object in self.objectModel.objects:
-    #         for role in object._link_roles_per_role.keys():
-    #             print('GG'*20, '%s.%s=%s' % (
-    #                 object.name,
-    #                 role.name,
-    #                 object.cardinality(role)))
-    #             for link_role in object._link_roles_per_role[role]:
-    #                 print('GG'*20,' '*10, str(link_role))
+        # reuse the _link_roles_per_role to simplify comparaison
+        # A link is duplicate if the same object play more than
+        # one the same role.
+        # To avoid detecting duplicate in both end like in
+        #     (a, R, b)
+        #     (a, R, b)
+        # only one side is considered.
+        for object in self.objectModel.objects:
+            for role in object._link_roles_per_role.keys():
+                if role.isTarget:
+                    links_per_object = dict()
+                    if ( len(object._link_roles_per_role[role]) >= 2):
+                        for link_role in \
+                                object._link_roles_per_role[role]:
+                            o = link_role.object
+                            if o not in links_per_object:
+                                links_per_object[o] = []
+                            links_per_object[o].append(link_role.link)
+                        for o in links_per_object.keys():
+                            if len(links_per_object[o]) >= 2:
+                                UniqueLinkViolation(
+                                    omAnalysis=self,
+                                    duplicatedLinks=\
+                                        links_per_object[o])
+    def XXX(self):
+        for object in self.objectModel.objects:
+            for role in object._link_roles_per_role.keys():
+                print('GG'*20, '%s.%s=%s' % (
+                    object.name,
+                    role.name,
+                    object.cardinality(role)))
+                for link_role in object._link_roles_per_role[role]:
+                    print('GG'*20,' '*10, str(link_role), link_role.object)
 
 
     @property
@@ -462,7 +536,7 @@ class ObjectModelAnalyzis(object):
             code=icode(v.issueCode),
             astNode=ast_node,
             position=position,
-            level=Levels.Error,
+            level=v.level,
             message=v.message)
 
     def _raise_all_issues_located_at_check_point(self):
