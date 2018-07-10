@@ -59,12 +59,13 @@ class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
 
         self.name='' #type: Text
         # set later
-        # If the model is from a sourceFile
+        # If the model originates from a sourceFile
         # then set by parseToFillImportBox
 
         self.source=None  #type: Optional[ModelSourceFile]
-        # Set later if build from a ModelOldSourceFile.
-        # Set in the constuctor of ModelOldSourceFile
+        # Set later if build from a ModelSourceFile.
+        # Set in the constuctor of ModelSourceFile
+
         MegamodelElement.__init__(self)
 
         WithIssueModel.__init__(self, parents=[])
