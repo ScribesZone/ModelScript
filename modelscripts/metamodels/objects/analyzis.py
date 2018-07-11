@@ -45,7 +45,8 @@ ISSUES={
     'BAD_ATT_TYPE':'ob.ana.Slot.BadType',
     'OBJ_BAD_ID':'ob.ana.Object.BadId',
     'OBJ_UNKNOWED_BAD_ID':'ob.ana.Object.UnknownedId',
-    'MISSING_SLOT':'ob.ana.Slot.Missing'
+    'MISSING_SLOT':'ob.ana.Slot.Missing',
+    'CYCLE':'ob.ana.Composition.Cycle',
 }
 
 def icode(ilabel):
@@ -327,6 +328,11 @@ class MissingSlotViolation(ConformityViolation):
     @property
     def issueCode(self):
         return 'MISSING_SLOT'
+
+
+class CompositionCycleViolation(ConformityViolation):
+    #TODO: composition cycle
+    #pass
 
 
 class ObjectModelAnalyzis(object):
