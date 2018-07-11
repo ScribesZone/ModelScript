@@ -114,6 +114,10 @@ class ObjectModel(Model):
         # Filled by finalize()
 
     def copy(self):
+        """
+        Return a ShadowObjectModel with the same content and
+        the same classModel
+        """
         return ObjectModelCopier(self).copy()
 
     @property
@@ -191,6 +195,20 @@ class ObjectModel(Model):
         self.analyzis=ObjectModelAnalyzis(self)
         self.analyzis.analyze()
         super(ObjectModel, self).finalize()
+
+
+class ShadowObjectModel(ObjectModel):
+    """
+    Object model created or copied without any impact on the
+    megamodel. No dependencies are created. ShadowObjectModel
+    serves to represent intermediate state of stories.
+    Their import box is empty.
+    The class model must however be given explicitely since it
+    is used to build ObjectModelAnalsysis.
+    """
+    def __init__(self, classModel):
+        super(ShadowObjectModel, self).__init__()
+        self._classModel=classModel
 
 
 class ElementFromStep(SourceModelElement):
@@ -500,8 +518,6 @@ class _ClassPrint(object):
             ]))
 
 
-
-
 class PlainObject(Object):
 
     def __init__(self, model, name, class_,
@@ -766,7 +782,7 @@ class ObjectModelCopier(object):
         self.o=source
         #type: ObjectModel
 
-        self.t=ObjectModel()
+        self.t=ShadowObjectModel(classModel=source._classModel)
         #type: ObjectModel
 
         self._object_map=dict()

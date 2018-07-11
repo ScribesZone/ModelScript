@@ -42,7 +42,7 @@ def registerDataTypes(model):
 def dataTypeFromDataValueName(model, datavalue_name):
     assert datavalue_name.endswith('Value')
     datatype_name=datavalue_name[:-len('Value')]
-    return model.dataTypeNamed[datatype_name]
+    return model.dataType(datatype_name)
 
 
 class CoreDataValue(DataValue):

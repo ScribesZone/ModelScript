@@ -192,8 +192,8 @@ def _find_subject(usecaseModel, name, astNode):
 #     """
 #     if DEBUG>=2:
 #         print('Find_resource("%s")' % name)
-#     if name in classModel.classNamed:
-#         return classModel.classNamed[name]
+#     if name in classModel._classNamed:
+#         return classModel._classNamed[name]
 #     elif name in classModel.associationNamed:
 #         return classModel.associationNamed[name]
 #     elif name in classModel.associationClassNamed:
@@ -209,21 +209,21 @@ def _find_subject(usecaseModel, name, astNode):
 #
 #
 
-# TODO: move this to metamodels.classes ?
-def _find_entity(classModel, name):
-    #type: (ClassModel, Text)->Optional[Entity]
-    """ Search the name in class/association/associationclass
-    """
-    if DEBUG>=2:
-        print('resolve_entity "%s"' % name)
-    if name in classModel.classNamed:
-        return classModel.classNamed[name]
-    elif name in classModel.associationNamed:
-        return classModel.associationNamed[name]
-    elif name in classModel.associationClassNamed:
-        return classModel.associationClassNamed[name]
-    else:
-        return None
+# # TODO: move this to metamodels.classes ?
+# def _find_entity(classModel, name):
+#     #type: (ClassModel, Text)->Optional[Entity]
+#     """ Search the name in class/association/associationclass
+#     """
+#     if DEBUG>=2:
+#         print('resolve_entity "%s"' % name)
+#     if name in classModel.classNamed:
+#         return classModel.classNamed[name]
+#     elif name in classModel.associationNamed:
+#         return classModel.associationNamed[name]
+#     elif name in classModel.associationClassNamed:
+#         return classModel.associationClassNamed[name]
+#     else:
+#         return None
 
 # TODO: move this to metamodels.classes ?
 def _find_resource(classModel, expr, astNode):
@@ -236,14 +236,14 @@ def _find_resource(classModel, expr, astNode):
     entity_name=expr.entityName
     member_name=expr.memberName
 
-    entity=_find_entity(classModel, entity_name)
+    entity=classModel.entity(entity_name)
     if entity is None:
         ASTNodeSourceIssue(
             code=icode('RULE_CLASSIFIER_NOT_FOUND'),
             astNode=astNode,
             level=Levels.Fatal,
             message=(
-                '"%s" is neither an actor nor a usecase.' % entity_name))
+                '"%s" is neither a class nor an association.' % entity_name))
     if member_name is None:
         return entity
     # TODO: to be changed when Plain Class/Association is impl

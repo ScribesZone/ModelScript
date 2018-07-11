@@ -976,7 +976,7 @@ class _SexOrSoilSource(ModelOldSourceFile):
                     ObjectCreation(
                         block=_get_block(),
                         variableName=variable,
-                        class_=_reqClassModel().classNamed[classname],
+                        class_=_reqClassModel()._classNamed[classname],
                         id=id,
                         lineNo=_S.line_no
                     )
@@ -1003,7 +1003,7 @@ class _SexOrSoilSource(ModelOldSourceFile):
                     ObjectCreation(
                         block=_get_block(),
                         variableName=variable,
-                        class_=_reqClassModel().classNamed[classname],
+                        class_=_reqClassModel()._classNamed[classname],
                         id=id,
                         lineNo=_S.line_no
                     )

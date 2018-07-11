@@ -37,7 +37,7 @@ from modelscripts.metamodels.scenarios import (
 #     Check
 # )
 from modelscripts.metamodels.objects import (
-    ObjectModel,
+    ShadowObjectModel,
 )
 from modelscripts.metamodels.classes import (
     ClassModel
@@ -290,7 +290,9 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
             if self.objectModel is not None:
                 state=self.objectModel.copy()
             else:
-                state=ObjectModel()
+                state=ShadowObjectModel(
+                    classModel=self.classModel
+                )
             return state
 
         def resolve_context(context):

@@ -201,7 +201,8 @@ class StoryFiller():
         cn = astStep.objectDeclaration.type
         class_model=self.model.classModel
 
-        if cn not in class_model.classNamed:
+        c=class_model.class_(cn)
+        if c is None:
             ASTNodeSourceIssue(
                 code=icode('OBJECT_CLASS_NOT_FOUND'),
                 astNode=astStep,
@@ -213,7 +214,7 @@ class StoryFiller():
                 parent=parent,
                 isAction=astStep.action is not None,
                 objectName=on,
-                class_=class_model.classNamed[cn],
+                class_=c,
                 astNode=astStep
             )
             return step
@@ -241,14 +242,14 @@ class StoryFiller():
                 enum_name=ast_simple_value.enumerationName
                 enum_literal_name=ast_simple_value.literalName
                 class_model = self.model.classModel
-                if enum_name not in class_model.enumerationNamed:
+                enum=class_model.enumeration(enum_name)
+                if enum is None:
                     ASTNodeSourceIssue(
                         code=icode('NO_ENUM'),
                         astNode=astStep,
                         level=Levels.Fatal,
                         message='Enumeration "%s" does not exist.'
                                 % enum_name)
-                enum=class_model.enumerationNamed[enum_name]
                 print("RR"*10, enum)
                 enum_literal=enum.literal(enum_literal_name)
                 if enum_literal is None:
@@ -317,14 +318,14 @@ class StoryFiller():
         an = link_decl.association
         action = astStep.action
         class_model=self.model.classModel
-        if an not in class_model.associationNamed:
+        assoc=class_model.association(an)
+        if assoc is None:
             ASTNodeSourceIssue(
                 code=icode('LINK_ASSOC_NOT_FOUND'),
                 astNode=astStep,
                 level=Levels.Fatal,
                 message=(
                     'Association "%s" does not exist.' % an))
-        assoc = class_model.associationNamed[an]
         if action == 'create' or action is None:
             step = LinkCreationStep(
                 parent=parent,

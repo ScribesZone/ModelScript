@@ -19,9 +19,9 @@ from modelscripts.metamodels.classes import (
     AttributeType,
     Enumeration,
     EnumerationLiteral,
-    Class,
+    PlainClass,
     Attribute,
-    Association,
+    PlainAssociation,
     Role,
     METAMODEL
 )
@@ -95,11 +95,11 @@ class ClassModelSource(ASTBasedModelSourceFile):
 
         def define_package(ast_package):
             full_name='.'.join(ast_package.names)
-            if full_name in self.classModel.packageNamed:
+            p=self.classModel.package(full_name)
+            if p is not None:
                 # package already exists : reuse it
                 print('AA'*10,'reuse')
-                self.__current_package=\
-                    self.classModel.packageNamed[full_name]
+                self.__current_package=p
             else:
                 if len(ast_package.names)==0:
                     # this case must not exist anyway since
@@ -230,7 +230,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     'Class ignored.' ):
                 pass
             else:
-                c=Class(
+                c=PlainClass(
                     name=ast_class.name,
                     model=self.model,
                     astNode=ast_class,
@@ -244,7 +244,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     container=c,
                     astTextBlock=ast_class.textBlock)
 
-                print('CC'*10, '"', c.package,'"')
+                print('CC'*10, 'class %s in "%s"' % (ast_class.name,c.package))
 
                 # attributes
                 ast_ac=ast_class.attributeCompartment
@@ -307,7 +307,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     'Association ignored.' ):
                 pass
             else:
-                a=Association(
+                a=PlainAssociation(
                     name=ast_association.name,
                     model=self.classModel,
                     astNode=ast_association,
@@ -390,11 +390,10 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 actual_super_classes=[]
                 for class_placeholder in class_.superclasses:
                     name=class_placeholder.placeholderValue
-                    try:
-                        c=self.classModel._findClassOrAssociationClass(
-                            name)
+                    c=self.classModel.class_(name)
+                    if c is not None:
                         actual_super_classes.append(c)
-                    except:
+                    else:
                         ASTNodeSourceIssue(
                             code=icode('CLASS_NO_SUPER'),
                             astNode=class_.astNode,
@@ -404,6 +403,22 @@ class ClassModelSource(ASTBasedModelSourceFile):
                                 "'Can't be the superclass of %s."
                                 % (name, class_.name)))
                 class_.superclasses=actual_super_classes
+
+                        #
+                #     try:
+                #         c=self.classModel._findClassOrAssociationClass(
+                #             name)
+                #         actual_super_classes.append(c)
+                #     except:
+                #         ASTNodeSourceIssue(
+                #             code=icode('CLASS_NO_SUPER'),
+                #             astNode=class_.astNode,
+                #             level=Levels.Error,
+                #             message=(
+                #                 'Class "%s" does not exist. '
+                #                 "'Can't be the superclass of %s."
+                #                 % (name, class_.name)))
+                # class_.superclasses=actual_super_classes
 
             def resolve_attribute(attribute):
                 type_name=attribute.type.placeholderValue
@@ -431,11 +446,10 @@ class ClassModelSource(ASTBasedModelSourceFile):
 
             def resolve_role(role):
                 #type: (Role) -> None
-                try:
-                    c=self.classModel._findClassOrAssociationClass(
-                        role.type.placeholderValue)
+                c=self.classModel.class_(role.type.placeholderValue)
+                if c is not None:
                     role.type=c
-                except:
+                else:
                     ASTNodeSourceIssue(
                         code=icode('ROLE_NO_CLASS'),
                         astNode=role.astNode,
@@ -444,6 +458,19 @@ class ClassModelSource(ASTBasedModelSourceFile):
                             'Class "%s" does not exist. '
                             "'Can't be used in the role '%s'."
                             % (role.type.placeholderValue, role.name)))
+                # try:
+                #     c=self.classModel._findClassOrAssociationClass(
+                #         role.type.placeholderValue)
+                #     role.type=c
+                # except:
+                #     ASTNodeSourceIssue(
+                #         code=icode('ROLE_NO_CLASS'),
+                #         astNode=role.astNode,
+                #         level=Levels.Fatal,
+                #         message=(
+                #             'Class "%s" does not exist. '
+                #             "'Can't be used in the role '%s'."
+                #             % (role.type.placeholderValue, role.name)))
 
             for r in association.roles:
                 resolve_role(r)

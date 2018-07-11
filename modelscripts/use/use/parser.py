@@ -1139,8 +1139,8 @@ class UseModelSource(ModelOldSourceFile):
             Search in class names or association class names.
             The name must exist (no problem because of USE execution)
             """
-            if name in self.classModel.classNamed:
-                return self.classModel.classNamed[name]
+            if name in self.classModel._classNamed:
+                return self.classModel._classNamed[name]
             else:
                 return self.classModel.associationClassNamed[name]
 

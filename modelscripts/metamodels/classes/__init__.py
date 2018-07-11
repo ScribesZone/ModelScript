@@ -82,7 +82,7 @@ __all__= META_CLASSES
 #TODO: make associationclass class and assoc + property
 # currently the implem is based on separated list for assocclass
 # not sure if this should be changed. We start to introduce
-# the method 'regularClasses and regularAssociations' but
+# the method 'regularClasses and plainAssociations' but
 # we have to check if the storage should be changed or not
 
 
@@ -98,7 +98,7 @@ class ClassModel(Model):
     """
     # metaMembers = [
     #       MComposition('enumerations : Enumeration[*] inv model'),
-    #       MComposition('regularClasses : Class [*] inv model'),
+    #       MComposition('plainClasses : Class [*] inv model'),
     #       MComposition(
     #           'associationsClasses : Association[*] inv model'),
     #       MComposition('dataTypes : DataType[*] inv model'),
@@ -108,8 +108,8 @@ class ClassModel(Model):
     #TODO: convert this to MComposition when ready
     META_COMPOSITIONS=[
         'enumerations',
-        'regularClasses',
-        'regularAssociations',
+        'plainClasses',
+        'plainAssociations',
         'associationClasses',
         'dataTypes',
         'packages',
@@ -120,118 +120,71 @@ class ClassModel(Model):
 
         self._isResolved=False
 
-        self.enumerationNamed=collections.OrderedDict() #type: Dict[Text, Enumeration]
+        self._enumerationNamed=collections.OrderedDict()
+        #type: Dict[Text, Enumeration]
         #: Map of enumerations, indexed by name.
 
         #: Map of data types. Indexed by type names/
         #: populated during the resolution phase
-        self.dataTypeNamed=collections.OrderedDict()  #type: Dict[Text, DataType]
+        self._dataTypeNamed=collections.OrderedDict()
+        #type: Dict[Text, DataType]
 
-        self.classNamed = collections.OrderedDict()  #type: Dict[Text, Class]
-        #: Map of classes (including association classes), indexed by name.
-        #: Use regularClassNamed to get only classes
+        self._plainClassNamed = collections.OrderedDict()
+        #type: Dict[Text, PlainClass]
+        #: Only plain classes. Use method classes to get
+        #: all the class (plain class + association class)
 
-        self.associationNamed = collections.OrderedDict() #type: Dict[Text, Association]
-        #: Map of associations (including association classes), indexed by name.
-        #: Use regularClassNamed to get only classes
+        self._plainAssociationNamed = collections.OrderedDict()
+        #type: Dict[Text, PlainAssociation]
+        #: Only plain associations. Use method associations to get
+        #: all associations (association class + plain associations)
 
+        self._associationClassNamed = collections.OrderedDict()
+        #type: Dict[Text, AssociationClass]
         #: Map of association classes, indexed by name.
-        self.associationClassNamed = collections.OrderedDict()  #type: Dict[Text, AssociationClass]
 
-        # #: Map of operations, indexed by operation full signatures.
-        # #: e.g. 'Person::raiseSalary(rate : Real) : Real
-        self.operationWithFullSignature = collections.OrderedDict()  #type: Dict[Text, Operation]
+        self.operationWithFullSignature = collections.OrderedDict()
+        #type: Dict[Text, Operation]
+        #: Map of operations, indexed by operation full signatures.
+        #: e.g. 'Person::raiseSalary(rate : Real) : Real
 
+        self._packageNamed=collections.OrderedDict()
+        #type: Dict[Text, Package]
         # ALL packages, not only the top level ones
-        self.packageNamed=collections.OrderedDict() #type: Dict[Text, Package]
 
+        self._conditions = [] #type: List['Condition']
         #: List of all conditions (inv/pre/post).
         #  Both those that are declared within a class
         #  or those declared with a context at top level.
         #  Used for resolution.
-        self._conditions = [] #type: List['Condition']
 
-        # Register core datatypes
         from modelscripts.metamodels.classes.core import \
             registerDataTypes
         registerDataTypes(self)
+        # Register core datatypes
 
     @property
     def metamodel(self):
         return METAMODEL
 
-    @MComposition('Package[*] inv model')
+    @property
     def packages(self):
-        return self.packageNamed.values()
+        return self._packageNamed.values()
 
     @property
     def packageNames(self):
-        return self.packageNamed.keys()
+        return self._packageNamed.keys()
 
-    @MComposition('Enumeration[*] inv model')
-    def enumerations(self):
-        return self.enumerationNamed.values()
-
-    @property
-    def enumerationNames(self):
-        return self.enumerationNamed.keys()
-
-    @MReference('Class[*] inv model')
-    def classes(self):
-        """
-        All classes or association classes.
-        Use 'regularClasses' to remove association classes.
-        """
-        #TODO: check if this should be changed
-        # with classNamed semantics changed
-        return self.classNamed.values()
-
-    @property
-    def classNames(self):
-        return self.classNamed.keys()
-
-    @MComposition('Class[*] inv model')
-    def regularClasses(self):
-        return [
-            class_ for class_ in self.classes
-            if type(class_) == Class
-            ]
-
-    @property
-    def regularClassNames(self):
-        return [class_.name for class_ in self.regularClasses]
-
-    @MReference('Association[*] inv model')
-    def associations(self):
-        return self.associationNamed.values()
-
-    @property
-    def associationNames(self):
-        return self.associationNamed.keys()
-
-    @MComposition('Association[*] inv model')
-    def regularAssociations(self):
-        return [
-            association for association in self.associations
-            if type(association) == Association
-            ]
-
-    @property
-    def regularAssociationNames(self):
-        return [a.name for a in self.regularAssociations]
-
-    @MComposition('AssociationClass[*] inv model')
-    def associationClasses(self):
-        return self.associationClassNamed.values()
-
-    @property
-    def associationClassNames(self):
-        return self.associationClassNamed.keys()
+    def package(self, name):
+        if name in self._packageNamed:
+            return self._packageNamed[name]
+        else:
+            return None
 
     @property
     def simpleTypeNamed(self):
-        _ = self.dataTypeNamed.copy()
-        _.update(self.enumerationNamed)
+        _ = self._dataTypeNamed.copy()
+        _.update(self._enumerationNamed)
         return _
 
     @property
@@ -244,11 +197,120 @@ class ClassModel(Model):
 
     @MComposition('DataType[*] inv model')
     def dataTypes(self):
-        return self.dataTypeNamed.values()
+        return self._dataTypeNamed.values()
 
     @property
     def dataTypeNames(self):
-        return self.dataTypeNamed.keys()
+        return self._dataTypeNamed.keys()
+
+    def dataType(self, name):
+        if name in self._dataTypeNamed:
+            return self._dataTypeNamed[name]
+        else:
+            return None
+
+    @property
+    def enumerations(self):
+        return self._enumerationNamed.values()
+
+    @property
+    def enumerationNames(self):
+        return self._enumerationNamed.keys()
+
+    def enumeration(self, name):
+        if name in self._enumerationNamed:
+            return self._enumerationNamed[name]
+        else:
+            return None
+
+    @property
+    def plainClasses(self):
+        return self._plainClassNamed.values()
+
+    @property
+    def plainClassNames(self):
+        return self._plainClassNamed.keys()
+
+    def plainClass(self, name):
+        if name in self._plainClassNamed:
+            return self._plainClassNamed[name]
+        else:
+            return None
+
+    @property
+    def plainAssociations(self):
+        return self._plainAssociationNamed.values()
+
+    @property
+    def plainAssociationNames(self):
+        return self._plainAssociationNamed.keys()
+
+    def plainAssociation(self, name):
+        if name in self._plainAssociationNamed:
+            return self._plainAssociationNamed[name]
+        else:
+            return None
+
+    @property
+    def associationClasses(self):
+        return self._associationClassNamed.values()
+
+    @property
+    def associationClassNames(self):
+        return self._associationClassNamed.keys()
+
+    def associationClass(self, name):
+        if name in self._associationClassNamed:
+            return self._associationClassNamed
+        else:
+            return None
+
+    @property
+    def classes(self):
+        """
+        All classes or association classes.
+        """
+        return self.plainClasses+self.associationClasses
+
+    @property
+    def classNames(self):
+        return self.plainClassNames+self.associationClassNames
+
+    def class_(self, name):
+        c=self.plainClass(name)
+        print('OO'*10, 'looking for %s' % name)
+        if c is not None:
+            print('JJ'*10, 'returned ', c)
+            return c
+        else:
+            print('JJ'*20, 'assoc class ')
+
+            return self.associationClass(name)
+
+    @property
+    def associations(self):
+        """
+        All classes or association classes.
+        """
+        return self.plainAssociations+self.associationClasses
+
+    @property
+    def associationNames(self):
+        return self.plainAssociationNames+self.associationClassNames
+
+    def association(self, name):
+        a=self.plainAssociation(name)
+        if a is not None:
+            return a
+        else:
+            return self.associationClass(name)
+
+    def entity(self, name):
+        e=self.class_(name)
+        if e is not None:
+            return e
+        else:
+            return self.association(name)
 
     @property
     def metrics(self):
@@ -262,9 +324,11 @@ class ClassModel(Model):
                 [el
                     for e in self.enumerations
                         for el in e.literals])),
-            ('regular class', len(self.regularClasses) ),
-            ('regular association',
-                len(self.regularAssociations)),
+            ('class', len(self.classes) ),
+            ('plain class', len(self.plainClasses) ),
+            ('association', len(self.associations)),
+            ('plain association',
+                 len(self.plainAssociations)),
             ('association class', len(self.associationClasses)),
         ))
         return ms
@@ -291,8 +355,8 @@ class ClassModel(Model):
             ('packages', self.packageNames),
             ('data types', self.dataTypeNames),
             ('enumerations', self.enumerationNames),
-            ('regular classes', self.regularClassNames),
-            ('regular associations', self.associationNames),
+            ('plain classes', self.plainClassNames),
+            ('plain associations', self.associationNames),
             ('association classes', self.associationClassNames),
             ('operations', self.operationWithFullSignature.keys()),
             # ('invariants'           ,[i.name for i in self.invariants]),  FIXME: should be replaced
@@ -317,6 +381,8 @@ class ClassModel(Model):
             target_class._playedRoles.append(a.targetRole)
 
     def _findAssociationOrAssociationClass(self, name):
+        raise NotImplementedError('use .association(name) instead')
+
         # TODO: check this implementation
         # should be most probably changed into
         # associationNamed property
@@ -330,12 +396,18 @@ class ClassModel(Model):
                             % name )
 
     def _findClassOrAssociationClass(self, name):
-        #type: (Text) -> Union[Class, AssociationClass]
-        # TODO: see _findAssociationOrAssociationClass
-        if name in self.classNamed:
-            return self.classNamed[name]
-        elif name in self.associationClassNamed:
-            return self.associationClassNamed[name]
+        #TODO: check if the clients really need an exception
+        # instead of just None
+        # #type: (Text) -> Union[Class, AssociationClass]
+        # # TODO: see _findAssociationOrAssociationClass
+        # if name in self._classNamed:
+        #     return self._classNamed[name]
+        # elif name in self.associationClassNamed:
+        #     return self.associationClassNamed[name]
+        raise NotImplementedError('use .class_(name) instead')
+        c=self.class_(name)
+        if c is not None:
+            return c
         else:
             raise ValueError('ERROR - %s : No class or association class'
                             % name)
@@ -458,7 +530,7 @@ class DataType(SimpleType):
         )
         self.superDataType=superDataType
         self.implementationClass=implementationClass
-        self.model.dataTypeNamed[name]=self
+        self.model._dataTypeNamed[name]=self
         self.isCore=isCore
 
     def __repr__(self):
@@ -476,7 +548,7 @@ class AttributeType(object):
         self.isMultiple=isMultiple
 
     def accept(self, simpleValue):
-        null_type=self.simpleType.model.dataTypeNamed['NullType']
+        null_type=self.simpleType.model.dataType('NullType')
         valueType=simpleValue.type
         # print('KK'*10,
         #       str(simpleValue)+':'+ str(valueType),
@@ -509,6 +581,7 @@ class UnspecifiedValue(object):
         return '?'
 
 UNSPECIFIED=UnspecifiedValue()
+
 
 class SimpleValue(object):
 
@@ -599,7 +672,7 @@ class Package(PackagableElement, Entity):
             package=package,
             lineNo=lineNo, description=description,)
         self._elememts=[]
-        model.packageNamed[name]=self
+        model._packageNamed[name]=self
 
 
     @property
@@ -639,7 +712,7 @@ class Enumeration(SimpleType):
             astNode=astNode,
             lineNo=lineNo,
             description=description)
-        self.model.enumerationNamed[name] = self
+        self.model._enumerationNamed[name] = self
         self._literals=[]
         # Not sure to understand why this is not a Dict
 
@@ -685,6 +758,8 @@ class Class(PackagableElement, Entity):
     Classes.
     """
 
+    __metaclass__ = abc.ABCMeta
+
     META_COMPOSITIONS = [
         'attributes',
         'operations',
@@ -700,7 +775,7 @@ class Class(PackagableElement, Entity):
             astNode=astNode,
             lineNo=lineNo,
             description=description)
-        self.model.classNamed[name] = self
+        self.model._plainClassNamed[name] = self
         self.isAbstract = isAbstract
         self.superclasses = superclasses  # strings resolved as classes
 
@@ -770,6 +845,22 @@ class Class(PackagableElement, Entity):
         return [
             a for a in self.attributes
                 if a.isId ]
+
+    @abc.abstractmethod
+    def isPlainClass(self):
+        # This method is not really useful as isinstance can be used.
+        # It is just used to prevent creating object of this class
+        # (using ABCMeta is not enough to prevent this).
+        raise NotImplementedError()
+
+
+class PlainClass(Class):
+    """
+    PlainClasses, that is, classes that are not association class.
+    """
+
+    def isPlainClass(self):
+        return True
 
 
 class Attribute(SourceModelElement, Member):
@@ -892,6 +983,9 @@ class Association(PackagableElement, Entity):
     """
     Associations.
     """
+
+    __metaclass__ = abc.ABCMeta
+
     META_COMPOSITIONS = [
         'roles',
     ]
@@ -906,7 +1000,7 @@ class Association(PackagableElement, Entity):
             package=package,
             astNode=astNode,
             lineNo=lineNo, description=description)
-        self.model.associationNamed[name] = self
+        self.model._plainAssociationNamed[name] = self
         self.kind = kind   # association|composition|aggregation|associationclass  # TODO:should associationclass be
         # there?
         self.roleNamed = collections.OrderedDict() # indexed by name
@@ -1003,6 +1097,20 @@ class Association(PackagableElement, Entity):
             (False, True) : 'forward',
             (False, False) : 'none'
         }[(self.roles[0].isNavigable, self.roles[1].isNavigable)]
+
+    @abc.abstractmethod
+    def isPlainAssociation(self):
+        # This method is not really useful as isinstance can be used.
+        # It is just used to prevent creating object of this class
+        # (using ABCMeta is not enough to prevent this).
+        raise NotImplementedError()
+
+
+class PlainAssociation(Association):
+
+    def isPlainAssociation(self):
+        return True
+
 
 class Role(SourceModelElement, Member):
     """
@@ -1169,6 +1277,12 @@ class AssociationClass(Class, Association):
         del self.model.classNamed[name]
         del self.model.associationNamed[name]
         self.model.associationClassNamed[name] = self
+
+    def isPlainAssociation(self):
+        return False
+
+    def isPlainClass(self):
+        return False
 
 
 METAMODEL = Metamodel(
