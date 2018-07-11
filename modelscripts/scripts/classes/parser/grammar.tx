@@ -18,7 +18,7 @@ EntitydDeclaration:
     | DataType
     | Enumeration
     | Class
-    | Association
+    | Association  // also composition, associationClass
     | Invariant
 ;
 
@@ -76,7 +76,7 @@ Class:  // common
     X
 ;
 
-AttributesCompartment:  // common
+AttributesCompartment:  // common, also use for association class
     'attributes'
     (o_
         attributes *= Attribute
@@ -150,8 +150,10 @@ PermissionsCompartment:
 
 
 Association:
+    (isAbstract ?= 'abstract')
     kind=AssociationKind name=ID
-    metaPart = MetaPart
+    ('<' (superclasses += ID [','])) ?
+    metaPart = MetaPart ?
     o_
         (textBlock=TextBlock) ?
         roleCompartment=RoleCompartment
@@ -162,7 +164,8 @@ Association:
 ;
 
 AssociationKind:
-      'association'
+      'association' 'class'  //===== MUST BE FIRST =======
+    | 'association'
     | 'composition'
     | 'aggregation'
 ;

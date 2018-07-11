@@ -22,7 +22,7 @@ association Eat
         eater : Elephant[0..1]
         bananas : Banana[*]
 
-composition Contains
+association Contains
     roles
         tree : Tree[1]
         bananas : Banana[*]

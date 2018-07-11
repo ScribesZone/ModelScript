@@ -1,3 +1,7 @@
+    #@Issue cl.syn.Association.NoCompo 11
+    #@Issue else *
+
+
 class model ModelScribes
 
 datatype Class_

@@ -1,11 +1,14 @@
+    #@Issue cl.syn.Association.NoCompo 1
+    #@Issue else *
+
 class model Cl_association01
 
 class Elephant
 class Banana
 class Tree
 
-association Meal
-    | Take record of the bananas eaten by elephants.
+composition Meal
     roles
         eater : Elephant[0..1]
         bananas : Banana[*]
+

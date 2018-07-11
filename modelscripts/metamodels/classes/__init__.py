@@ -278,13 +278,9 @@ class ClassModel(Model):
 
     def class_(self, name):
         c=self.plainClass(name)
-        print('OO'*10, 'looking for %s' % name)
         if c is not None:
-            print('JJ'*10, 'returned ', c)
             return c
         else:
-            print('JJ'*20, 'assoc class ')
-
             return self.associationClass(name)
 
     @property
@@ -330,7 +326,15 @@ class ClassModel(Model):
             ('plain association',
                  len(self.plainAssociations)),
             ('association class', len(self.associationClasses)),
-        ))
+            ('attribute', len(
+                [a
+                    for c in self.classes
+                        for a in c.attributes])),
+            ('role', len(
+                [r
+                    for a in self.associations
+                        for r in a.roles])),
+            ))
         return ms
 
     def globalNames(self):
@@ -380,63 +384,65 @@ class ClassModel(Model):
             target_class._ownedRoles.append(a.sourceRole)
             target_class._playedRoles.append(a.targetRole)
 
-    def _findAssociationOrAssociationClass(self, name):
-        raise NotImplementedError('use .association(name) instead')
+    # def _findAssociationOrAssociationClass(self, name):
+    #     raise NotImplementedError('use .association(name) instead')
+    #
+    #     # TODO: check this implementation
+    #     # should be most probably changed into
+    #     # associationNamed property
+    #     log.debug('_findAssociationOrAssociationClass:%s', name)
+    #     if name in self.associationNamed:
+    #         return self.associationNamed[name]
+    #     elif name in self.associationClassNamed:
+    #         return self.associationClassNamed[name]
+    #     else:
+    #         raise ValueError('ERROR - %s : No association or association class'
+    #                         % name )
 
-        # TODO: check this implementation
-        # should be most probably changed into
-        # associationNamed property
-        log.debug('_findAssociationOrAssociationClass:%s', name)
-        if name in self.associationNamed:
-            return self.associationNamed[name]
-        elif name in self.associationClassNamed:
-            return self.associationClassNamed[name]
-        else:
-            raise ValueError('ERROR - %s : No association or association class'
-                            % name )
+    # def _findClassOrAssociationClass(self, name):
+    #     #TODO: check if the clients really need an exception
+    #     # instead of just None
+    #     # #type: (Text) -> Union[Class, AssociationClass]
+    #     # # TODO: see _findAssociationOrAssociationClass
+    #     # if name in self._classNamed:
+    #     #     return self._classNamed[name]
+    #     # elif name in self.associationClassNamed:
+    #     #     return self.associationClassNamed[name]
+    #     raise NotImplementedError('use .class_(name) instead')
+    #     c=self.class_(name)
+    #     if c is not None:
+    #         return c
+    #     else:
+    #         raise ValueError('ERROR - %s : No class or association class'
+    #                         % name)
 
-    def _findClassOrAssociationClass(self, name):
-        #TODO: check if the clients really need an exception
-        # instead of just None
-        # #type: (Text) -> Union[Class, AssociationClass]
-        # # TODO: see _findAssociationOrAssociationClass
-        # if name in self._classNamed:
-        #     return self._classNamed[name]
-        # elif name in self.associationClassNamed:
-        #     return self.associationClassNamed[name]
-        raise NotImplementedError('use .class_(name) instead')
-        c=self.class_(name)
-        if c is not None:
-            return c
-        else:
-            raise ValueError('ERROR - %s : No class or association class'
-                            % name)
-
-    def _findRole(self, associationOrAssociationClassName, roleName):
-        # TODO: see _findAssociationOrAssociationClass
-        # though there are two parmeters here
-        log.debug('_findRole: %s::%s',
-                  associationOrAssociationClassName, roleName)
-        a = self._findAssociationOrAssociationClass(
-                    associationOrAssociationClassName)
-
-        log.debug('_findRole:  %s ',a)
-        log.debug('_findRole:  %s ',a.roles)
-        if roleName in a.roleNamed:
-            return a.roleNamed[roleName]
-        else:
-            raise ValueError('ERROR - No "%s" role on association(class) %s' %
-                            (roleName, associationOrAssociationClassName)  )
-
-    def _findInvariant(self, classOrAssociationClassName, invariantName):
-        #type: (Text, Text) -> 'Invariant'
-        c = self._findClassOrAssociationClass(
-                    classOrAssociationClassName)
-        if invariantName in c.invariantNamed:
-            return c.invariantNamed[invariantName]
-        else:
-            raise ValueError('ERROR - No "%s" invariant on class %s' %
-                            (invariantName, classOrAssociationClassName))
+    # def _findRole(self, associationOrAssociationClassName, roleName):
+    #     # TODO: see _findAssociationOrAssociationClass
+    #     # though there are two parmeters here
+    #     log.debug('_findRole: %s::%s',
+    #               associationOrAssociationClassName, roleName)
+    #     # a = self._findAssociationOrAssociationClass(
+    #     #             associationOrAssociationClassName)
+    #     a=self.association(associationOrAssociationClassName)
+    #
+    #     log.debug('_findRole:  %s ',a)
+    #     log.debug('_findRole:  %s ',a.roles)
+    #     if roleName in a.roleNamed:
+    #         return a.roleNamed[roleName]
+    #     else:
+    #         raise ValueError('ERROR - No "%s" role on association(class) %s' %
+    #                         (roleName, associationOrAssociationClassName)  )
+    #
+    # def _findInvariant(self, classOrAssociationClassName, invariantName):
+    #     #type: (Text, Text) -> 'Invariant'
+    #     # c = self._findClassOrAssociationClass(
+    #     #             classOrAssociationClassName)
+    #     c=self.class_(classOrAssociationClassName)
+    #     if invariantName in c.invariantNamed:
+    #         return c.invariantNamed[invariantName]
+    #     else:
+    #         raise ValueError('ERROR - No "%s" invariant on class %s' %
+    #                         (invariantName, classOrAssociationClassName))
 
 
 class PackagableElement(SourceModelElement):
@@ -1005,7 +1011,7 @@ class Association(PackagableElement, Entity):
         # there?
         self.roleNamed = collections.OrderedDict() # indexed by name
 
-    @MComposition('Role[*]')
+    @property
     def roles(self):
         return self.roleNamed.values()
 
@@ -1097,6 +1103,14 @@ class Association(PackagableElement, Entity):
             (False, True) : 'forward',
             (False, False) : 'none'
         }[(self.roles[0].isNavigable, self.roles[1].isNavigable)]
+
+    @property
+    def isComposition(self):
+        return self.kind=='composition'
+
+    @property
+    def isAggregation(self):
+        return self.kind=='aggregation'
 
     @abc.abstractmethod
     def isPlainAssociation(self):
@@ -1274,9 +1288,9 @@ class AssociationClass(Class, Association):
             description=description, astNode=astNode)
         # But register the association class apart and only once, to avoid
         # confusion and the duplicate in the associations and classes lists
-        del self.model.classNamed[name]
-        del self.model.associationNamed[name]
-        self.model.associationClassNamed[name] = self
+        del self.model._plainClassNamed[name]
+        del self.model._plainAssociationNamed[name]
+        self.model._associationClassNamed[name] = self
 
     def isPlainAssociation(self):
         return False

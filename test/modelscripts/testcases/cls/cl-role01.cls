@@ -4,22 +4,22 @@ class Elephant
 class Banana
 class Tree
 
-composition Contains
+association Contains
     roles
         tree : Tree[1]
         bananas : Banana[*]
 
-composition Contains2
+association Contains2
     roles
         x tree : Tree[1]
         > bananas : Banana[*]
 
-composition Contains3
+association Contains3
     roles
         > tree : Tree[1]
         x bananas : Banana[*]
 
-composition Contains4
+association Contains4
     roles
         x tree : Tree[1]
         x bananas : Banana[*]

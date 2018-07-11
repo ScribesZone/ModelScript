@@ -4,8 +4,9 @@ class Elephant
 class Banana
 class Tree
 
-association Meal
+abstract association class Meal
     | Take record of the bananas eaten by elephants.
     roles
         eater : Elephant[0..1]
         bananas : Banana[*]
+

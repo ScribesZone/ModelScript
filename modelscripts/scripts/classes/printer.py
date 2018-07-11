@@ -79,7 +79,6 @@ class ClassModelPrinter(ModelPrinter):
         return self.output
 
     def qualified(self, element):
-        print('::'*10, element, type(element), element.package)
         if element.package is None:
             return element.name
         elif element.package.name=='':

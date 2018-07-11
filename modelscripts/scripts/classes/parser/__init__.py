@@ -22,6 +22,7 @@ from modelscripts.metamodels.classes import (
     PlainClass,
     Attribute,
     PlainAssociation,
+    AssociationClass,
     Role,
     METAMODEL
 )
@@ -49,10 +50,18 @@ ISSUES={
     'ATT_DEFINED': 'cl.syn.Attribute.Defined',
     'ROLE_DEFINED': 'cl.syn.Role.Defined',
     'CARDINALITY_ERROR': 'cl.syn.Cardinality.Error',
+    'NO_COMPO': 'cl.syn.Association.NoCompo',
+    'NO_AGGREG': 'cl.syn.Association.NotAggreg',
+    'NO_ABSTRACT': 'cl.syn.Association.NoAbstract',
+    'NO_ATT': 'cl.syn.Association.NoAttribute',
+    'NO_OP': 'cl.syn.Association.NoOperation',
+    'NO_SUPER': 'cl.syn.Association.NoSuper',
+    'NO_ATT_ROLE': 'cl.syn.Association.AttRole',
 
     'CLASS_NO_SUPER':'cl.res.Class.NoSuper',
     'ATTRIBUTE_NO_TYPE':'cl.res.Attribute.NoType',
     'ROLE_NO_CLASS':'cl.res.Role.NoClass',
+
 }
 
 def icode(ilabel):
@@ -238,13 +247,10 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     superclasses=[
                         Placeholder(s, 'Classifier')
                         for s in ast_class.superclasses],
-                    package=self.__current_package,
-                )
+                    package=self.__current_package)
                 c.description=astTextBlockToTextBlock(
                     container=c,
                     astTextBlock=ast_class.textBlock)
-
-                print('CC'*10, 'class %s in "%s"' % (ast_class.name,c.package))
 
                 # attributes
                 ast_ac=ast_class.attributeCompartment
@@ -307,11 +313,14 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     'Association ignored.' ):
                 pass
             else:
+                kind=ast_association.kind
+                # could be 'association', 'composition',
+                #          'aggregation' but not 'associationclass'
                 a=PlainAssociation(
                     name=ast_association.name,
                     model=self.classModel,
                     astNode=ast_association,
-                    kind=ast_association.kind,
+                    kind=kind,
                     package=self.__current_package
                 )
                 a.description = astTextBlockToTextBlock(
@@ -319,6 +328,95 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     astTextBlock=ast_association.textBlock)
                 define_role(a, ast_association.roleCompartment.source)
                 define_role(a, ast_association.roleCompartment.target)
+                if ast_association.isAbstract:
+                    ASTNodeSourceIssue(
+                        code=icode('NO_ABSTRACT'),
+                        astNode=ast_association,
+                        level=Levels.Warning,
+                        message=(
+                            'A %s cannot be "abstract". Ignored ' %
+                            kind))
+                if ast_association.attributeCompartment:
+                    ASTNodeSourceIssue(
+                        code=icode('NO_ATT'),
+                        astNode=ast_association,
+                        level=Levels.Error,
+                        message=(
+                            'A %s cannot be have attributes. Ignored.' %
+                            kind))
+                if ast_association.superclasses:
+                    ASTNodeSourceIssue(
+                        code=icode('NO_SUPER'),
+                        astNode=ast_association,
+                        level=Levels.Error,
+                        message=(
+                            'A %s cannot be have superclasses.'
+                            ' Ignored.' %
+                            kind))
+                if ast_association.operationCompartment:
+                    ASTNodeSourceIssue(
+                        code=icode('NO_OP'),
+                        astNode=ast_association,
+                        level=Levels.Error,
+                        message=(
+                            'A %s cannot be have operations. Ignored.' %
+                            kind))
+                if kind=='composition':
+                    ASTNodeSourceIssue(
+                        code=icode('NO_COMPO'),
+                        astNode=ast_association,
+                        level=Levels.Warning,
+                        message=(
+                            'Composition not implemented yet. '
+                            'Replaced by "association".'))
+                if kind=='aggregation':
+                    ASTNodeSourceIssue(
+                        code=icode('NO_AGGREG'),
+                        astNode=ast_association,
+                        level=Levels.Warning,
+                        message=(
+                            'Aggregation not implemented yet. '
+                            'Replaced by "association".'))
+
+        def define_association_class(ast_association):
+            if check_if_global_name(
+                    ast_association.name,
+                    ast_association,
+                    'Association class ignored.' ):
+                pass
+            else:
+                a=AssociationClass(
+                    name=ast_association.name,
+                    model=self.classModel,
+                    isAbstract=ast_association.isAbstract,
+                    superclasses=[
+                        Placeholder(s, 'Classifier')
+                        for s in ast_association.superclasses],
+                    package=self.__current_package,
+                    astNode=ast_association
+                )
+                a.description = astTextBlockToTextBlock(
+                    container=a,
+                    astTextBlock=ast_association.textBlock)
+                define_role(a, ast_association.roleCompartment.source)
+                define_role(a, ast_association.roleCompartment.target)
+
+                # attributes
+                ast_ac=ast_association.attributeCompartment
+                if ast_ac is not None:
+                    for ast_att in ast_ac.attributes:
+                        # check that attributes have diffrent
+                        # names that roles
+                        if ast_att.name in a.roleNames:
+                            ASTNodeSourceIssue(
+                                code=icode('NO_ATT_ROLE'),
+                                astNode=ast_att,
+                                level=Levels.Error,
+                                message=(
+                                    'Attribute "%s" already defined '
+                                    'as role.'
+                                    % (ast_att.name)))
+                        define_attribute(a, ast_att)
 
         def define_role(association, ast_role):
             if ast_role.name in association.roleNames:
@@ -371,8 +469,12 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 define_enumeration(declaration)
             elif type_=='Class':
                 define_class(declaration)
-            elif type_=='Association':
+            elif (type_=='Association'
+                  and declaration.kind!='associationclass'):
                 define_association(declaration)
+            elif (type_=='Association'
+                  and declaration.kind=='associationclass'):
+                define_association_class(declaration)
             elif type_=='Invariant':
                 define_invariant(declaration)
             else:
@@ -384,11 +486,13 @@ class ClassModelSource(ASTBasedModelSourceFile):
     #----------------------------------------------------------------
     def resolve(self):
 
-        def resolve_class_content(class_):
+
+        def resolve_class_content(classifier):
+            # Works both for plainClass and associationClass
 
             def resolve_superclasses():
                 actual_super_classes=[]
-                for class_placeholder in class_.superclasses:
+                for class_placeholder in classifier.superclasses:
                     name=class_placeholder.placeholderValue
                     c=self.classModel.class_(name)
                     if c is not None:
@@ -396,13 +500,13 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     else:
                         ASTNodeSourceIssue(
                             code=icode('CLASS_NO_SUPER'),
-                            astNode=class_.astNode,
+                            astNode=classifier.astNode,
                             level=Levels.Error,
                             message=(
                                 'Class "%s" does not exist. '
                                 "'Can't be the superclass of %s."
-                                % (name, class_.name)))
-                class_.superclasses=actual_super_classes
+                                % (name, classifier.name)))
+                classifier.superclasses=actual_super_classes
 
                         #
                 #     try:
@@ -433,13 +537,13 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 else:
                     ASTNodeSourceIssue(
                         code=icode('ATTRIBUTE_NO_TYPE'),
-                        astNode=class_.astNode,
+                        astNode=classifier.astNode,
                         level=Levels.Fatal,
                         message=(
                             'Datatype "%s" does not exist.'
                             % (type_name)))
             resolve_superclasses()
-            for a in class_.attributes:
+            for a in classifier.attributes:
                 resolve_attribute(a)
 
         def resolve_association_content(association):
@@ -474,6 +578,11 @@ class ClassModelSource(ASTBasedModelSourceFile):
 
             for r in association.roles:
                 resolve_role(r)
+
+
+        # association classes are both in .classes and .associations
+        # so they will be processed twice. First as classes and
+        # then as associations.
 
         for c in self.classModel.classes:
             resolve_class_content(c)

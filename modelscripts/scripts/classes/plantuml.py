@@ -25,6 +25,7 @@ def indent(prefix,s):
 
 
 class ClassPlantUMLPrinter(object):
+
     def __init__(self, classModel):
         self.classModel = classModel
         self.output = ''
@@ -147,6 +148,10 @@ class ClassPlantUMLPrinter(object):
             ('association','none') : 'x--x',
             ('association','backward') : '<--x',
             ('association','forward') : 'x-->',
+            ('associationclass','both') : '--',
+            ('associationclass','none') : 'x--x',
+            ('associationclass','backward') : '<--x',
+            ('associationclass','forward') : 'x-->',
             ('composition','both') : '*--',
             ('composition','none') : '*--x',
             ('composition','backward') : '*--x',

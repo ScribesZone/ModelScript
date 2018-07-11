@@ -1,6 +1,7 @@
     #@Metric "plain class" 1
     #@Metric "class" 1
     #@Metric "association class" 0
+    #@Metric "attribute" 10
 
 class model Cl_class02
 
