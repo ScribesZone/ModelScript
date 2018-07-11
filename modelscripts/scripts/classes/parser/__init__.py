@@ -436,7 +436,6 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 else:
                     tags=ast_role.metaPart.tags
                     stereotypes=ast_role.metaPart.stereotypes
-                print('LL'*20,ast_role.name,ast_role.navigability)
                 r=Role(
                     astNode=ast_role,
                     association=association,
