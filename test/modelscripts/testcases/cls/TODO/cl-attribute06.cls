@@ -1,6 +1,8 @@
     # optional attributes
 
-    #@Metric "regular class" 1
+    #@Metric "plain class" 1
+    #@Metric "class" 1
+    #@Metric "association class" 0
 
 class model Cl_class02
 

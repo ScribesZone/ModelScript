@@ -28,7 +28,7 @@ class TestClassModel(object):
         assert assoc_names==r
         assert set(self.model.associationNames)==r
 
-        assert set(self.model.regularAssociationNames)==r
+        assert set(self.model.plainAssociationNames)==r
 
     def testDataTypes(self):
         r={'Integer', 'Real', 'Boolean', 'String',
@@ -36,7 +36,7 @@ class TestClassModel(object):
         assert set(self.model.dataTypeNames)==r
 
     def testRolesShapes(self):
-        ac = self.model.associationNamed['Controls']
+        ac = self.model.association('Controls')
         assert ac.name == 'Controls'
         assert ac.roles[0].name == 'department'
         assert ac.sourceRole.name == 'department'
@@ -51,7 +51,7 @@ class TestClassModel(object):
         assert ac.roles[1].type.name == 'Project'
 
     def testRolesCardinalities(self):
-        ac = self.model.associationNamed['Controls']
+        ac = self.model.association('Controls')
         assert ac.roles[0].cardinalityMin == 1
         assert ac.roles[0].cardinalityMax == 1
         assert ac.roles[1].cardinalityMin == 0
@@ -63,13 +63,13 @@ class TestClassModel(object):
         assert not ac.isBackwardOneToMany
         assert not ac.isManyToMany
         assert not ac.isOneToOne
-        ac = self.model.associationNamed['WorksOn']
+        ac = self.model.association('WorksOn')
         assert ac.isManyToMany
         assert not ac.isOneToMany
         assert not ac.isOneToOne
 
     def testClassRoles(self):
-        c = self.model.classNamed['Employee']
+        c = self.model.class_('Employee')
         # ownedRoles
         ro={'departments', 'projects', 'supervisor', 'subordinates'}
         assert {r.name for r in c.ownedRoles}==ro
@@ -77,7 +77,7 @@ class TestClassModel(object):
         rp={'employees','employees','supervisor', 'subordinates'}
         assert {r.name for r in c.playedRoles}==rp
 
-        c = self.model.classNamed['Department']
+        c = self.model.class_('Department')
         # ownedRoles
         ro={'employees', 'projects'}
         assert {r.name for r in c.ownedRoles}==ro

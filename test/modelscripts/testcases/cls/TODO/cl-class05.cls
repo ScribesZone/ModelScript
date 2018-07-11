@@ -1,6 +1,8 @@
     # Cycle in inheritance relationships
 
-    #@Metric "regular class" 3
+    #@Metric "plain class" 6
+    #@Metric "class" 6
+    #@Metric "association class" 0
     #@Issue cl.syn.Class.NoSuper 2
     #@Issue level *
 
