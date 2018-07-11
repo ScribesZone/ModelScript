@@ -332,7 +332,7 @@ class MissingSlotViolation(ConformityViolation):
 
 class CompositionCycleViolation(ConformityViolation):
     #TODO: composition cycle
-    #pass
+    pass
 
 
 class ObjectModelAnalyzis(object):
