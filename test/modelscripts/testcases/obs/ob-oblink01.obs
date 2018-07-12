@@ -1,0 +1,16 @@
+object model Ob_main_turbo
+import class model from '../cls/cl-main-cybercompany-10.cls'
+
+hardware is an Department.
+computing is an Department.
+
+astra is a Project.
+turbo is a Project.
+
+castra is the Control between computing and astra.
+the frequency of castra is 3.
+computing Controls astra.
+
+cturbo : Control (computing, turbo)
+cturbo.frequency=90
+(computing, Controls, turbo)
