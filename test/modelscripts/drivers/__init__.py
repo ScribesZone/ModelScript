@@ -2,6 +2,8 @@
 # coding=utf-8
 import os
 import glob
+import re
+import sys
 from typing import Text, Union, List
 from distutils.dir_util import mkpath
 
@@ -47,10 +49,26 @@ def getTestFile(relativeFileName, checkExist=True):
             raise IOError('Test file %s not found' % relativeFileName)
     return f
 
-def getTestFiles(relativeDirectory, relative=True, extension=''):
+def patternFromArgV():
+    prefix='-e='
+    for arg in sys.argv:
+        if arg.startswith(prefix):
+            return arg[len(prefix):]
+    else:
+        return ''
+
+def getTestFiles(
+        relativeDirectory,
+        relative=True,
+        extension='',
+        pattern=''):
     #type: (Text, bool, Union[Text, List[Text]]) -> List[Text]
     def accept(filename):
         (core, ext)=os.path.splitext(filename)
+        if pattern!='':
+            m=re.search(pattern, core)
+            if not m:
+                return False
         if isinstance(extension, (str, unicode)):
             return ext==extension
         elif isinstance(extension, list):

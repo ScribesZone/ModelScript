@@ -16,6 +16,8 @@ from test.modelscripts.drivers import (
     getTestFile
 )
 from modelscripts.megamodels import Megamodel
+from test.modelscripts.drivers import (
+    patternFromArgV)
 
 #------------------------------------------------------------------------
 # This package allows to check assertions against test case.
@@ -305,15 +307,17 @@ def extractExpectedMetricsMapFromFile(fileName):
 def checkAllAssertionsForDirectory(
         relTestcaseDir,
         extension,
+        pattern,
         expectedIssuesFileMap={},
         expectedMetricsFileMap={}):
     """
     Check assertions for all files in a given directory.
     If the expected map are given, search first in this
-    map for assertion otherwize the assertion will be extracted
+    map for assertion otherwise the assertion will be extracted
     from each file.
     :param relTestcaseDir: directory relative to testcases
     :param extension: the extension of the files to check
+    :param pattern: a pattern to select files via re.search
     :param expectedIssuesFileMap: see examples in test files
     :param expectedMetricsFileMap: see examples in test files
     :return: a pair (file,issue map) for all file in directory
@@ -323,7 +327,9 @@ def checkAllAssertionsForDirectory(
     test_files=getTestFiles(
         relTestcaseDir,
         relative=True,
-        extension=extension)
+        extension=extension,
+        pattern=pattern,
+        )
 
     l=[]
     for test_file in test_files:
@@ -416,3 +422,22 @@ def checkValidIssues(
 #         metamodel.extension[1:],
 #         [metamodel.extension],
 #         expectedIssues)
+
+def simpleTestDeneratorAssertions(metamodel):
+    extension=metamodel.extension
+    test_rel_dir=extension[1:]
+    print('RR'*10, extension)
+    res = checkAllAssertionsForDirectory(
+        relTestcaseDir=test_rel_dir,
+        extension=[extension],
+        pattern=patternFromArgV(),
+        expectedIssuesFileMap={},
+        expectedMetricsFileMap={})
+
+    for (file , expected_issue_map, expected_metrics_map) in res:
+        yield (
+            checkValidIssues,
+            file,
+            metamodel,
+            expected_issue_map,
+            expected_metrics_map)

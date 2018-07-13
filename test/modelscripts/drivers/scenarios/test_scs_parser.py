@@ -1,29 +1,16 @@
 # coding=utf-8
 from __future__ import print_function
-
-from modelscripts.metamodels import (
-    scenarios
-)
+from test.modelscripts.drivers.assertions import (
+    simpleTestDeneratorAssertions)
 from modelscripts.scripts.megamodels.printer.megamodels import \
     MegamodelPrinter
-from test.modelscripts.drivers.assertions import (
-    checkAllAssertionsForDirectory,
-    checkValidIssues
-)
 
+from modelscripts.metamodels.scenarios import METAMODEL
 
 def testGenerator_Assertions():
-    res = checkAllAssertionsForDirectory(
-        relTestcaseDir='scs',
-        extension=['.scs'])
-
-    for (file , expected_issue_map, expected_metrics_map) in res:
-        yield (
-            checkValidIssues,
-            file,
-            scenarios.METAMODEL,
-            expected_issue_map,
-            expected_metrics_map)
+    for (v,f,m,eim, emm) in \
+            simpleTestDeneratorAssertions(METAMODEL):
+        yield (v,f,m,eim, emm)
 
 def testFinalMegamodel():
     MegamodelPrinter().display()
