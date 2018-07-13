@@ -1,6 +1,14 @@
     #@Issue cl.syn.Role.Defined 1
     #@Issue else *
 
+    #@Metric "class" 6
+    #@Metric "plain class" 5
+    #@Metric "association" 1
+    #@Metric "plain association" 0
+    #@Metric "association class" 1
+    #@Metric "attribute" 0
+    #@Metric "role" 1
+
 class model Cl_association01
 
 class Elephant

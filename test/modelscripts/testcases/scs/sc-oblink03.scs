@@ -1,0 +1,10 @@
+scenario model Sc_step30
+
+import class model from '../cls/cl-main-cybercompany-11.cls'
+
+scenario
+    create computing is a Department.
+    create astra is a Project.
+
+    create castra is the Control between computing and astra.
+    create the frequency of castra is 3.
