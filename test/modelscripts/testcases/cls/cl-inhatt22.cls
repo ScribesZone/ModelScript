@@ -1,3 +1,6 @@
+    #@Issue cl.fin.Inheritance.Horizontal 1
+    #@Issue else *
+
 class model Cl_inhatt
 
 
