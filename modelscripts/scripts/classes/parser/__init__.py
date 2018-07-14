@@ -15,17 +15,14 @@ from modelscripts.base.issues import (
 from modelscripts.metamodels.classes import (
     ClassModel,
     Package,
-    DataType,
-    AttributeType,
-    Enumeration,
-    EnumerationLiteral,
-    PlainClass,
-    Attribute,
-    PlainAssociation,
-    AssociationClass,
-    Role,
     METAMODEL
 )
+from modelscripts.metamodels.classes.assocclasses import AssociationClass
+from modelscripts.metamodels.classes.associations import PlainAssociation, \
+    Role
+from modelscripts.metamodels.classes.classes import PlainClass, Attribute
+from modelscripts.metamodels.classes.types import DataType, AttributeType, \
+    Enumeration, EnumerationLiteral
 from modelscripts.megamodels.metamodels import Metamodel
 
 from modelscripts.megamodels.sources import (
@@ -259,7 +256,8 @@ class ClassModelSource(ASTBasedModelSourceFile):
                         define_attribute(c, ast_att)
 
         def define_attribute(class_, ast_attribute):
-            if ast_attribute.name in class_.names:
+            owned_names=class_.ownedAttributeNames
+            if ast_attribute.name in owned_names:
                 ASTNodeSourceIssue(
                     code=icode('ATT_DEFINED'),
                     astNode=ast_attribute,
@@ -507,23 +505,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                                 % (name, classifier.name)))
                 classifier.superclasses=actual_super_classes
 
-                        #
-                #     try:
-                #         c=self.classModel._findClassOrAssociationClass(
-                #             name)
-                #         actual_super_classes.append(c)
-                #     except:
-                #         ASTNodeSourceIssue(
-                #             code=icode('CLASS_NO_SUPER'),
-                #             astNode=class_.astNode,
-                #             level=Levels.Error,
-                #             message=(
-                #                 'Class "%s" does not exist. '
-                #                 "'Can't be the superclass of %s."
-                #                 % (name, class_.name)))
-                # class_.superclasses=actual_super_classes
-
-            def resolve_attribute(attribute):
+            def resolve_owned_attribute(attribute):
                 type_name=attribute.type.placeholderValue
                 if type_name in self.classModel.simpleTypeNamed:
                     simple_type=(
@@ -542,8 +524,8 @@ class ClassModelSource(ASTBasedModelSourceFile):
                             'Datatype "%s" does not exist.'
                             % (type_name)))
             resolve_superclasses()
-            for a in classifier.attributes:
-                resolve_attribute(a)
+            for a in classifier.ownedAttributes:
+                resolve_owned_attribute(a)
 
         def resolve_association_content(association):
 
@@ -561,23 +543,9 @@ class ClassModelSource(ASTBasedModelSourceFile):
                             'Class "%s" does not exist. '
                             "'Can't be used in the role '%s'."
                             % (role.type.placeholderValue, role.name)))
-                # try:
-                #     c=self.classModel._findClassOrAssociationClass(
-                #         role.type.placeholderValue)
-                #     role.type=c
-                # except:
-                #     ASTNodeSourceIssue(
-                #         code=icode('ROLE_NO_CLASS'),
-                #         astNode=role.astNode,
-                #         level=Levels.Fatal,
-                #         message=(
-                #             'Class "%s" does not exist. '
-                #             "'Can't be used in the role '%s'."
-                #             % (role.type.placeholderValue, role.name)))
 
             for r in association.roles:
                 resolve_role(r)
-
 
         # association classes are both in .classes and .associations
         # so they will be processed twice. First as classes and
