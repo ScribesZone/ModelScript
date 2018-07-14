@@ -29,7 +29,7 @@ from modelscripts.metamodels.stories import (
     TextStep,
     VerbStep,
 )
-from modelscripts.metamodels.classes import EnumerationValue
+from modelscripts.metamodels.classes.types import EnumerationValue
 
 from modelscripts.metamodels.stories.operations import (
     ObjectCreationStep,
@@ -37,6 +37,7 @@ from modelscripts.metamodels.stories.operations import (
     SlotStep,
     LinkCreationStep,
     LinkDeletionStep,
+    LinkObjectCreationStep,
     CheckStep,
     ReadStep
 )
@@ -142,6 +143,9 @@ class StoryFiller():
                 parent, astStep)
         elif type_=='CheckStep':
             step=self._fill_check_step(
+                parent, astStep)
+        elif type_ == 'LinkObjectCreationStep':
+            step=self._fill_link_object_creation_step(
                 parent, astStep)
         else:
             raise NotImplementedError(
@@ -348,6 +352,35 @@ class StoryFiller():
         else:
             raise NotImplementedError(
                 'Action not expected: %s' % action)
+
+    def _fill_link_object_creation_step(self, parent, astStep):
+        self._is_check_needed=True
+        self._check_definition_action(astStep)
+        self._check_class_model(astStep)
+        ast_decl=astStep.linkObjectDeclaration
+        lo_name = ast_decl.name
+        ac_name = ast_decl.associationClass
+        class_model=self.model.classModel
+
+        ac=class_model.associationClass(ac_name)
+        if ac is None:
+            ASTNodeSourceIssue(
+                code=icode('OBJECT_ASSCLASS_NOT_FOUND'),
+                astNode=astStep,
+                level=Levels.Fatal,
+                message=(
+                    'Association class "%s" does not exist.' % ac_name))
+        else:
+            step = LinkObjectCreationStep(
+                parent=parent,
+                isAction=astStep.action is not None,
+                linkObjectName=lo_name,
+                sourceObjectName=ast_decl.source,
+                targetObjectName=ast_decl.target,
+                associationClass=ac,
+                astNode=astStep
+            )
+            return step
 
     def _fill_read_step(self, parent, astStep):
         step=ReadStep(
