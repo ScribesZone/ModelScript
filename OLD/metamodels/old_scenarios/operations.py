@@ -27,9 +27,9 @@ from modelscripts.megamodels.elements import SourceModelElement
 from modelscripts.metamodels.classes import (
     Class,
     Association,
-    AssociationClass,
-    Attribute,
 )
+from modelscripts.metamodels.classes.assocclasses import AssociationClass
+from modelscripts.metamodels.classes.classes import Attribute
 from modelscripts.metamodels.permissions.sar import Subject
 
 META_CLASSES=[
