@@ -7,19 +7,16 @@ from typing import Optional
 from modelscripts.base.modelprinters import (
     ModelPrinter,
     ModelSourcePrinter,
-    ModelPrinterConfig,
-)
+    ModelPrinterConfig,)
 from modelscripts.scripts.textblocks.printer import (
-    TextBlockPrinter
-)
+    TextBlockPrinter)
 from modelscripts.metamodels.objects import (
     ObjectModel,
-    Object,
-    Slot,
-    Link,
-    LinkObject,
     METAMODEL
 )
+from modelscripts.metamodels.objects.linkobjects import LinkObject
+from modelscripts.metamodels.objects.objects import Object, Slot
+from modelscripts.metamodels.objects.links import Link
 from modelscripts.megamodels.models import (
     Placeholder
 )
