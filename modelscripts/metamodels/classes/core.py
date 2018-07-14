@@ -1,7 +1,4 @@
-from modelscripts.metamodels.classes import (
-    DataType,
-    DataValue
-)
+from modelscripts.metamodels.classes.types import DataType, DataValue
 from datetime import datetime
 
 

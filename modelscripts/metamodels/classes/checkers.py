@@ -6,10 +6,10 @@ from modelscripts.base.issues import (
 )
 from modelscripts.base .symbols import Symbol
 
-from modelscripts.metamodels.classes import (
-    Class,
-    EnumerationLiteral
-)
+from modelscripts.metamodels.classes.classes import (
+    Class)
+from modelscripts.metamodels.classes.types import EnumerationLiteral
+
 
 class ClassNomenclatureChecker(NamingChecker):
     def __init__(self, **params):

@@ -39,12 +39,26 @@ import abc
 import collections
 import logging
 
-from typing import Text, Optional, Union, List, Dict
+from typing import Text, List, Dict
+
+from modelscripts.base.graphs import (
+    genPaths
+)
+from modelscripts.base.grammars import (
+    # ModelSourceAST, \
+    # ASTBasedModelSourceFile,
+    ASTNodeSourceIssue
+)
+from modelscripts.base.issues import (
+    Levels
+)
+
+
+
 
 # TODO: metastuff to be continued
 from modelscripts.megamodels.py import (
     MComposition,
-    MReference,
     MAttribute
 )
 from modelscripts.megamodels.elements import SourceModelElement
@@ -54,6 +68,8 @@ from modelscripts.megamodels.dependencies.metamodels import (
     MetamodelDependency
 )
 from modelscripts.megamodels.models import Model
+# from modelscripts.metamodels.classes.associations import Association
+# from modelscripts.metamodels.classes.classes import Class
 from modelscripts.metamodels.permissions.sar import Resource
 
 META_CLASSES=( # could be in __all__ (not used by PyParse)
@@ -77,6 +93,14 @@ META_CLASSES=( # could be in __all__ (not used by PyParse)
 
 __all__= META_CLASSES
 
+
+ISSUES={
+    'SUPER_CYCLES_MSG': 'cl.fin.Cycle.One',
+    'SUPER_CYCLES_STOP': 'cl.fin.Cycle.Final',
+}
+
+def icode(ilabel):
+    return ISSUES[ilabel]
 
 
 #TODO: make associationclass class and assoc + property
@@ -119,6 +143,7 @@ class ClassModel(Model):
         super(ClassModel, self).__init__()
 
         self._isResolved=False
+        self._isClassModelFinalized=False
 
         self._enumerationNamed=collections.OrderedDict()
         #type: Dict[Text, Enumeration]
@@ -261,7 +286,7 @@ class ClassModel(Model):
 
     def associationClass(self, name):
         if name in self._associationClassNamed:
-            return self._associationClassNamed
+            return self._associationClassNamed[name]
         else:
             return None
 
@@ -330,6 +355,14 @@ class ClassModel(Model):
                 [a
                     for c in self.classes
                         for a in c.attributes])),
+            ('owned attribute', len(
+                [a
+                 for c in self.classes
+                 for a in c.ownedAttributes])),
+            ('inherited attribute', len(
+                [a
+                 for c in self.classes
+                 for a in c.inheritedAttributes])),
             ('role', len(
                 [r
                     for a in self.associations
@@ -376,73 +409,77 @@ class ClassModel(Model):
 
     def finalize(self):
         super(ClassModel, self).finalize()
-        for a in self.associations:
-            source_class=a.sourceRole.type
-            target_class=a.targetRole.type
-            source_class._ownedRoles.append(a.targetRole)
-            source_class._playedRoles.append(a.sourceRole)
-            target_class._ownedRoles.append(a.sourceRole)
-            target_class._playedRoles.append(a.targetRole)
 
-    # def _findAssociationOrAssociationClass(self, name):
-    #     raise NotImplementedError('use .association(name) instead')
-    #
-    #     # TODO: check this implementation
-    #     # should be most probably changed into
-    #     # associationNamed property
-    #     log.debug('_findAssociationOrAssociationClass:%s', name)
-    #     if name in self.associationNamed:
-    #         return self.associationNamed[name]
-    #     elif name in self.associationClassNamed:
-    #         return self.associationClassNamed[name]
-    #     else:
-    #         raise ValueError('ERROR - %s : No association or association class'
-    #                         % name )
+        def add_attached_roles_to_classes():
+            for a in self.associations:
+                source_class=a.sourceRole.type
+                target_class=a.targetRole.type
+                source_class._ownedOppositeRoles.append(a.targetRole)
+                source_class._ownedPlayedRoles.append(a.sourceRole)
+                target_class._ownedOppositeRoles.append(a.sourceRole)
+                target_class._ownedPlayedRoles.append(a.targetRole)
 
-    # def _findClassOrAssociationClass(self, name):
-    #     #TODO: check if the clients really need an exception
-    #     # instead of just None
-    #     # #type: (Text) -> Union[Class, AssociationClass]
-    #     # # TODO: see _findAssociationOrAssociationClass
-    #     # if name in self._classNamed:
-    #     #     return self._classNamed[name]
-    #     # elif name in self.associationClassNamed:
-    #     #     return self.associationClassNamed[name]
-    #     raise NotImplementedError('use .class_(name) instead')
-    #     c=self.class_(name)
-    #     if c is not None:
-    #         return c
-    #     else:
-    #         raise ValueError('ERROR - %s : No class or association class'
-    #                         % name)
+        def check_inheritance_cycles():
+            cycles_nb=0
+            last_class=None
+            for class_ in self.classes:
+                cycles=list(
+                    genPaths(
+                        lambda x: x.superclasses,
+                        class_,
+                        class_))
+                if len(cycles)>=1:
+                    ASTNodeSourceIssue(
+                        code=icode('SUPER_CYCLES_MSG'),
+                        astNode=class_.astNode,
+                        level=Levels.Error,
+                        message=(
+                            'Class inheritance is cyclic for "%s"'
+                             % class_.name))
+                    # TODO: add detailed message with cycles var
+                    cycles_nb += len(cycles)
+                    # just for (more or less) localized error message
+                    last_class = class_
+                class_.inheritanceCycles=cycles
+            if cycles_nb>=1:
+                ASTNodeSourceIssue(
+                    code=icode('SUPER_CYCLES_STOP'),
+                    astNode=last_class.astNode,
+                    level=Levels.Fatal,
+                    message=(
+                        'The inheritance graphs is cyclic.'))
 
-    # def _findRole(self, associationOrAssociationClassName, roleName):
-    #     # TODO: see _findAssociationOrAssociationClass
-    #     # though there are two parmeters here
-    #     log.debug('_findRole: %s::%s',
-    #               associationOrAssociationClassName, roleName)
-    #     # a = self._findAssociationOrAssociationClass(
-    #     #             associationOrAssociationClassName)
-    #     a=self.association(associationOrAssociationClassName)
-    #
-    #     log.debug('_findRole:  %s ',a)
-    #     log.debug('_findRole:  %s ',a.roles)
-    #     if roleName in a.roleNamed:
-    #         return a.roleNamed[roleName]
-    #     else:
-    #         raise ValueError('ERROR - No "%s" role on association(class) %s' %
-    #                         (roleName, associationOrAssociationClassName)  )
-    #
-    # def _findInvariant(self, classOrAssociationClassName, invariantName):
-    #     #type: (Text, Text) -> 'Invariant'
-    #     # c = self._findClassOrAssociationClass(
-    #     #             classOrAssociationClassName)
-    #     c=self.class_(classOrAssociationClassName)
-    #     if invariantName in c.invariantNamed:
-    #         return c.invariantNamed[invariantName]
-    #     else:
-    #         raise ValueError('ERROR - No "%s" invariant on class %s' %
-    #                         (invariantName, classOrAssociationClassName))
+        def add_inherited_attributes():
+
+            def _ensure_inherited_attribute(class_):
+                if class_._inheritedAttributeNamed is not None:
+                    return
+                inh_att_named = collections.OrderedDict()
+                for sc in class_.superclasses:
+                    _ensure_inherited_attribute(sc)
+                    for sc_att in sc.attributes:
+                        if sc_att not in inh_att_named.values():
+                            name=sc_att.name
+                            if name in inh_att_named.keys():
+                                print('WW'*20, 'name conflict: %s'
+                                    % name)
+                                print('WW'*20, 'ignored !')
+                            else:
+                                inh_att_named[name]=sc_att
+                class_._inheritedAttributeNamed=inh_att_named
+                print('WW'*10, 'class %s inherits' % class_.name)
+                for a in inh_att_named:
+                    print('WW' * 10, '    %s' % a)
+
+            for class_ in self.classes:
+                _ensure_inherited_attribute(class_)
+
+
+        add_attached_roles_to_classes()
+        check_inheritance_cycles()
+        add_inherited_attributes()
+
+        self._isClassModelFinalized=True
 
 
 class PackagableElement(SourceModelElement):
@@ -486,181 +523,6 @@ class Member(Resource):
     __metaclass__ = abc.ABCMeta
 
 
-class SimpleType(PackagableElement):
-    """
-    Simple types.
-    """
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self,
-                 name,
-                 model,
-                 astNode=None,
-                 package=None,
-                 lineNo=None, description=None):
-        super(SimpleType, self).__init__(
-            model=model,
-            name=name,
-            package=package,
-            astNode=astNode, lineNo=lineNo, description=description)
-
-
-    @MAttribute('String')
-    def label(self):
-        return self.name
-
-
-class DataType(SimpleType):
-    """
-    Data types such as integer.
-    Built-in data types are not explicitly defined in the source
-    file, but they are used after after symbol resolution.
-    See "core" module.
-    """
-    # not in sources, but used created during symbol resolution
-    type = 'DataType'
-
-    def __init__(self,
-                 model,
-                 name,
-                 superDataType=None,  # Not used yet
-                 astNode=None,
-                 package=None,
-                 implementationClass=None,
-                 isCore=False):
-        super(DataType, self).__init__(
-            model=model,
-            name=name,
-            astNode=astNode,
-            package=package
-        )
-        self.superDataType=superDataType
-        self.implementationClass=implementationClass
-        self.model._dataTypeNamed[name]=self
-        self.isCore=isCore
-
-    def __repr__(self):
-        return self.name
-
-
-class AttributeType(object):
-
-    def __init__(self,
-                 simpleType,
-                 isOptional=False,
-                 isMultiple=False):
-        self.simpleType=simpleType
-        self.isOptional=isOptional
-        self.isMultiple=isMultiple
-
-    def accept(self, simpleValue):
-        null_type=self.simpleType.model.dataType('NullType')
-        valueType=simpleValue.type
-        # print('KK'*10,
-        #       str(simpleValue)+':'+ str(valueType),
-        #       'with var',
-        #       id(self.simpleType),
-        #       self.simpleType.name,
-        #       self.isOptional)
-        return (
-            (valueType==null_type and self.isOptional)
-            or valueType==self.simpleType
-        )
-
-    @property
-    def name(self):
-        return self.simpleType.name
-
-
-    def __str__(self):
-        return (
-              str(self.simpleType)
-            + ('[0..1]' if self.isOptional else '')
-        )
-
-class UnspecifiedValue(object):
-    """
-    This value just represents that a slot has not specified.
-    There is only one value.
-    """
-    def __str__(self):
-        return '?'
-
-UNSPECIFIED=UnspecifiedValue()
-
-
-class SimpleValue(object):
-
-    __metaclass__ = abc.ABCMeta
-
-    @abc.abstractproperty
-    def type(self):
-        raise NotImplementedError('type not implemented')
-
-    @abc.abstractmethod
-    def equals(self, simpleValue):
-        raise NotImplementedError('compare() not implemented')
-
-
-class EnumerationValue(object):
-
-    def __init__(self, literal):
-        self.value=literal
-        #type: EnumerationLiteral
-
-    def __str__(self):
-        return "%s.%s" % (
-            self.value.enumeration.name,
-            self.value.name)
-
-    @property
-    def type(self):
-        return self.value.enumeration
-
-    def equals(self, enumValue):
-        return self.value==enumValue.value
-
-
-class DataValue(SimpleValue):
-
-    __metaclass__ = abc.ABCMeta
-
-    def __init__(self, stringRepr, value, type):
-        self.stringRepr=stringRepr
-        self.value=value
-        self._type=type
-
-    @property
-    def type(self):
-        return self._type
-
-    def __str__(self):
-        return self.stringRepr
-
-    def equals(self, enumValue):
-        return self.value==enumValue.value
-
-    @property
-    def isCore(self):
-        return False    # will be refined for core
-
-
-class UserDefinedDataValue(DataValue):
-    """
-    Not used in practice so far.
-    """
-
-    def __init__(self, stringRepr, value, type):
-        super(UserDefinedDataValue, self).__init__(
-            stringRepr=stringRepr,
-            value=value,
-            type=type
-        )
-
-
-
-
-
 class Package(PackagableElement, Entity):
     """
     Packages.
@@ -692,611 +554,7 @@ class Package(PackagableElement, Entity):
             element.package=self
 
 
-class Enumeration(SimpleType):
-    """
-    Enumerations.
-    """
-    META_COMPOSITIONS = [
-        'literals',
-    ]
-    type = 'Enumeration'
-
-    # metaMembers = [
-    #       Reference('model : Model inv enumerations'),
-    # ]
-
-    def __init__(self,
-                 name,
-                 model,
-                 package=None,
-                 astNode=None,
-                 lineNo=None, description=None):
-        super(Enumeration, self).__init__(
-            name,
-            model,
-            package=package,
-            astNode=astNode,
-            lineNo=lineNo,
-            description=description)
-        self.model._enumerationNamed[name] = self
-        self._literals=[]
-        # Not sure to understand why this is not a Dict
-
-    @MComposition('EnumerationLiteral[*] inv enumeration')
-    def literals(self):
-        return self._literals
-
-    @property
-    def literalNames(self):
-        return [l.name for l in self.literals]
-
-    def literal(self, name):
-        # Not sure to understand why this is not a Dict
-        for literal in self.literals:
-            if literal.name==name:
-                return literal
-        else:
-            return None
-
-    def __str__(self):
-        return self.name
-
-    def __repr__(self):
-        return '%s(%s)' % (self.name, repr(self.literals))
-
-
-class EnumerationLiteral(SourceModelElement):
-
-    def __init__(self, name, enumeration, astNode=None, lineNo=None,
-                 description=None):
-        SourceModelElement.__init__(
-            self,
-            model=enumeration.model,
-            astNode=astNode,
-            name=name,
-            lineNo=lineNo, description=description)
-        self.enumeration=enumeration
-        self.enumeration._literals.append(self)
-
-
-class Class(PackagableElement, Entity):
-    """
-    Classes.
-    """
-
-    __metaclass__ = abc.ABCMeta
-
-    META_COMPOSITIONS = [
-        'attributes',
-        'operations',
-        'invariants',
-    ]
-
-    def __init__(self, name, model, isAbstract=False, superclasses=(),
-                 package=None, lineNo=None, description=None, astNode=None):
-        super(Class, self).__init__(
-            name=name,
-            model=model,
-            package=package,
-            astNode=astNode,
-            lineNo=lineNo,
-            description=description)
-        self.model._plainClassNamed[name] = self
-        self.isAbstract = isAbstract
-        self.superclasses = superclasses  # strings resolved as classes
-
-        #FIXME: add support for inheritance
-        self.attributeNamed = collections.OrderedDict()
-
-        # TODO: deal with operation and operation names
-        # Signature looks like op(p1:X):Z
-        self.operationNamed = collections.OrderedDict()
-
-        # Anonymous invariants are indexed with id like _inv2
-        # but their name (in Invariant) is always ''
-        # This id is just used internaly
-        self.invariantNamed = collections.OrderedDict()   # after resolution
-
-        self._ownedRoles = [] # after resolution
-        self._playedRoles = [] # after resolution
-
-    @property
-    def attributes(self):
-        return self.attributeNamed.values()
-
-    def attribute(self, name):
-        if name in self.attributeNamed:
-            return self.attributeNamed[name]
-        else:
-            return None
-
-    @property
-    def attributeNames(self):
-        return self.attributeNamed.keys()
-
-    @property
-    def operations(self):
-        return self.operationNamed.values()
-
-    @property
-    def operationNames(self):
-        return self.invariantNamed.keys()
-
-    @property
-    def invariants(self):
-        return self.invariantNamed.values()
-
-    @property
-    def invariantNames(self):
-        return self.invariantNamed.keys()
-
-    @property
-    def ownedRoles(self):
-        return self._ownedRoles
-
-    @property
-    def playedRoles(self):
-        return self._playedRoles
-
-    @property
-    def names(self):
-        return (
-            self.attributeNames
-            +self.operationNames
-            +self.invariantNames)
-
-    @property
-    def idPrint(self):
-        #type: () -> List[Attribute]
-        return [
-            a for a in self.attributes
-                if a.isId ]
-
-    @abc.abstractmethod
-    def isPlainClass(self):
-        # This method is not really useful as isinstance can be used.
-        # It is just used to prevent creating object of this class
-        # (using ABCMeta is not enough to prevent this).
-        raise NotImplementedError()
-
-
-class PlainClass(Class):
-    """
-    PlainClasses, that is, classes that are not association class.
-    """
-
-    def isPlainClass(self):
-        return True
-
-
-class Attribute(SourceModelElement, Member):
-    """
-    Attributes.
-    """
-
-    def __init__(self, name, class_, type=None,
-                 description=None,
-                 visibility='public',
-                 isDerived=False,
-                 isOptional=False,
-                 tags=(),
-                 stereotypes=(),
-                 isInit=False, expression=None,
-                 lineNo=None, astNode=None):
-        SourceModelElement.__init__(
-            self,
-            model=class_.model,
-            name=name,
-            astNode=astNode,
-            lineNo=lineNo, description=description)
-        self.class_ = class_
-        self.class_.attributeNamed[name] = self
-        self.type = type # string later resolved as SimpleType
-        self._isDerived = isDerived
-        self.visibility=visibility
-        self.isOptional = isOptional
-        self.isInit = isInit  # ?
-        self.expression = expression
-        self.tags=tags
-        self.stereotypes=stereotypes
-
-    @MAttribute('Boolean')
-    def isDerived(self):
-        return self._isDerived
-
-    @isDerived.setter
-    def isDerived(self,isDerived):
-        self._isDerived=isDerived
-
-    @property
-    def label(self):
-        return '%s.%s' % (self.class_.label, self.name)
-
-    @property
-    def isId(self):
-        return 'id' in self.tags
-
-    @property
-    def isReadOnly(self):
-        return 'readOnly' in self.tags
-
-    @property
-    def isClass(self):
-        return 'isClass' in self.tags
-
 # class Parameter
-
-class Operation(SourceModelElement, Member):
-    """
-    Operations.
-    """
-    META_COMPOSITIONS = [
-        'conditions',
-    ]
-
-    def __init__(self, name,  class_, signature, code=None,
-                 expression=None, astNode=None,
-                 lineNo=None, description=None):
-        SourceModelElement.__init__(
-            self,
-            model=class_.model,
-            name=name,
-            astNode=astNode,
-            lineNo=lineNo, description=description)
-        self.class_ = class_
-        self.signature = signature
-        self.class_.operationWithSignature[signature] = self
-        self.full_signature = '%s::%s' % (class_.name, self.signature)
-        self.class_.model.operationWithFullSignature[self.full_signature] = self
-        # self.parameters = parameters
-        # self.return_type = return_type
-        self.expression = expression
-        # Anonymous pre/post are indexed with id like _pre2/_post6
-        # but their name (in PreCondition/PostCondition) is always ''
-        # This id is just used internaly
-        self.conditionNamed = collections.OrderedDict() #type: Dict[Text, 'Condition']
-
-    @property
-    def label(self):
-        return '%s.%s' % (self.class_.label, self.name)
-
-    @MComposition('Condition[*]')
-    def conditions(self):
-        return self.conditionNamed.values()
-
-    def conditionNames(self):
-        return self.conditionNamed.keys()
-
-
-    @MAttribute('Boolean')
-    def hasImplementation(self):
-        return self.expression is not None
-
-
-RolePosition=Union['source','target']
-
-def opposite(rolePosition):
-    if rolePosition=='source':
-        return 'target'
-    elif rolePosition=='target':
-        return 'source'
-    else:
-        raise NotImplementedError(
-            "Position %s doesn't exists." % rolePosition)
-
-
-class Association(PackagableElement, Entity):
-    """
-    Associations.
-    """
-
-    __metaclass__ = abc.ABCMeta
-
-    META_COMPOSITIONS = [
-        'roles',
-    ]
-
-    def __init__(self,
-                 name, model, kind=None, package=None,
-                 lineNo=None, description=None, astNode=None):
-        # type: (Text,ClassModel,Optional[Text], Optional[Package] ,Optional[int],Optional[Text],Optional[Text]) -> None
-        super(Association, self).__init__(
-            name=name,
-            model=model,
-            package=package,
-            astNode=astNode,
-            lineNo=lineNo, description=description)
-        self.model._plainAssociationNamed[name] = self
-        self.kind = kind   # association|composition|aggregation|associationclass  # TODO:should associationclass be
-        # there?
-        self.roleNamed = collections.OrderedDict() # indexed by name
-
-    @property
-    def roles(self):
-        return self.roleNamed.values()
-
-    @property
-    def roleNames(self):
-        return self.roleNamed.keys()
-
-    @MAttribute('Integer')
-    def arity(self):
-        return len(self.roles)
-
-    @MAttribute('Boolean')
-    def isBinary(self):
-        return self.arity == 2
-
-    @MAttribute('Boolean')
-    def isNAry(self):
-        return self.arity >= 3
-
-    @MReference('Role')
-    def sourceRole(self):
-        if not self.isBinary:
-            raise ValueError(
-                '"sourceRole" is not defined on "%s" n-ary association' % (
-                    self.name
-                ))
-        return self.roles[0]
-
-    @MReference('Role')
-    def targetRole(self):
-        if not self.isBinary:
-            raise ValueError(
-                '"targetRole" is not defined on "%s" n-ary association' % (
-                    self.name
-                ))
-        return self.roles[1]
-
-    def role(self, position):
-        #type: (RolePosition) -> Role
-        if position=='source':
-            return self.roles[0]
-        elif position=='target':
-            return self.roles[1]
-        else:
-            raise NotImplementedError(
-                'role position "%s" is not implemented' % position)
-
-    @MAttribute('Boolean')
-    def isManyToMany(self):
-        return (
-            self.isBinary
-            and self.roles[0].isMany
-            and self.roles[1].isMany
-        )
-
-    @MAttribute('Boolean')
-    def isOneToOne(self):
-        return (
-            self.isBinary
-            and self.roles[0].isOne
-            and self.roles[1].isOne
-        )
-
-    @MAttribute('Boolean')
-    def isForwardOneToMany(self):
-        return (
-            self.isBinary
-            and self.roles[0].isOne
-            and self.roles[1].isMany
-        )
-
-    @MAttribute('Boolean')
-    def isBackwardOneToMany(self):
-        return (
-            self.isBinary
-            and self.roles[0].isMany
-            and self.roles[1].isOne
-        )
-
-    @MAttribute('Boolean')
-    def isOneToMany(self):
-        return self.isForwardOneToMany or self.isBackwardOneToMany
-
-    @property
-    def navigability(self):
-        return {
-            (True, True) : 'both',
-            (True, False) : 'backward',
-            (False, True) : 'forward',
-            (False, False) : 'none'
-        }[(self.roles[0].isNavigable, self.roles[1].isNavigable)]
-
-    @property
-    def isComposition(self):
-        return self.kind=='composition'
-
-    @property
-    def isAggregation(self):
-        return self.kind=='aggregation'
-
-    @abc.abstractmethod
-    def isPlainAssociation(self):
-        # This method is not really useful as isinstance can be used.
-        # It is just used to prevent creating object of this class
-        # (using ABCMeta is not enough to prevent this).
-        raise NotImplementedError()
-
-
-class PlainAssociation(Association):
-
-    def isPlainAssociation(self):
-        return True
-
-
-class Role(SourceModelElement, Member):
-    """
-    Roles.
-    """
-
-    def __init__(self, name, association, astNode=None,
-                 cardMin=None, cardMax=None, type=None,
-                 navigability=None,
-                 qualifiers=None, subsets=None, isUnion=False,
-                 expression=None,
-                 tags=(),
-                 stereotypes=(),
-                 lineNo=None, description=None):
-
-        # unamed role get the name of the class with lowercase for the first letter
-        if name == '' or name is None:
-            if type is not None:
-                name = type[:1].lower() + type[1:]
-        SourceModelElement.__init__(
-            self,
-            model=association.model,
-            name=name,
-            astNode=astNode,
-            lineNo=lineNo, description=description)
-        self.association = association
-        self.association.roleNamed[name] = self
-        self.cardinalityMin = cardMin
-        self.cardinalityMax = cardMax
-        self.type = type  # string to be resolved in Class
-
-        # (str,str) to be resolved in (str,SimpleType)
-        self.qualifiers = qualifiers
-        self.subsets = subsets
-        self.isUnion = isUnion
-        self.expression = expression
-        self.tags=tags
-        self.navigability=navigability
-        self.stereotypes=stereotypes
-
-    @property
-    def isOrdered(self):
-        return 'ordered' in self.tags
-
-    @property
-    def isNavigable(self):
-        return self.navigability != 'x'
-
-    @property
-    def isNavigabilitySpecified(self):
-        return self.navigability is not None
-
-    @property
-    def label(self):
-        return '%s.%s' % (self.association.label, self.name)
-
-    @property
-    def cardinalityLabel(self):
-        if self.cardinalityMin is None and self.cardinalityMax is None:
-            return None
-        if self.cardinalityMin == self.cardinalityMax:
-            return str(self.cardinalityMin)
-        if self.cardinalityMin == 0 and self.cardinalityMax is None:
-            return '*'
-        return ('%s..%s' % (
-            str(self.cardinalityMin),
-            '*' if self.cardinalityMax is None else str(
-                self.cardinalityMax)
-
-        ))
-
-    @property
-    def opposite(self):
-        if self.association.isNAry:
-            raise ValueError(
-                '%s "opposite" is not available for %s n-ary association. Try "opposites"' % (
-                    self.name,
-                    self.association.name
-                ))
-        rs = self.association.roles
-        return rs[1] if self is rs[0] else rs[0]
-
-    @property
-    def opposites(self):
-        rs = list(self.association.roles)
-        rs.remove(self)
-        return rs
-
-    @property
-    def isOne(self):
-        return self.cardinalityMax == 1
-
-    @property
-    def isMany(self):
-        return self.cardinalityMax is None or self.cardinalityMax >= 2
-
-    @property
-    def isTarget(self):
-        return (
-            self.association.isBinary
-            and self.association.roles[1] == self
-        )
-
-    @property
-    def isSource(self):
-        return (
-            self.association.isBinary
-            and self.association.roles[0] == self
-        )
-
-    @property
-    def position(self):
-        # type: () -> RolePosition
-        if self.association.isBinary:
-            if self.association.roles[0] == self:
-                return 'source'
-            else:
-                return 'target'
-        else:
-            raise NotImplementedError(
-                'role.position() not implemented'
-                ' for n-ary association')
-
-    def __str__(self):
-        return '%s::%s' % (self.association.name, self.name)
-
-    def acceptCardinality(self, actualCardinality):
-        if actualCardinality < self.cardinalityMin:
-            return False
-        elif (self.cardinalityMax is not None
-              and actualCardinality > self.cardinalityMax):
-            return False
-        else:
-            return True
-
-
-class AssociationClass(Class, Association):
-    """
-    Association classes.
-    """
-    def __init__(self,
-                 name, model, isAbstract=False, superclasses=(),
-                 package=None,
-                 lineNo=None, description=None, astNode=None):
-        # Use multi-inheritance to initialize the association class
-        Class.__init__(self,
-            name=name,
-            model=model,
-            isAbstract=isAbstract,
-            superclasses=superclasses,
-            package=package,
-            lineNo=lineNo,
-            description=description,
-            astNode=astNode)
-        Association.__init__(self,
-            name=name,
-            model=model,
-            kind='associationclass',
-            package=package,
-            lineNo=lineNo,
-            description=description, astNode=astNode)
-        # But register the association class apart and only once, to avoid
-        # confusion and the duplicate in the associations and classes lists
-        del self.model._plainClassNamed[name]
-        del self.model._plainAssociationNamed[name]
-        self.model._associationClassNamed[name] = self
-
-    def isPlainAssociation(self):
-        return False
-
-    def isPlainClass(self):
-        return False
 
 
 METAMODEL = Metamodel(
