@@ -1,14 +1,6 @@
 # coding=utf-8
 import inspect
 from typing import Any, Union
-from modelscripts.metamodels.classes import (
-    ClassModel,
-    Class,
-    Attribute,
-    Operation,
-    Association,
-)
-
 
 class PyMetamodelParser(object):
 
