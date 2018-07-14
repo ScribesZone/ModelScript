@@ -1,30 +1,40 @@
+from typing import List, Callable
 
-
-def isCyclic(g):
-    """Return True if the directed graph g has a cycle.
-    g must be represented as a dictionary mapping vertices to
-    iterables of neighbouring vertices. For example:
-
-    >>> isCyclic({1: (2,), 2: (3,), 3: (1,)})
-    True
-    >>> isCyclic({1: (2,), 2: (3,), 3: (4,)})
-    False
-
-    adapted from https://codereview.stackexchange.com/questions/86021/check-if-a-directed-graph-contains-a-cycle
-
+GraphEdgesFun=Callable[['Node'], List['Node']]
+def genPaths(successors, start, end):
+    #type: (GraphEdgesFun, 'Node', 'Node')->List[List['Node']]
     """
-    path = set()
-    visited = set()
+    Generates all possible paths between a node and another.
+    list(genPaths(g,'a','c')) could be like  [[b],[b,c]].
+    This is a generator, so it does not return directly a list.
+    The graph is represented as a successors function, that is a
+    function that give a list of successors for a given node.
+    The function must be defined for all nodes.
+    This function could serve to identify cycles.
+    Adapted from https://stackoverflow.com/questions/40833612/find-all-cycles-in-a-graph-implementation
+    For the existence of cycle see also
+    https://codereview.stackexchange.com/questions/86021/check-if-a-directed-graph-contains-a-cycle
+    """
+    fringe = [(start, [])]
+    while fringe:
+        # noinspection PyUnresolvedReferences
+        state, path = fringe.pop()
+        if path and state == end:
+            yield [start]+path
+            continue
+        for next_state in successors(state):
+            if next_state in path:
+                continue
+            fringe.append((next_state, path+[next_state]))
 
-    def visit(vertex):
-        if vertex in visited:
-            return False
-        visited.add(vertex)
-        path.add(vertex)
-        for neighbour in g.get(vertex, ()):
-            if neighbour in path or visit(neighbour):
-                return True
-        path.remove(vertex)
-        return False
-
-    return any(visit(v) for v in g)
+def cycles(nodes, successors):
+    #type: (List['Node'], GraphEdgesFun->List[List['Node']]
+    """
+    Return all the cycles that exist in a graph.
+    The edges are given via a sucessors function. This function
+    must be defined for all nodes.
+    """
+    return [
+        path
+        for node in nodes
+            for path in genPaths(successors, node, node)]
