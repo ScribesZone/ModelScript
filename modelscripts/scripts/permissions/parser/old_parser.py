@@ -19,8 +19,8 @@ from modelscripts.metamodels.classes import (
     ClassModel,
     Class,
     Association,
-    AssociationClass,
 )
+from modelscripts.metamodels.classes.assocclasses import AssociationClass
 from modelscripts.metamodels.permissions import (
     UCPermissionModel,
     FactorizedPermissionRule,
@@ -297,8 +297,8 @@ def _resolve_resource(classModel, expr):
     if member_name is None:
         return entity
     if isinstance(entity, Class):
-        if member_name in entity.attributeNamed:
-            return entity.attributeNamed[member_name]
+        if member_name in entity._ownedAttributeNamed:
+            return entity._ownedAttributeNamed[member_name]
         else:
             return None
     elif isinstance(entity, Association):
@@ -307,8 +307,8 @@ def _resolve_resource(classModel, expr):
         else:
             return None
     elif isinstance(entity, AssociationClass):
-        if member_name in entity.attributeNamed:
-            return entity.attributeNamed[member_name]
+        if member_name in entity._ownedAttributeNamed:
+            return entity._ownedAttributeNamed[member_name]
         elif member_name in entity.roleNamed:
             return entity.roleNamed[member_name]
         else:

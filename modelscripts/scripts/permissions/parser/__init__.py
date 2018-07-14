@@ -27,20 +27,15 @@ from modelscripts.metamodels.permissions import (
 )
 
 from modelscripts.metamodels.classes import (
-    Entity,
     ClassModel,
-    Class,
-    Association,
-    AssociationClass,
-    DataValue
 )
+from modelscripts.metamodels.classes.classes import Class
+from modelscripts.metamodels.classes.associations import Association
+from modelscripts.metamodels.classes.assocclasses import AssociationClass
 from modelscripts.metamodels.permissions.sar import (
     Subject,
     Action,
     Resource
-)
-from modelscripts.metamodels.usecases import (
-    UsecaseModel,
 )
 from modelscripts.megamodels.sources import (
     ASTBasedModelSourceFile
@@ -250,8 +245,8 @@ def _find_resource(classModel, expr, astNode):
     #       currently the metamodel of classes is ill defined
     #       when changed update this (care for AssociationClass)
     if isinstance(entity, Class):
-        if member_name in entity.attributeNamed:
-            return entity.attributeNamed[member_name]
+        if member_name in entity._ownedAttributeNamed:
+            return entity._ownedAttributeNamed[member_name]
         else:
             ASTNodeSourceIssue(
                 code=icode('RULE_ATTRIBUTE_NOT_FOUND'),
@@ -272,8 +267,8 @@ def _find_resource(classModel, expr, astNode):
                     '"Role %s.%s" not found.' % (
                         entity_name, member_name)))
     elif isinstance(entity, AssociationClass):
-        if member_name in entity.attributeNamed:
-            return entity.attributeNamed[member_name]
+        if member_name in entity._ownedAttributeNamed:
+            return entity._ownedAttributeNamed[member_name]
         elif member_name in entity.roleNamed:
             return entity.roleNamed[member_name]
         else:
