@@ -66,11 +66,11 @@ class ClassModelPrinter(ModelPrinter):
         for e in model.enumerations:
             self.doEnumeration(e)
 
-        for c in model.classes:
-            self.doClass(c)
+        for c in model.plainClasses:
+            self.doPlainClass(c)
 
-        for a in model.associations:
-            self.doAssociation(a)
+        for a in model.plainAssociations:
+            self.doPlainAssociation(a)
 
         for ac in model.associationClasses:
             self.doAssociationClass(ac)
@@ -120,7 +120,7 @@ class ClassModelPrinter(ModelPrinter):
             enumerationLiteral.description, indent=2)
         return self.output
 
-    def doClass(self, class_):
+    def doPlainClass(self, class_):
         self.doModelTextBlock(class_.description)
         if class_.superclasses:
             sc = (self.kwd('extends ')
@@ -154,7 +154,7 @@ class ClassModelPrinter(ModelPrinter):
 
         return self.output
 
-    def doAssociation(self, association):
+    def doPlainAssociation(self, association):
         self.outLine('%s %s' % (
             self.kwd(association.kind),
             self.qualified(association),
@@ -172,14 +172,13 @@ class ClassModelPrinter(ModelPrinter):
             sc = self.kwd(' < ') + self.kwd(',').join(superclass_names)
         else:
             sc = ''
-        self.out('%s %s%s %s' % (
-            self.kwd('associationclass'),
+        self.outLine('%s %s%s' % (
+            self.kwd('association class'),
             self.qualified(associationClass),
-            sc,
-            self.kwd('between')))
+            sc))
         self.doModelTextBlock(associationClass.description)
 
-
+        self.outLine(self.kwd('roles'), indent=1)
         for role in associationClass.roles:
             self.doRole(role)
 
