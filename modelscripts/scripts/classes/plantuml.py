@@ -10,8 +10,8 @@ This is currently only a preliminary version.
 import os
 import logging
 from modelscripts.metamodels.classes import (
-    Association,
     METAMODEL)
+from modelscripts.metamodels.classes.associations import Association
 from modelscripts.tools.plantuml.engine import PlantUMLEngine
 
 # logging.basicConfig(level=logging.DEBUG)
