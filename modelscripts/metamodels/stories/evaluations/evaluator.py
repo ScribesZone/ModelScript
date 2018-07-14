@@ -25,12 +25,11 @@ from modelscripts.metamodels.stories.operations import (
     ReadStep
 )
 from modelscripts.metamodels.objects import (
-    ObjectModel,
-    PlainObject,
-    Slot,
-    PlainLink,
-    LinkObject
+    ObjectModel
 )
+from modelscripts.metamodels.objects.linkobjects import LinkObject
+from modelscripts.metamodels.objects.links import PlainLink
+from modelscripts.metamodels.objects.objects import PlainObject, Slot
 from modelscripts.metamodels.permissions.accesses import (
     AccessSet,
     Access
