@@ -19,24 +19,16 @@ from modelscripts.base.grammars import (
     ASTNodeSourceIssue
 )
 from modelscripts.base.issues import (
-    Levels,
-)
-from modelscripts.metamodels.classes import (
-    ClassModel,
-    Class,
-    Attribute,
-    Association,
-    Role,
-    RolePosition,
-)
-from modelscripts.metamodels.objects import (
-    ObjectModel,
-    Object,
-    Slot,
-    Link,
-    LinkRole
-)
-
+    Levels)
+from modelscripts.metamodels.classes.classes import (
+    Class)
+from modelscripts.metamodels.classes.associations import (
+    Role)
+from modelscripts.metamodels.objects.objects import (
+    Object)
+from modelscripts.metamodels.objects.links import (
+    LinkRole,
+    Link)
 
 ISSUES={
     'BAD_LINK_TYPE':'ob.ana.Link.WrongType',
@@ -438,10 +430,16 @@ class ObjectModelAnalyzis(object):
 
     def _analyze_link_role_types(self):
         """
-        Check for all links that the type of the origin/target
-        objects are compatible with the type of the corresponding roles.
+        Check, for all links, that the type of the origin/target
+        objects are compatible with the type of the corresponding
+        roles in the schema.
         Fill _link_roles_per_role if everything is ok,
         otherwise create LinkRoleTypeViolation.
+        Note that this method start with the actual links in
+        the object model, so some association may not be covered.
+        The method _add_all_roles_from_schema do the opposite:
+        start from everything from the schema and add an empty
+        list if necessary.
         """
 
         def process(linkRole):
@@ -450,6 +448,7 @@ class ObjectModelAnalyzis(object):
                 # A type violation is created and the
                 # do not register the linkRole to the object
                 # registery.
+                print('UU'*10, 'Link role violation')
                 v = LinkRoleTypeViolation(self, linkRole)
             else:
                 # The linkRole is well typed : store it in the
@@ -461,27 +460,32 @@ class ObjectModelAnalyzis(object):
                 oo._link_roles_per_role[role].append(linkRole)
 
         for link in self.objectModel.links:
+            print('YY'*10, 'processing link', link)
             for position in ['source', 'target']:
                 link_role=link.linkRole(position)
                 process(link_role)
 
     def _add_all_roles_from_schema(self):
         """
-        For all objects, add all the roles (linkRole) that are in
+        For all objects, add all the roles (linkRole indeed) that are
         defined in the schema. If the role has not be defined by
-        _analyze_link_role_types it will be initialized to [] here,
-        otherwise it is left untouched with the existing link roles.
+        _analyze_link_role_types it will be initialized here. It will
+        be initialized to [], at lest if there is not set before..
         """
         for object in self.objectModel.objects:
-            for role in object.class_.ownedRoles:  #TODO: inheritance
+            for role in object.class_.ownedOppositeRoles:  #TODO: inheritance
                 if role not in object._link_roles_per_role:
                     object._link_roles_per_role[role]=[]
 
     def _analyze_cardinalities(self):
         for object in self.objectModel.objects:
+            print('HH'*10, 'check card for %s' % object)
             for role in object._link_roles_per_role.keys():
                 actual=object.cardinality(role)
-                if not role.acceptCardinality(actual):
+                ok=role.acceptCardinality(actual)
+                print('HH'*10, '    %s[%s]=%s -> %s' % (role, role.cardinalityLabel, actual, ok))
+
+                if not ok:
                     CardinalityViolation(
                         omAnalysis=self,
                         object=object,
@@ -518,6 +522,7 @@ class ObjectModelAnalyzis(object):
                                     omAnalysis=self,
                                     duplicatedLinks=\
                                         links_per_object[o])
+
     def XXX(self):
         for object in self.objectModel.objects:
             for role in object._link_roles_per_role.keys():
@@ -552,13 +557,13 @@ class ObjectModelAnalyzis(object):
     def analyze(self):
         self._analyze_object_ids()
         self._analyze_object_slots()
-        self._analyze_link_role_types()
-        self._add_all_roles_from_schema()
+        self._analyze_link_role_types()    # must be here
+        self._add_all_roles_from_schema()  # must be here
         self._analyze_cardinalities()
         self._analyze_unique_links()
         if self.objectModel.checkStepEvaluation is not None:
             self._raise_all_issues_located_at_check_point()
-        # self.XXX()
+        self.XXX()
 
 
 
