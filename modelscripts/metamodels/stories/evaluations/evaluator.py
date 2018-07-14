@@ -21,6 +21,7 @@ from modelscripts.metamodels.stories.operations import (
     LinkCreationStep,
     LinkDeletionStep,
     CheckStep,
+    LinkObjectCreationStep,
     ReadStep
 )
 from modelscripts.metamodels.objects import (
@@ -112,6 +113,8 @@ class StoryEvaluator(object):
         elif isinstance(step, LinkCreationStep)\
                 or isinstance(step, LinkDeletionStep) :
             return self._eval_link_operation(step, parent)
+        elif isinstance(step, LinkObjectCreationStep):
+            return self._eval_link_object_creation(step, parent)
         elif isinstance(step, CheckStep):
             return self._eval_check(step, parent)
         else:
@@ -167,6 +170,61 @@ class StoryEvaluator(object):
                 self.accessSet)]
 
         return step_eval
+
+    def _eval_link_object_creation(self, step, parent):
+        name=step.linkObjectName
+        step_eval=OperationStepEvaluation(
+            parent=parent,
+            step=step)
+        source= self.state.object(step.sourceObjectName)
+        target= self.state.object(step.targetObjectName)
+        if source is None:
+            i = ASTNodeSourceIssue(
+                code=icode('LINK_NO_SOURCE'),
+                astNode=step.astNode,
+                level=Levels.Error,
+                message=(
+                    'Source object "%s" does not exist.'
+                    ' Link object ignored.' % step.sourceObjectName))
+            step_eval.issues.append(i)
+            self.accesses=[]
+            return step_eval
+        if target is None:
+            i = ASTNodeSourceIssue(
+                code=icode('LINK_NO_TARGET'),
+                astNode=step.astNode,
+                level=Levels.Error,
+                message=(
+                    'Target object "%s" does not exist.'
+                    ' Link object ignored.' % step.targetObjectName))
+            step_eval.issues.append(i)
+            self.accesses=[]
+            return step_eval
+
+        existing_object=self.state.object(name)
+        if existing_object is not None:
+            i=ASTNodeSourceIssue(
+                code=icode('OBJECT_TWICE'),
+                astNode=step.astNode,
+                level=Levels.Error,
+                message=(
+                    'Object "%s" already exist.'
+                    ' Previous definition replaced.' % name))
+            step_eval.issues.append(i)
+        LinkObject(
+            model=self.state,
+            name=name,
+            associationClass=step.associationClass,
+            sourceObject=source,
+            targetObject=target,
+            package=None,
+            step=step)
+        step_eval.accesses=[
+            Access(
+                step_eval,
+                CreateAction,
+                step.associationClass,
+                self.accessSet)]
 
     def _eval_object_deletion(self, step, parent):
         step_eval=OperationStepEvaluation(
