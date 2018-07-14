@@ -307,7 +307,7 @@ def extractExpectedMetricsMapFromFile(fileName):
 def checkAllAssertionsForDirectory(
         relTestcaseDir,
         extension,
-        pattern,
+        pattern='',
         expectedIssuesFileMap={},
         expectedMetricsFileMap={}):
     """
