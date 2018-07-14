@@ -19,6 +19,7 @@ from modelscripts.metamodels.stories.operations import (
     SlotStep,
     LinkCreationStep,
     LinkDeletionStep,
+    LinkObjectCreationStep,
     CheckStep,
     ReadStep
 )
@@ -69,8 +70,10 @@ class StoryPrinter(AbstractPrinter):
             return self.doSlotStep(step, indent)
         elif isinstance(step, LinkCreationStep):
             return self.doLinkCreationStep(step, indent)
-        elif isinstance(step, LinkCreationStep):
+        elif isinstance(step, LinkDeletionStep):
             return self.doLinkDeletionStep(step, indent)
+        elif isinstance(step, LinkObjectCreationStep):
+            return self.doLinkObjectCreationStep(step, indent)
         elif isinstance(step, CheckStep):
             return self.doCheck(step, indent)
         else:
@@ -184,6 +187,25 @@ class StoryPrinter(AbstractPrinter):
                 self.kwd(')')),
             indent=indent)
         return self.output
+
+    def doLinkObjectCreationStep(self, step, indent):
+        action='create ' if step.isAction else ''
+        self.outLine(
+            # create x:R(a,b)
+            ''.join([
+                self.kwd(action),
+                step.linkObjectName,
+                self.kwd(':'),
+                step.associationClass.name,
+                self.kwd('('),
+                step.sourceObjectName,
+                self.kwd(','),
+                step.targetObjectName,
+                self.kwd(')')]),
+            indent=indent)
+        return self.output
+
+
 
     def doCheck(self, step, indent):
         _={
