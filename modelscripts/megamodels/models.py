@@ -149,13 +149,13 @@ class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
                 block.resolve()
 
         if DEBUG>=1:
-            _=(' RESOLVE '+self.label+' ').center(70, '.')
+            _=(' RESOLVE MODEL'+self.label+' ').center(70, '.')
             print('MOD: '+_)
         resolveTextBlocks()
 
     def finalize(self):
         if DEBUG>=1:
-            _=(' FINALIZE '+self.label+' ').center(70, '.')
+            _=(' FINALIZE MODEL'+self.label+' ').center(70, '.')
             print('MOD: '+_)
         self.check()
 
