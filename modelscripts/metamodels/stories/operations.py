@@ -23,11 +23,14 @@ from abc import ABCMeta
 from typing import Optional, Text
 
 from modelscripts.metamodels.textblocks import TextBlock
-from modelscripts.metamodels.classes import (
-    Class,
-    Association,
-    SimpleValue
-)
+from modelscripts.metamodels.classes.classes import (
+    PlainClass)
+from modelscripts.metamodels.classes.assocclasses import (
+    AssociationClass)
+from modelscripts.metamodels.classes.associations import (
+    PlainAssociation,
+    Association)
+from modelscripts.metamodels.classes.types import SimpleValue
 from modelscripts.base.grammars import AST
 
 from modelscripts.metamodels.stories import Step
@@ -40,7 +43,8 @@ META_CLASSES=[
     'SlotStep',
     'LinkCreationStep',
     'LinkDeletionStep',
-    # TODO: Link Object
+    'LinkObjectCreationStep',
+    'LinkObjectDeletionStep',
     'ConsultStep',
     'CheckStep',
     'ReadStep',
@@ -115,7 +119,7 @@ class ObjectCreationStep(UpdateOperationStep):
                  parent, isAction,
                  objectName, class_,
                  astNode=None, lineNo=None, description=None):
-        # type: (Step, bool, Text, Class,  Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
+        # type: (Step, bool, Text, PlainClass,  Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
         super(ObjectCreationStep, self).__init__(
             parent=parent,
             isAction=isAction,
@@ -123,11 +127,13 @@ class ObjectCreationStep(UpdateOperationStep):
             lineNo=lineNo,
             description=description)
 
+        assert isinstance(class_, PlainClass)
+
         self.objectName=objectName
         #type: Text
 
         self.class_=class_
-        #type: Class
+        #type: PlainClass
 
 
 class SlotStep(UpdateOperationStep):
@@ -166,8 +172,8 @@ class SlotStep(UpdateOperationStep):
 class ObjectDeletionStep(UpdateOperationStep):
     """
     Deletion of a regular object OR of a link object.
-    Only the name of the object is known. No indication about
-    the class/association class.
+    Only the name of the object is known.
+    No indication about the class/association class.
     """
     def __init__(self,
                  parent,
@@ -187,14 +193,15 @@ class ObjectDeletionStep(UpdateOperationStep):
 
 class LinkCreationStep(UpdateOperationStep):
     """
-    Creation of a link like "o1" R "o2": the name of association
-    is known. Names of objects are known but not the objects.
+    Creation of a link like "(o1, R, o2)" where R is a
+    PlainAssociation. The name of the plain association is known.
+    Names of objects are known but not the objects themselves.
     """
     def __init__(self,
                  parent, isAction,
                  sourceObjectName, targetObjectName, association,
                  astNode=None, lineNo=None, description=None):
-        # type: (Step, bool, Text, Text, Association, Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
+        # type: (Step, bool, Text, Text, PlainAssociation, Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
 
         super(LinkCreationStep, self).__init__(
             parent=parent,
@@ -210,7 +217,7 @@ class LinkCreationStep(UpdateOperationStep):
         #type:Text
 
         self.association=association
-        # type: Association
+        # type: PlainAssociation
 
 
 class LinkDeletionStep(UpdateOperationStep):
@@ -237,28 +244,42 @@ class LinkDeletionStep(UpdateOperationStep):
         #type:Text
 
         self.association=association
-        # type: Association
+        # type: PlainAssociation
 
-# class LinkObjectCreation(UpdateOperation):
-#     def __init__(self, block,
-#                  variableName=None,
-#                  names=(),
-#                  id=None,
-#                  associationClass=None,
-#                  astNode=None, lineNo=None, description=None):
-#         super(LinkObjectCreation, self).__init__(
-#             block=block,
-#             name=variableName,
-#             astNode=astNode,
-#             lineNo=lineNo,
-#             description=description)
-#         # self.name can be None
-#         self.names = names
-#         self.id = id
-#
-#         self.associationClass = associationClass  # this is indeed an association class
-#         # type: AssociationClass
-#
+
+class LinkObjectCreationStep(UpdateOperationStep):
+    """
+    Creation of a link object like "x : AC (o1, o2).
+    The name AC of the association class is known.
+    Names of objects are known but not the objects.
+    """
+    def __init__(self,
+                 parent, isAction,
+                 linkObjectName,
+                 sourceObjectName, targetObjectName, associationClass,
+                 astNode=None, lineNo=None, description=None):
+        # type: (Step, bool, Text, Text, Association, Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
+
+        super(LinkObjectCreationStep, self).__init__(
+            parent=parent,
+            isAction=isAction,
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description)
+
+        assert isinstance(associationClass, AssociationClass)
+        self.linkObjectName=linkObjectName
+        #type:Text
+
+        self.sourceObjectName=sourceObjectName
+        #type:Text
+
+        self.targetObjectName=targetObjectName
+        #type:Text
+
+        self.associationClass=associationClass
+        # type: AssociationClass
+
 
 
 #--------------------------------------------------------------
