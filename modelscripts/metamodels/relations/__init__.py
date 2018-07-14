@@ -29,13 +29,7 @@ from modelscripts.metamodels.glossaries import (
 )
 from modelscripts.metamodels.classes import (
     ClassModel,
-    Class,
-    Attribute,
-    Association,
     METAMODEL as CLASS_METAMODEL
-)
-from modelscripts.metamodels.textblocks import (
-    TextBlock
 )
 
 __all__=(
