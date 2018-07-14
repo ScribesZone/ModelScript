@@ -51,11 +51,12 @@ OperationStep:
 
 UpdateStep:
     // ############# ORDER IS IMPORTANT ######################
-      LinkOperationStep         // create | delete
+      LinkObjectCreationStep    // create
+    | LinkOperationStep         // create | delete
     | SlotStep                  // set | update
-    | ObjectCreationStep
-    | ObjectDeletionStep
-    // TODO: LinkObject
+    | ObjectCreationStep        // create
+    | ObjectDeletionStep        // delete
+
 ;
 
 ConsultStep:
@@ -98,6 +99,11 @@ SlotStep:
 LinkOperationStep:
     (action = CreateOrDeleteVerb)?
     linkDeclaration = LinkDeclaration
+;
+
+LinkObjectCreationStep:
+    (action = CreateVerb)?
+    linkObjectDeclaration = LinkObjectDeclaration
 ;
 
 CheckVerb:
@@ -152,7 +158,7 @@ ObjectDeclaration:
 SpeechObjectDeclaration:
     name = ID
     ('est'|'is')
-    ('une'|'un'|'an'|'a')  // order is important
+    ('une'|'un'|'an'|'a')  // ##### order is important #####
     type = ID
     '.'
     (o_
@@ -309,8 +315,41 @@ SymbolicLinkDeclaration:
 //................... Link object declaration .....................
 
 
+LinkObjectDeclaration:
+      SpeechLinkObjectDeclaration
+    | SymbolicLinkObjectDeclaration
+;
 
-    // TODO: LinkObjectDeclaration
+SpeechLinkObjectDeclaration:
+    name = ID
+    ('est'|'is')
+    ('le'|'la'|'l\''|'the')  // ##### order is important #####
+    associationClass = ID
+    ('entre'|'between')
+    source = ID
+    ('et'|'and')
+    target = ID
+    '.'
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
+    X
+;
+
+SymbolicLinkObjectDeclaration:
+    name = ID
+    ':'
+    associationClass = ID
+    '('
+    source = ID
+    ','
+    target = ID
+    ')'
+    (o_
+        (textBlock = TextBlock)
+    _o) ?
+    X
+;
 
 
 
