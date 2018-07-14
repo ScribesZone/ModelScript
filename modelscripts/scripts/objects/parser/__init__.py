@@ -15,12 +15,11 @@ from modelscripts.base.issues import (
 )
 from modelscripts.metamodels.objects import (
     ObjectModel,
-    PlainObject,
-    Slot,
-    PlainLink,
-    LinkObject,
     METAMODEL
 )
+from modelscripts.metamodels.objects.linkobjects import LinkObject
+from modelscripts.metamodels.objects.links import PlainLink
+from modelscripts.metamodels.objects.objects import PlainObject, Slot
 from modelscripts.megamodels.sources import (
     ASTBasedModelSourceFile
 )
