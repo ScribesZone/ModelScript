@@ -70,20 +70,20 @@ class TestClassModel(object):
 
     def testClassRoles(self):
         c = self.model.class_('Employee')
-        # ownedRoles
+        # ownedOppositeRoles
         ro={'departments', 'projects', 'supervisor', 'subordinates'}
-        assert {r.name for r in c.ownedRoles}==ro
-        # playedRoles
+        assert {r.name for r in c.ownedOppositeRoles} == ro
+        # ownedPlayedRoles
         rp={'employees','employees','supervisor', 'subordinates'}
-        assert {r.name for r in c.playedRoles}==rp
+        assert {r.name for r in c.ownedPlayedRoles} == rp
 
         c = self.model.class_('Department')
-        # ownedRoles
+        # ownedOppositeRoles
         ro={'employees', 'projects'}
-        assert {r.name for r in c.ownedRoles}==ro
-        # playedRoles
+        assert {r.name for r in c.ownedOppositeRoles} == ro
+        # ownedPlayedRoles
         rp={'departments','department'}
-        assert {r.name for r in c.playedRoles}==rp
+        assert {r.name for r in c.ownedPlayedRoles} == rp
 
     def testEnumeration(self):
         assert len(self.model.enumerations)==0
