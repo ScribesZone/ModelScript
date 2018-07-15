@@ -1,10 +1,16 @@
+from __future__ import print_function
+from typing import List, Optional, Dict, Text
 import abc
 import collections
 
 from modelscripts.megamodels.elements import SourceModelElement
 from modelscripts.megamodels.py import MAttribute, MComposition
-from modelscripts.metamodels.classes import PackagableElement, Entity, \
-    Member
+from modelscripts.metamodels.classes import (
+    PackagableElement,
+    Entity,
+    Member)
+from modelscripts.metamodels.classes.associations import (
+    Role)
 
 
 class Class(PackagableElement, Entity):
@@ -41,11 +47,6 @@ class Class(PackagableElement, Entity):
         # No inherited attributes.
         # Will be filled by the parser fillModel
 
-        self._inheritedAttributeNamed = None
-        #type: Optional[List[Attribute]]
-        # List of inherited attributes from all super class.
-        # Computed by finalize.add_inherited_attributes
-        # Before it is set to None
 
         # TODO: deal with operation and operation names
         # Signature looks like op(p1:X):Z
@@ -56,18 +57,59 @@ class Class(PackagableElement, Entity):
         # This id is just used internaly
         self.invariantNamed = collections.OrderedDict()   # after resolution
 
-        self._ownedOppositeRoles = []
-        #type: List[Role]
+        self._ownedOppositeRoleNamed = collections.OrderedDict()
+        #type: Dict[Text, Role]
         # defined by finalize.add_attached_roles_to_classes
+        # The opposite role a index by their name.
+        # This is possible because all opposite roles
+        # have a different name, which is not the case for
+        # played roles.
 
         self._ownedPlayedRoles = []
         #type: List[Role]
-        # defined by finalize.add_attached_roles_to_classes
+        # Defined by finalize.add_attached_roles_to_classes.
+        # A list because various played role can have the same name.
+
+        #-------- inherited part ----------------------------------
 
         self.inheritanceCycles=None
         #type Optional[List[Class]]
-        # The list of cycle starting and going to the current class.
+        # The list of cycles starting and going to the current class.
         # This attribute is set during finalize
+
+        self._inheritedAttributeNamed = None
+        #type: Optional[Dict[Text, Attribute]]
+        # Dict of inherited attributes from all super classes.
+        # Inherited attributes are stored by names.
+        # Computed by finalize.add_inherited_attributes
+        # Before this it is set to None. This serves as
+        # a marker to indicates whether add_inherited_attributes
+        # has been run or not on this class.
+
+        self._inheritedOppositeRoleNamed = None
+        #type: Optional[Dict[Text, Role]]
+        # Dict of inherited opposite roles from all super classes.
+        # Inherited attributes are stored by names.
+        # This is ok since all opposite roles must have a
+        # different name. This contrasts with played role
+        # that can have arbitrary (duplicated) names.
+        # This attribute is Computed by finalize.add_inherited_roles
+        # Before this it is set to None. This serves as
+        # a marker to indicates whether add_inherited_roles
+        # has been run or not on this class.
+
+        self._inheritedPlayedRoles = None
+        #type: Optional[List[Role]]
+        # List of inherited played roles from all super classes.
+        # This is a list rather that a dict since various
+        # played role can have the same name.
+        # Computed by finalize.add_inherited_roles
+        # Before this it is set to None. This serves as
+        # a marker to indicates whether add_inherited_roles
+        # has been run or not on this class.
+
+
+    #----- attributes -----------------------------------------------
 
     @property
     def ownedAttributes(self):
@@ -86,13 +128,17 @@ class Class(PackagableElement, Entity):
     @property
     def inheritedAttributes(self):
         if self._inheritedAttributeNamed is None:
-            # This should happend just when there is a cycle
-            # The [] value is to ensure that the model is still
-            # usable. Instead of raising an exception it is best
-            # to ignore attribute. This prevent exception when
-            # using the model. Just like the printer. It is not
+            # This should happend just when a cycle has been detected.
+            # In this case a fatal issue has been raised, which is ok,
+            # but the rest of finalize code didn't execute properly.
+            # The [] value here is to ensure that the model is still
+            # usable and that the cycle detection fail gacefully.
+            # Instead of raising an exception in this method it is best
+            # to ignore inherited attributes. This prevent a new
+            # exception when using the model.
+            # Just like the printer. It is not
             # nice to require client to check which attributes
-            # are defined or note.
+            # are defined or not.
             return []
         return self._inheritedAttributeNamed.values()
 
@@ -127,6 +173,8 @@ class Class(PackagableElement, Entity):
     def attributeNames(self):
         return self.ownedAttributeNames+self.inheritedAttributeNames
 
+    #----- operations -----------------------------------------------
+
     @property
     def operations(self):
         return self.operationNamed.values()
@@ -134,6 +182,8 @@ class Class(PackagableElement, Entity):
     @property
     def operationNames(self):
         return self.invariantNamed.keys()
+
+    #----- invariants ------------------------------------------------
 
     @property
     def invariants(self):
@@ -143,13 +193,121 @@ class Class(PackagableElement, Entity):
     def invariantNames(self):
         return self.invariantNamed.keys()
 
+    #----- opposite roles ---------------------------------------------
+
     @property
     def ownedOppositeRoles(self):
-        return self._ownedOppositeRoles
+        return self._ownedOppositeRoleNamed.values()
+
+    def ownedOppositeRole(self, name):
+        if name in self._ownedOppositeRoleNamed:
+            return self._ownedOppositeRoleNamed[name]
+        else:
+            return None
+
+    @property
+    def ownedOppositeRoleNames(self):
+        return self._ownedOppositeRoleNamed.keys()
+
+    @property
+    def inheritedOppositeRoles(self):
+        if self._inheritedOppositeRoleNamed is None:
+            # When there is no cycle, the content of the attribute
+            # is a dict. Otherwise it will remain to None.
+            # If a cycle is detected a fatal issue is raised, which is ok,
+            # but the rest of finalize code didn't execute properly.
+            # The [] value here is to ensure that the model is still
+            # usable and that the cycle detection fail gacefully.
+            # Instead of raising an exception in this method it is best
+            # to ignore inherited attributes. This prevent a new
+            # exception when using the model.
+            # Just like the printer. It is not
+            # nice to require client to check which attributes
+            # are defined or not.
+            return []
+        return self._inheritedAttributeNamed.values()
+
+    def inheritedOppositeRole(self, name):
+        if self._inheritedOppositeRoleNamed is None:
+            # see inheritedOppositeRoles
+            return []
+        if name in self._inheritedOppositeRoleNamed:
+            return self._inheritedOppositeRoleNamed[name]
+        else:
+            return None
+
+    @property
+    def inheritedOppositeRoleNames(self):
+        if self._inheritedOppositeRoleNamed is None:
+            # see inheritedAttributes
+            return []
+        return self._inheritedOppositeRoleNamed.keys()
+
+    @property
+    def oppositeRoles(self):
+        return self.ownedOppositeRoles+self.inheritedOppositeRoles
+
+    def oppositeRole(self, name):
+        oor=self.ownedOppositeRole(name)
+        if oor is not None:
+            return oor
+        else:
+            return self.inheritedOppositeRole(name)
+
+    @property
+    def oppositeRoleNames(self):
+        return self.ownedOppositeRoleNames\
+               +self.inheritedOppositeRoleNames
+
+
+    #----- played roles ---------------------------------------------
 
     @property
     def ownedPlayedRoles(self):
-        return self._ownedPlayedRoles
+        return list(self._ownedPlayedRoles)
+
+    @property
+    def ownedPlayedRoleNames(self):
+        return [
+            r.name for r in self._ownedPlayedRoles]
+
+
+
+    @property
+    def inheritedPlayedRoles(self):
+        if self._inheritedOppositeRoleNamed is None:
+            # When there is no cycle, the content of the attribute
+            # is a dict. Otherwise it will remain to None.
+            # If a cycle is detected a fatal issue is raised, which is ok,
+            # but the rest of finalize code didn't execute properly.
+            # The [] value here is to ensure that the model is still
+            # usable and that the cycle detection fail gacefully.
+            # Instead of raising an exception in this method it is best
+            # to ignore inherited attributes. This prevent a new
+            # exception when using the model.
+            # Just like the printer. It is not
+            # nice to require client to check which attributes
+            # are defined or not.
+            return []
+        return list(self._inheritedPlayedRoles)
+
+    @property
+    def inheritedPlayedRoleNames(self):
+        if self._inheritedOppositeRoleNamed is None:
+            # see inheritedAttributes
+            return []
+        return list(self._inheritedPlayedRoles)
+
+    @property
+    def playedRoles(self):
+        return self.ownedPlayedRoles+self.inheritedPlayedRoles
+
+    @property
+    def playedRoleNames(self):
+        return self.ownedPlayedRoleNames\
+               +self.inheritedPlayedRoles
+
+    #------- misc ------------------------------------------------------
 
     @property
     def names(self):
@@ -161,6 +319,9 @@ class Class(PackagableElement, Entity):
     @property
     def idPrint(self):
         #type: () -> List[Attribute]
+        """
+        List of all {id} attributes.
+        """
         return [
             a for a in self.attributes
                 if a.isId ]
