@@ -19,4 +19,4 @@ class Elephant < Animal, BigThing
 
 class SmallElephant < Elephant
     attributes
-        age : Integer
+        weight : Integer
