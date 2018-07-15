@@ -70,6 +70,9 @@ from modelscripts.megamodels.dependencies.metamodels import (
 from modelscripts.megamodels.models import Model
 # from modelscripts.metamodels.classes.associations import Association
 # from modelscripts.metamodels.classes.classes import Class
+# from modelscripts.metamodels.classes.types import (
+#     Enumeration )
+
 from modelscripts.metamodels.permissions.sar import Resource
 
 META_CLASSES=( # could be in __all__ (not used by PyParse)
@@ -97,6 +100,8 @@ __all__= META_CLASSES
 ISSUES={
     'SUPER_CYCLES_MSG': 'cl.fin.Cycle.One',
     'SUPER_CYCLES_STOP': 'cl.fin.Cycle.Final',
+    'SUPER_INH_HORIZ': 'cl.fin.Inheritance.Horizontal',
+    'SUPER_INH_VERT': 'cl.fin.Inheritance.Vertical',
 }
 
 def icode(ilabel):
@@ -115,6 +120,7 @@ def icode(ilabel):
 
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
+
 
 class ClassModel(Model):
     """
@@ -146,30 +152,30 @@ class ClassModel(Model):
         self._isClassModelFinalized=False
 
         self._enumerationNamed=collections.OrderedDict()
-        #type: Dict[Text, Enumeration]
+        #type: Dict[Text, 'Enumeration']
         #: Map of enumerations, indexed by name.
 
         #: Map of data types. Indexed by type names/
         #: populated during the resolution phase
         self._dataTypeNamed=collections.OrderedDict()
-        #type: Dict[Text, DataType]
+        #type: Dict[Text, 'DataType']
 
         self._plainClassNamed = collections.OrderedDict()
-        #type: Dict[Text, PlainClass]
+        #type: Dict[Text, 'PlainClass']
         #: Only plain classes. Use method classes to get
         #: all the class (plain class + association class)
 
         self._plainAssociationNamed = collections.OrderedDict()
-        #type: Dict[Text, PlainAssociation]
+        #type: Dict[Text, 'PlainAssociation']
         #: Only plain associations. Use method associations to get
         #: all associations (association class + plain associations)
 
         self._associationClassNamed = collections.OrderedDict()
-        #type: Dict[Text, AssociationClass]
+        #type: Dict[Text, 'AssociationClass']
         #: Map of association classes, indexed by name.
 
         self.operationWithFullSignature = collections.OrderedDict()
-        #type: Dict[Text, Operation]
+        #type: Dict[Text, 'Operation']
         #: Map of operations, indexed by operation full signatures.
         #: e.g. 'Person::raiseSalary(rate : Real) : Real
 
@@ -410,13 +416,17 @@ class ClassModel(Model):
     def finalize(self):
         super(ClassModel, self).finalize()
 
-        def add_attached_roles_to_classes():
+        def add_owned_attached_roles():
             for a in self.associations:
                 source_class=a.sourceRole.type
                 target_class=a.targetRole.type
-                source_class._ownedOppositeRoles.append(a.targetRole)
+
+                source_class._ownedOppositeRoleNamed \
+                    [a.targetRole.name]=a.targetRole
                 source_class._ownedPlayedRoles.append(a.sourceRole)
-                target_class._ownedOppositeRoles.append(a.sourceRole)
+
+                target_class._ownedOppositeRoleNamed \
+                    [a.sourceRole.name]=a.sourceRole
                 target_class._ownedPlayedRoles.append(a.targetRole)
 
         def check_inheritance_cycles():
@@ -452,18 +462,36 @@ class ClassModel(Model):
         def add_inherited_attributes():
 
             def _ensure_inherited_attribute(class_):
+                # fill the attribute class._inheritedAttributeNamed
+                # This implement the inheritance algorithm with
+                # multiple inheriance.
+                # The "horizontal' name confilcts are reported. That is
+                # the situation where an attribute let's say "x" is
+                # inherited from one side, and another attribute with
+                # the same name is inherited from the another side.
                 if class_._inheritedAttributeNamed is not None:
                     return
                 inh_att_named = collections.OrderedDict()
                 for sc in class_.superclasses:
                     _ensure_inherited_attribute(sc)
+                    # for all inherited attributes
                     for sc_att in sc.attributes:
+                        # if the attribute was already inherited
+                        # do not care.
+                        # Otherwise prepare to add it
                         if sc_att not in inh_att_named.values():
                             name=sc_att.name
                             if name in inh_att_named.keys():
-                                print('WW'*20, 'name conflict: %s'
-                                    % name)
-                                print('WW'*20, 'ignored !')
+                                # two inherited attribute have the same
+                                # name.
+                                ASTNodeSourceIssue(
+                                    code=icode('SUPER_INH_HORIZ'),
+                                    astNode=class_.astNode,
+                                    level=Levels.Error,
+                                    message=(
+                                        'Two inherited attributes are'
+                                        ' named "%s"'
+                                        ' Attribute ignored.' % name))
                             else:
                                 inh_att_named[name]=sc_att
                 class_._inheritedAttributeNamed=inh_att_named
@@ -471,13 +499,40 @@ class ClassModel(Model):
                 for a in inh_att_named:
                     print('WW' * 10, '    %s' % a)
 
+            def _check_no_vertical_conflicts(class_):
+                for name in class_._inheritedAttributeNamed.keys():
+                    if name in class_.ownedAttributeNames:
+                        ASTNodeSourceIssue(
+                            code=icode('SUPER_INH_VERT'),
+                            astNode=class_.astNode,
+                            level=Levels.Error,
+                            message=(
+                                    'Inherited attribute "%s" conflicts'
+                                    ' with "%s.%s".'
+                                    ' Inherited attribute ignored.'
+                                    % (name, class_.name, name)))
+                        del class_._inheritedAttributeNamed[name]
+
             for class_ in self.classes:
                 _ensure_inherited_attribute(class_)
+                _check_no_vertical_conflicts(class_)
 
+        def add_inherited_attached_roles():
 
-        add_attached_roles_to_classes()
-        check_inheritance_cycles()
-        add_inherited_attributes()
+            def _ensure_inherited_roles(class_):
+                pass
+
+            def _check_no_vertical_conflicts(class_):
+                pass
+
+            for class_ in self.classes:
+                _ensure_inherited_roles(class_)
+                _check_no_vertical_conflicts(class_)
+
+        add_owned_attached_roles()
+        check_inheritance_cycles()  # #### ORDER IS IMPORTANT ####
+        add_inherited_attributes()  # After check
+        add_inherited_attached_roles() # After check
 
         self._isClassModelFinalized=True
 
