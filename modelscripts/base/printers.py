@@ -161,10 +161,17 @@ class AbstractPrinter(object):
                 if increaseLineNo:
                     current_line_no += lineNo+index
             self.out(self.lineNoString(lineNo=current_line_no))
-            self.out('%s%s%s' % (
-                self._indentPrefix(indent),
-                prefix,
-                style.do(line)) )
+            if self.config.styled:
+                self.out('%s%s%s' % (
+                    self._indentPrefix(indent),
+                    prefix,
+                    style.do(line)) )
+            else:
+                self.out('%s%s%s' % (
+                    self._indentPrefix(indent),
+                    prefix,
+                    line) )
+
             if suffix is not None:
                 self.out(suffix)
 
