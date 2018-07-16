@@ -51,10 +51,10 @@ class ClassModelPrinter(ModelPrinter):
 
     def doModelContent(self):
         super(ClassModelPrinter, self).doModelContent()
-        self.doUseModel(self.theModel)
+        self.doClassModel(self.theModel)
         return self.output
 
-    def doUseModel(self, model):
+    def doClassModel(self, model):
         self.doModelTextBlock(model.description)
 
         for p in model.packages:
