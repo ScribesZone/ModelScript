@@ -1,0 +1,38 @@
+model Cl_main_CyberCompany_a
+
+class Employee
+    attributes
+        name : String
+        salary : Integer
+end
+class Department
+    attributes
+        name : String
+        location : String
+        budget : Integer
+end
+class Project
+    attributes
+        name : String
+        budget : Integer
+end
+association WorksIn
+    between
+        Employee[*] role employees
+        Department[1..*] departments
+end
+association Controls
+    between
+        Department[1] role department
+        Project[*] role projects
+end
+association WorksOn
+    between
+        Employee[*] role employees
+        Project[*] role projects
+end
+association Supervise
+    between
+        Employee[1] role supervisor
+        Employee[*] role subordinates
+end

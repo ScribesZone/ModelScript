@@ -1,6 +1,6 @@
     # vertical name conflict
 
-    #@Issue cl.fin.Inheritance.Vertical 1
+    #@Issue cl.fin.Attribute.InhVertical 1
     #@Issue else *
 
 

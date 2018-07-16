@@ -1,6 +1,6 @@
 
-    #@Issue cl.fin.Inheritance.Vertical 4
-    #@Issue cl.fin.Inheritance.Horizontal 2
+    #@Issue cl.fin.Attribute.InhVertical 4
+    #@Issue cl.fin.Attribute.InhHorizontal 2
     #@Issue else *
 
 class model Cl_inhatt
