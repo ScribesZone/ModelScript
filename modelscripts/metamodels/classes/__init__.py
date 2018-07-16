@@ -100,8 +100,10 @@ __all__= META_CLASSES
 ISSUES={
     'SUPER_CYCLES_MSG': 'cl.fin.Cycle.One',
     'SUPER_CYCLES_STOP': 'cl.fin.Cycle.Final',
-    'SUPER_INH_HORIZ': 'cl.fin.Inheritance.Horizontal',
-    'SUPER_INH_VERT': 'cl.fin.Inheritance.Vertical',
+    'SUPER_ATT_INH_HORIZ': 'cl.fin.Attribute.InhHorizontal',
+    'SUPER_ATT_INH_VERT': 'cl.fin.Attribute.InhVertical',
+    'SUPER_OROLE_INH_VERT': 'cl.fin.Attribute.InhVertical',
+    'SUPER_OROLE_INH_HORIZ': 'cl.fin.Attribute.InhHorizontal',
 }
 
 def icode(ilabel):
@@ -460,11 +462,12 @@ class ClassModel(Model):
                         'The inheritance graphs is cyclic.'))
 
         def add_inherited_attributes():
+            # Dill the attribute class._inheritedAttributeNamed
+            # Implement the inheritance algorithm with
+            # multiple inheritance.
 
             def _ensure_inherited_attribute(class_):
-                # fill the attribute class._inheritedAttributeNamed
-                # This implement the inheritance algorithm with
-                # multiple inheriance.
+                # Fill the attribute inheritedAttributeNamed
                 # The "horizontal' name confilcts are reported. That is
                 # the situation where an attribute let's say "x" is
                 # inherited from one side, and another attribute with
@@ -485,7 +488,7 @@ class ClassModel(Model):
                                 # two inherited attribute have the same
                                 # name.
                                 ASTNodeSourceIssue(
-                                    code=icode('SUPER_INH_HORIZ'),
+                                    code=icode('SUPER_ATT_INH_HORIZ'),
                                     astNode=class_.astNode,
                                     level=Levels.Error,
                                     message=(
@@ -503,7 +506,7 @@ class ClassModel(Model):
                 for name in class_._inheritedAttributeNamed.keys():
                     if name in class_.ownedAttributeNames:
                         ASTNodeSourceIssue(
-                            code=icode('SUPER_INH_VERT'),
+                            code=icode('SUPER_ATT_INH_VERT'),
                             astNode=class_.astNode,
                             level=Levels.Error,
                             message=(
@@ -518,15 +521,80 @@ class ClassModel(Model):
                 _check_no_vertical_conflicts(class_)
 
         def add_inherited_attached_roles():
+            # Fill two attributes for class_:
+            #       _inheritedOppositeRoleNamed
+            #       _inheritedRoleNamed
+            # Implement the inheritance algorithm with
+            # multiple inheritance.
 
-            def _ensure_inherited_roles(class_):
+            def _ensure_inherited_opposite_roles(class_):
                 pass
+
+                # Implement the inheritance of opposite roles.
+                # Fill the following attribute for class_:
+                #       _inheritedOppositeRoleNamed
+                # Another function is used for played roles.
+                #
+                # The "horizontal' name conflicts are reported for
+                # opposite roles (there is no need to check this
+                # for played role since played roles can have the
+                # same name). Horizontal conflicts reflect
+                # the situation where an opposite role let's say "x" is
+                # inherited from one side of the inheritance graph,
+                # and another opposite role with the same name is
+                # inherited from the another side.
+
+                # The function is recursive. It walk among all class_,
+                # following inheritance relationships.
+                # The attribute to fill serve as a "visited" marker.
+                #
+                #####################################################
+                #####################################################
+                #####################################################
+                #           TO BE CONTINUED
+                #####################################################
+                #####################################################
+                #####################################################
+                # if class_._inheritedOppositeRoleNamed is not None:
+                #     return
+                # inh_opp_role_named = collections.OrderedDict()
+                # for sc in class_.superclasses:
+                #     _ensure_inherited_opposite_roles(sc)
+                #     # for all inherited opposite roles
+                #     for sc_opp_role in sc.oppositeRoles:
+                #         # if the opposite roles was already inherited
+                #         # do not care.
+                #         # Otherwise prepare to add it
+                #         if sc_opp_role not in inh_opp_role_named.values():
+                #             name=sc_opp_role.name
+                #             if name in inh_opp_role_named.keys():
+                #                 # two inherited opposite role have
+                #                 # the same name.
+                #                 ASTNodeSourceIssue(
+                #                     code=icode('SUPER_OROLE_INH_VERT'),
+                #                     astNode=class_.astNode,
+                #                     level=Levels.Fatal, XXXXXXXX
+                #                     message=(
+                #                         'Name conflict between two'
+                #                         ' inherited roles: "%s".'
+                #                          % name))
+                #             else:
+                #                 WWW
+                #                 inh_att_named[name]=sc_att
+                # class_._inheritedAttributeNamed=inh_att_named
+                # print('WW'*10, 'class %s inherits' % class_.name)
+                # for a in inh_att_named:
+                #     print('WW' * 10, '    %s' % a)
+
+            def _ensure_inherited_played_roles(class_):
+                pass #TODO: XXX
 
             def _check_no_vertical_conflicts(class_):
-                pass
+                pass #TODO: XXX
 
             for class_ in self.classes:
-                _ensure_inherited_roles(class_)
+                _ensure_inherited_opposite_roles(class_)
+                _ensure_inherited_played_roles(class_)
                 _check_no_vertical_conflicts(class_)
 
         add_owned_attached_roles()
