@@ -2,7 +2,8 @@
 // ================== TextBlock grammar ===========================
 
 TextBlock:
-     /[\n ]*/ (textLines *= TextLine* [';_'])
+//   /[\n ]*/ (textLines *= TextLine* [';_'])
+     /[\n ]*/ (textLines *= TextLine* [/\000;/])
 ;
 
 TextLine[noskipws]:
@@ -19,7 +20,8 @@ TextReference:
 ;
 
 PlainText:
-    text=/[^`\|]*/
+//    text=/[^`\|]*/
+    text=/[^`\000]*/
 ;
 
 Comment:
@@ -27,19 +29,21 @@ Comment:
 ;
 
 o_:
-    '{_'
+    /\000\{/
 ;
 
 _o:
-    '}_'
+    /\000\}/
 ;
 
 X:
-    ';_'
+    /\000;/
 ;
 
 EndOfTextLine:
-    /\|_/  //   [\{;]_/
+    /\000\|/
+    // /\|_/
+    //   [\{;]_/
 ;
 
 
