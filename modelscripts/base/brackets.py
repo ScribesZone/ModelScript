@@ -22,13 +22,18 @@ from modelscripts.interfaces.environment import Environment
 class BracketedScript(object):
 
     SPACE_INDENT=4
-    OPENING_BRACKET='{_'
-    CLOSING_BRACKET='}_'
-    EOL=';_'
+    # OPENING_BRACKET='{_'
+    OPENING_BRACKET='\000{'
+    # CLOSING_BRACKET='}_'
+    CLOSING_BRACKET='\000}'
+    #EOL=';_'
+    EOL='\000;'
     IS_BLANK_LINE='^ *(#.*)?$'
     IS_DOC_LINE_REGEX='^ *\|'
-    CLOSING_DOC_LINE='|_'
-    DOC_LINE_CONTENT=' *\| ?(?P<content>.*)\|_;_(}_;_)*$'
+    # CLOSING_DOC_LINE='|_'
+    CLOSING_DOC_LINE='\000|'
+    # DOC_LINE_CONTENT=' *\| ?(?P<content>.*)\|_;_(}_;_)*$'
+    DOC_LINE_CONTENT=' *\| ?(?P<content>.*)\000\|\000;(\000}\000;)*$'
 
 
     def __init__(self, file):
