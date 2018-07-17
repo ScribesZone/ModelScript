@@ -238,13 +238,28 @@ Invariant:
     'invariant' name=ID
     (o_
         (textBlock=TextBlock) ?
+        (scope = Scope) ?
         oclInvariant = OCLInvariant ?
     _o) ?
     X
 ;
 
+Scope:
+    'scope' (':' ID*)?
+    (o_
+        ScopeLine *
+    _o)
+    X
+;
+
+ScopeLine:
+    ID
+    X
+
+;
+
 OCLInvariant:
-    'ocl' 'context' 'self' ':' class=ID
+    'ocl' //'context' 'self' ':' class=ID
     (o_
         OCLLine*
     _o)*
@@ -252,8 +267,13 @@ OCLInvariant:
 ;
 
 OCLLine:
-    'test' /[^;]*/ X
+    /[^\000]*/
+    (o_
+        OCLLine*
+    _o)*
+    X
 ;
+
 /*
 OCLLine[noskipws]:
     line=/(.*)/ X
