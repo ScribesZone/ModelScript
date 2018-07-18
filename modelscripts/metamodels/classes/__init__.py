@@ -144,6 +144,7 @@ class ClassModel(Model):
         'plainAssociations',
         'associationClasses',
         'dataTypes',
+        'invariants',
         'packages',
     ]
     def __init__(self):
@@ -185,11 +186,9 @@ class ClassModel(Model):
         #type: Dict[Text, Package]
         # ALL packages, not only the top level ones
 
-        self._conditions = [] #type: List['Condition']
-        #: List of all conditions (inv/pre/post).
-        #  Both those that are declared within a class
-        #  or those declared with a context at top level.
-        #  Used for resolution.
+        self._invariantNamed = collections.OrderedDict()
+        #type: Dict[Text, 'Invariant']
+
 
         from modelscripts.metamodels.classes.core import \
             registerDataTypes
@@ -199,6 +198,10 @@ class ClassModel(Model):
     @property
     def metamodel(self):
         return METAMODEL
+
+    #--------------------------------------------------------------
+    #   packages
+    #--------------------------------------------------------------
 
     @property
     def packages(self):
@@ -213,6 +216,10 @@ class ClassModel(Model):
             return self._packageNamed[name]
         else:
             return None
+
+    # --------------------------------------------------------------
+    #   simple types
+    # --------------------------------------------------------------
 
     @property
     def simpleTypeNamed(self):
@@ -256,6 +263,10 @@ class ClassModel(Model):
         else:
             return None
 
+    # --------------------------------------------------------------
+    #   classes
+    # --------------------------------------------------------------
+
     @property
     def plainClasses(self):
         return self._plainClassNamed.values()
@@ -267,34 +278,6 @@ class ClassModel(Model):
     def plainClass(self, name):
         if name in self._plainClassNamed:
             return self._plainClassNamed[name]
-        else:
-            return None
-
-    @property
-    def plainAssociations(self):
-        return self._plainAssociationNamed.values()
-
-    @property
-    def plainAssociationNames(self):
-        return self._plainAssociationNamed.keys()
-
-    def plainAssociation(self, name):
-        if name in self._plainAssociationNamed:
-            return self._plainAssociationNamed[name]
-        else:
-            return None
-
-    @property
-    def associationClasses(self):
-        return self._associationClassNamed.values()
-
-    @property
-    def associationClassNames(self):
-        return self._associationClassNamed.keys()
-
-    def associationClass(self, name):
-        if name in self._associationClassNamed:
-            return self._associationClassNamed[name]
         else:
             return None
 
@@ -316,6 +299,24 @@ class ClassModel(Model):
         else:
             return self.associationClass(name)
 
+    # --------------------------------------------------------------
+    #   associations
+    # --------------------------------------------------------------
+
+    @property
+    def plainAssociations(self):
+        return self._plainAssociationNamed.values()
+
+    @property
+    def plainAssociationNames(self):
+        return self._plainAssociationNamed.keys()
+
+    def plainAssociation(self, name):
+        if name in self._plainAssociationNamed:
+            return self._plainAssociationNamed[name]
+        else:
+            return None
+
     @property
     def associations(self):
         """
@@ -333,6 +334,43 @@ class ClassModel(Model):
             return a
         else:
             return self.associationClass(name)
+
+    # --------------------------------------------------------------
+    #   association classes
+    # --------------------------------------------------------------
+
+    @property
+    def associationClasses(self):
+        return self._associationClassNamed.values()
+
+    @property
+    def associationClassNames(self):
+        return self._associationClassNamed.keys()
+
+    def associationClass(self, name):
+        if name in self._associationClassNamed:
+            return self._associationClassNamed[name]
+        else:
+            return None
+
+    # --------------------------------------------------------------
+    #   invariants
+    # --------------------------------------------------------------
+
+    @property
+    def invariants(self):
+        return self._invariantNamed.values()
+
+    @property
+    def invariantNames(self):
+        return self._invariantNamed.keys()
+
+    def invariant(self, name):
+        if name in self._invariantNamed:
+            return self._invariantNamed[name]
+        else:
+            return None
+
 
     def entity(self, name):
         e=self.class_(name)
@@ -375,7 +413,7 @@ class ClassModel(Model):
                 [r
                     for a in self.associations
                         for r in a.roles])),
-            ))
+            ('invariant', len(self.invariants))))
         return ms
 
     def globalNames(self):
