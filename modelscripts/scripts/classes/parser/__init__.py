@@ -33,6 +33,7 @@ from modelscripts.metamodels.classes.types import (
 from modelscripts.metamodels.classes.invariants import (
     Invariant,
     OCLInvariant,
+    OCLContext,
     OCLLine)
 from modelscripts.megamodels.metamodels import Metamodel
 
@@ -497,9 +498,12 @@ class ClassModelSource(ASTBasedModelSourceFile):
             for ast_ocl_inv in ast_invariant.oclInvariants:
                 ocl_inv=OCLInvariant(
                     invariant=inv,
-                    contextClass=ast_ocl_inv.class_, # TODO: pas str
                     astNode=ast_ocl_inv
                 )
+                OCLContext(
+                    invariant=ocl_inv,
+                    class_=ast_ocl_inv.oclContext.class_,
+                    astNode=ast_ocl_inv.oclContext)
                 for ast_ocl_line in ast_ocl_inv.oclLines:
                     recursive_add_ocl_lines(ocl_inv, ast_ocl_line)
 
