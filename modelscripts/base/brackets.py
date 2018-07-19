@@ -109,8 +109,10 @@ class BracketedScript(object):
                     )
                 if delta>1:
                     # this will never happened for the last line
-                    raise SyntaxError('Wrong indentation: "%s"'
-                                      % line)
+                    raise SyntaxError(   #TODO: catch this exception
+                        'Line %i: Wrong indentation: "%s"' %(
+                            index,
+                            line))
                 else:
                     if lnbl_index!=-1:
                         self.bracketedLines[lnbl_index] += self._suffix(delta)
