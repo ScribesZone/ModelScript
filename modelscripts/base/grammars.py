@@ -270,8 +270,6 @@ class ASTBasedModelSourceFile(ASTBasedModelSourceFile):
         raise NotImplementedError()
 
 
-
-
 class ASTNodeSourceIssue(LocalizedSourceIssue):
     """
     An issue based on a ASTNode.
