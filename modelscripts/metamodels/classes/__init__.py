@@ -441,7 +441,6 @@ class ClassModel(Model):
             ('plain classes', self.plainClassNames),
             ('plain associations', self.associationNames),
             ('association classes', self.associationClassNames),
-            ('operations', self.operationWithFullSignature.keys()),
             # ('invariants'           ,[i.name for i in self.invariants]),  FIXME: should be replaced
         ]
         total = 0
