@@ -22,8 +22,6 @@ class Class(PackagableElement, Entity):
 
     META_COMPOSITIONS = [
     #    'attributes', TODO: restore, raise an exception
-        'operations',
-        'invariants',
     ]
 
     def __init__(self, name, model,
@@ -173,26 +171,6 @@ class Class(PackagableElement, Entity):
     def attributeNames(self):
         return self.ownedAttributeNames+self.inheritedAttributeNames
 
-    #----- operations -----------------------------------------------
-
-    @property
-    def operations(self):
-        return self.operationNamed.values()
-
-    @property
-    def operationNames(self):
-        return self.invariantNamed.keys()
-
-    #----- invariants ------------------------------------------------
-
-    @property
-    def invariants(self):
-        return self.invariantNamed.values()
-
-    @property
-    def invariantNames(self):
-        return self.invariantNamed.keys()
-
     #----- opposite roles ---------------------------------------------
 
     @property
@@ -313,7 +291,6 @@ class Class(PackagableElement, Entity):
     def names(self):
         return (
             self.attributeNames
-            +self.operationNames
             +self.invariantNames)
 
     @property
