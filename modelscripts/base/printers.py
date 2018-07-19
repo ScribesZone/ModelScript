@@ -206,7 +206,6 @@ class AbstractPrinter(object):
     def do(self):
         raise NotImplementedError()
 
-
     def display(self, removeLastEOL=False, addLastEOL=True):
         text=self.do()
         endsWithEOL=text.endswith('\n')
@@ -216,10 +215,9 @@ class AbstractPrinter(object):
             text=text+'\n'
         print(text, end='')
 
-
-
-
-
+    def save(self, output):
+        with open(output, "w") as f:
+            f.write(self.output)
 
 
 class StructuredPrinterConfig(AbstractPrinterConfig):
