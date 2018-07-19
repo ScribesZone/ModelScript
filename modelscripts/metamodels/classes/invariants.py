@@ -3,9 +3,9 @@ from modelscripts.megamodels.elements import SourceModelElement
 
 from modelscripts.metamodels.classes import (
     PackagableElement,
-    Entity)
+    Item)
 
-class Invariant(PackagableElement, Entity):
+class Invariant(PackagableElement, Item):
 
     def __init__(self, name, model, derivedItem, scopeItems,
                  package=None,
@@ -26,14 +26,23 @@ class Invariant(PackagableElement, Entity):
 
         self.oclInvariants=[]
         #type: List[OCLInvariant]
+        # A CLS logical invariant can contain various OCL invariant
 
         # Back link
         model._invariantNamed[name]=self
 
+    @property
+    def hasOCLCode(self):
+        for ocl_inv in self.oclInvariants:
+            if ocl_inv.hasOCLCode:
+                return True
+        else:
+            return False
+
 
 class OCLInvariant(SourceModelElement):
 
-    def __init__(self, invariant, contextClass,
+    def __init__(self, invariant, context=None,
                  lineNo=None, description=None, astNode=None):
 
         # add nth to invariant name except for 1st
@@ -47,14 +56,39 @@ class OCLInvariant(SourceModelElement):
             lineNo=lineNo,
             description=description)
 
-        self.contextClass=contextClass
-        #type: Text # TODO:
+        self.context=context
+        #type: OCLContext
+        # Keeping this as a class
+        # is useful to generate USE OCL code with
+        # keeping record of the proper line number
 
         self.oclLines=[]
         #type: List[OCLLine]
 
         # back link
         invariant.oclInvariants.append(self)
+
+    @property
+    def hasOCLCode(self):
+        return len(self.oclLines)>=1
+
+
+class OCLContext(SourceModelElement):
+
+    def __init__(self, invariant, class_,
+                 lineNo=None, description=None, astNode=None):
+        super(OCLContext, self).__init__(
+            name=None,
+            model=invariant.model,
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description)
+
+        self.class_=class_
+        #type: Text # TODO: do resolution
+
+        # Back link
+        invariant.context=self
 
 
 class OCLLine(SourceModelElement):
