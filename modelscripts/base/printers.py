@@ -102,6 +102,11 @@ class AbstractPrinter(object):
         self.output = ''
         # self.eolAtEOF=eolAtEOF
 
+    @property
+    def currentLineNo(self):
+        return self.output.count('\n')+1
+
+
     def kwd(self, text):
         if text=='':  # necessary, otherwise style go to next string
             return ''
