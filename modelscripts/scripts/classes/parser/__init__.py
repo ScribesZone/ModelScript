@@ -17,12 +17,23 @@ from modelscripts.metamodels.classes import (
     Package,
     METAMODEL
 )
-from modelscripts.metamodels.classes.assocclasses import AssociationClass
-from modelscripts.metamodels.classes.associations import PlainAssociation, \
-    Role
-from modelscripts.metamodels.classes.classes import PlainClass, Attribute
-from modelscripts.metamodels.classes.types import DataType, AttributeType, \
-    Enumeration, EnumerationLiteral
+from modelscripts.metamodels.classes.assocclasses import (
+    AssociationClass)
+from modelscripts.metamodels.classes.associations import (
+    PlainAssociation,
+    Role)
+from modelscripts.metamodels.classes.classes import (
+    PlainClass,
+    Attribute)
+from modelscripts.metamodels.classes.types import (
+    DataType,
+    AttributeType,
+    Enumeration,
+    EnumerationLiteral)
+from modelscripts.metamodels.classes.invariants import (
+    Invariant,
+    OCLInvariant,
+    OCLLine)
 from modelscripts.megamodels.metamodels import Metamodel
 
 from modelscripts.megamodels.sources import (
@@ -448,8 +459,49 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     container=r,
                     astTextBlock=ast_role.textBlock)
 
-        def define_invariant(declaration):
-            pass
+        def define_invariant(ast_invariant):
+
+            def recursive_add_ocl_lines(ocl_inv, ast_ocl_line):
+                # For some strange reason the textLine can
+                # be None. This is due to the parser.
+                # Just filter out these cases.
+                if ast_ocl_line.textLine is not None:
+                    OCLLine(
+                        oclInvariant=ocl_inv,
+                        textLine=str(ast_ocl_line.textLine),
+                        astNode=ast_ocl_line
+                    )
+                for ast_sublines in ast_ocl_line.oclLines:
+                    recursive_add_ocl_lines(ocl_inv, ast_sublines)
+
+            #-- fill scopeItems
+            if ast_invariant.scope is None:
+                scopeItems=[]
+            else:
+                scopeItems=[]
+                #TODO: deal item.derived
+                for item in ast_invariant.scope.items:
+                    scopeItems.append(
+                        (item.entity, item.member))
+            # -- fill invariant
+            inv=Invariant(
+                name=ast_invariant.name,
+                model=self.classModel,
+                derivedItem=None, # TODO: fill with proper values
+                scopeItems=scopeItems,
+                astNode=ast_invariant)
+            inv.description = astTextBlockToTextBlock(
+                container=inv,
+                astTextBlock=ast_invariant.textBlock)
+            #-- fill invariant lines
+            for ast_ocl_inv in ast_invariant.oclInvariants:
+                ocl_inv=OCLInvariant(
+                    invariant=inv,
+                    contextClass=ast_ocl_inv.class_, # TODO: pas str
+                    astNode=ast_ocl_inv
+                )
+                for ast_ocl_line in ast_ocl_inv.oclLines:
+                    recursive_add_ocl_lines(ocl_inv, ast_ocl_line)
 
         self.__current_package=\
             Package(
@@ -551,10 +603,16 @@ class ClassModelSource(ASTBasedModelSourceFile):
         # so they will be processed twice. First as classes and
         # then as associations.
 
+        def resolve_invariant_content(invariant):
+            pass # TODO:
+
         for c in self.classModel.classes:
             resolve_class_content(c)
 
         for a in self.classModel.associations:
             resolve_association_content(a)
+
+        for i in self.classModel.invariants:
+            resolve_invariant_content(i)
 
 METAMODEL.registerSource(ClassModelSource)
