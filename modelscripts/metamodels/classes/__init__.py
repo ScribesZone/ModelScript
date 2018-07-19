@@ -39,7 +39,7 @@ import abc
 import collections
 import logging
 
-from typing import Text, List, Dict
+from typing import Text, Dict
 
 from modelscripts.base.graphs import (
     genPaths
@@ -194,6 +194,10 @@ class ClassModel(Model):
             registerDataTypes
         registerDataTypes(self)
         # Register core datatypes
+
+        from modelscripts.metamodels.classes.oclchecker import \
+            OCLChecker
+        self.oclChecker=OCLChecker(self)
 
     @property
     def metamodel(self):
@@ -371,8 +375,16 @@ class ClassModel(Model):
         else:
             return None
 
+    @property
+    def hasOCLCode(self):
+        for inv in self.invariants:
+            if inv.hasOCLCode:
+                return True
+        else:
+            return False
 
-    def entity(self, name):
+
+    def entity(self, name):  # TODO: check what it is for
         e=self.class_(name)
         if e is not None:
             return e
@@ -639,7 +651,11 @@ class ClassModel(Model):
         add_inherited_attributes()  # After check
         add_inherited_attached_roles() # After check
 
+        self.oclChecker.check()
+
         self._isClassModelFinalized=True
+
+
 
 
 class PackagableElement(SourceModelElement):
@@ -654,7 +670,8 @@ class PackagableElement(SourceModelElement):
                  astNode=None,
                  package=None,
                  lineNo=None, description=None):
-        super(PackagableElement, self).__init__(
+        SourceModelElement.__init__(
+            self,
             model=model,
             name=name,
             astNode=astNode,
@@ -673,12 +690,28 @@ class PackagableElement(SourceModelElement):
             return self.name
 
 
-class Entity(Resource):
+class Item(object):
+    """
+    Either an entity or a member.
+    Useful for instance to define "scope" of invariants.
+    Is is named either like X or X.Y
+    X can be a
+        enumeration/datatype
+        class/association/associationclass
+        package
+        invariant
+    Y can be a enumeration literal, attribute or role
+    """
 
     __metaclass__ = abc.ABCMeta
 
 
-class Member(Resource):
+class Entity(Resource, Item):
+
+    __metaclass__ = abc.ABCMeta
+
+
+class Member(Resource, Item):
 
     __metaclass__ = abc.ABCMeta
 
