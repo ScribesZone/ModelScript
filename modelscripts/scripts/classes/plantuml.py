@@ -122,9 +122,9 @@ class ClassPlantUMLPrinter(object):
         for attribute in class_.attributes:
             self.doAttribute(attribute)
 
-        self.out('--\n')
-        for operation in class_.operations:
-            self.doOperation(operation)
+        # self.out('--\n')
+        # for operation in class_.operations:
+        #     self.doOperation(operation)
 
         self.out('}\n\n')
 
