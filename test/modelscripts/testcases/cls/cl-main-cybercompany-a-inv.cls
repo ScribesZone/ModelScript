@@ -37,8 +37,10 @@ association Supervise
         subordinates : Employee[*]
 
 invariant salaryPositive
-    ocl context self:Person
-        test b
-        test a
- #       self.salary > 0
+    | This is a test
+    scope
+        derive A
+        B.B
+        C
+
 
