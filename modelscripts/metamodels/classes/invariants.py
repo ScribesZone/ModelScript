@@ -7,7 +7,7 @@ from modelscripts.metamodels.classes import (
 
 class Invariant(PackagableElement, Entity):
 
-    def __init__(self, name, model, scopeItems,
+    def __init__(self, name, model, derivedItem, scopeItems,
                  package=None,
                  lineNo=None, description=None, astNode=None):
         super(Invariant, self).__init__(
@@ -18,11 +18,17 @@ class Invariant(PackagableElement, Entity):
             lineNo=lineNo,
             description=description)
 
+        self.derivedItem = derivedItem
+        #type: Optional['Item']
+
         self.scopeItems = scopeItems
-        #type: List[Text,Optional[Text]]  # TODO:
+        #type: List[Text,Optional[Text]]  # TODO: transform to ~"Item"
 
         self.oclInvariants=[]
         #type: List[OCLInvariant]
+
+        # Back link
+        model._invariantNamed[name]=self
 
 
 class OCLInvariant(SourceModelElement):
@@ -31,7 +37,7 @@ class OCLInvariant(SourceModelElement):
                  lineNo=None, description=None, astNode=None):
 
         # add nth to invariant name except for 1st
-        nth=len(invariant.oclInvariants)+1
+        nth=str(len(invariant.oclInvariants)+1)
         suffix=nth if nth>=2 else ''
 
         super(OCLInvariant, self).__init__(
@@ -44,20 +50,20 @@ class OCLInvariant(SourceModelElement):
         self.contextClass=contextClass
         #type: Text # TODO:
 
-        self.oclInvariantlines=[]
-        #type: List[OCLInvariantLine]
+        self.oclLines=[]
+        #type: List[OCLLine]
 
         # back link
         invariant.oclInvariants.append(self)
 
 
-class OCLInvariantLine(SourceModelElement):
+class OCLLine(SourceModelElement):
 
     def __init__(self, oclInvariant, textLine,
-                astNode=None):
+                    astNode=None):
         # add nth to ocl invariant name
-        suffix='_'+str(len(oclInvariant.oclInvariantlines)+1)
-        super(OCLInvariantLine, self).__init__(
+        suffix='_'+str(len(oclInvariant.oclLines)+1)
+        super(OCLLine, self).__init__(
             name=oclInvariant.name+suffix,
             model=oclInvariant.model,
             astNode=astNode,
@@ -67,9 +73,10 @@ class OCLInvariantLine(SourceModelElement):
         self.textLine=textLine
         #type: Text
 
-        self.useOCLtargetLineNo=None
+        self.useOCLLineNo=None
         #type: Optional[int]
+        # Filled by OCLChecker/USEPrinter
 
         #back link
-        oclInvariant.oclInvariantlines.append(self)
+        oclInvariant.oclLines.append(self)
 
