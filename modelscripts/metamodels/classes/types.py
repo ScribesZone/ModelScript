@@ -2,10 +2,12 @@ import abc
 
 from modelscripts.megamodels.elements import SourceModelElement
 from modelscripts.megamodels.py import MAttribute, MComposition
-from modelscripts.metamodels.classes import PackagableElement
+from modelscripts.metamodels.classes import (
+    PackagableElement,
+    Item)
 
 
-class SimpleType(PackagableElement):
+class SimpleType(PackagableElement, Item):
     """
     Simple types.
     """
@@ -17,12 +19,11 @@ class SimpleType(PackagableElement):
                  astNode=None,
                  package=None,
                  lineNo=None, description=None):
-        super(SimpleType, self).__init__(
+        PackagableElement.__init__(self,
             model=model,
             name=name,
             package=package,
             astNode=astNode, lineNo=lineNo, description=description)
-
 
     @MAttribute('String')
     def label(self):
