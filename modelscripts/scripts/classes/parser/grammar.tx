@@ -260,10 +260,14 @@ ScopeItem:
 OCLInvariant:
     'ocl'
     (o_
-        'context' 'self' ':' class_=ID
+        oclContext=OCLContext
         oclLines *= OCLLine
     _o)
     X
+;
+
+OCLContext:
+    'context' 'self' ':' class_=ID X
 ;
 
 OCLLine:
