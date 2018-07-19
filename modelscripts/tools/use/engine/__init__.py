@@ -2,8 +2,8 @@
 
 """
 Wrapper to the USE engine. Call the 'use' command.
-This command should be in the system path.
-Otherwise the value UseEngine.USE_OCL_COMMAND should be set explicitely.
+If "use" command is not in the system path, then
+the value UseEngine.USE_OCL_COMMAND should be set explicitely.
 """
 
 
@@ -27,8 +27,7 @@ __all__ = [
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
 
-DEBUG=0
-#DEBUG=0
+DEBUG=4
 
 #: Path of to the use command binary.
 #: If the default value (``"use"``) does not work,
@@ -53,11 +52,6 @@ else:
 class USEEngine(object):
     """
     Wrapper to the "use" command.
-
-    .. note::
-
-        "use" must be available in the system path, otherwize the
-        USE_OCL_COMMAND class attribute should be modified.
     """
 
     #: Last command executed by the engine
@@ -105,8 +99,9 @@ class USEEngine(object):
 
         """
         Execute use command with the given model and given soil file.
+        This method is private and is not expected to be used direcltly.
         The soil file **MUST** terminate by a 'quit' statement so that
-        the process finish. There is therefore always a soilfile, at least
+        the process finish. There is therefore always a soil file, at least
         to quit and even if the goal is just to compile a model.
 
         # it seems that this is not necessary. So remove this.
@@ -255,7 +250,6 @@ class USEEngine(object):
             print('USE: ' + '.' * 80)
         return cls.commandExitCode
 
-
     @classmethod
     def useVersion(cls):
         """
@@ -293,7 +287,10 @@ class USEEngine(object):
             return True
 
     @classmethod
-    def analyzeUSEModel(cls, useFileName, prequelFileName=None):
+    def analyzeUSEModel(cls,
+                        useFileName,
+                        prequelFileName=None,
+                        workerspace=None):
         #type: (Text) -> int
         """
         Submit a ``.use`` model to use and indicates
@@ -314,11 +311,11 @@ class USEEngine(object):
         cls._execute(
             useFileName,
             soil,
-            basicFileName=prequelFileName)
+            basicFileName=prequelFileName,
+            workerSpace=workerspace)
         if DEBUG>=2:
             print('USE: '+' END analyzeUSEModel '.center(80,'#'))
         return cls.commandExitCode
-
 
     @classmethod
     def executeSoilFileAsTrace(cls, useFile, soilFile, prequelFileName=None):
@@ -360,7 +357,6 @@ class USEEngine(object):
         with open(trace_filename, 'w') as f:
             f.write(cls.outAndErr)
         return trace_filename
-
 
     @classmethod
     def executeSoilFileAsSex(cls, useFile, soilFile, prequelFileName=None):
