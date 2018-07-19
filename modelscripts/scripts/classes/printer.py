@@ -75,7 +75,9 @@ class ClassModelPrinter(ModelPrinter):
         for ac in model.associationClasses:
             self.doAssociationClass(ac)
 
-        # TODO: invariants, operationConditions, dataTypes
+        for i in model.invariants:
+            self.doInvariant(i)
+
         return self.output
 
     def qualified(self, element):
@@ -95,7 +97,6 @@ class ClassModelPrinter(ModelPrinter):
             package.name))
         for element in package.elements:
             self.outLine(element.name, indent=1)
-
 
     def doDataType(self, datatype):
 
@@ -143,10 +144,10 @@ class ClassModelPrinter(ModelPrinter):
             for attribute in class_.attributes:
                 self.doAttribute(attribute)
 
-        if class_.operations:
-            self.outLine(self.kwd('operations'), indent=1)
-            for operation in class_.operations:
-                self.doOperation(operation)
+        # if class_.operations:
+        #     self.outLine(self.kwd('operations'), indent=1)
+        #     for operation in class_.operations:
+        #         self.doOperation(operation)
 
         # if class_.invariants:
         #     for invariant in class_.invariants:
@@ -187,10 +188,10 @@ class ClassModelPrinter(ModelPrinter):
             for attribute in associationClass.attributes:
                 self.doAttribute(attribute)
 
-        if associationClass.operations:
-            self.outLine(self.kwd('operations'))
-            for operation in associationClass.operations:
-                self.doOperation(operation)
+        # if associationClass.operations:
+        #     self.outLine(self.kwd('operations'))
+        #     for operation in associationClass.operations:
+        #         self.doOperation(operation)
 
         self.outLine(self.kwd('end'), linesAfter=1)
         return self.output
@@ -237,40 +238,44 @@ class ClassModelPrinter(ModelPrinter):
         #     )
         return self.output
 
-    def doOperation(self, operation):
-        self.doModelTextBlock(operation.description)
-        self.outLine('%s%s' % (
-                operation.signature,
-                ' =' if operation.hasImplementation
-                    else ''),
-            indent=1
-        )
-        if operation.hasImplementation:
-            self.outLine(indent('        ',operation.expression)+'\n')
-        self.doModelTextBlock(operation.description)
+
+    # def doOperation(self, operation):
+    #     self.doModelTextBlock(operation.description)
+    #     self.outLine('%s%s' % (
+    #             operation.signature,
+    #             ' =' if operation.hasImplementation
+    #                 else ''),
+    #         indent=1
+    #     )
+    #     if operation.hasImplementation:
+    #         self.outLine(indent('        ',operation.expression)+'\n')
+    #     self.doModelTextBlock(operation.description)
 
         # for condition in operation.conditions:
         #     self.doOperationCondition(condition)
         return self.output
 
     def doInvariant(self, invariant):
-        if invariant.class_ is None:
-            prefix_comment = ''
-            prefix_first = self.kwd('context ')
-            prefix_rest = '    '
-        else:
-            prefix_comment = '    '
-            prefix_first = '    '
-            prefix_rest  = '        '
+
+        self.outLine(self.kwd('invariant'+' '+invariant.name))
         self.doModelTextBlock(invariant.description)
-        self.outLine('%s%s%s %s:' % (
-            prefix_first,
-            self.kwd('existential ') if invariant.isExistential else '',
-            self.kwd('inv'),
-            invariant.name,
-        ))
-        self.doModelTextBlock(invariant.description)
-        self.out(indent(prefix_rest, invariant.expression)+'\n')
+        self.outLine(self.kwd('scope'), indent=1)
+        for (entity, member) in invariant.scopeItems: #TODO: true object
+            s=entity+('' if member is None else '.'+member)
+            self.outLine(s, indent=3)
+        for ocl_inv in invariant.oclInvariants:
+            self.doOCLInvariant(ocl_inv)
+        return self.output
+
+    def doOCLInvariant(self, oclInvariant):
+        self.outLine(self.kwd('ocl'), indent=1)
+        self.outLine('%s %s (%s)' %(
+            self.kwd('context self : '),
+            oclInvariant.contextClass,  # TODO: true object
+            oclInvariant.name),
+            indent=2)
+        for ocl_line in oclInvariant.oclLines:
+            self.outLine(ocl_line.textLine, indent=2)
         return self.output
 
     def doRole(self, role):
@@ -303,22 +308,6 @@ class ClassModelPrinter(ModelPrinter):
         self.outLine(_, indent=2)
         self.doModelTextBlock(role.description)
         return self.output
-
-    # def doOperationCondition(self, condition):
-    #     prefix_first = '        '
-    #     prefix_rest  = '            '
-    #     keyword='pre' if isinstance(condition,PreCondition) else 'post'
-    #     self.doModelTextBlock(condition.description)
-    #     self.outLine('%s%s %s:' % (
-    #         prefix_first,
-    #         self.kwd(keyword),
-    #         condition.name,
-    #     ))
-    #     self.doModelTextBlock(condition.description)
-    #     self.out(indent(prefix_rest,condition.expression)+'\n')
-    #     return self.output
-
-
 
 
 METAMODEL.registerModelPrinter(ClassModelPrinter)
