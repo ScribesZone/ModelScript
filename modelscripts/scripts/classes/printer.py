@@ -271,7 +271,7 @@ class ClassModelPrinter(ModelPrinter):
         self.outLine(self.kwd('ocl'), indent=1)
         self.outLine('%s %s (%s)' %(
             self.kwd('context self : '),
-            oclInvariant.contextClass,  # TODO: true object
+            oclInvariant.context.class_,  # TODO: true object
             oclInvariant.name),
             indent=2)
         for ocl_line in oclInvariant.oclLines:
