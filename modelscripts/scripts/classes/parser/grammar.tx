@@ -239,47 +239,40 @@ Invariant:
     (o_
         (textBlock=TextBlock) ?
         (scope = Scope) ?
-        oclInvariant = OCLInvariant ?
+        oclInvariants *= OCLInvariant
     _o) ?
     X
 ;
 
 Scope:
-    'scope' (':' ID*)?
+    'scope'
     (o_
-        ScopeLine *
+        items = ScopeItem *
+    _o) ?
+    X
+;
+
+ScopeItem:
+    derive ?= 'derive' entity=ID ('.' member=ID) ?
+    X
+;
+
+OCLInvariant:
+    'ocl'
+    (o_
+        'context' 'self' ':' class_=ID
+        oclLines *= OCLLine
     _o)
     X
 ;
 
-ScopeLine:
-    ID
-    X
-
-;
-
-OCLInvariant:
-    'ocl' //'context' 'self' ':' class=ID
-    (o_
-        OCLLine*
-    _o)*
-    X
-;
-
 OCLLine:
-    /[^\000]*/
+    textLine=/[^\000]*/
     (o_
-        OCLLine*
+        oclLines *= OCLLine
     _o)*
     X
 ;
-
-/*
-OCLLine[noskipws]:
-    line=/(.*)/ X
-;
-*/
-
 
 
 //====================================================================
