@@ -29,7 +29,7 @@ from modelscripts.base.printers import (
 from modelscripts.metamodels.classes import (
     ClassModel)
 __all__ = [
-    'UsePrinter',
+    'UseClassPrinter',
 ]
 class TextConfig(AbstractPrinterConfig):
     def __init__(self):
@@ -38,12 +38,12 @@ class TextConfig(AbstractPrinterConfig):
             displayLineNos=False
         )
 
-class UsePrinter(AbstractPrinter):
+class UseClassPrinter(AbstractPrinter):
 
     def __init__(self,
                  theModel):
         #type: (ClassModel) -> None
-        super(UsePrinter, self).__init__(config=TextConfig())
+        super(UseClassPrinter, self).__init__(config=TextConfig())
 
         self._oclLineToClassModelElement=OrderedDict()
         #type: Dict[int, 'ClassModelElement']
