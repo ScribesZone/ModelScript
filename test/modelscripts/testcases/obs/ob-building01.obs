@@ -1,0 +1,12 @@
+object model Ob_building01
+import class model from '../cls/cl-main-buildings.cls'
+
+lesLilas : Residence
+lesLilas.name = 'Les lilas'
+lesLilas.description = 'A very confortable yet affordable 2 star residence'
+lesLilas.floorMin=0
+lesLilas.floorMax=3
+lesLilas.category=Category.standard
+lesLilas.maxNbOfFreeUnits=0
+lesLilas.avgRate=0.0
+
