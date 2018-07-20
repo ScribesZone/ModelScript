@@ -163,7 +163,9 @@ invariant deriveMaxNbOfFreeUnits
         derive Residence.maxNbOfFreeUnits
     ocl
         context self : Residence
-        maxNbOfFreeUnits = self.bedrooms().nbOfUnits->sum()
+        maxNbOfFreeUnits =
+            self.rooms->selectByType(Bedroom)
+                .nbOfUnits->sum()
 
 invariant deriveAvgRate
     | The average rate of a residence is the total revenue
@@ -178,9 +180,12 @@ invariant deriveAvgRate
         IsTutoredBy
     ocl
         context self : Residence
-        avgRate = self.bedrooms().tenant.paidRate
-            ->asSet()->sum()
-                / (self.bedrooms().occupants
+        avgRate =
+            self.rooms
+                ->selectByType(Bedroom)
+                .tenant.paidRate
+                ->asSet()->sum()
+                / (self.rooms->selectByType(Bedroom).occupants
                     ->select(tutors->isEmpty())->size())
 
 invariant uniqueNumberApartForPrivateBathroom
@@ -192,7 +197,7 @@ invariant uniqueNumberApartForPrivateBathroom
         IsInBedroom
     ocl
         context self : Residence
-        (self.rooms - (self.bathrooms()
+        (self.rooms - (self.rooms->selectByType(Bathroom)
             ->select(isOnTheLanding)))
                 -> isUnique(number)
 
@@ -204,7 +209,7 @@ invariant allPrestigeBathrooms
     ocl
         context self : Residence
         self.category = #prestige implies
-            self.bedrooms()->forAll(
+            self.rooms->selectByType(Bedroom)->forAll(
                 bathrooms->size() >= nbOfSingleBeds+nbOfDoubleBeds)
 
 
