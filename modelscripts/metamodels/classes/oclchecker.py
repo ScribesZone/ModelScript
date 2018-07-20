@@ -15,7 +15,7 @@ from modelscripts.base.grammars import (
 from modelscripts.metamodels.classes import (
     ClassModel)
 from modelscripts.scripts.classes.useprinter import (
-    UsePrinter)
+    UseClassPrinter)
 from modelscripts.tools.use.engine import USEEngine
 
 ISSUES={
@@ -25,7 +25,7 @@ ISSUES={
 def icode(ilabel):
     return ISSUES[ilabel]
 
-class OCLChecker(object):
+class ClassOCLChecker(object):
 
     def __init__(self, model):
 
@@ -33,8 +33,18 @@ class OCLChecker(object):
         #type: ClassModel
 
         self.usePrinter=None
-        #type: Optional[UsePrinter]
+        #type: Optional[UseClassPrinter]
         # Filled by check
+
+    @property
+    def withUSE(self):
+        """
+        Indicates if the use of the USE tool is required/possible.
+        """
+        print('II'*10, self.model.hasOCLCode, self.model.hasBigIssues)
+        return (
+            self.model.hasOCLCode
+            and not self.model.hasBigIssues)
 
     @property
     def useFileName(self):
@@ -47,13 +57,14 @@ class OCLChecker(object):
         else:
             raise NotImplemented('TODO: model with no source')
 
+    def _generateUseFile(self):
+        self.usePrinter = UseClassPrinter(self.model)
+        self.usePrinter.do()
+        self.usePrinter.save(self.useFileName)
+
     def check(self):
-        print('||'*20, 'CHECK', self.useFileName)
-        if self.model.hasOCLCode:
-            self.usePrinter = UsePrinter(self.model)
-            self.usePrinter.do()
-            self.usePrinter.save(self.useFileName)
-            print('||'*20, ': .use generated')
+        if self.withUSE:
+            self._generateUseFile()
             self._execute_use()
 
     def _execute_use(self):
@@ -61,7 +72,7 @@ class OCLChecker(object):
         try:
             exit_code = USEEngine.analyzeUSEModel(
                 self.useFileName,
-                workerspace='self')
+                workerSpace='self')
         except Exception as e:  # TODO: check what to do
             Issue(
                 origin=self.model,
