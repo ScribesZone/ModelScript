@@ -290,7 +290,7 @@ class USEEngine(object):
     def analyzeUSEModel(cls,
                         useFileName,
                         prequelFileName=None,
-                        workerspace=None):
+                        workerSpace=None):
         #type: (Text) -> int
         """
         Submit a ``.use`` model to use and indicates
@@ -312,13 +312,17 @@ class USEEngine(object):
             useFileName,
             soil,
             basicFileName=prequelFileName,
-            workerSpace=workerspace)
+            workerSpace=workerSpace)
         if DEBUG>=2:
             print('USE: '+' END analyzeUSEModel '.center(80,'#'))
         return cls.commandExitCode
 
     @classmethod
-    def executeSoilFileAsTrace(cls, useFile, soilFile, prequelFileName=None):
+    def executeSoilFileAsTrace(cls,
+                               useFile,
+                               soilFile,
+                               prequelFileName=None,
+                               workerSpace=None):
         """
         Standard execution of a .soil file with a .use file.
         The result is saved in a temp .stc file whose name is returned
@@ -335,7 +339,12 @@ class USEEngine(object):
         # (f, driver_filename) = tempfile.mkstemp(suffix='.soil', text=True)
         # os.close(f)
         driver_filename=Environment.getWorkerFileName(
-            basicFileName=replaceExtension(abs_prequel_file,'.driver.soil'))
+            basicFileName=\
+                replaceExtension(
+                    abs_prequel_file,
+                    '.driver.soil'),
+            workerSpace=workerSpace
+            )
 
         with open(driver_filename, 'w') as f:
             f.write(driver_sequence)
@@ -345,14 +354,19 @@ class USEEngine(object):
             abs_use_file,
             driver_filename,
             basicFileName=replaceExtension(abs_prequel_file,'.use'),
-            errWithOut=True)
+            errWithOut=True,
+            workerSpace=workerSpace)
 
 
         # save the result in a temp file
         # (f, trace_filename) = tempfile.mkstemp(suffix='.stc', text=True)
         # os.close(f)
         trace_filename=Environment.getWorkerFileName(
-            basicFileName=replaceExtension(abs_prequel_file,'.stc'))
+            basicFileName=\
+                replaceExtension(
+                    abs_prequel_file,
+                    '.stc'),
+            workerSpace=workerSpace)
         # print('NN'*10, type(cls.outAndErr))
         with open(trace_filename, 'w') as f:
             f.write(cls.outAndErr)
@@ -434,7 +448,7 @@ class USEEngine(object):
                     % trace_filename)
                 displayFileContent(trace_filename, prefix='USE:    ')
                 print('USE: executeSoilFileAsSex: now merging')
-            from modelscripts.use.engine.merger import merge
+            from modelscripts.tools.use.engine.merger import merge
             merge(
                 abs_soil_file,
                 trace_filename,
