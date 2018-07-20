@@ -31,9 +31,9 @@ from modelscripts.metamodels.classes import (
 __all__ = [
     'UsePrinter',
 ]
-class Config(AbstractPrinterConfig):
+class TextConfig(AbstractPrinterConfig):
     def __init__(self):
-        super(Config, self).__init__(
+        super(TextConfig, self).__init__(
             styled=False,
             displayLineNos=False
         )
@@ -43,7 +43,7 @@ class UsePrinter(AbstractPrinter):
     def __init__(self,
                  theModel):
         #type: (ClassModel) -> None
-        super(UsePrinter, self).__init__(config=Config())
+        super(UsePrinter, self).__init__(config=TextConfig())
 
         self._oclLineToClassModelElement=OrderedDict()
         #type: Dict[int, 'ClassModelElement']

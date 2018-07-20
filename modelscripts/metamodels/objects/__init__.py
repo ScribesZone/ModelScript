@@ -44,7 +44,7 @@ from modelscripts.metamodels.classes import (
 __all__=(
     'ObjectModel',
     'ShadowObjectModel',
-    'ElementFromStep',
+    'ElementFromOptionalStep',
     'PackagableElement',
     'ResourceInstance',
 
@@ -59,6 +59,7 @@ class ObjectModel(Model):
 
     """
     Object model, either create "manually" or via a story evaluation.
+    See ShadowObjectModel for story evaluation.
     """
 
     def __init__(self):
@@ -216,20 +217,25 @@ class ShadowObjectModel(ObjectModel):
     Object model created or copied without any impact on the
     megamodel. No dependencies are created. ShadowObjectModel
     serves to represent intermediate state of stories.
-    Their import box is empty.
-    The class model must however be given explicitely since it
-    is used to build ObjectModelAnalsysis.
+    Their import box is empty, so there is no dependency to
+    other model. The class model is an exception :the class model
+    must be given explicitely since it is used to build
+    ObjectModelAnalsysis.
     """
     def __init__(self, classModel):
         super(ShadowObjectModel, self).__init__()
         self._classModel=classModel
 
 
-class ElementFromStep(SourceModelElement):
+class ElementFromOptionalStep(SourceModelElement):
     """
-    Superclass of all source model elements that can come
-    from a story step. Basically add a "step" attribute to all
-    subclasses.
+    Superclass of all source model elements that can (optionaly)
+    originates from a story step (hence "FromOriginalStep').
+    Element create "manually" in standard object model will have None
+    as a step value. By contrasts elements created from a story will
+    have a step value.
+    In practice this clas basically serves to add a "step" attribute
+    to all subclasses and to compute location attributes accordingly.
     """
     __metaclass__ = ABCMeta
 
@@ -241,12 +247,14 @@ class ElementFromStep(SourceModelElement):
                  lineNo=None, description=None):
         #type: (Optional['Step']) -> None
         """
-        :param name: The name of the source element.
-        :param model: The object model
-        :param step: The step, if any, from where this element
-            originates/
-        :param astNode: The ast node, or None.
-            step.astNode takes precedence.
+        :param name:
+            The name of the source element.
+        :param model:
+            The object model
+        :param step:
+            The step, if any, from where this element originates/
+        :param astNode:
+            The ast node, or None. step.astNode takes precedence.
         :param lineNo: lineNo for this element.
             step.lineNo take precendence.
         :param description: Description of the element.
@@ -264,7 +272,7 @@ class ElementFromStep(SourceModelElement):
             description_=step.description
         else:
             description_=description
-        super(ElementFromStep, self).__init__(
+        super(ElementFromOptionalStep, self).__init__(
             model=model,
             name=name,
             astNode=ast_node,
@@ -272,7 +280,7 @@ class ElementFromStep(SourceModelElement):
         self.step=step
 
 
-class PackagableElement(ElementFromStep):
+class PackagableElement(ElementFromOptionalStep):
     """
     Top level element.
     """
