@@ -584,6 +584,10 @@ class WithIssueList(object):
     def hasIssues(self):
         return self._issueBox.hasIssues
 
+    @property
+    def hasBigIssues(self):
+        return self._issueBox.hasBigIssues
+
     def addIssue(self, sourceError):
         self._issueBox._add(sourceError)
 
