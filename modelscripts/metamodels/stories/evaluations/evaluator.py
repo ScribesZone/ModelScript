@@ -1,3 +1,10 @@
+# coding=utf-8
+"""
+Engine performing the evaluation of stories. It basically creates
+a StoryE evaluation from
+"""
+
+from __future__  import print_function
 from typing import Union, Optional
 from modelscripts.base.grammars import (
     ASTNodeSourceIssue
@@ -73,26 +80,51 @@ def icode(ilabel):
 
 
 class StoryEvaluator(object):
+    """
+    Engine performing the evaluation of a story. XXX ?
+    After creating the evaluator, use evaluateStory() to perform the
+    evaluation itself.
+    """
 
     def __init__(self, initialState, permissionSet=None):
         #type: (ObjectModel) -> None
         """
-        Create a story evaluation given an initial state (an object model).
-        All steps in the story are executed one after the other.
-        The object model is modified in place.
+        Create the evaluator object. Use evaluateStory() to launch
+        the evaluation itself.
         :param initialState:
+            The object model in which the story is evaluated.
+            This object model will be updated during the evaluation.
         :param permissionSet:
+            A permissionSet to check the accesses against. If set
+            some access Authorization/Denial can be created.
         """
         assert initialState is not None
         self.state=initialState
-        self.permissionSet=permissionSet
-        self.accessSet=AccessSet(permissionSet)
-        self.storyEvaluation=None
+        #type: ObjectModel
+        # The state in which each step is evaluated.
+        # This state evolves step after step, so this will be
+        # the final state at the end of the evaluation.
 
-    def evaluateStory(self, storyStep):
+        self.permissionSet=permissionSet
+        #type: Optional[PermissionSet]
+
+        self.accessSet=AccessSet(permissionSet)
+        #type: AccessSet
+
+        self.storyEvaluation=None
+        #type: Optional[StoryEvaluation]
+        # Filled by evaluateStory
+
+    def evaluateStory(self, story):
+        #type: (Story) -> StepEvaluation
+        """
+        Evaluate a whole story and return a StoryEvaluation.
+        Create a story evaluation given an initial state (an object model).
+        All steps in the story are executed one after the other.
+        The object model is modified in place, step after step.
+        """
         self.storyEvaluation=(
-            self._eval_step(storyStep, parent=None)
-        )
+            self._eval_step(story, parent=None))
         return self.storyEvaluation
 
     def _eval_step(self, step, parent):
