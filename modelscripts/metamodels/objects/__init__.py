@@ -37,6 +37,7 @@ from modelscripts.megamodels.dependencies.metamodels import (
 # used for typing
 from modelscripts.metamodels.classes import (
     ClassModel,
+    Class,
     METAMODEL as CLASS_METAMODEL
 )
 
@@ -67,19 +68,19 @@ class ObjectModel(Model):
         self.packageNamed=OrderedDict() #type: Dict[Text, Package]
 
         self._plainObjectNamed = OrderedDict()
-        # type: Dict[Text, PlainObject]
+        # type: Dict[Text, 'PlainObject']
         """
         Plain objects. No link objects.
         """
 
         self._plainLinks=[]
-        # type: List[PlainLink]
+        # type: List['PlainLink']
         """
         Plain links (no link object).
         """
 
         self._linkObjectNamed = OrderedDict()
-        # type: Dict[Text, LinkObject]
+        # type: Dict[Text, 'LinkObject']
         """
         Link objects.
         """
@@ -172,7 +173,7 @@ class ObjectModel(Model):
         return self.plainLinks+self.linkObjects
 
     def classExtension(self, class_): #TODO: inheritance
-        #type: (Class)-> List[Object]
+        #type: (Class)-> List['Object']
         return [
             o for o in self.objects if o.class_==class_]
 
