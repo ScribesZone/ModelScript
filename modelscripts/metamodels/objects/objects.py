@@ -1,23 +1,40 @@
+# coding=utf-8
+
+from typing import Dict, Text, Optional, Union, List
+
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 
 from modelscripts.megamodels.models import Placeholder
+# from modelscripts.metamodels.classes.classes import Class
 from modelscripts.metamodels.classes.types import UNSPECIFIED
-from modelscripts.metamodels.objects import ElementFromStep, Member, \
-    PackagableElement, Entity
+from modelscripts.metamodels.textblocks import TextBlock
+from modelscripts.metamodels.objects import (
+    ObjectModel,
+    ElementFromOptionalStep,
+    Member,
+    PackagableElement,
+    Entity)
 
 
 class _ClassPrint(object):
     """
+    The list of ids value for a given object. It could also be
+    the list of all values for a given object, not only id.
+    This is used to compare the class print of two object.
     For a given object this is basically a
         Dict[attname,Optional[Text]] for each
     that is, a optional value for each attributes in the class.
-    The value of slots are converted to Text to simplify implementation.
-    This may cause problem with multiple textual representation but this
-    is good enough at the time beeing.
+    The value of slots are converted to Text to simplify
+    implementation.
+    This may cause problem with multiple textual representation
+    (e.g. 10.00 vs 10.0, "a'" vs 'a\''. This is good enough
+    however at the time being.
     If an attribute has no slot return None.
     If "onlyIds" are specified only these attributes are selected.
-    This class is usefull to compare objects and there ids.
+
+    This class is useful to compare objects and their ids.
+    Use equals() for that.
     """
     def __init__(self, object, onlyIds=False, inherited=False):
         # TODO: care should be taken with inheritance (additional param?)
@@ -78,7 +95,7 @@ class Object(PackagableElement, Entity):
                  package=None,
                  step=None,
                  lineNo=None, description=None, astNode=None):
-        #type: (ObjectModel, Text, Union[Class, Placeholder], Optional[package], Optional['Step'], Optional[int], Optional[TextBlock], Optional['ASTNode'] )-> None
+        #type: (ObjectModel, Text, Union['Class', Placeholder], Optional[package], Optional['Step'], Optional[int], Optional[TextBlock], Optional['ASTNode'] )-> None
         PackagableElement.__init__(
             self,
             model=model,
@@ -92,14 +109,14 @@ class Object(PackagableElement, Entity):
         Entity.__init__(self)
 
         self.class_ = class_
-        #type: Union[Placeholder, Class]
+        #type: Union[Placeholder, 'Class']
 
         self._slotNamed = OrderedDict()
         #type: Dict[Text, Slot]
         # Slots of the object indexed by attribute name (not attribute)
 
         self._link_roles_per_role=OrderedDict()
-        #type: Dict[Role, LinkRole]
+        #type: Dict['Role', 'LinkRole']
         """
         The links roles "opposite" to the objects, that is, at the
         opposite side of the link. The collection is indexed by 
@@ -134,7 +151,7 @@ class Object(PackagableElement, Entity):
             return None
 
     def links(role):
-        #type: (Role) -> List[Link]
+        #type: ('Role') -> List['Link']
         """
         The list of links that are connected to the object and
         that are owned by the role.
@@ -183,7 +200,7 @@ class PlainObject(Object):
                  package=None,
                  step=None,
                  lineNo=None, description=None, astNode=None):
-        #type: (ObjectModel, Text, Union[Class, Placeholder], Optional[package], Optional['Step'], Optional[int], Optional['ASTNode'] )-> None
+        #type: (ObjectModel, Text, Union['Class', Placeholder], Optional[package], Optional['Step'], Optional[int], Optional['ASTNode'] )-> None
         super(PlainObject, self).__init__(
             model=model,
             name=name,
@@ -201,18 +218,18 @@ class PlainObject(Object):
         return True
 
 
-class Slot(ElementFromStep, Member):
+class Slot(ElementFromOptionalStep, Member):
 
     def __init__(self, object, attribute, simpleValue,
                  step=None,
                  description=None, lineNo=None, astNode=None):
-        #type: (Object, Union[Attribute, Placeholder], DataValue,  Optional['Step'], Optional[TextBlock], Optional[int], 'ASTNode') -> None
+        #type: (Object, Union['Attribute', Placeholder], 'DataValue',  Optional['Step'], Optional[TextBlock], Optional[int], 'ASTNode') -> None
         attribute_name=(
             attribute.placeholderValue
                 if isinstance(attribute, Placeholder)
             else attribute.name
         )
-        ElementFromStep.__init__(
+        ElementFromOptionalStep.__init__(
             self,
             model=object.model,
             name='%s.%s' % (object.name, attribute_name),

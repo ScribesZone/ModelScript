@@ -37,7 +37,6 @@ from modelscripts.megamodels.dependencies.metamodels import (
 # used for typing
 from modelscripts.metamodels.classes import (
     ClassModel,
-    Class,
     METAMODEL as CLASS_METAMODEL
 )
 
@@ -174,7 +173,7 @@ class ObjectModel(Model):
         return self.plainLinks+self.linkObjects
 
     def classExtension(self, class_): #TODO: inheritance
-        #type: (Class)-> List['Object']
+        #type: ('Class')-> List['Object']
         return [
             o for o in self.objects if o.class_==class_]
 
