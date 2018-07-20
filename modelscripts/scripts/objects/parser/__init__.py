@@ -98,13 +98,13 @@ class ObjectModelSource(ASTBasedModelSourceFile):
             allowAction=False,
             allowVerb=False,
             astStory=self.ast.model.story)
-        self.storyModel=filler.story()
+        self.story=filler.story()
 
         #--- (2) evaluate the story model to get the object model
         evaluator=StoryEvaluator(
             initialState=self.objectModel,
             permissionSet=None)
-        self.storyEvaluation=evaluator.evaluateStory(self.storyModel)
+        self.storyEvaluation=evaluator.evaluateStory(self.story)
 
         # At this point the object model contains the final state
         # This is due to the face that the model self.objectModel
