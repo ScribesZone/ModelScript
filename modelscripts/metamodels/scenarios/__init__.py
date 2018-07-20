@@ -199,13 +199,14 @@ class ActorInstance(SourceModelElement, Subject):
 
 class StoryBlock(SourceModelElement):
     """
-    Container of story. This abstract class is useful to
+    Container of a story. This abstract class is useful to
     deal with common characteristics of Context and Scenario
-    at the same time, since both are basically StoryContainer.
+    at the same time. Both are basically just story container.
+
     A story block contains:
     *   a story
     *   a story evaluation. This makes sense since there is only
-        one evaluation for the context and for one main scenario.
+        one evaluation for a given context and for a given main scenario.
     """
     __metaclass__ = ABCMeta
 
