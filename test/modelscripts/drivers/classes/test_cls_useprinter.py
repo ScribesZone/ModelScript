@@ -14,7 +14,7 @@ from modelscripts.base.printers import AbstractPrinterConfig
 import os
 import modelscripts.scripts.classes.parser
 from modelscripts.scripts.classes.useprinter import (
-    UsePrinter
+    UseClassPrinter
 )
 from modelscripts.base.issues import (
     FatalError
@@ -62,7 +62,7 @@ def doPrintUse(filename):
         print('TST: '+'='*80)
         print('TST: result in %s' % use_file_path)
         print('TST: '+'='*80)
-        usePrinter = UsePrinter(scm)
+        usePrinter = UseClassPrinter(scm)
         usePrinter.do()
         usePrinter.save(use_file_path)
         print('TST: .use generated')
