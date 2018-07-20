@@ -1,6 +1,23 @@
 # coding=utf-8
 """
 Model elements resulting from the evaluation of a story.
+Each step evaluation is associated with a step but it additionally
+have :
+    * a list of issues that the evaluation raise for this step
+    * an access made by the step
+
+While steps are syntactical and have various elements unbound
+(e.g. ('x', A, 'y')) these elements are bound in
+evaluation steps (e.g. x and y have been resolved). The result of
+the binding for each step is not stored however because:
+    * this avoid to have a step class for each step
+      (e.g. ObjectCreation -> ObjectCreationEvaluation)
+    * the binding itself is not so important
+    * what is important is the result of the step evaluation.
+
+Instead of having specialized step evaluation for each step
+(e.g. ObjectCreationEvaluation) a generic StepEvaluation is used.
+
 The global structure of this metamodel package is as following::
 
     StepEvaluation
@@ -19,6 +36,8 @@ The global structure of this metamodel package is as following::
 
 The evaluation hierarchy goes in "parallel" with the step
 hierarchy, with the same parent relationship but in parallel.
+There is simplfy less-typed nodes, one unique type for all operation
+steps.
 """
 
 from typing import Optional, List, Text
