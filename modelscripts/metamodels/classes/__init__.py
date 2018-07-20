@@ -196,8 +196,8 @@ class ClassModel(Model):
         # Register core datatypes
 
         from modelscripts.metamodels.classes.oclchecker import \
-            OCLChecker
-        self.oclChecker=OCLChecker(self)
+            ClassOCLChecker
+        self.classOCLChecker=ClassOCLChecker(self)
 
     @property
     def metamodel(self):
@@ -651,7 +651,7 @@ class ClassModel(Model):
         add_inherited_attributes()  # After check
         add_inherited_attached_roles() # After check
 
-        self.oclChecker.check()
+        self.classOCLChecker.check()
 
         self._isClassModelFinalized=True
 

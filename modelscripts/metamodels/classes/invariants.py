@@ -109,7 +109,7 @@ class OCLLine(SourceModelElement):
 
         self.useOCLLineNo=None
         #type: Optional[int]
-        # Filled by OCLChecker/USEPrinter
+        # Filled by ClassOCLChecker/USEPrinter
 
         #back link
         oclInvariant.oclLines.append(self)
