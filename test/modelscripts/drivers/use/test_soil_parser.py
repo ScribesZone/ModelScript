@@ -14,8 +14,6 @@ import os
 import modelscripts.scripts.objects.parser
 from modelscripts.scripts.stories.useprinter import (
     UseStoryPrinter)
-from modelscripts.tools.use.soil.checkparser import (
-    UseCheckOutputsParser)
 from modelscripts.base.issues import (
     FatalError)
 from modelscripts.base.grammars import (
@@ -33,7 +31,7 @@ def testGenerator_cls_obsprinter():
         os.path.join(test_dir, f)
             for f in os.listdir(test_dir)
             if f.endswith('.obs')
-            and f.endswith('building01.obs')
+            # and f.endswith('buildings.cls')
     ]
 
     for filename in files:
@@ -62,7 +60,7 @@ def doPrintUse(filename):
         usePrinter.do()
         usePrinter.save(soil_file_path)
         print('TST: '+'='*80)
-        print('TST: generated .soil in %s' % soil_file_path)
+        print('TST: result in %s' % soil_file_path)
         print('TST: '+'='*80)
 
         clm = obm.classModel
@@ -71,24 +69,8 @@ def doPrintUse(filename):
         if class_ocl_checker.withUSE and not obm.hasBigIssues:
             use_file_path=class_ocl_checker.useFileName
             engine=USEEngine
-            trace_filename=\
-                engine.executeSoilFileAsTrace(
-                    useFile=use_file_path,
-                    soilFile=soil_file_path,
-                    workerSpace='self')
-            print('TST: ' + '=' * 80)
-            print('TST: use output in %s' % trace_filename)
-            print('TST: ' + '=' * 80)
+            engine.executeSoilFileAsTrace(
+                useFile=use_file_path,
+                soilFile=soil_file_path,
+                workerSpace='self')
 
-            parser=UseCheckOutputsParser(trace_filename)
-            parser.parse()
-            print('TST:', parser.useOutput)
-            for checkPoint in parser.useOutput.checkPoints:
-                print('TST: ------ check point')
-                for invname in checkPoint.invariantCheckName:
-                    inv_output=(checkPoint.invariantCheckName[invname])
-                    print(inv_output.className
-                          +'.'+inv_output.invariantName
-                          +' '+str(inv_output.hasFailed))
-
-XXX
