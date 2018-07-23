@@ -1,4 +1,5 @@
 # coding=utf-8
+from __future__ import print_function
 from typing import Text
 import logging
 import re
@@ -33,7 +34,7 @@ def testGenerator_cls_obsprinter():
         os.path.join(test_dir, f)
             for f in os.listdir(test_dir)
             if f.endswith('.obs')
-            and f.endswith('building01.obs')
+            and 'building' in f
     ]
 
     for filename in files:
@@ -85,10 +86,15 @@ def doPrintUse(filename):
             print('TST:', parser.useOutput)
             for checkPoint in parser.useOutput.checkPoints:
                 print('TST: ------ check point')
-                for invname in checkPoint.invariantCheckName:
-                    inv_output=(checkPoint.invariantCheckName[invname])
+                for inv_output in checkPoint.invariantOutputs:
                     print(inv_output.className
                           +'.'+inv_output.invariantName
                           +' '+str(inv_output.hasFailed))
+                    # if inv_output.hasFailed:
+                    #     print('TST:    ',inv_output.violatingObjectNames)
+                    #     print('TST:    ',inv_output.violatingObjectType)
+                    #     print('TST:    ',inv_output.resultValue)
+                    #     print('TST:    ',inv_output.resultType)
+                    #     for expr in inv_output.subexpressions:
+                    #         print('TST: >>>', expr)
 
-XXX
