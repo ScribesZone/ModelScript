@@ -101,8 +101,8 @@ class ObjectModel(Model):
         # Filled only if this model is the result of a Check
         # evaluation in a story.
 
-        self.analyzis=None
-        #type: Optional['ObjectModelAnalyzis']
+        self.stateCheck=None
+        #type: Optional['StateCheck']
         # Filled by finalize()
 
     def copy(self):
@@ -199,13 +199,13 @@ class ObjectModel(Model):
         return METAMODEL
 
     def finalize(self):
-        from modelscripts.metamodels.objects.analyzis import (
-            ObjectModelAnalyzis
+        from modelscripts.metamodels.objects.statechecker import (
+            StateCheck
         )
         print('.'*30,'>>>> ObjectModel.FINALIZE()')
         print('.'*30,'    >>>> ANALYZING OBJECT MODEL')
-        self.analyzis=ObjectModelAnalyzis(self)
-        self.analyzis.analyze()
+        self.stateCheck=StateCheck(self)
+        self.stateCheck.check()
         print('.'*30,'    <<<< OBJECT MODEL ANALYZED')
         super(ObjectModel, self).finalize()
         print('.'*30,'<<<< ObjectModel.FINALIZE()')
