@@ -1,0 +1,15 @@
+    #@Issue ob.ana.Link.BadCardinality 1
+    #@Issue else *
+
+scenario model Sc_step01
+
+import usecase model from '../uss/us-main-CyberCompany01.uss'
+import class model from '../cls/cl-main-cybercompany-01.cls'
+
+context A
+    bob is an Employee.
+    computing is a Department.
+    bob WorksIn computing.
+
+context B
+    bob is an Employee.

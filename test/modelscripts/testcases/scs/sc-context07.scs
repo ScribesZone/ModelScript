@@ -1,0 +1,10 @@
+    #@Issue sc.syn.Context.Twice 1
+    #@Issue else *
+
+scenario model Sc_step01
+
+import usecase model from '../uss/us-main-CyberCompany01.uss'
+import class model from '../cls/cl-main-cybercompany-01.cls'
+
+context A
+context A

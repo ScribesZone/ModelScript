@@ -1,0 +1,12 @@
+    # computing overriding object in object model
+
+    #@Issue st.eval.ObjectCreation.Twice 1
+    #@Issue else *
+
+
+scenario model Sc_main01
+import class model from '../cls/cl-main-cybercompany-01.cls'
+import object model from '../obs/ob-object01.obs'
+
+context A
+    computing : Department

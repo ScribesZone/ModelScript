@@ -1,0 +1,26 @@
+    # computing overriding object in object model
+
+scenario model Sc_main01
+import class model from '../cls/cl-main-cybercompany-01.cls'
+import object model from '../obs/ob-object01.obs'
+
+# computing defined in object model
+
+context A
+    hardware : Department
+    xuon : Employee
+    (xuon, WorksIn, hardware)
+
+
+scenario A
+    create (xuon, WorksIn, computing)
+
+
+context B
+    hardware : Department
+    xuon : Employee
+    (xuon, WorksIn, hardware)
+
+
+scenario B
+    create (xuon, WorksIn, computing)
