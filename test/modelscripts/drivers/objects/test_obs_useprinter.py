@@ -25,7 +25,7 @@ from modelscripts.base.grammars import (
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
 
-def testGenerator_cls_obsprinter():
+def testGenerator_obs_useprinter():
     test_dir=os.path.join(
         TEST_CASES_DIRECTORY,'obs')
 
@@ -34,7 +34,7 @@ def testGenerator_cls_obsprinter():
         os.path.join(test_dir, f)
             for f in os.listdir(test_dir)
             if f.endswith('.obs')
-            and 'building' in f
+            and 'building' in f ###############################
     ]
 
     for filename in files:
@@ -45,7 +45,7 @@ def doPrintUse(filename):
 
     #--- parser: .obs -> system -------------------
     source = modelscripts.scripts.objects.parser.ObjectModelSource(
-        fileName=filename,)
+        fileName=filename)
     if not source.isValid:
         print(('##'*40+'\n')*10)
         print('==> IGNORING INVALID MODEL')
