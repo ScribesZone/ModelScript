@@ -8,6 +8,6 @@ context
     xuon : Employee
     (xuon, WorksIn, hardware)
 
-
 scenario
+    include object model
     create (xuon, WorksIn, computing)

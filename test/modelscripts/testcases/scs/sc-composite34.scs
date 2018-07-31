@@ -1,11 +1,14 @@
 scenario model Sc_main01
 import class model from '../cls/cl-main-cybercompany-01.cls'
-import object model from '../obs/ob-object01.obs'
+
+context A
+    xuon : Employee
 
 story A
-context A
+    create hardware : Department
 
-scenario X
+scenario A
     include context A
     include story A
+    create (xuon, WorksIn, hardware)
 

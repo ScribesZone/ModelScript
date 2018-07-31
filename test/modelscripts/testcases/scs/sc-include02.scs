@@ -1,11 +1,9 @@
-    # computing overriding object in object model
-
 scenario model Sc_main01
 import class model from '../cls/cl-main-cybercompany-01.cls'
 import object model from '../obs/ob-object01.obs'
 
-context A
+story A
 
 scenario X
-    include object model
+    include story A
 

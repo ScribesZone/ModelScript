@@ -1,4 +1,3 @@
-    # computing overriding object in object model
 
 scenario model Sc_main01
 import class model from '../cls/cl-main-cybercompany-01.cls'
