@@ -10,12 +10,14 @@ import class model from '../cls/cl-main-cybercompany-01.cls'
 import object model from '../obs/ob-object01.obs'
 
 scenario A
+    include object model
     create hardware : Department
     create xuon : Employee
     create (xuon, WorksIn, hardware)
 
 
 scenario B
+    include object model
     create computing : Department
     create xuon : Employee
     create (xuon, WorksIn, computing)

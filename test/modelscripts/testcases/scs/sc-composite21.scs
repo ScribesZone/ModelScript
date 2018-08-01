@@ -13,6 +13,8 @@ context A
 
 
 scenario A
+    include object model
+    include context A
     create (xuon, WorksIn, computing)
 
 
@@ -23,4 +25,6 @@ context B
 
 
 scenario B
+    include object model
+    include context B
     create (xuon, WorksIn, computing)

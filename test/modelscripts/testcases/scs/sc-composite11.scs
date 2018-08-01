@@ -8,5 +8,6 @@ scenario model Sc_main01
 import class model from '../cls/cl-main-cybercompany-01.cls'
 import object model from '../obs/ob-object01.obs'
 
-context A
-    computing : Department
+scenario A
+    include object model
+    create computing : Department

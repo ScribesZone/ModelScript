@@ -13,4 +13,6 @@ context A
 
 
 scenario A
+    include object model
+    include context A
     create (xuon, WorksIn, computing)
