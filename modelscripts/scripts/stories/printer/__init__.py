@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+
+"""
 from __future__ import unicode_literals, print_function, absolute_import, division
 from typing import Optional
 
@@ -12,6 +15,7 @@ from modelscripts.metamodels.stories import (
     Story,
     TextStep,
     VerbStep,
+    IncludeStep,
 )
 from modelscripts.metamodels.stories.operations import (
     ObjectCreationStep,
@@ -58,6 +62,8 @@ class StoryPrinter(AbstractPrinter):
     def doStep(self, step, indent, recursive=True):
         if isinstance(step, Story):
             return self.doStory(step, indent, recursive=recursive)
+        elif isinstance(step, IncludeStep):
+            return self.doIncludeStep(step, indent)
         elif isinstance(step, VerbStep):
             return self.doVerbStep(step, indent, recursive=recursive)
         elif isinstance(step, TextStep):
@@ -78,7 +84,7 @@ class StoryPrinter(AbstractPrinter):
             return self.doCheck(step, indent)
         else:
             raise NotImplementedError(
-                'Unexpected step. type=:"%s"' % type(step))
+                'Unexpected step. type=:"%s"' % step)
 
     def doVerbStep(self, step, indent, recursive=True):
         self.outLine(
@@ -92,6 +98,17 @@ class StoryPrinter(AbstractPrinter):
         if recursive:
             self._doSubsteps(step, indent+1, recursive=recursive)
         return self.output
+
+    def doIncludeStep(self, step, indent):
+        # TODO: does not display kwd properly.
+        self.outLine(
+            '%s %s' % (
+                self.kwd('include'),
+                ' '.join(step.words)),
+            indent=indent
+        )
+        return self.output
+
 
     def doTextStep(self, step, indent, recursive=True):
         tbp=TextBlockPrinter(step.textBlock, indent=indent)
@@ -212,7 +229,7 @@ class StoryPrinter(AbstractPrinter):
             None:'',
             'before': ' (before)',
             'after': ' (after)'
-        }[step.implicit]
+        }[step.position]
         self.outLine(
             '%s%s' % (
                 self.kwd('check'),
