@@ -9,23 +9,28 @@ The structure of is the following::
     ---> UseCaseModel
     ---> PermissionModel
     <>--* ActorInstance
-    <>--* Story (contexts)
-    <>--1 Story (scenarios)
+    <>--* Context (contexts)
+    <>--* Fragment (fragments)
+    <>--1 Scenario (scenarios)
+
 
     ActorInstance
     ---- name
     ---- Actor
 
-    StoryBlock A
+    StoryContainer A
     ---> Story
-    ---> StoryEvaluation
+    ---> StoryEvaluation  # TODO: not sure (comment below)
+    <|-- Context
+    <|-- Fragment
+    <|-- Scenario
 """
 
 # TODO: add support for  'include <x.obs>
 
 from collections import OrderedDict
 
-from typing import Optional, Dict, List, Text
+from typing import Optional, Dict, List, Text, Union
 from abc import ABCMeta
 
 from modelscripts.base.metrics import Metrics
@@ -39,6 +44,10 @@ from modelscripts.metamodels.classes import (
     ClassModel,
     METAMODEL as CLASS_METAMODEL
 )
+from modelscripts.metamodels.objects import (
+    ObjectModel,
+    METAMODEL as OBJECT_METAMODEL
+)
 from modelscripts.metamodels.permissions import (
     UCPermissionModel,
     METAMODEL as UCPERMISSION_METAMODEL
@@ -51,7 +60,9 @@ from modelscripts.metamodels.usecases import (
     METAMODEL as USECASE_METAMODEL
 )
 from modelscripts.metamodels.stories import (
-    Story
+    Story,
+    AbstractStoryCollection,
+    AbstractStoryId
 )
 from modelscripts.metamodels.stories.evaluations import (
     StoryEvaluation
@@ -66,6 +77,9 @@ __all__=META_CLASSES
 DEBUG=3
 
 class ScenarioModel(Model, Subject):
+    """
+
+    """
     META_COMPOSITIONS=[
         'actorInstances',
         # 'stories',
@@ -78,24 +92,31 @@ class ScenarioModel(Model, Subject):
         super(ScenarioModel, self).__init__()
 
         self._classModel='*not yet*'
+        #type: Optional[ClassModel]
         # Will be none or class model
         # see property
 
         self._usecaseModel='*not yet*'
+        #type: Optional[UsecaseModel]
         # see property
 
         self._permissionModel='*not yet*'
+        #type: Optional[UCPermissionModel]
+        # see property
+
+        self._objectModel='*not yet*'
+        #type: Optional[ObjectModel]
         # see property
 
         self.actorInstanceNamed=OrderedDict()
         #type: Dict[Text, ActorInstance]
         # set later
 
-        self._contextNamed=OrderedDict()
-        #type: Dict[Text, Context]
+        self.containerCollection=StoryContainerCollection(self)
+        #type: StoryContainerCollection
+        # The collection of all story container.
+        #
 
-        self._scenarioNamed=OrderedDict()
-        #type: Dict[Text, Scenario]
 
 
     @property
@@ -111,6 +132,15 @@ class ScenarioModel(Model, Subject):
                 CLASS_METAMODEL,
                 acceptNone=True)
         return self._classModel
+
+    @property
+    def objectModel(self):
+        #type: ()-> Optional[ObjectModel]
+        if self._objectModel == '*not yet*':
+            self._objectModel=self.theModel(
+                OBJECT_METAMODEL,
+                acceptNone=True)
+        return self._objectModel
 
     @property
     def usecaseModel(self):
@@ -134,27 +164,52 @@ class ScenarioModel(Model, Subject):
     def superSubjects(self):
         return []
 
-    def context(self, name):
-        if name in self._contextNamed:
-            return self._contextNamed[name]
-        else:
-            return None
-
     @property
     def contexts(self):
-        #type: () -> List[Context]
-        return self._contextNamed.values()
+        return self.containerCollection.storyContainers(
+            kind='context')
 
-    def scenario(self, name):
-        if name in self._scenarioNamed:
-            return self._scenarioNamed[name]
-        else:
-            return None
+    def context(self, name):
+        return self.containerCollection.storyContainer(
+            kind='context',
+            name=name)
+
+    @property
+    def contextNames(self):
+        return self.containerCollection.storyContainerNames(
+            kind='context')
+
+
+    @property
+    def fragments(self):
+        return self.containerCollection.storyContainers(
+            kind='fragment')
+
+    def fragment(self, name):
+        return self.containerCollection.storyContainer(
+            kind='fragment',
+            name=name)
+
+    @property
+    def fragmentNames(self):
+        return self.containerCollection.storyContainerNames(
+            kind='fragment')
+
 
     @property
     def scenarios(self):
-        #type: () -> List[Context]
-        return self._scenarioNamed.values()
+        return self.containerCollection.storyContainers(
+            kind='scenario')
+
+    def scenario(self, name):
+        return self.containerCollection.storyContainer(
+            kind='scenario',
+            name=name)
+
+    @property
+    def scenarioNames(self):
+        return self.containerCollection.storyContainerNames(
+            kind='scenario')
 
     @property
     def actorInstances(self):
@@ -163,6 +218,9 @@ class ScenarioModel(Model, Subject):
     @property
     def actorInstanceNames(self):
         return self.actorInstanceNamed.keys()
+
+    def addContainer(self, kind, name, container):
+        self.containerCollection.add(kind, name, container)
 
     @property
     def metrics(self):
@@ -197,23 +255,36 @@ class ActorInstance(SourceModelElement, Subject):
         return [self.actor]
 
 
-class StoryBlock(SourceModelElement):
+STORY_KIND=['objectModel', 'context', 'scenario', 'fragment']
+
+
+class StoryContainer(SourceModelElement):
     """
     Container of a story. This abstract class is useful to
-    deal with common characteristics of Context and Scenario
-    at the same time. Both are basically just story container.
+    deal with common characteristics of Context, Fragment and
+    Scenario at the same time. These are basically just story block.
 
-    A story block contains:
+    A story container contains:
     *   a story
     *   a story evaluation. This makes sense since there is only
-        one evaluation for a given context and for a given main scenario.
+        one evaluation for a given context and for a given main
+        scenario.
+
+
+    TODO: Check if this class could be suppressed.
+        This comment is outdated. The evaluation is no longer linked
+        to Context/Fragment "blocks" since they can be composed
+        in various way and there is no point to save the evaluation
+        to optimize execution.
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, model, name, story,
+    def __init__(self,
+                 model, name,
+                 story,
                  storyEvaluation=None,
                  astNode=None, lineNo=None, description=None):
-        super(StoryBlock, self).__init__(
+        super(StoryContainer, self).__init__(
             model=model,
             name=name,
             astNode=astNode,
@@ -227,8 +298,13 @@ class StoryBlock(SourceModelElement):
         #type: Optional[StoryEvaluation]
 
 
-class Context(StoryBlock):
-    def __init__(self, model, name, story,
+class Context(StoryContainer):
+    """
+    A named context. Part of a scenario model.
+    """
+    def __init__(self,
+                 model, name,
+                 story,
                  storyEvaluation=None,
                  astNode=None, lineNo=None, description=None):
         super(Context, self).__init__(
@@ -241,9 +317,35 @@ class Context(StoryBlock):
             description=description)
 
 
+class Fragment(StoryContainer):
+    """
+    A named fragment. Part of a scenario model.
+    Note that 'fragment" are called "story" in the concrete syntax.
+    """
 
-class Scenario(StoryBlock):
-    def __init__(self, model, name, story,
+    def __init__(self,
+                 model, name,
+                 story,
+                 storyEvaluation=None,
+                 astNode=None, lineNo=None, description=None):
+        super(Fragment, self).__init__(
+            model=model,
+            name=name,
+            story=story,
+            storyEvaluation=storyEvaluation,
+            astNode=astNode,
+            lineNo=lineNo,
+            description=description)
+
+
+class Scenario(StoryContainer):
+    """
+    A named scenario. Part of a scenario model.
+    """
+
+    def __init__(self,
+                 model,
+                 name, story,
                  storyEvaluation=None,
                  astNode=None, lineNo=None, description=None):
         super(Scenario, self).__init__(
@@ -256,7 +358,112 @@ class Scenario(StoryBlock):
             description=description)
 
 
+class ObjectModelStoryContainer(StoryContainer):
+    """
+    A reference to the object model, seen as a story reference.
+    This class does not comes from a AST element.
+    (in fact it could be the import statement itself, but this
+    requires a bit of investigation).
+    """
+    def __init__(self,
+                 scenarioModel,
+                 objectModel):
+        #type: (ScenarioModel, ObjectModel) -> None
+        # Not sure if this initialization is ok
+        super(ObjectModelStoryContainer, self).__init__(
+            model=scenarioModel,
+            name='',
+            story=objectModel.story,
+            storyEvaluation=objectModel.storyEvaluation,
+            astNode=None,
+            lineNo=None,
+            description=None)
+        self.objectModel=objectModel
+        #type: ObjectModel
 
+
+
+
+class StoryId(AbstractStoryId):
+
+    def __init__(self, kind, name):
+        assert(kind in STORY_KIND)
+        self.kind=kind
+        #type: Text
+
+        self.name=name
+        #type: Text
+        # '' for object model.
+        # The name of the story container otherwise
+
+    def __str__(self):
+        return 'StoryId(%s,%s)' % (self.kind, self.name)
+
+class StoryContainerCollection(AbstractStoryCollection):
+    """
+    Container for all story containers of a scenario model,
+    story containers being:
+    - the object model imported (kind='objectModel')
+    - contexts defined in the model (kind='context')
+    - fragments defined in the model (kind='fragment')
+    - scenarios defined in the model (kind='scenario')
+    This collection contains StoryContainer but serve
+    also as an implemenation of AbstractStoryCollection
+    by implementing story(storyId).
+    """
+
+    def __init__(self, model):
+        self.model=model
+        #type: ScenarioModel
+
+        self.storyContainerByKindName=OrderedDict()
+        #type: Dict[Text, Dict[Text, StoryContainer]]
+        # Story containers indexed by story kind and then
+        # by story name (the name of the story is the name
+        # of the container.
+
+    def add(self, kind, name, container):
+        #type: (Text, Text, StoryContainer) -> None
+        if kind not in self.storyContainerByKindName:
+            self.storyContainerByKindName[kind]=OrderedDict()
+        self.storyContainerByKindName[kind][name]=container
+
+    def storyContainer(self, kind, name):
+        #type: (Text, Text) -> Optional[StoryContainer]
+        if kind not in self.storyContainerByKindName:
+            return None
+        else:
+            story_by_name=self.storyContainerByKindName[kind]
+            if name not in story_by_name:
+                return None
+            else:
+                return story_by_name[name]
+
+    def storyContainerNames(self, kind):
+        if kind not in self.storyContainerByKindName:
+            return []
+        else:
+            return self.storyContainerByKindName[kind].keys()
+
+    def storyContainers(self, kind):
+        if kind not in self.storyContainerByKindName:
+            return []
+        else:
+            return self.storyContainerByKindName[kind].values()
+
+    def story(self, storyId):
+        #type: (StoryId) -> Optional[Story]
+        """
+        Implement the 'story(storyId) method so that this
+        "container" collection behaves like a "story" collection.
+        """
+        container=self.storyContainer(
+            storyId.kind,
+            storyId.name)
+        if container is None:
+            return None
+        else:
+            return container.story
 
 
 METAMODEL = Metamodel(
