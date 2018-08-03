@@ -1,3 +1,6 @@
+    #@Issue st.eval.ObjectDeletion.NoObject 1
+    #@Issue else *
+
 scenario model Sc_step30
 
 import usecase model from '../uss/us-main-CyberCompany01.uss'

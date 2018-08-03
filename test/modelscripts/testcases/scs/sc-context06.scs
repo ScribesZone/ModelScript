@@ -13,3 +13,9 @@ context A
 
 context B
     bob is an Employee.
+
+scenario A
+    include context A
+
+scenario B
+    include context B
