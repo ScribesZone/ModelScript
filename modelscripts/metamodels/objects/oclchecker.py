@@ -1,0 +1,1 @@
+"""checking invariants.*\nchecked[^\n]*\.\n"""
