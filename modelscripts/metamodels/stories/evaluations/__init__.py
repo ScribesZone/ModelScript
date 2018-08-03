@@ -1,18 +1,18 @@
 # coding=utf-8
 """
 Model elements resulting from the evaluation of a story.
-Each step evaluation is associated with a step but it additionally
-have :
+Each step evaluation is associated with a step but
+it additionally have :
     * a list of issues that the evaluation raise for this step
-    * an access made by the step
+    * a list of accesses made by the step.
 
-While steps are syntactical and have various elements unbound
-(e.g. ('x', A, 'y')) these elements are bound in
-evaluation steps (e.g. x and y have been resolved). The result of
-the binding for each step is not stored however because:
-    * this avoid to have a step class for each step
-      (e.g. ObjectCreation -> ObjectCreationEvaluation)
-    * the binding itself is not so important
+While steps are syntactical elements and have various elements
+unbound (e.g. ('x', A, 'y')) these elements are bound in
+evaluation steps (e.g. x and y have been resolved). However, the
+result of the binding for each step is not stored however because:
+    * this avoid to have a evaluation class for each step class
+      (e.g. ObjectCreation -> ObjectCreationEvaluation),
+    * the binding itself is not so important,
     * what is important is the result of the step evaluation.
 
 Instead of having specialized step evaluation for each step
@@ -24,13 +24,15 @@ The global structure of this metamodel package is as following::
     --->1 Step (step)
     --->* Access
     --->* Issue
-    <--->0..1 StepEvaluation (parent)
+    <---> 0..1 CompositeStepEvaluation (parent)
 
     StepEvaluation
     <|-- CompositeStepEvaluation
         <>--* StepEvaluation (stepEvaluations)
         <|-- StoryEvaluation
             ----1 ObjectModel (finalState)
+    <|-- IncludeEvaluation
+        ----1 Story
     <|-- OperationStepEvaluation  (see "operations" package)
 
 
@@ -54,6 +56,12 @@ from modelscripts.base.issues import (
 from modelscripts.metamodels.stories import (
     Step,
 )
+
+# class CompositeStoryEvaluation(object):
+#
+#     def __init__(self):
+#         self.storyEvaluations=[]
+#         #type: List[StoryEvaluation]
 
 
 class StepEvaluation(SourceModelElement, Subject):
@@ -161,11 +169,15 @@ class StoryEvaluation(CompositeStepEvaluation):
     The evaluation of the story.
     This particular case of CompositeStepEvaluation is
     (1) handy for typing at the story level
-    (2) contains a reference to the object model created by the evaluation
-     """
-    def __init__(self, step):
+    (2) contains a reference to the object model
+        created by the evaluation
+    Although Story (not StoryEvaluation) are always at the top level,
+    StoryEvaluation can be nested in other some other StoryEvaluation
+    through the include mecanism. In the "parent" is not None.
+    """
+    def __init__(self, step, parent=None):
         super(StoryEvaluation, self).__init__(
-            parent=None,
+            parent=parent,
             step=step)
 
         self.checkEvaluations=[]
@@ -175,3 +187,21 @@ class StoryEvaluation(CompositeStepEvaluation):
     @property
     def finalState(self):
         return self.checkEvaluations[-1].frozenState
+
+
+class StoryIncludeEvaluation(CompositeStepEvaluation):
+    """
+    The evaluation of an include.
+    This evaluations references a story evaluation.
+    This story evaluation is also stored as a substep
+    since the parent of the story evaluation is the include.
+    This is why this class inherits from CompositeStepEvaluation.
+    """
+    def __init__(self, parent, step):
+        super(StoryIncludeEvaluation, self).__init__(
+            parent=parent,
+            step=step)
+        self.storyEvaluationIncluded=None
+        #type: Optional[StoryEvaluation]
+        # This value is not set directly by the constructor
+        # but it is set just after. See _eval_include
