@@ -71,6 +71,10 @@ class OperationStep(Step):
             lineNo=lineNo,
             description=description)
 
+    @property
+    def hasOperations(self):
+        return True
+
 
 class UpdateOperationStep(OperationStep):
     __metaclass__ = ABCMeta
@@ -99,7 +103,7 @@ class ConsultOperationStep(OperationStep):
                     parent,
                     astNode=None, lineNo=None,
                     description=None):
-        # type: (Step, bool, Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
+        # type: (Step, Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
         super(ConsultOperationStep, self).__init__(
             parent=parent,
             astNode=astNode,
