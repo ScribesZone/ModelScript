@@ -98,7 +98,7 @@ class StoryEvaluationPrinter(AbstractPrinter):
     def doCheckStepEvaluation(self, stepEval, indent):
         self.outLine('CHECK ---------------- >>>', indent)
         self.outLine(str(stepEval.metrics), indent)
-        analysis_messages=stepEval.frozenState.analyzis.messages
+        analysis_messages=stepEval.frozenState.stateCheck.messages
         self.outLine('%s analysis issues' % len(analysis_messages))
         self.outLine('\n    ->  '.join(analysis_messages))
         return self.output
