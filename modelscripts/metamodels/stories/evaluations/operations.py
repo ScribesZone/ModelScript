@@ -3,10 +3,10 @@
 Metamodel package representing the evaluation of operations.
 This goes with the package "stories.evaluation".
 
-The evaluation of operations is not detailled. That is, there
-is not one class for all operation evaluation.
+The evaluation of operations is not detailled.
+That is, there is no one class for all operation evaluation.
 
-This avoids repeating the hierarchy of
+This simplification avoids repeating the hierarchy of
 Operation class, with only few additional information.
 
 For instance instead of keeping for the deletion of an
@@ -15,9 +15,9 @@ the evaluation), a generic OperationStepEvaluation is
 used instead.
 
 This strategy is good enough since the details
-of the evaluation is not so important. What is important
-is the evaluation of "check" operations and the
-final state (stored in the StoryEvaluation).
+of the evaluation of each operation is not so important.
+What is important is the evaluation of "check" operations as well
+ast the final state (stored in the StoryEvaluation).
 
     StepEvaluation
     <|-- OperationStepEvaluation
@@ -75,17 +75,20 @@ class CheckStepEvaluation(OperationStepEvaluation):
         """
         Create a check evaluation by :
         (1) creating a (frozen) copy of the current state
-        (2) making a analysis of it
+        (2) making an analysis of it
         """
         super(OperationStepEvaluation, self).__init__(
             parent=parent,
             step=step,
             name=name)
         print('HH'*20, 'XX')
+
         self.frozenState=currentState.copy()
         #assoc: FrozesState
+
         self.frozenState.checkStepEvaluation=self
         #assoc FrozesState~
+
         self.frozenState.finalize()
 
         self.frozenState.storyEvaluation=self.storyEvaluation
