@@ -2,7 +2,7 @@
 
 """
 Define a series of object violations with respect to a class
-model and gather all this analysis in an ObjectModelAnalyzis
+model and gather all this analysis in an StateCheck
 object.
 There is one class for each kind of violation. The Analysis
 class contains a register for each kind of violations.
@@ -24,11 +24,28 @@ from modelscripts.metamodels.classes.classes import (
     Class)
 from modelscripts.metamodels.classes.associations import (
     Role)
+from modelscripts.metamodels.classes.invariants import (
+    OCLInvariant)
 from modelscripts.metamodels.objects.objects import (
-    Object)
+    Object,
+    ObjectModel)
 from modelscripts.metamodels.objects.links import (
     LinkRole,
     Link)
+
+__all__={
+    'ConformityViolation',
+    'LinkRoleTypeViolation',
+    'UniqueLinkViolation',
+    'CardinalityViolation',
+    'SlotValueTypeViolation',
+    'IdViolation',
+    'UndefinedIdViolation',
+    'MissingSlotViolation',
+    'CompositionCycleViolation',
+    'OCLInvariantViolation',
+    'StateCheck'
+}
 
 ISSUES={
     'BAD_LINK_TYPE':'ob.ana.Link.WrongType',
@@ -39,6 +56,7 @@ ISSUES={
     'OBJ_UNKNOWED_BAD_ID':'ob.ana.Object.UnknownedId',
     'MISSING_SLOT':'ob.ana.Slot.Missing',
     'CYCLE':'ob.ana.Composition.Cycle',
+    'FAILED_INV':'ob.ana.Invariant.Failed'
 }
 
 def icode(ilabel):
@@ -46,17 +64,27 @@ def icode(ilabel):
 
 
 class ConformityViolation(object):
-
+    """
+    Abstract class for all sort of violations that can occur
+    when checking a state. This ranges from Cardinalityviolations to
+    UndefinedIdViolation.
+    All violations are associated to a StateCheck and provide information
+    related to the issue to generate: a message, a code and a
+    issue level.
+    """
     __metaclass__ = ABCMeta
 
-    def __init__(self, omAnalysis):
-        self.omAnalysis=omAnalysis
-        #type:ObjectModelAnalyzis
+    def __init__(self, stateCheck):
+        self.stateCheck=stateCheck
+        #type: StateCheck
+        """
+        The state this violation applies on.
+        """
 
-        # Register the violation in the general registry
-        # Each kind of violation will additionaly register
+        # Register the violation in the general registry.
+        # Each kind of violation will additionally register
         # itself to the specific violations registry.
-        self.omAnalysis.allViolations.append(self)
+        self.stateCheck.allViolations.append(self)
 
     @abstractproperty
     def message(self):
@@ -74,20 +102,21 @@ class ConformityViolation(object):
 
 class LinkRoleTypeViolation(ConformityViolation):
     """
-    The object o in the position p (source|target) of the link l
-    is of type e instead of a.
+    Conformity violation corresponding to the following case:
+    the object o in the position p (source|target)
+    of the link l is of type e instead of a.
     """
 
     def __init__(self,
-                 omAnalysis,
+                 stateCheck,
                  linkRole):
-        #type: (ObjectModelAnalyzis, LinkRole) -> None
-        super(LinkRoleTypeViolation, self).__init__(omAnalysis)
+        #type: (StateCheck, LinkRole) -> None
+        super(LinkRoleTypeViolation, self).__init__(stateCheck)
         self.linkRole=linkRole
 
         # add the violation to the analysis
         link=self.linkRole.link
-        v_per_link=self.omAnalysis.linkRoleTypeViolationsPerLink
+        v_per_link=self.stateCheck.linkRoleTypeViolationsPerLink
         if link not in v_per_link:
             v_per_link[link]=[]
         v_per_link[link].append(self)
@@ -108,18 +137,22 @@ class LinkRoleTypeViolation(ConformityViolation):
 
 
 class UniqueLinkViolation(ConformityViolation):
+    """
+    Conformity violation corresponding to the following case:
+    two links between the same pair of objects.
+    """
     def __init__(self,
-                 omAnalysis,
+                 stateCheck,
                  duplicatedLinks):
-        #type: (ObjectModelAnalyzis, List[Link]) -> None
+        #type: (StateCheck, List[Link]) -> None
 
-        super(UniqueLinkViolation, self).__init__(omAnalysis)
+        super(UniqueLinkViolation, self).__init__(stateCheck)
 
         self.duplicatedLinks=duplicatedLinks
         #type: List[Link]
 
         # add the violation to the analysis
-        self.omAnalysis.uniqueLinkViolations.append(self)
+        self.stateCheck.uniqueLinkViolations.append(self)
 
     @property
     def source(self):
@@ -153,10 +186,10 @@ class CardinalityViolation(ConformityViolation):
     """
 
     def __init__(self,
-                 omAnalysis,
+                 stateCheck,
                  object,
                  role):
-        super(CardinalityViolation, self).__init__(omAnalysis)
+        super(CardinalityViolation, self).__init__(stateCheck)
 
         self.object=object
         #type: Object
@@ -164,7 +197,7 @@ class CardinalityViolation(ConformityViolation):
         #type: Role
 
         # add the violation to the analysis object
-        v_per_object=omAnalysis.cardinalityViolationsPerObject
+        v_per_object=stateCheck.cardinalityViolationsPerObject
         if self.object not in v_per_object:
             v_per_object[self.object]=[]
         v_per_object[self.object].append(self)
@@ -201,18 +234,18 @@ class SlotValueTypeViolation(ConformityViolation):
     """
 
     def __init__(self,
-                 omAnalysis,
+                 stateCheck,
                  slot,
                  expectedType,
                  actualType):
-        super(SlotValueTypeViolation, self).__init__(omAnalysis)
+        super(SlotValueTypeViolation, self).__init__(stateCheck)
 
         self.slot=slot
         self.expectedType=expectedType
         self.actualType=actualType
 
         # add the violation to the analysis
-        v_per_object=omAnalysis.slotValueTypeViolationPerObject
+        v_per_object=stateCheck.slotValueTypeViolationPerObject
         object=slot.object
         if object not in v_per_object:
             v_per_object[object]=[]
@@ -233,17 +266,17 @@ class SlotValueTypeViolation(ConformityViolation):
 
 class IdViolation(ConformityViolation):
     """
-    Violation of {id} property due to various object having
+    Violation of {id} property due to various objects having
     the same id.
     """
-    def __init__(self, omAnalysis, class_, objects):
-        super(IdViolation, self).__init__(omAnalysis)
+    def __init__(self, stateCheck, class_, objects):
+        super(IdViolation, self).__init__(stateCheck)
 
         self.class_=class_
         self.idPrint=objects[0].idPrint
         self.objects=objects
 
-        v_per_class=self.omAnalysis.idViolationsPerClass
+        v_per_class=self.stateCheck.idViolationsPerClass
         if self.class_ not in v_per_class:
             v_per_class[class_]=[]
         v_per_class[class_].append(self)
@@ -270,10 +303,10 @@ class UndefinedIdViolation(ConformityViolation):
     Violation of {id} cannot be computed due to unspecified
     values.
     """
-    def __init__(self, omAnalysis, class_):
-        super(UndefinedIdViolation, self).__init__(omAnalysis)
+    def __init__(self, stateCheck, class_):
+        super(UndefinedIdViolation, self).__init__(stateCheck)
         self.class_=class_
-        self.omAnalysis.undefinedIdViolation.append(class_)
+        self.stateCheck.undefinedIdViolation.append(class_)
 
     @property
     def message(self):
@@ -294,16 +327,15 @@ class MissingSlotViolation(ConformityViolation):
     Unspecified value for an attribute.
     According to the class of an object the object should have
     a slot, but there is none.
-    Computed by
     """
-    def __init__(self, omAnalysis, object, attribute):
-        super(MissingSlotViolation, self).__init__(omAnalysis)
+    def __init__(self, stateCheck, object, attribute):
+        super(MissingSlotViolation, self).__init__(stateCheck)
 
         self.object=object
         self.attribute=attribute
 
         # add the violation to the analysis
-        v_per_object=omAnalysis.missingSlotsPerObject
+        v_per_object=stateCheck.missingSlotsPerObject
         if self.object not in v_per_object:
             v_per_object[self.object]=[]
         v_per_object[self.object].append(self)
@@ -327,41 +359,85 @@ class CompositionCycleViolation(ConformityViolation):
     pass
 
 
-class ObjectModelAnalyzis(object):
+class OCLInvariantViolation(ConformityViolation):
+    """
+    OCL invariant which failed for the given state.
+    """
+
+    def __init__(self, stateCheck, oclInvariant): #TODO: add param
+        #type: (StateCheck, OCLInvariant) -> None
+
+        super(OCLInvariantViolation, self).__init__(stateCheck)
+
+        self.oclInvariant = oclInvariant
+        #type: OCLInvariant
+
+        #TODO: add info
+
+        # add the violation to the analysis
+        stateCheck.oclInvariantViolations.append(self)
+
+    @property
+    def message(self):
+        return (
+                'OCL invariant failed for objects') # TODO: improve
+
+    @property
+    def issueCode(self):
+        return 'FAILED_INV'
+
+
+class StateCheck(object):
+    """
+    Check of an ObjectModel. Executing the check() method
+    creates a list of ConformityViolation. There is one list
+    for each kind of violation, and one global that
+    contains all kind of violations.
+    An Issue is raised for each violation.
+    """
 
     def __init__(self, objectModel):
         self.objectModel=objectModel
+        #type: ObjectModel
+        # The object model being checked.
 
         self.allViolations=[]
         #type: List[ConformityViolation]
-        # filled by all analyzis method through the class
+        # Filled by all check methods through the abstract class
         # ConformityViolation
 
         self.linkRoleTypeViolationsPerLink=OrderedDict()
         #type: Dict[Link, List[LinkRoleTypeViolation]]
-        # filled by _analyze_roles_types
+        # Filled by _check_roles_types
 
         self.uniqueLinkViolations=[]
         #type: List[UniqueLinkViolation]
+        # Filled by _check_unique_links
 
         self.undefinedIdViolation=[]
         #type: List[Class]
+        # filled by _check_object_ids
 
         self.idViolationsPerClass=OrderedDict()
         #type: Dict[Class, List[IdViolation]]
-        # filled by _analyze_object_ids
+        # filled by _check_object_ids
 
         self.slotValueTypeViolationPerObject=OrderedDict()
         #type: Dict[Object, List[SlotValueTypeViolation]]
+        # filled by _check_slot_types
 
         self.missingSlotsPerObject=OrderedDict()
         #type: Dict[Object, List[MissingSlotViolation]]
-        # filled by _analyze_missing_slots
+        # filled by _check_missing_slots
 
         self.cardinalityViolationsPerObject=OrderedDict()
         #type: Dict[Object, List[CardinalityViolation]]
+        # filled by _check_cardinalities
 
-    def _analyze_slot_types(self, object):
+        self.oclInvariantViolations=[]
+        #type: List[OCLInvariantViolation]
+
+    def _check_slot_types(self, object):
         """
         Visit what slot that exist for the given object
         and then compare them with the schema for the object.
@@ -370,12 +446,12 @@ class ObjectModelAnalyzis(object):
         for slot in object.slots:
             if not slot.attribute.type.accept(slot.simpleValue):
                 SlotValueTypeViolation(
-                    omAnalysis=self,
+                    stateCheck=self,
                     slot=slot,
                     expectedType=slot.attribute.type,
                     actualType=type(slot.simpleValue))
 
-    def _analyze_missing_slots(self, object):
+    def _check_missing_slots(self, object):
         """
         Visit the schema and then compare it with existing slot
         to check that all expected attributes are defined
@@ -387,17 +463,17 @@ class ObjectModelAnalyzis(object):
                     break
             else:
                 self.missingSlot=MissingSlotViolation(
-                    omAnalysis=self,
+                    stateCheck=self,
                     object=object,
                     attribute=attr
                 )
 
-    def _analyze_object_slots(self):
+    def _check_object_slots(self):
         for object in self.objectModel.objects:
-            self._analyze_slot_types(object)
-            self._analyze_missing_slots(object)
+            self._check_slot_types(object)
+            self._check_missing_slots(object)
 
-    def _analyze_object_ids(self):
+    def _check_object_ids(self):
         om=self.objectModel
         if om.classModel is not None:
             # check ids for all classes
@@ -420,15 +496,15 @@ class ObjectModelAnalyzis(object):
                                 has_unspecified=True
                         if len(like_o1)>=2:
                             IdViolation(
-                                omAnalysis=self,
+                                stateCheck=self,
                                 class_=class_,
                                 objects=like_o1)
                 if has_unspecified:
                     UndefinedIdViolation(
-                        omAnalysis=self,
+                        stateCheck=self,
                         class_=class_)
 
-    def _analyze_link_role_types(self):
+    def _check_link_role_types(self):
         """
         Check, for all links, that the type of the origin/target
         objects are compatible with the type of the corresponding
@@ -469,7 +545,7 @@ class ObjectModelAnalyzis(object):
         """
         For all objects, add all the roles (linkRole indeed) that are
         defined in the schema. If the role has not be defined by
-        _analyze_link_role_types it will be initialized here. It will
+        _check_link_role_types it will be initialized here. It will
         be initialized to [], at lest if there is not set before..
         """
         for object in self.objectModel.objects:
@@ -477,7 +553,7 @@ class ObjectModelAnalyzis(object):
                 if role not in object._link_roles_per_role:
                     object._link_roles_per_role[role]=[]
 
-    def _analyze_cardinalities(self):
+    def _check_cardinalities(self):
         for object in self.objectModel.objects:
             print('HH'*10, 'check card for %s' % object)
             for role in object._link_roles_per_role.keys():
@@ -487,7 +563,7 @@ class ObjectModelAnalyzis(object):
 
                 if not ok:
                     CardinalityViolation(
-                        omAnalysis=self,
+                        stateCheck=self,
                         object=object,
                         role=role
                     )
@@ -497,7 +573,7 @@ class ObjectModelAnalyzis(object):
                     #     actual,
                     #     role.cardinalityLabel))
 
-    def _analyze_unique_links(self):
+    def _check_unique_links(self):
         # reuse the _link_roles_per_role to simplify comparaison
         # A link is duplicate if the same object play more than
         # one the same role.
@@ -519,9 +595,17 @@ class ObjectModelAnalyzis(object):
                         for o in links_per_object.keys():
                             if len(links_per_object[o]) >= 2:
                                 UniqueLinkViolation(
-                                    omAnalysis=self,
+                                    stateCheck=self,
                                     duplicatedLinks=\
                                         links_per_object[o])
+
+    def _check_invariants(self):
+        # Check all ocl invariants.
+        # This check is performed by USE tool
+        # It creates OCLInvariantViolation
+        print(('@@'*40+'\n')*5)
+        print('@@'*10, 'ocl invariant to be checked with use ocl')
+        print(('@@'*40+'\n')*5)
 
     def XXX(self):
         for object in self.objectModel.objects:
@@ -554,15 +638,20 @@ class ObjectModelAnalyzis(object):
         for v in self.allViolations:
             self._raise_issue(v)
 
-    def analyze(self):
-        self._analyze_object_ids()
-        self._analyze_object_slots()
-        self._analyze_link_role_types()    # must be here
+    def check(self):
+        # perform all checks
+        self._check_object_ids()
+        self._check_object_slots()
+        self._check_link_role_types()    # must be here
         self._add_all_roles_from_schema()  # must be here
-        self._analyze_cardinalities()
-        self._analyze_unique_links()
+        self._check_cardinalities()
+        self._check_unique_links()
+        self._check_invariants()
+
+        # tranform failed check to issues
         if self.objectModel.checkStepEvaluation is not None:
             self._raise_all_issues_located_at_check_point()
+
         self.XXX()
 
 
@@ -592,7 +681,7 @@ class ObjectModelAnalyzis(object):
         #                 result.append((link.source, link))
         #     return result
 
-    #     def _analyze_object_roles(self, object):
+    #     def _check_object_roles(self, object):
     #         for role in object.class_.outgoingRoles:
     #             links=self._objects_per_role(object, role)
     #             if role.acceptCardinality(len(links), role.card
