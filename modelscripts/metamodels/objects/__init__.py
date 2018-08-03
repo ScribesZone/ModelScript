@@ -178,6 +178,19 @@ class ObjectModel(Model):
             o for o in self.objects if o.class_==class_]
 
     @property
+    def story(self):
+        #type: () -> Optional['Story']
+        """
+        Return None if the ObjectModel does not results from
+        a story evaluation. Otherwise return the corresponding
+        story.
+        """
+        if self.storyEvaluation is None:
+            return None
+        else:
+            return self.storyEvaluation.step
+
+    @property
     def metrics(self):
         #type: () -> Metrics
         ms=super(ObjectModel, self).metrics
