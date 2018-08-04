@@ -10,5 +10,7 @@ story SB
 scenario A
     include context C
     include story SB
+    create software : Department
+    check
     create (xuon, WorksIn, hardware)
 
