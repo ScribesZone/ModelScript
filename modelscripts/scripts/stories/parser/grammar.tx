@@ -10,9 +10,10 @@ Story:
 //............................ Steps .........................
 
 Step:
-        TextStep
-      | VerbStep
-      | OperationStep
+      TextStep
+    | IncludeStep // ### ORDER IS IMPORTANT. Before VerbStep ####
+    | OperationStep
+    | VerbStep
 
 ;
 
@@ -32,7 +33,7 @@ TextStep:
 //...................... Verb steps ...........................
 
 VerbStep:
-    subjectName = ID
+    subjectName = VerbID
     ('va'|'do') ?
     verbName = ID
     (o_
@@ -41,6 +42,37 @@ VerbStep:
     X
 ;
 
+VerbID:
+    !NoVerbKeyword ID
+;
+
+NoVerbKeyword:
+      'include'  | 'inclu'
+    | 'read'     | 'lit'
+    | 'create'   | 'cree'
+    | 'delete'   | 'detruit'
+    | 'update'   | 'modifie'
+    | 'set'      | 'init'
+    | 'check'    | 'verifie'
+;
+
+
+//...................... Include steps .............................
+
+IncludeStep:
+    IncludeVerb
+    storyId = StoryID              // This must be defined
+    X
+;
+
+IncludeVerb:
+      'include'
+    | 'inclu'
+;
+
+StoryID:
+    kind=ID name=ID
+;
 
 //...................... Operation steps ...........................
 
@@ -112,8 +144,8 @@ CheckVerb:
 ;
 
 ReadVerb:
-      'Read'
-    | 'Lire'
+      'read'
+    | 'lit'
 ;
 
 CreateVerb:
