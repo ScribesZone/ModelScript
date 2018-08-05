@@ -14,6 +14,7 @@ Descriptor:
 Declaration:
       ActorInstancePart
     | Context
+    | Fragment
     | Scenario
 ;
 
@@ -33,6 +34,19 @@ ActorInstanceDeclaration:
 
 Context:
     'context' (name = ID) ? (o_
+        story = Story
+    _o) ?
+    X
+;
+
+
+// NOTE:  While the keyword "story" is used externaly, internaly
+// this corresponds to "fragments".
+// In the concrete syntax the keyword "story" looks better from a
+// user point of view.
+
+Fragment:
+    'story'  (name = ID) (o_  // Note 'story' vs 'Fragment'
         story = Story
     _o) ?
     X
