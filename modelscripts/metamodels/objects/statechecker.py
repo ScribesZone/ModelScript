@@ -437,6 +437,11 @@ class StateCheck(object):
         self.oclInvariantViolations=[]
         #type: List[OCLInvariantViolation]
 
+
+    @property
+    def checkStepEvaluation(self):
+        return self.objectModel.checkStepEvaluation
+
     def _check_slot_types(self, object):
         """
         Visit what slot that exist for the given object
@@ -603,9 +608,9 @@ class StateCheck(object):
         # Check all ocl invariants.
         # This check is performed by USE tool
         # It creates OCLInvariantViolation
-        print(('@@'*40+'\n')*5)
+        # print(('@@'*40+'\n')*5)
         print('@@'*10, 'ocl invariant to be checked with use ocl')
-        print(('@@'*40+'\n')*5)
+        # print(('@@'*40+'\n')*5)
 
     def XXX(self):
         for object in self.objectModel.objects:
@@ -632,7 +637,7 @@ class StateCheck(object):
             astNode=ast_node,
             position=position,
             level=v.level,
-            message=v.message)
+            message='%s:%s' % (check.label, v.message))
 
     def _raise_all_issues_located_at_check_point(self):
         for v in self.allViolations:
