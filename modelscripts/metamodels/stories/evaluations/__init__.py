@@ -1,15 +1,17 @@
 # coding=utf-8
 """
 Model elements resulting from the evaluation of a story.
-Each step evaluation is associated with a step but
-it additionally have :
+Each StepEvaluation is associated with the Step at its origin.
+Each StepEvaluation additionally has :
     * a list of issues that the evaluation raise for this step
     * a list of accesses made by the step.
 
 While steps are syntactical elements and have various elements
-unbound (e.g. ('x', A, 'y')) these elements are bound in
-evaluation steps (e.g. x and y have been resolved). However, the
-result of the binding for each step is not stored however because:
+unbound (e.g. ('x', A, 'y')) these elements are then bound in
+evaluation steps (e.g. x and y have been resolved).
+
+However, the result of the binding for each step is not stored
+however because:
     * this avoid to have a evaluation class for each step class
       (e.g. ObjectCreation -> ObjectCreationEvaluation),
     * the binding itself is not so important,
@@ -56,12 +58,6 @@ from modelscripts.base.issues import (
 from modelscripts.metamodels.stories import (
     Step,
 )
-
-# class CompositeStoryEvaluation(object):
-#
-#     def __init__(self):
-#         self.storyEvaluations=[]
-#         #type: List[StoryEvaluation]
 
 
 class StepEvaluation(SourceModelElement, Subject):
