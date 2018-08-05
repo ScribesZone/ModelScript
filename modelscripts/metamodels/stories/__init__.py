@@ -81,10 +81,6 @@ class Step(SourceModelElement, Subject):
         if parent is not None:
             self.parent.steps.append(self)
 
-    # @abstractproperty
-    # def hasOperations(self):
-    #     raise NotImplementedError('hasOperations')
-
     @property
     def superSubjects(self):
         """ Direct parents """
@@ -93,10 +89,19 @@ class Step(SourceModelElement, Subject):
 
     @property
     def subjectLabel(self):
-        """ Label of step. Using something like "story.3.2.5" """
+        """
+        Label of step. Using something like "story.3.2.5"
+        """
         parent_label=self.parent.subjectLabel
         nth_label=self.parent.steps.index(self)+1
         return '%s.%s' % (parent_label, nth_label)
+
+    @property
+    def story(self):
+        if self.parent is None:
+            return self
+        else:
+            return self.parent.story
 
 
 class CompositeStep(Step):
@@ -124,14 +129,6 @@ class CompositeStep(Step):
 
         self.steps=[]
         #type: List[Step]
-    #
-    # @property
-    # def hasOperations(self):
-    #     for substep in self.steps:
-    #         if substep.hasOperations:
-    #             return True
-    #     else:
-    #         return False
 
 
 class Story(CompositeStep):
@@ -149,17 +146,21 @@ class Story(CompositeStep):
 
     def __init__(self,
                  model,
+                 storyContainer=None,
                  astNode=None,
                  lineNo=None,
                  description=None):
-        # """
-        # Create the story.
-        # The "model" might be unknown at this time, but it can
-        # be set later. Subclasses of Step will compute "model"
-        # at initialization time (e.g. "self.model = parent.model").
-        # As long as the attribute "model" is defined for the root
-        # (the Story), this is ok.
-        # """
+        """
+        Create a Story. A StoryContainer can be associated to
+        the Story if the story has been created from the scenario.
+
+        The "model" might be unknown at this time, but it can
+        be set later. Subclasses of Step will compute "model"
+        at initialization time (e.g. their consructor contains
+        some code like "self.model = parent.model").
+        As long as the attribute "model" is defined for the root
+        (the Story), this is ok.
+        """
         super(Story, self).__init__(
             model=model,
             parent=None,
@@ -167,13 +168,27 @@ class Story(CompositeStep):
             lineNo=lineNo,
             description=description)
 
+        self.storyContainer=storyContainer
+        #type: Optional['StoryContainer']
+        # This attribute has a value only for stories created from
+        # a scenarios.StoryContainer. The StoryContainer type
+        # is left implicit above because the whole module have been
+        # designed to be independent from 'scenarios'.
+        # Here the variable is just used to improve labels.
+
     @property
     def superSubjects(self):
-        return [self.model]
+        if self.storyContainer is None:
+            return [self.model]
+        else:
+            return [self.storyContainer]
 
     @property
     def subjectLabel(self):
-        return 'story'
+        if self.storyContainer is None:
+            return 'story'
+        else:
+            return self.storyContainer.subjectLabel
 
 
 class TextStep(CompositeStep):
