@@ -24,7 +24,10 @@ from modelscripts.metamodels.scenarios import (
     ScenarioModel,
     ActorInstance,
     Context,
+    Fragment,
     Scenario,
+    ObjectModelStoryContainer,
+    StoryId,
     METAMODEL
 )
 # from modelscripts.metamodels.scenarios.operations import (
@@ -51,6 +54,9 @@ from modelscripts.metamodels.glossaries import (
 from modelscripts.metamodels.permissions import (
     PermissionModel
 )
+from modelscripts.metamodels.objects import (
+    ObjectModel
+)
 from modelscripts.megamodels.sources import (
     ASTBasedModelSourceFile
 )
@@ -60,9 +66,18 @@ from modelscripts.scripts.textblocks.parser import (
 from modelscripts.scripts.stories.parser import (
     StoryFiller
 )
-from modelscripts.metamodels.stories.evaluations.evaluator import (
-    StoryEvaluator
+from modelscripts.metamodels.stories import (
+    AbstractStoryId
 )
+from modelscripts.metamodels.stories.evaluations.evaluator import (
+    StoryEvaluator,
+)
+# from modelscripts.metamodels.stories import (
+#     CompositeStory
+# )
+# from modelscripts.metamodels.stories.evaluations import (
+#     CompositeStoryEvaluation
+# )
 
 __all__=(
     'ObjectModelSource'
@@ -75,6 +90,10 @@ DEBUG=0
 ISSUES={
     'DESCRIPTOR_TWICE':'sc.syn.Descriptor.Twice',
     'ACTOR_NOT_FOUND':'sc.syn.ActorInstance.NoActor',
+    'CONTEXT_TWICE':'sc.syn.Context.Twice',
+    'FRAGMENT_TWICE':'sc.syn.Fragment.Twice',
+    'SCENARIO_TWICE':'sc.syn.Scenario.Twice',
+
     # 'ACTOR_INSTANCE_NOT_FOUND':'sc.syn.Story.NoActorInstance',
     # 'USECASE_NOT_FOUND':'sc.syn.Story.NoUsecase',
     # 'OBJECT_CLASS_NOT_FOUND':'sc.syn.ObjectCreation.NoClass',
@@ -83,6 +102,13 @@ ISSUES={
 def icode(ilabel):
     return ISSUES[ilabel]
 
+
+
+
+    # @classmethod
+    # def getScenarioStoryId(cls, name, kind):
+    #     if name=='object' and kind=='model':
+    #      XXXX
 
 class ScenarioModelSource(ASTBasedModelSourceFile):
 
@@ -136,6 +162,10 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
         return METAMODEL
 
     def fillModel(self):
+        """
+        Parse the scenario source model.
+        Use StoryFiller for parts that are stories.
+        """
 
         def define_descriptor(ast_descriptor):
             name=ast_descriptor.name
@@ -215,7 +245,6 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
             )
             return step
 
-
         def define_actor_part(ast_actor_part):
             # ap = ast_actor_part.actorPart
             # if ap is not None:
@@ -230,19 +259,69 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
                 allowDefinition=True,
                 allowAction=False,
                 allowVerb=False,
+                allowedIncludeKinds=[],
+                getStoryId=self.getStoryId,
                 astStory=ast_context.story)
             story=context_filler.story()
-            #TODO: check for existing name -> error
-            self.scenarioModel._contextNamed[name]=(
+            c=self.scenarioModel.context(name)
+            if c is not None:
+                ASTNodeSourceIssue(
+                    code=icode('CONTEXT_TWICE'),
+                    astNode=ast_context,
+                    level=Levels.Error,
+                    message='Context "%s" already defined.'
+                            ' Previous definition ignored.' % name)
+            context=\
                 Context(
                     model=self.scenarioModel,
                     name=name,
                     story=story,
-                    # TODO: launch evaluation
                     storyEvaluation=None, # filled in resolve
-                    astNode=ast_context
-                )
-            )
+                    astNode=ast_context)
+            story.storyContainer=context
+            self.scenarioModel.containerCollection.add(
+                kind='context',
+                name=name,
+                container=context)
+
+        def define_fragment(ast_fragment):
+            # NOTE:  While the keyword "story" is used externaly,
+            # in the metamodel the term used is "fragment"
+            # (Fragment inherits from Story). In the
+            # concrete syntax the keyword "story" looks better.
+            name=ast_fragment.name
+            context_filler = StoryFiller(
+                model=self.scenarioModel,
+                contextMessage='stories', # "stories": see above
+                allowDefinition=False,
+                allowAction=True,
+                allowVerb=True,
+                allowedIncludeKinds=[],
+                getStoryId=self.getStoryId,
+                astStory=ast_fragment.story)
+            story=context_filler.story()
+            c=self.scenarioModel.fragment(name)
+            if c is not None:
+                ASTNodeSourceIssue(
+                    code=icode('FRAGMENT_TWICE'),
+                    astNode=ast_fragment,
+                    level=Levels.Error,
+                    # 'Story" instead of 'fragment': see above
+                    message='Story "%s" already defined.'
+                            ' Previous definition ignored.' % name)
+            fragment=\
+                Fragment(
+                    model=self.scenarioModel,
+                    name=name,
+                    story=story,
+                    storyEvaluation=None,  # filled in resolve
+                    astNode=ast_fragment)
+            story.storyContainer = fragment
+
+            self.scenarioModel.containerCollection.add(
+                kind='fragment',
+                name=name,
+                container=fragment)
 
         def define_scenario(ast_scenario):
             name='' if ast_scenario.name is None else ast_scenario.name
@@ -252,21 +331,52 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
                 allowDefinition=False,
                 allowAction=True,
                 allowVerb=True,
+                allowedIncludeKinds=[
+                    'objectModel',
+                    'context',
+                    'fragment'],
+                getStoryId=self.getStoryId,
                 astStory=ast_scenario.story)
             story=scenario_filler.story()
-            #TODO: check for existing name -> error
-            self.scenarioModel._scenarioNamed[name]=(
+            s=self.scenarioModel.scenario(name)
+            if s is not None:
+                ASTNodeSourceIssue(
+                    code=icode('SCENARIO_TWICE'),
+                    astNode=ast_scenario,
+                    level=Levels.Error,
+                    message='Scenario "%s" already defined.'
+                            ' Previous definition ignored.' % name)
+            scenario=\
                 Scenario(
                     model=self.scenarioModel,
                     name=name,
                     story=story,
-                    # TODO: launch evaluation
-                    storyEvaluation=None, # filled in resolve
-                    astNode=ast_scenario
-                )
-            )
+                    storyEvaluation=None,  # filled in resolve
+                    astNode=ast_scenario)
+            story.storyContainer = scenario
+
+            self.scenarioModel.containerCollection.add(
+                kind='scenario',
+                name=name,
+                container=scenario)
+
 
         ast_root=self.ast.model
+
+        #  Initialized
+        # with the object model if there is one. Otherwise nothing
+        # is added, so that no object model container will be found later.
+        # The parser should later
+        # add contexts, fragments and scenarios.
+        if self.objectModel is not None:
+            container=ObjectModelStoryContainer(
+                scenarioModel=self.scenarioModel,
+                objectModel = self.objectModel)
+            self.scenarioModel.containerCollection.add(
+                kind='objectModel',
+                name='',
+                container=container
+            )
 
         #---- descriptors -----------------------------------
         for descriptor in ast_root.descriptors:
@@ -278,46 +388,106 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
                 define_actor_part(declaration)
             elif type_=='Context':
                 define_context(declaration)
+            elif type_=='Fragment':
+                define_fragment(declaration)
             elif type_=='Scenario':
                 define_scenario(declaration)
             else:
                 raise NotImplementedError(
                     'AST type not expected: %s' % type_)
 
+
+    #     ######################################################
+    # def resolveOLD(self): ####################################
+    #     ######################################################
+    #
+    #
+    #     def state_after_object_model():
+    #         # object model copy or new empty one
+    #         if self.objectModel is not None:
+    #             state=self.objectModel.copy()
+    #         else:
+    #             state=ShadowObjectModel(
+    #                 classModel=self.classModel
+    #             )
+    #         return state
+    #
+    #     def resolve_context(context):
+    #         # object
+    #         #   then context
+    #         evaluator = StoryEvaluator(
+    #             initialState=state_after_object_model(),
+    #             permissionSet=None)
+    #         context.storyEvaluation = evaluator.evaluateStory(
+    #             context.story)
+    #
+    #     def resolve_scenario(scenario):
+    #         # context with same name if any otherwise object
+    #         #   then scenario
+    #         context=self.scenarioModel.context(scenario.name)
+    #         if context is None:
+    #             state=state_after_object_model()
+    #         else:
+    #             state=context.storyEvaluation.finalState.copy()
+    #         evaluator = StoryEvaluator(
+    #             initialState=state,
+    #             permissionSet=None)
+    #         scenario.storyEvaluation = evaluator.evaluateStory(
+    #             scenario.story)
+    #
+    #     for context in self.scenarioModel.contexts:
+    #         resolve_context(context)
+    #
+    #     for scenario in self.scenarioModel.scenarios:
+    #         resolve_scenario(scenario)
+
     def resolve(self):
 
-        def state_after_object_model():
-            if self.objectModel is not None:
-                state=self.objectModel.copy()
-            else:
-                state=ShadowObjectModel(
-                    classModel=self.classModel
-                )
-            return state
-
-        def resolve_context(context):
-            evaluator = StoryEvaluator(
-                initialState=state_after_object_model(),
-                permissionSet=None)
-            context.storyEvaluation = evaluator.evaluateStory(
-                context.story)
 
         def resolve_scenario(scenario):
-            context=self.scenarioModel.context(scenario.name)
-            if context is None:
-                state=state_after_object_model()
-            else:
-                state=context.storyEvaluation.finalState.copy()
-            evaluator = StoryEvaluator(
-                initialState=state,
-                permissionSet=None)
-            scenario.storyEvaluation = evaluator.evaluateStory(
-                scenario.story)
+            """
+            Evaluate a given scenario in the context of a given
+            story collection.
+            """
+            #---- (1) the container collection serve as the
+            # story collection thanks to the method 'getStory()'.
+            story_collection=self.scenarioModel.containerCollection
 
-        for context in self.scenarioModel.contexts:
-            resolve_context(context)
+            #---- (1) start with an empty objec model
+            initial_state=ShadowObjectModel(
+                classModel=self.classModel)
+            #---- (2) evaluate the given scenario
+            evaluator = StoryEvaluator(
+                initialState=initial_state,
+                storyCollection=story_collection,
+                permissionSet=None)  #TODO: refers to permission model
+            scenario.storyEvaluation = \
+                evaluator.evaluateStory(
+                    scenario.story)
 
         for scenario in self.scenarioModel.scenarios:
             resolve_scenario(scenario)
+
+
+    def getStoryId(self, kind, name):
+        """
+        "Parse" and "validate" syntactically the string pair
+        and return a StoryId. Note that "story" is the external way
+        for user to denotes "fragments".
+        This function returns None if case or "error", that is,
+        when no StoryId can be build.
+        This function is used as a parameter to StoryFiller.
+        """
+        if kind=='object':
+            if name!='model':
+                return None
+            else:
+                return StoryId('objectModel', '')
+        elif kind=='story':
+            return StoryId('fragment', name)
+        elif kind in ['context', 'scenario']:
+            return StoryId(kind, name)
+        else:
+            return None
 
 METAMODEL.registerSource(ScenarioModelSource)
