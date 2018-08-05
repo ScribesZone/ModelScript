@@ -293,10 +293,18 @@ class LinkObjectCreationStep(UpdateOperationStep):
 class CheckStep(ConsultOperationStep):
 
     def __init__(self,
-                 parent, astNode=None, position=None):
+                 parent, number, position=None, astNode=None):
         super(CheckStep, self).__init__(
             parent=parent,
             astNode=astNode)
+
+        self.number=number
+        #type: int
+        """
+        The index of the CheckStep in the story.
+        It is computed be StoryFiller.
+        This number is used to give a label to this CheckStep.
+        """
 
         self.position=position
         #type: Optional['before','after']
@@ -305,6 +313,14 @@ class CheckStep(ConsultOperationStep):
         or implicit 'before' or 'after' a block. These implicit
         checks step are automatically added by the parser.
         """
+
+    @property
+    def label(self):
+        id='%s#%i' % (self.story.subjectLabel, self.number)
+        if self.position is None:
+            return 'check %s' % id
+        else:
+            return '%s-check %s' % (self.position, id)
 
 
 class ReadStep(ConsultOperationStep):
