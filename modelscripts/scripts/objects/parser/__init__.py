@@ -27,11 +27,14 @@ from modelscripts.megamodels.metamodels import Metamodel
 from modelscripts.scripts.textblocks.parser import (
     astTextBlockToTextBlock
 )
+from modelscripts.metamodels.stories import (
+    EmptyStoryCollection
+)
 from modelscripts.scripts.stories.parser import (
     StoryFiller
 )
 from modelscripts.metamodels.stories.evaluations.evaluator import (
-    StoryEvaluator
+    StoryEvaluator,
 )
 __all__=(
     'ObjectModelSource'
@@ -90,30 +93,36 @@ class ObjectModelSource(ASTBasedModelSourceFile):
         # First fill the story model  with StoryFiller
         # then evaluate the story model leading to the object model
 
-        #--- (1) fill the story model
         filler=StoryFiller(
-            model=self.objectModel,         # use this actual object model
+            model=self.objectModel,     # use this actual object model
             contextMessage='object models',
             allowDefinition=True,
             allowAction=False,
             allowVerb=False,
+            allowedIncludeKinds=[],
+            getStoryId=None,
             astStory=self.ast.model.story)
         self.story=filler.story()
 
-        #--- (2) evaluate the story model to get the object model
+    def resolve(self):
+
+        #---- (1) Evaluate the story to get the object model
         evaluator=StoryEvaluator(
             initialState=self.objectModel,
+            storyCollection=EmptyStoryCollection(),
             permissionSet=None)
         self.storyEvaluation=evaluator.evaluateStory(self.story)
-
         # At this point the object model contains the final state
         # This is due to the face that the model self.objectModel
         # as been given from the beginning to the StoryFiller
 
-        self.objectModel.storyEvaluation=self.storyEvaluation
+        #---- (3) Register the story evaluation
         # register this evaluation so that the model know from
         # where it comes from. This is useful for instance if one
-        # try to display de story (evaluation) from the model.
+        # try to display the story (evaluation) from the model.
+        self.objectModel.storyEvaluation=self.storyEvaluation
 
+    def finalize(self):
+        pass
 
 METAMODEL.registerSource(ObjectModelSource)
