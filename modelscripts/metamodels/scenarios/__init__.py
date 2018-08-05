@@ -115,7 +115,7 @@ class ScenarioModel(Model, Subject):
         self.containerCollection=StoryContainerCollection(self)
         #type: StoryContainerCollection
         # The collection of all story container.
-        #
+
 
 
 
@@ -258,7 +258,7 @@ class ActorInstance(SourceModelElement, Subject):
 STORY_KIND=['objectModel', 'context', 'scenario', 'fragment']
 
 
-class StoryContainer(SourceModelElement):
+class StoryContainer(SourceModelElement, Subject):
     """
     Container of a story. This abstract class is useful to
     deal with common characteristics of Context, Fragment and
@@ -297,6 +297,18 @@ class StoryContainer(SourceModelElement):
         self.storyEvaluation=storyEvaluation
         #type: Optional[StoryEvaluation]
 
+    @property
+    def superSubjects(self):
+        """ Direct parents """
+        # type: () -> List[Subject]
+        return [self.model]
+
+    @property
+    def subjectLabel(self):
+        """
+        Label of story.
+        """
+        return self.name
 
 class Context(StoryContainer):
     """
