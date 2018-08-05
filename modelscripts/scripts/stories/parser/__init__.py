@@ -2,16 +2,22 @@
 
 """
 Parser package dealing with the parsing of stories.
-This package provides a single class StoryFiller that allow,
-given an AST Story provided by the parser, to get a "Story".
+This package provides a single class "StoryFiller".
+This class allows, given an AST Story provided by the parser,
+to get a "Story" AST.
 
 This module allows to share this parsing among various parsers.
-At the moment stories are used inside ObjectModel parser
-and Scenario parser. Both module call the StoryFiller to parse
-the subset(s) of the AST corresponding to the story.
-"""
 
-from typing import Union
+At the moment stories are used inside:
+*   ObjectModel parser
+*   Scenario parser.
+
+Both modules call the StoryFiller to parse the subset(s) of
+the AST corresponding to the story. Parameters makes it possible
+to control a proprt subset of the (more general) language.
+"""
+from __future__ import print_function
+from typing import Union, Text, Callable, Optional, List
 from modelscripts.base.grammars import (
     ASTNodeSourceIssue
 )
@@ -28,6 +34,8 @@ from modelscripts.metamodels.stories import (
     Story,
     TextStep,
     VerbStep,
+    IncludeStep,
+    AbstractStoryId
 )
 from modelscripts.metamodels.classes.types import EnumerationValue
 
@@ -46,6 +54,9 @@ ISSUES={
     # 'DESCRIPTOR_TWICE':'st.syn.Descriptor.Twice',
     # 'ACTOR_NOT_FOUND':'st.syn.ActorInstance.NoActor',
     # 'ACTOR_INSTANCE_NOT_FOUND':'st.syn.Story.NoActorInstance',
+    'BAD_STORY_ID':'st.syn.Story.BadInclude',
+    'NO_INCLUDE':'st.syn.Story.NoInclude',
+    'WRONG_INCLUDE':'st.syn.Story.WrongInclude',
     'NO_VERB':'st.syn.Story.NoVerb',
     'NO_ACTION':'st.syn.Story.NoAction',
     'NO_DEFINITION':'st.syn.Story.NoDefinition',
@@ -62,46 +73,112 @@ def icode(ilabel):
     return ISSUES[ilabel]
 
 
+GetStoryFun=Callable[[Text, Text], Optional[AbstractStoryId]]
+
 class StoryFiller():
     """
-    Creator of stories AST model.
-    Various parameters allows to tune what story steps are valid or not.
-    Virtual "check" statements are added where appropriate.
+    Creator of story AST models.
+    Various parameters allow to tune what story features are valid
+    or not. This allow reusing and tuning the parser in the context
+    of "objects" and "scenarios".
+    Virtual "check" statements are also added where appropriate.
     """
 
     def __init__(self,
                  model,
-                 contextMessage,
+                 contextMessage,  # e.g. "object model" or "context"
                  allowDefinition,
                  allowAction,
                  allowVerb,
+                 allowedIncludeKinds,
+                 getStoryId,
                  astStory):
-        #type: ('Model', Union['definition','action'], 'ASTStory') -> None
+        #type: ('Model', Text, bool, bool, bool, List[Text], Optional[GetStoryFun], 'ASTStory') -> None
         """
         Create a StoryFiller with various parameters controlling what
         is accepted or not. The AST story to be parsed must be given.
-        use story() method to launch the parsing and get the result.
+        Use story() method to launch the parsing and get the result.
+
+        The parameters "allowXXX" should speak for themselves.
+
+        "getStoryId" is used only when allowIncluded not empty.
+        Otherwise it can be None. This function is used when an
+        "include" step is encountered. In this context the grammar
+        rule "StoryId" is intentionally left abstract (two strings).
+        The function getStoryId makes the mapping between the rule
+        "StoryId" (in the "stories" grammar) and an actual StoryId object
+        dependent on a client module. This allows the parsing of the
+        "storyId" to be performed by the client module.
+        In practice the "scenarios" parsing will provided a storyId
+        function.
+        If a valid StoryId cannot be created then the function
+        return None. Note that this function just perform a syntactic
+        validation, but no semantic ones. It will not check if the
+        id corresponds to an actual story.
+
+        getIsAllowedToBeIncluded is
         """
         self.astStory=astStory
         self.model=model
 
         self.contextMessage=contextMessage
-        # some string like "object model" or "context"
-        # string used for error message
+        # Some string like "object model" or "context".
+        # This string is used in error message.
 
         self.allowDefinition=allowDefinition
+        #type: bool
+
         self.allowAction=allowAction
+        # type: bool
+
         self.allowVerb=allowVerb
+        # type: bool
+
+        self.allowedIncludeKinds=allowedIncludeKinds
+        # type: List[Text]
+        # The kinds of storyId that are allowed.
+        # For instance the 'scenarios' module set this
+        # parameter to  ['fragment', 'context']. See this module
+        # for an example and the usage of the parameter below to
+        # see how it works.
+
+        self.getStoryId=getStoryId
+        #type: Optional[GetStoryFun]
+        # This function must convert (kind,name) from the story syntax
+        # to a story model. It must be defined when "allowIncluded".
+        # It must be None otherwise. The function return None in case
+        # of a syntatical error in the id.
+
+        self.storyContainer=None
+        #type: Optional['StoryContainer']
+        # The container of this story if any. In practice this
+        # will be a scenarios.StoryContainer but the type is not
+        # specified here because the whole module has been designed
+        # to be independent from the module scenarios.
+        # This variable is set directly by the scenario parser
+        # after having created the Story.
+        # In practice this variable is used to give better label
+        # to step and in particular to object step. It is useful
+        # as well for the computation of superSubjects/subjectLabel
 
         self._is_check_needed=False
-        # This is used to control the creation of implicit check
-        # statement and create these statements only if at least
-        # an operation was issued before the potential check point.
+        # type: bool
+        # This variable is "temporary" variable with respect to the
+        # construction of Story. It is used by control the
+        # creation of implicit CheckStep.
+        # These steps should be created only if at least an operation
+        # was issued before the potential check point.
         # Variable to keep along the creation of statements the
         # need to create an implict check statement. This is the
         # case when a new operation occur. Otherwise text block
-        # don't count, and check statements set it to no.
+        # do not count, and check statements set it to no.
         # See _add_check_if_needed.
+
+        self._check_number=0
+        # Just like _is_check_needed this is a "temporary" variable.
+        # This is a counter incremented each time a step is created.
+        # This allows to give a distinct number to each CheckStep in
+        # the story.
 
     def story(self):
         #type: () -> Story
@@ -120,7 +197,10 @@ class StoryFiller():
 
     def _fill_step(self, parent, astStep):
         type_ = astStep.__class__.__name__
-        if type_=='TextStep':
+        if type_=='IncludeStep':
+            step=self._fill_include_step(
+                parent, astStep)
+        elif type_=='TextStep':
             step=self._fill_text_step(
                 parent, astStep)
         elif type_=='VerbStep':
@@ -151,6 +231,45 @@ class StoryFiller():
             raise NotImplementedError(
                 'AST type not expected: %s' % type_)
         return step
+
+
+    def _fill_include_step(self, parent, astStep):
+        if len(self.allowedIncludeKinds)==0:
+            ASTNodeSourceIssue(
+                code=icode('NO_INCLUDE'),
+                astNode=astStep,
+                level=Levels.Fatal,
+                message='Includes are forbidden in %s.' %
+                        self.contextMessage)
+        else:
+            story_external_kind=astStep.storyId.kind
+            story_external_name=astStep.storyId.name
+            words=[story_external_kind, story_external_name]
+            story_id=self.getStoryId(
+                story_external_kind,
+                story_external_name)
+            if story_id is None:
+                ASTNodeSourceIssue(
+                    code=icode('BAD_STORY_ID'),
+                    astNode=astStep,
+                    level=Levels.Fatal,
+                    message='Invalid include.')
+            story_internal_kind = story_id.kind
+            if story_internal_kind in self.allowedIncludeKinds:
+                print('ZZ'*10, str(story_id))
+                step = IncludeStep(
+                    parent=parent,
+                    storyId=story_id,
+                    words=words,
+                    astNode=astStep)
+                return step
+            else:
+                ASTNodeSourceIssue(
+                    code=icode('WRONG_INCLUDE'),
+                    astNode=astStep,
+                    level=Levels.Fatal,
+                    message='This kind of includes is not allowed in %s' %
+                               self.contextMessage)
 
     def _fill_text_step(self, parent, astStep):
         text_block = astTextBlockToTextBlock(
@@ -227,7 +346,7 @@ class StoryFiller():
         self._is_check_needed=True
         self._check_definition_action(astStep)
         self._check_class_model(astStep)
-        on = astStep.objectDeclaration.name
+        on = astStep.name
 
         step = ObjectDeletionStep(
                 parent=parent,
@@ -254,7 +373,6 @@ class StoryFiller():
                         level=Levels.Fatal,
                         message='Enumeration "%s" does not exist.'
                                 % enum_name)
-                print("RR"*10, enum)
                 enum_literal=enum.literal(enum_literal_name)
                 if enum_literal is None:
                     ASTNodeSourceIssue(
@@ -390,8 +508,10 @@ class StoryFiller():
         return step
 
     def _fill_check_step(self, parent, astStep):
+        self._check_number +=1
         step=CheckStep(
             parent=parent,
+            number=self._check_number,
             position=None,
             astNode=astStep
         )
@@ -436,9 +556,13 @@ class StoryFiller():
 
     def _add_check_if_needed(self, parent, kind, astNode):
         if self._is_check_needed:
+            self._check_number +=1
             CheckStep(
                 parent=parent,
+                number=self._check_number,
                 position=kind,
-                astNode=astNode,
+                astNode=astNode
             )
         self._is_check_needed=False
+
+    # TODO: add a check so that object model / context is at the top
