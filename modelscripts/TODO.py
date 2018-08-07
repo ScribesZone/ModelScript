@@ -4,7 +4,7 @@
 #   General
 #================================================================
 
-# TODO:9 check modelc interface
+# TODO:1 check modelc interface
 #   -> Check current state
 #   -> old comment:
 #       currently the modelc interpreter support only general
@@ -16,13 +16,13 @@
 #       model specific option. Currently the SecenarioPrinter
 #       add some attributs on the fly. This should be removed.
 
-# TODO:9 bracket syntax error
+# TODO:1 bracket syntax error
 #   ??? on a postit
 #   bracket.py might raise an exception not caught by parser
 
-# TODO:6 create coloring scheme for GEdit
+# TODO:2 create coloring scheme for GEdit
 
-# TODO:5 only one class model
+# TODO:2 only one class model
 #   Having more than glossary/class model do not make too much
 #   sense. This imply strange configuration where a model is used
 #   in one place and another in the same import graph.
@@ -30,7 +30,7 @@
 #   This should apply for 'cl', 'gl', 'us', 'pe',
 #   everything apart from 'ob', 'sc'
 
-# TODO:2 fix strange printing for models
+# TODO:3 fix strange printing for models
 
 
 #================================================================
@@ -38,11 +38,10 @@
 #================================================================
 
 
-# TODO:7 add inheritance of oppositeRoles
+# TODO:1 add inheritance of oppositeRoles/playedRoles
+#   => add_inherited_attached_roles
 
-# TODO:6 add inheritance of played roles
-
-# TODO:6 add / test link object
+# TODO:1 add/test link-object
 #   ??? on a postit "link object copy"
 #   -> check syntax in class model
 #   -> check syntax in story model
@@ -52,30 +51,57 @@
 #   but this could fail if link object depends on link object
 #   Not a priority a priori
 
-# TODO:4 OCL: ocl bracket
+# TODO:2 add composition
+#   -> schema: constraint [0..1,1]
+#   -> state : no cycle in object  (statechecker.py)
+
+# TODO:2 add support for diagram generation (-d ?)
+
+# TODO:4 add stereotype/tags to classes
+
+# TODO:4 add stereotype/tags to associations
+
+# TODO:???  on post it 'inv resolve -> variant str ???'
+
+# TODO:3 check status of textal invariant
+#   Resolution of items musy be done
+
+# TODO:4 deal with operations
+
+
+#================================================================
+#   OCL
+#================================================================
+
+# TODO:3 OCL: check status of OCL in classes models
+#   Check engine / add tests ...
+#   => oclchecker.py
+#   No point in having OCL in class but not i objects
+
+# TODO:3 OCL: ocl bracket
 #   Currenly the ocl expression for invariants must
 #   follow the regular nested indentation.
 #   This is not convenient. One good option would be
 #   to make some kind of preprocessing in the module brackets.py
 #   to allow any string between line 'ocl' and a dedent line.
+#   => brackets.py
 
+# TODO:3 OCL for stories/scenarios/objects
+#   This requires quite some work:
+#   (1) Having a list of check point from StoryEvaluation
+#   (2) Generating "soil" from StoryEvaluation
+#   (3) Executing USE / Checking execution errors
+#   (4) Parsing result with nth check correspondance
+#   (5) Integrate the results as various statecheck violations
 
+#================================================================
+#   Stories
+#================================================================
 
-# TODO:4 add composition
-#   -> schema: constraint [0..1,1]
-#   -> state : no cycle in object  (statechecker.py)
+# TODO:2 add check for 'abstract' classes -> scenario
+#   x : C is not allowed for abstract class
 
-# TODO:4 add check for 'abstract' classes
-
-# TODO: add support for diagram generation (-d ?)
-
-# TODO:3 add stereotype/tags to classes
-
-# TODO:3 add stereotype/tags to associations
-
-# TODO:???  on post it 'inv resolve -> variant str ???'
-
-# TODO:2 datatype Date < String
+# TODO:3 datatype Date < String
 #   This mostly impact story with value conformity
 
 
@@ -83,15 +109,17 @@
 #   Scenarios/object model
 #================================================================
 
-# TODO:4 add a check for "context/fragment" unused
+# TODO:2 add a check for "context/fragment" unused
 
-# TODO:2 add OCL assert support in scenario
+# TODO:3 add OCL assert support in scenario
 #        add name in metamodel and output
 #        assert inv a: False
 #        assert inv b: Failure
 #        assert inv b
 #        assert 2+3=5
 #        assert b : 2+6=3
+
+# TODO:2 check state of datatype/conformity
 
 # TODO:3 deal with link deletion
 #   This case should be rather easy to implement as there
@@ -100,7 +128,7 @@
 #   link from the current state. This is due to the fact that
 #   the whole story infrastructure has been designed for this.
 
-# TODO:2 deal with (link) object deletion
+# TODO:3 deal with (link) object deletion
 #   Like link deletion (see to do) but a bit more complicated
 #   since we need to check that there is no link around
 #   (option around).
@@ -110,34 +138,37 @@
 #   Object model
 #================================================================
 
-# TODO:5 avoid duplicate object state model
+# TODO:2 avoid duplicate object state model
 #   At some point objects models seem to have two analysis
 #   most probably for the last frozenState generated by the
 #   story evaluation and another one from the object model.
 #   Check in the trace if still the case.
 
-# TODO:5 remove useless location for checks in error messages
+# TODO:2 remove useless location for checks in error messages
 #   For instance
 #       ... link01.obs:16:story.after_11:The attribute
 #   -> adding an attribute to ObjectModel to distingush
 #   object creation from scenario creation
 #   -> locate ObjectModelSource et ScenarioModelSource
 
+# TODO:2 add inheritance in method ObjectModel.classExtension()
+#   This is used at least to compute {id} properties
 
 #================================================================
 #   Infrastructure
 #================================================================
 
 
-# TODO:2 add hierachical metrics
+# TODO:3 add hierachical metrics
 
+# TODO:2 add testing assert error message
 
 
 #================================================================
 #   Relational class model / relation model
 #================================================================
 
-# TODO:1  relational class model checks
+# TODO:3  relational class model checks
 # - pas d'association n-n
 # - pas de classes associatives
 # - pas de composition avec 0..1 du coté du composite
@@ -145,99 +176,61 @@
 # - pas de generalisation
 # - pas de classe abstraite
 
-# TODO:0 add support for code generation/transformation
+# TODO:3 add support for code generation/transformation
 
 
 
 
 #================================================================
-#   Mis
+#   Misc
 #================================================================
 
 
-# TODO:2 Installation procedure.
+# TODO:3 Installation procedure.
 #       chmod +x for internal model-use
 #       chmox +x for bin/*
-# TODO:2 full support for addOnly, readOnly
+
+# TODO:3 full support for addOnly, readOnly
+
 # TODO:2 add [0..1] constraint   not self.x->isUndefined
 
-#TODO: check what to do with  (link)object destruction
+# TODO:3 plantuml, check how to get errors from generation
 
-#TODO3: check plantuml generation
 
-#TODO: add support for @assert inv / query
-#TODO: add support for 'include x.obm' in scenarios
 
-# #TODO: plantuml, check how to get errors from generation
+#================================================================
+#   Glossary Model
+#================================================================
 
-# megamodels
-# ----------
-# * parser
-# * summary/metrics
-#
-# glossaries
-# ----------
-#
-# * metamodel
-# * parser
-# * integration in other models
-# * summary/metrics
-#
-# usecases
-# --------
-#
-# * summary
-# * error checking
-# * printer
-# * add management of description
-# * priority, interface, etc.
-# * scm coverage - scm
-# * pmm/clm coverage -- pmm ucm
-#
-# classes
-# -------
-#
-# * refactor associationClass
-# * add package statement
-# * spec for clm language ?
-# * check a few things in the parser
-# * check if comment handling is ok
-# * add a few test to check result
-# * coverage of invariant wrt class model
-# * pmm/ucm coverage -- pmm ucm
-#
-# objects
-# -------
-#
-# * summary/metrics
-# * add description
-# * add the possibility to include other obm files at the begining
-#   (avoid circular dependencies)
-# * clm coverage
-#
-# scenarios
-# ---------
-#
-# * summary/metrics
-# * generation of access model
-# * add the possibility to include a obm
-# * add description
-# * spec for scm as own language (while based on soil)
-# * implement assertions (inv + query)
-# * ucm coverage
-# * clm coverage
-# * plm coverage
-#
-# permissions
-# -----------
-#
-# * summary/metrics?
-# * improve language
-# * pmm/
-#
-# access
-# ------
-#
-# * define objectives
-# * define language
-#
+# TODO:1 glossary: check what works or not
+#   Using glossary is much better when using GEdit integration
+#   since `ok`!  and `ko`? are displayed. Otherwise in colored
+#   terminal.
+
+# TODO:2 generalize astTextBlock2TextBlock to collect block
+#   Somewhere (usecases?) a little framework has been defined
+#   so that source element can define which textblock it owns.
+#   A method should be added. This is cumbersome. It might be
+#   better to use astTextBlock2TextBlock to collect easily all
+#   TextBlock. To be checked.
+
+# TODO:3 add some memoization or store some stuff
+
+#================================================================
+#   Usecase model
+#================================================================
+
+# TODO:2 usecase: check what works or not
+
+# TODO:3 add a user model (projet d'integration)
+#   Usecase model can define actors and import more
+#   Task model can define actors and import more
+#   Scenario model can define actors/personas and import more
+
+
+#================================================================
+#   Permission model
+#================================================================
+
+# TODO:3 permission model: check what works
+#   This could require quite some work and adjustment.
