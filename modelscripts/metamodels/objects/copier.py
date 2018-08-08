@@ -38,7 +38,10 @@ class ObjectModelCopier(object):
         #### order is important ######
         # The mapping _object_map is created during
         # _copy_plain_object and used during _copy_plain_link.
-        # TODO: There is a problem for (e.g. recursive) link object
+        # TODO:3 how to deal with creation of recursive linkobjects?
+        #   Check what to do ?
+        #   There is a problem with the evaluation order.
+        #   At worse a link object will not be found
         for po in self.o.plainObjects:
             self._copy_plain_object(po)
         for l in self.o.linkObjects:

@@ -51,7 +51,7 @@ class CoreDataValue(DataValue):
 
 class NullTypeValue(CoreDataValue):
 
-    # TODO: implement isConformToType see YYY
+    # TODO:3 implement isConformToType see YYY
 
     def __init__(self, stringRepr, type):
         # remove quotes
@@ -65,7 +65,7 @@ class NullTypeValue(CoreDataValue):
 
 class StringValue(CoreDataValue):
 
-    # TODO: implement isConformToType see YYY
+    # TODO:3 implement isConformToType see YYY
 
     def __init__(self, stringRepr, type):
         # remove quotes

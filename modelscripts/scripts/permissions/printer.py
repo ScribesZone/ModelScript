@@ -106,7 +106,7 @@ def actionNames(actions):
     #type: (List[Action])->Text
     _=[]
     names=[a.name for a in actions]
-    # TODO: add the case with other labels
+    #TODO:- add the case with other labels
     return ''.join(
         [ name if names in names else ""
           for name in 'CRUDX']

@@ -1,4 +1,27 @@
 # coding=utf-8
+"""
+    Parse a given .stc file and return the information
+    associated with each check point output, that is, information
+    about invariant success and invariant failure.
+    Returns a UseOuput object, defined as following::
+
+    UseOutput
+    <>-* CheckPointOutput
+       -- useOutput
+       <>-* InvariantOutput
+
+    InvariantOutput
+    -- className
+    -- invariantName
+    -- hasFailed
+    <|-- InvariantSuccessOutput
+    <|-- InvariantFailureOutput
+        --* violatingObjectNames
+        -- violatingObjectType
+        -- resultValue
+        -- resultType
+        --* subexpressions
+"""
 
 from __future__ import print_function
 from typing import List, Text, Optional
@@ -9,6 +32,9 @@ from collections import OrderedDict
 #---------- output structure ---------------------------------------------
 
 class UseOutput(object):
+    """
+    A list of CheckPointOutut
+    """
 
     def __init__(self):
         self.checkPoints=[]
@@ -88,7 +114,6 @@ class UseCheckOutputsParser(object):
     Parse a given .stc file and return the information
     associated with each check point output, that is information
     about invariant success and invariant failure.
-    See
     """
 
     def __init__(self, useOutputFile):

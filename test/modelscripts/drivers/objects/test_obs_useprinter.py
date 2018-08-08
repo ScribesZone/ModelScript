@@ -1,26 +1,18 @@
 # coding=utf-8
 from __future__ import print_function
-from typing import Text
 import logging
-import re
-from nose.plugins.attrib import attr
 
 from modelscripts.interfaces.environment import Environment
 from test.modelscripts.drivers import (
     TEST_CASES_DIRECTORY)
 from modelscripts.tools.use.engine import (
     USEEngine)
-from modelscripts.base.printers import AbstractPrinterConfig
 import os
 import modelscripts.scripts.objects.parser
 from modelscripts.scripts.stories.useprinter import (
     UseStoryPrinter)
-from modelscripts.tools.use.soil.checkparser import (
+from modelscripts.tools.use.checkparser import (
     UseCheckOutputsParser)
-from modelscripts.base.issues import (
-    FatalError)
-from modelscripts.base.grammars import (
-    AST)
 
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)

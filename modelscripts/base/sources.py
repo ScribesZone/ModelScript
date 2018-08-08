@@ -45,7 +45,7 @@ class SourceElement(object):
 
 
 
-class SourceFile(WithIssueModel):  # TODO: should be WithIssueList
+class SourceFile(WithIssueModel):  # TODO:3 should be WithIssueList
     """
     A source file seen as as sequence of lines.
     Subclasses may add more elements such as a Model.

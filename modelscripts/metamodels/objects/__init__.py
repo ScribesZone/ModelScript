@@ -22,7 +22,7 @@ from collections import OrderedDict
 from typing import List, Optional, Dict, Text
 from abc import ABCMeta
 
-# TODO: to be continued
+# TODO:4 to be continued
 from modelscripts.megamodels.py import (
     MAttribute
 )
@@ -172,8 +172,9 @@ class ObjectModel(Model):
     def links(self):
         return self.plainLinks+self.linkObjects
 
-    def classExtension(self, class_): #TODO: inheritance
+    def classExtension(self, class_):
         #type: ('Class')-> List['Object']
+        # TODO:2 add inheritance in classExtension
         return [
             o for o in self.objects if o.class_==class_]
 
@@ -342,7 +343,7 @@ class Member(ResourceInstance):
     __metaclass__ = ABCMeta
 
 
-# TODO: generalize and improve packages
+# TODO:3 generalize and improve "package" management over languages
 #       This class comes from metamodels.class
 #       It would make sense to move this to a upper level
 

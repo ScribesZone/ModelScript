@@ -48,7 +48,7 @@ class ObjectModelPrinter(ModelPrinter):
             text=StoryBestPrinter(
                 story=self.theModel.storyEvaluation.step,
                 storyEvaluation=self.theModel.storyEvaluation,
-                # TODO: add selection to configuraiton
+                #TODO:- add selection to configuraiton
                 # useStory=XXX
             ).do()
             self.outLine(text)
@@ -56,7 +56,7 @@ class ObjectModelPrinter(ModelPrinter):
         else:
             # the model does not come from a story
             # It can still be printed, using the code below
-            # TODO: reimplement the raw object model printer
+            #TODO:- reimplement the raw object model printer
             print(('^^'*40+'\n')*20)
             print( """*** NO STORY TO PRINT. See TODO""" )
 
@@ -80,7 +80,7 @@ class ObjectModelPrinter(ModelPrinter):
             self.doFullObject(o)
         for l in objectModel.links:
             self.doLinkDefinition(l)
-        #TODO: add doObjectLinks
+        #TODO:3 add doObjectLinks
 
 
     def doCoreDefinition(self, d, indent=0):
@@ -90,7 +90,7 @@ class ObjectModelPrinter(ModelPrinter):
             self.doSlotDefinition(d, indent=indent)
         elif isinstance(d, Link):
             self.doLinkDefinition(d, indent=indent)
-            # TODO: check what to do with LinkObject
+            #TODO:3 check what to do with LinkObject
         else:
             raise NotImplementedError(
                 'Unexpected type: %s' % type(d))
@@ -156,7 +156,7 @@ class ObjectModelPrinter(ModelPrinter):
             indent=indent)
         return self.output
 
-        # FIXME:1 add object links
+        # TODO:2 add object links
 
     def doAnnotatedTextBlocks(self, atb):
         block_text=TextBlockPrinter(

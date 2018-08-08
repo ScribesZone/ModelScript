@@ -39,7 +39,7 @@ class WithTextBlocks(object):
 
     @property
     def glossaryList(self):
-        # TODO: improve the framework to simplify the code below
+        # TODO:- improve the framework to simplify the code below
         #   When using an importBox one can write this
         #       return self.importBox.models('gl')
         #   Unfortunately this is for sources only
@@ -104,7 +104,6 @@ class TextBlock(SourceModelElement):
             l.resolve()
         self.isResolved=True
 
-    # TODO: add metrics to the model with the code below
     @property
     def metrics(self):
         #type: () -> Metrics

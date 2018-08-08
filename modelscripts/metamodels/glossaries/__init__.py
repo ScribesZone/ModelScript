@@ -47,7 +47,7 @@ class GlossaryModel(Model):
 
     @property
     def glossaryList(self):
-        #TODO: should be momoized. It is call for each occurrence.
+        #TODO:4 should be momoized. It is call for each occurrence.
         _=[self]+super(GlossaryModel, self).glossaryList
         return _
 
@@ -160,7 +160,7 @@ class Entry(SourceModelElement):
             name=None,
             astNode=astNode
         )
-        # TODO: check, unique main/alternative(?) term
+        # TODO:3 check, unique main/alternative(?) term
         self.package=package
         #type: Package
 

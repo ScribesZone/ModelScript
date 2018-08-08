@@ -31,7 +31,7 @@ ModelImport:
     modifier = ImportModifier
     targetMetamodel = ID
     'model'
-    'from' targetPath = STRING  //TODO: make this optional
+    'from' targetPath = STRING  //TODO:3 make this optional
     X
 ;
 

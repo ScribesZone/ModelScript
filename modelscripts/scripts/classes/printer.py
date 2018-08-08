@@ -210,7 +210,7 @@ class ClassModelPrinter(ModelPrinter):
             self.kwd('{readOnly}') if attribute.isReadOnly else None
         optional=self.kwd('[0..1]') if attribute.isOptional \
                 else None
-        #TODO: extract this to a method (see role)
+        #TODO:- extract this to a method (see role)
         stereotypes='<<%s>>' % ','.join(attribute.stereotypes) \
                 if attribute.stereotypes \
                 else ''
@@ -260,7 +260,7 @@ class ClassModelPrinter(ModelPrinter):
         self.outLine(self.kwd('invariant'+' '+invariant.name))
         self.doModelTextBlock(invariant.description)
         self.outLine(self.kwd('scope'), indent=1)
-        for (entity, member) in invariant.scopeItems: #TODO: true object
+        for (entity, member) in invariant.scopeItems: #TODO:3 true object
             s=entity+('' if member is None else '.'+member)
             self.outLine(s, indent=3)
         for ocl_inv in invariant.oclInvariants:
@@ -271,7 +271,7 @@ class ClassModelPrinter(ModelPrinter):
         self.outLine(self.kwd('ocl'), indent=1)
         self.outLine('%s %s (%s)' %(
             self.kwd('context self : '),
-            oclInvariant.context.class_,  # TODO: true object
+            oclInvariant.context.class_,  # TODO:3 true object
             oclInvariant.name),
             indent=2)
         for ocl_line in oclInvariant.oclLines:

@@ -62,7 +62,7 @@ class PlantUMLEngine(object):
         errno=os.system(cmd)
         print('FF' * 10, 'outputDir',outputDir)
 
-        # TODO: check how to get errors from generation
+        # TODO:3 check how to get errors from generation
         if errno != 0:
             RuntimeError('Error in plantuml generation')
         rename_output_file(outputDir, format, pumlFile)

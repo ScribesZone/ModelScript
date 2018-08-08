@@ -56,7 +56,7 @@ from modelscripts.base.issues import (
 
 
 
-# TODO: metastuff to be continued
+# TODO:3 metastuff to be continued
 from modelscripts.megamodels.py import (
     MComposition,
     MAttribute
@@ -109,15 +109,7 @@ ISSUES={
 def icode(ilabel):
     return ISSUES[ilabel]
 
-
-#TODO: make associationclass class and assoc + property
-# currently the implem is based on separated list for assocclass
-# not sure if this should be changed. We start to introduce
-# the method 'regularClasses and plainAssociations' but
-# we have to check if the storage should be changed or not
-
-
-#TODO: check if cardinality handling is ok
+#TODO:1 check if cardinality handling is ok
 # It seems that there is a bug with * ou 1..*
 
 # logging.basicConfig(level=logging.DEBUG)
@@ -137,7 +129,7 @@ class ClassModel(Model):
     # ]
 
 
-    #TODO: convert this to MComposition when ready
+    #TODO:4 convert this to MComposition when ready
     META_COMPOSITIONS=[
         'enumerations',
         'plainClasses',
@@ -384,12 +376,12 @@ class ClassModel(Model):
             return False
 
 
-    def entity(self, name):  # TODO: check what it is for
-        e=self.class_(name)
-        if e is not None:
-            return e
-        else:
-            return self.association(name)
+    # def entity(self, name):  # TODO:4 check what it is for
+    #     e=self.class_(name)
+    #     if e is not None:
+    #         return e
+    #     else:
+    #         return self.association(name)
 
     @property
     def metrics(self):
@@ -436,7 +428,7 @@ class ClassModel(Model):
             + self.dataTypeNames)
 
     def __str__(self):
-        # TODO: move this to printer
+        # TODO:4 move this to printer
         def category_line(label,elems):
             print(label)
             print(elems)
@@ -453,7 +445,6 @@ class ClassModel(Model):
             ('plain classes', self.plainClassNames),
             ('plain associations', self.associationNames),
             ('association classes', self.associationClassNames),
-            # ('invariants'           ,[i.name for i in self.invariants]),  FIXME: should be replaced
         ]
         total = 0
         lines = [ 'class model '+self.name ]
@@ -497,7 +488,7 @@ class ClassModel(Model):
                         message=(
                             'Class inheritance is cyclic for "%s"'
                              % class_.name))
-                    # TODO: add detailed message with cycles var
+                    # TODO:4 add detailed message with cycles var
                     cycles_nb += len(cycles)
                     # just for (more or less) localized error message
                     last_class = class_
@@ -636,10 +627,10 @@ class ClassModel(Model):
                 #     print('WW' * 10, '    %s' % a)
 
             def _ensure_inherited_played_roles(class_):
-                pass #TODO: XXX
+                pass #TODO:1 add inheritance
 
             def _check_no_vertical_conflicts(class_):
-                pass #TODO: XXX
+                pass #TODO:1 add inheritance
 
             for class_ in self.classes:
                 _ensure_inherited_opposite_roles(class_)

@@ -25,7 +25,8 @@ TextStep:
     (o_
         steps *= Step
     _o) ?
-    // FIXME: ? not working => impossible to have empty block
+    // TODO:3 solve problem with consecutive TextStep
+    // optional (?) not working => impossible to have empty block
     X
 ;
 
@@ -100,13 +101,13 @@ ConsultStep:
 
 CheckStep:
     action = CheckVerb
-    parameters ?= 'something'      // TODO: define Check syntax
+    parameters ?= 'something'      //TODO:4 define Check syntax
     X
 ;
 
 ReadStep:
     action = ReadVerb
-    parameters ?= 'something'       // TODO: define READ syntax
+    parameters ?= 'something'       //TODO:4 define READ syntax
     X
 ;
 

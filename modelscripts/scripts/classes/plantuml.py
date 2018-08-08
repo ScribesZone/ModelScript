@@ -5,8 +5,6 @@ Generate a USE OCL specification from a class modeL.
 This is currently only a preliminary version.
 """
 
-#TODO: to be continued
-
 import os
 import logging
 from modelscripts.metamodels.classes import (
@@ -79,7 +77,7 @@ class ClassPlantUMLPrinter(object):
         for ac in model.associationClasses:
             self.doAssociationClass(ac)
 
-        # TODO: invariants, operationConditions
+        #TODO:3 add invariants
 
         self.out('@enduml')
 
@@ -227,7 +225,8 @@ class ClassPlantUMLPrinter(object):
     ))
 
 
-    ## TODO: remove code duplication (class, object, usecase)
+    #TODO:4 remove code duplication (class, object, usecase)
+    # This method is the same as the in objects/plantuml.py ...
     def generate(self, pumlFile, finalOutputDir=None, format='svg'):
         """
         Generate directly the .plantuml file and the output (e.g. .svg)

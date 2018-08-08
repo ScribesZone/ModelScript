@@ -355,7 +355,7 @@ class MissingSlotViolation(ConformityViolation):
 
 
 class CompositionCycleViolation(ConformityViolation):
-    #TODO: composition cycle
+    #TODO:3 add violation for composition cycle
     pass
 
 
@@ -364,15 +364,16 @@ class OCLInvariantViolation(ConformityViolation):
     OCL invariant which failed for the given state.
     """
 
-    def __init__(self, stateCheck, oclInvariant): #TODO: add param
+    def __init__(self, stateCheck, oclInvariant):
         #type: (StateCheck, OCLInvariant) -> None
+        # TODO:- add param
 
         super(OCLInvariantViolation, self).__init__(stateCheck)
 
         self.oclInvariant = oclInvariant
         #type: OCLInvariant
 
-        #TODO: add info
+        #TODO:- add info
 
         # add the violation to the analysis
         stateCheck.oclInvariantViolations.append(self)
@@ -380,7 +381,7 @@ class OCLInvariantViolation(ConformityViolation):
     @property
     def message(self):
         return (
-                'OCL invariant failed for objects') # TODO: improve
+                'OCL invariant failed for objects') # TODO:- improve
 
     @property
     def issueCode(self):
@@ -397,6 +398,8 @@ class StateCheck(object):
     """
 
     def __init__(self, objectModel):
+        #type: (ObjectModel) -> None
+
         self.objectModel=objectModel
         #type: ObjectModel
         # The object model being checked.
@@ -462,7 +465,7 @@ class StateCheck(object):
         to check that all expected attributes are defined
         """
         class_=object.class_
-        for attr in class_.attributes: #TODO:  inheritance
+        for attr in class_.attributes: #TODO:2  check inheritance
             for slot in object.slots:
                 if slot.attribute==attr:
                     break
@@ -524,7 +527,9 @@ class StateCheck(object):
         """
 
         def process(linkRole):
-            #TODO: inheritance
+            #TODO:2 check inheritance
+            #   A conformity function should be called instead of
+            #   equality.
             if linkRole.objectType!=linkRole.roleType:
                 # A type violation is created and the
                 # do not register the linkRole to the object
@@ -554,7 +559,7 @@ class StateCheck(object):
         be initialized to [], at lest if there is not set before..
         """
         for object in self.objectModel.objects:
-            for role in object.class_.ownedOppositeRoles:  #TODO: inheritance
+            for role in object.class_.ownedOppositeRoles:  #TODO:2 check inheritance
                 if role not in object._link_roles_per_role:
                     object._link_roles_per_role[role]=[]
 

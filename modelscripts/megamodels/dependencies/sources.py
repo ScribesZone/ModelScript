@@ -25,7 +25,7 @@ ImportStatement='ImportStatement'
 
 from collections import OrderedDict
 
-# FIXME:test_ucm_parser should raise an issue for importing a uc
+# FIXME:1 test_ucm_parser should raise an issue for importing a uc
 
 from modelscripts.base.issues import (
     Levels,
@@ -311,10 +311,10 @@ class ImportBox(ModelDescriptor):
             self._importsByMetamodelId[m2id]=[]
         self._importsByMetamodelId[m2id].append(sourceImport_)
         sourceImport_.importBox=self
-        # TODO: the megamodel and model dependencies should
-        # be updated
+        # TODO:4 update megamodel/model dependencies
 
-    # TODO: improve the methods based on metamodel dependencies
+
+    # TODO:4 improve the methods based on metamodel dependencies
     def sourceImports(self, id):
         #type: (Text) -> List[SourceImport]
         """

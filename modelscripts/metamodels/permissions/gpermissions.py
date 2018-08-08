@@ -188,5 +188,5 @@ class PermissionRule(SourceModelElement):
             lineNo=lineNo,
             astNode=astNode)
 
-        self.permissions=[]   # TODO: ??? check if this is useful
+        self.permissions=[]   # TODO:- check if this is useful
         #type: List[Permission]

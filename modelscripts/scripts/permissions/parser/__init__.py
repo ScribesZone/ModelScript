@@ -133,7 +133,7 @@ class PermissionModelSource(ASTBasedModelSourceFile):
             fpr.description = astTextBlockToTextBlock(
                 container=fpr,
                 astTextBlock=declaration.textBlock)
-            # TODO: change the metamodel so that the addition is automatic
+            #TODO:- change metamodel so that the addition is automatic
             #       In other metamodels, the component is always with
             #       a reference to the composite and always add itself.
             self.permissionModel.rules.append(fpr)
@@ -180,7 +180,7 @@ def _find_subject(usecaseModel, name, astNode):
 
 
 
-# # TODO: move this to metamodels.classes ?
+# # TODO:- move this to metamodels.classes ?
 # def _find_resource(classModel, name, astNode):
 #     #type: (ClassModel, Text, 'ASTNode')->Entity
 #     """ Search the name in class/association/associationclass
@@ -204,7 +204,7 @@ def _find_subject(usecaseModel, name, astNode):
 #
 #
 
-# # TODO: move this to metamodels.classes ?
+# # TODO:- move this to metamodels.classes ?
 # def _find_entity(classModel, name):
 #     #type: (ClassModel, Text)->Optional[Entity]
 #     """ Search the name in class/association/associationclass
@@ -220,7 +220,7 @@ def _find_subject(usecaseModel, name, astNode):
 #     else:
 #         return None
 
-# TODO: move this to metamodels.classes ?
+# TODO:3 move this to metamodels.classes ?
 def _find_resource(classModel, expr, astNode):
     #type: (ClassModel, 'ASTResourceExpr', 'ASTNode')->Optional[Resource]
     """ Search the expr in class/association/associationclass/attribute/role
@@ -241,7 +241,7 @@ def _find_resource(classModel, expr, astNode):
                 '"%s" is neither a class nor an association.' % entity_name))
     if member_name is None:
         return entity
-    # TODO: to be changed when Plain Class/Association is impl
+    # TODO:3 to be changed when Plain Class/Association is impl
     #       currently the metamodel of classes is ill defined
     #       when changed update this (care for AssociationClass)
     if isinstance(entity, Class):

@@ -295,10 +295,6 @@ class StoryEvaluator(object):
             #    self.accesses=[]
 
         #---- (3) Evaluate the selected story
-        # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx
-        # TODO: sc-include12 must fail
-        #
-        # XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxx
 
         print('OO'*10, type(story_to_included))
         story_evaluation_included=\
@@ -425,7 +421,7 @@ class StoryEvaluator(object):
             step_eval.issues.append(i)
             self.accesses=[]
             return step_eval
-        # TODO: Implement object deletion
+        # TODO:3 Implement object deletion
         i = ASTNodeSourceIssue(
             code=icode('OBDEL_NOT_IMPL'),
             astNode=step.astNode,
@@ -498,7 +494,7 @@ class StoryEvaluator(object):
                     step_eval.issues.append(i)
                     self.accesses = []
                     return step_eval
-        Slot(   # TODO: (?) check old self.object.assign
+        Slot(   #TODO:- check old self.object.assign
             object=obj,
             attribute=att,
             simpleValue=step.simpleValue,
@@ -554,7 +550,7 @@ class StoryEvaluator(object):
                     assoc,
                     self.accessSet)]
         elif isinstance(step, LinkDeletionStep):
-            #TODO: Implement link deletion
+            #TODO:3 Implement link deletion
             i = ASTNodeSourceIssue(
                 code=icode('LINKDEL_NOT_IMPL'),
                 astNode=step.astNode,

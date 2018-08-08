@@ -9,7 +9,7 @@ from modelscripts.megamodels import Megamodel
 
 DEBUG=0
 
-#TODO: merge metamodelelements in the megamodel
+#TODO:4 merge metamodelelements in the megamodel
 
 class MetaModelElement(object):
     def __init__(self, qname):

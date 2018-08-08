@@ -51,7 +51,6 @@ class TaskModel(Model):
         return ms
 
 
-
 class TaskDecomposition(object):
     SEQUENTIAL='sequential'
     PARALLEL='parallel'
@@ -60,12 +59,14 @@ class TaskDecomposition(object):
     ELEMENTARY='elementary'
     UNKNOWN='unkown'
 
+
 class TaskExecutant(object):
     ABSTRACT='abstract'
     INTERACTION='interaction'
     USER='user'
     SYSTEM='system'
     UNKNOWN='unknown'
+
 
 class Task(SourceModelElement):
 

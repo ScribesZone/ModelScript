@@ -53,7 +53,7 @@ class LinkObject(Object, Link):
 
 
     # def delete(self):
-    #     #TODO:  implement delete operation on link objects
+    #     #TODO:3  implement delete operation on link objects
     #     raise NotImplementedError('Delete operation on link object is not implemented')
 
     def isPlainLink(self):

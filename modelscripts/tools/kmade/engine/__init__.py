@@ -217,7 +217,7 @@ class KmadeReader(object):
 
 
 class KmadeWriter(object):
-    # TODO: implement writing .kxml file from task model
+    # TODO:4 implement writing .kxml file from task model
     pass
 
 if __name__ == '__main__':

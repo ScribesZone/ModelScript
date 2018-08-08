@@ -18,10 +18,6 @@ from modelscripts.scripts.usecases.plantuml import (
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
 
-# TODO: add this again
-# def test_UseOclModel_Simple():
-#     check_isValid('Demo.use')
-
 @attr('slow')
 def testGenerator_UseOclModel_full():
     test_dir=os.path.join(

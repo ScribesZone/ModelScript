@@ -1,5 +1,5 @@
 # coding=utf-8
-from typing import List, Dict, Text
+from typing import List, Dict, Text, Any
 from collections import OrderedDict
 
 class Metric(object):
@@ -78,6 +78,21 @@ class Metrics(object):
             #             metric.n
             #     else:
             #         self.metricNamed[metric.label]=metric.n
+
+    def collect(self, elements):
+        #type: (List[Any])->Metrics
+        for e in elements:
+            print('CC'*15, type(e))
+            print('CC'*15, 'metrics' in dir(e))
+        metrics_list=[
+            e.metrics for e in elements
+            # hasattr does not work
+            # see
+            if 'metrics' in dir(e)]
+        self.addMetricsList(metrics_list)
+        print('CC'*10, len(elements), len(metrics_list))
+
+        return self
 
     def __len__(self):
         return len(self.metricNamed)

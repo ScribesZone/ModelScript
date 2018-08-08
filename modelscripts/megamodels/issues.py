@@ -15,11 +15,9 @@ from modelscripts.base.annotations import (
 )
 DEBUG=0
 
-#TODO:2 The type ModelElement should be better defined
+#TODO:4 The type ModelElement should be better defined
 #       Currently classes inherits from SourceElements which
 #       is not really appropriate.
-
-
 
 class ModelElementIssue(Issue):
 
@@ -75,9 +73,9 @@ class ModelElementIssue(Issue):
     def level(self):
         return self.actualIssue.level
 
-    @property
-    def origin(self):
-        return self.actualIssue.level
+    # @property
+    # def origin(self):
+    #     return self.actualIssue.level
 
 
     def str(self,

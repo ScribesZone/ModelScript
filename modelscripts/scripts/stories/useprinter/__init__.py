@@ -33,9 +33,6 @@ __all__=(
     'UseStoryPrinter'
 )
 
-#TODO: implement source traceability with line number
-#TODO: check if operation order is not different from soil requirements
-
 class TextConfig(AbstractPrinterConfig):
     def __init__(self):
         super(TextConfig, self).__init__(

@@ -30,15 +30,6 @@ from modelscripts.metamodels.scenarios import (
     StoryId,
     METAMODEL
 )
-# from modelscripts.metamodels.scenarios.operations import (
-#     ObjectCreation,
-#     ObjectDeletion,
-#     AttributeAssignment,
-#     LinkCreation,
-#     LinkDeletion,
-#     # TODO: LinkObject
-#     Check
-# )
 from modelscripts.metamodels.objects import (
     ShadowObjectModel,
 )
@@ -103,13 +94,6 @@ def icode(ilabel):
     return ISSUES[ilabel]
 
 
-
-
-    # @classmethod
-    # def getScenarioStoryId(cls, name, kind):
-    #     if name=='object' and kind=='model':
-    #      XXXX
-
 class ScenarioModelSource(ASTBasedModelSourceFile):
 
     def __init__(self, fileName):
@@ -130,31 +114,28 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
     @property
     def classModel(self):
         #type: () -> Optional[ClassModel]
-        # TODO: the optional stuff should come from metamdel
+        # TODO:- the optional stuff should come from metamdel
+        #   This is the same in all methods below
         return self.importBox.model('cl', optional='True')
 
     @property
     def usecaseModel(self):
         #type: () -> Optional[UsecaseModel]
-        # TODO: the optional stuff should come from metamdel
         return self.importBox.model('us', optional='True')
 
     @property
     def glossaryModel(self):
-        # TODO: the optional stuff should come from metamdel
         #type: () -> Optional[GlossaryModel]
         return self.importBox.model('gl', optional='True')
 
     @property
     def permissionModel(self):
         #type: () -> Optional[PermissionModel]
-        # TODO: the optional stuff should come from metamdel
         return self.importBox.model('pe', optional='True')
 
     @property
     def objectModel(self):
         #type: () -> Optional[ObjectModel]
-        # TODO: the optional stuff should come from metamdel
         return self.importBox.model('ob', optional='True')
 
     @property
@@ -201,7 +182,7 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
                         )))
             else:
                 actor=self.usecaseModel.actorNamed[actor_name]
-                #TODO: check not already defined
+                #TODO:3 check not already defined
                 ActorInstance(
                     model=self.scenarioModel,
                     name=actori_name,
@@ -209,12 +190,12 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
                     astNode=ast_actori_decl
                 )
 
-        #TODO: validate the existence of Actor
-        #TODO: validate the existence of Verb
+        #TODO:2 validate the existence of Actor
+        #TODO:2 validate the existence of Verb
 
         def define_usecase_node(parent, astStep):
             ain=astStep.actorInstanceName
-            #TODO: check that actor has to right to perform uc
+            #TODO:2 check that actor has to right to perform uc
             if ain not in self.scenarioModel.actorInstanceNamed:
                 ASTNodeSourceIssue(
                     code=icode('ACTOR_INSTANCE_NOT_FOUND'),
@@ -255,7 +236,9 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
             name='' if ast_context.name is None else ast_context.name
             context_filler = StoryFiller(
                 model=self.scenarioModel,
-                contextMessage='contexts',
+                storyKind='context',
+                ensureCheckAfter=False,
+                infoIfCheckAdded=True,
                 allowDefinition=True,
                 allowAction=False,
                 allowVerb=False,
@@ -292,7 +275,9 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
             name=ast_fragment.name
             context_filler = StoryFiller(
                 model=self.scenarioModel,
-                contextMessage='stories', # "stories": see above
+                storyKind='story', # "stories": see above
+                ensureCheckAfter=False,
+                infoIfCheckAdded=True,
                 allowDefinition=False,
                 allowAction=True,
                 allowVerb=True,
@@ -308,7 +293,8 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
                     level=Levels.Error,
                     # 'Story" instead of 'fragment': see above
                     message='Story "%s" already defined.'
-                            ' Previous definition ignored.' % name)
+                            ' Previous definition ignored.'
+                            % name)
             fragment=\
                 Fragment(
                     model=self.scenarioModel,
@@ -327,7 +313,9 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
             name='' if ast_scenario.name is None else ast_scenario.name
             scenario_filler = StoryFiller(
                 model=self.scenarioModel,
-                contextMessage='scenarios',
+                storyKind='scenario',
+                ensureCheckAfter=True,
+                infoIfCheckAdded=True,
                 allowDefinition=False,
                 allowAction=True,
                 allowVerb=True,
@@ -460,7 +448,8 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
             evaluator = StoryEvaluator(
                 initialState=initial_state,
                 storyCollection=story_collection,
-                permissionSet=None)  #TODO: refers to permission model
+                permissionSet=None)
+            #TODO:3 scenario must refer to permission model
             scenario.storyEvaluation = \
                 evaluator.evaluateStory(
                     scenario.story)

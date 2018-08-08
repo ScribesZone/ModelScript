@@ -183,7 +183,7 @@ class ObjectDeletionStep(UpdateOperationStep):
                  parent,
                  objectName,
                  astNode=None, lineNo=None, description=None):
-        # type: (Step, Text, Optional[bool], Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
+        # type: (Step, Text, Optional['ASTNode'], Optional[int], Optional[TextBlock]) -> None
         super(ObjectDeletionStep, self).__init__(
             parent=parent,
             isAction=True,
@@ -302,8 +302,8 @@ class CheckStep(ConsultOperationStep):
         #type: int
         """
         The index of the CheckStep in the story.
-        It is computed be StoryFiller.
-        This number is used to give a label to this CheckStep.
+        It is computed be StoryFiller.story().
+        This number is used to give a unique label to each CheckStep.
         """
 
         self.position=position
@@ -315,12 +315,33 @@ class CheckStep(ConsultOperationStep):
         """
 
     @property
+    def isImplicit(self):
+        return self.position is not None
+
+    @property
     def label(self):
-        id='%s#%i' % (self.story.subjectLabel, self.number)
-        if self.position is None:
-            return 'check %s' % id
+        # property label might not be necessary
+        return self.subjectLabel
+
+    @property
+    def subjectLabel(self):
+        """
+        Label like
+        * "A.3.2" if the check is explicit
+        * or "A.2.before_1" if the check is before step 1
+        """
+        parent_label=self.parent.subjectLabel
+        nth_label=self.parent.steps.index(self)+1
+        if self.isImplicit:
+            return '%s.%s_%s' % (
+                parent_label,
+                self.position,
+                nth_label)
         else:
-            return '%s-check %s' % (self.position, id)
+            return '%s.%s' % (
+                parent_label,
+                nth_label)
+
 
 
 class ReadStep(ConsultOperationStep):
@@ -333,5 +354,5 @@ class ReadStep(ConsultOperationStep):
             lineNo=lineNo,
             description=description)
 
-        # TODO: implement ReadStep
+        #TODO:4 implement ReadStep
         pass

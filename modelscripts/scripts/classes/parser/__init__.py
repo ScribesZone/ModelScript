@@ -311,7 +311,6 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     stereotypes=stereotypes,
                     isOptional=is_optional
                 )
-                # TODO: convert visibiliy + to public, etc.
                 a.description=astTextBlockToTextBlock(
                     container=class_,
                     astTextBlock=ast_attribute.textBlock)
@@ -480,15 +479,16 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 scopeItems=[]
             else:
                 scopeItems=[]
-                #TODO: deal item.derived
+                #TODO:3 deal with item.derived to support derived
                 for item in ast_invariant.scope.items:
                     scopeItems.append(
                         (item.entity, item.member))
-            # -- fill invariant
+
+            #-- fill invariant
             inv=Invariant(
                 name=ast_invariant.name,
                 model=self.classModel,
-                derivedItem=None, # TODO: fill with proper values
+                derivedItem=None, #TODO:3 fill with proper values
                 scopeItems=scopeItems,
                 astNode=ast_invariant)
             inv.description = astTextBlockToTextBlock(
@@ -533,10 +533,11 @@ class ClassModelSource(ASTBasedModelSourceFile):
             else:
                 raise NotImplementedError(
                     'declaration of %s not implemented' % type_)
-            #
+
     #----------------------------------------------------------------
     #                          Resolution
     #----------------------------------------------------------------
+
     def resolve(self):
 
 
@@ -608,7 +609,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
         # then as associations.
 
         def resolve_invariant_content(invariant):
-            pass # TODO:
+            pass # TODO:2 Resolve invariant part of class
 
         for c in self.classModel.classes:
             resolve_class_content(c)

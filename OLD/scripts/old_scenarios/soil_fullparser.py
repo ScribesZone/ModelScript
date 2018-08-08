@@ -1,7 +1,14 @@
 # coding=utf-8
 
 """
-Parser of subset of the soil language and of the sex format.
+NOTE:
+    Parser of subset of the soil language and of the sex format.
+    This parser might not be useful in current version of modelscripts
+    since soil file are generated and never parser. No real need
+    to get information from soil files.
+    What is important is the checkparser. It parses check output.
+    This fullparser could be removed at some point.
+
 Parser of subset of the soil language and of the sex format.
 The same parser can parse both:
 * .soil files, that is USE .soil files (NOT MAINTAINED anymore)
@@ -30,12 +37,6 @@ http://useocl.sourceforge.net/wiki/index.php/SOIL
                for v in e do s end                    (iteration)
 
 """
-
-# Scn: Assertion
-# TODO: add @assert inv X::Y is True|False   -> check -d -v
-# TODO: add @assert inv * is True|False      -> check -d -v
-
-# FIXME: check what to do with optional class model
 
 from __future__ import unicode_literals, print_function, absolute_import, division
 
@@ -97,7 +98,7 @@ from modelscripts.metamodels.scenarios.operations import (
     ObjectCreation,
     ObjectDestruction,
     LinkCreation,
-    #TODO: implement link destruction
+    #TODO:- implement link destruction
     LinkObjectCreation,
     AttributeAssignment,
     Check,
@@ -255,25 +256,22 @@ class _SexOrSoilSource(ModelOldSourceFile):
     @property
     def classModel(self):
         #type: () -> Optional[ClassModel]
-        # TODO: the optional stuff should come from metamdel
+        # TODO:- the optional stuff should come from metamdel
         return self.importBox.model('cl', optional='True')
 
     @property
     def usecaseModel(self):
         #type: () -> Optional[UsecaseModel]
-        # TODO: the optional stuff should come from metamdel
         return self.importBox.model('us', optional='True')
 
     @property
     def glossaryModel(self):
-        # TODO: the optional stuff should come from metamdel
         #type: () -> Optional[GlossaryModel]
         return self.importBox.model('gl', optional='True')
 
     @property
     def permissionModel(self):
         #type: () -> Optional[PermissionModel]
-        # TODO: the optional stuff should come from metamdel
         return self.importBox.model('pe', optional='True')
 
     @property
@@ -542,13 +540,13 @@ class _SexOrSoilSource(ModelOldSourceFile):
                 last_text_block_lines+=_line
                 continue
 
-    # TODO: to restore
+    # TODO:- to restore
 
 
             # #--------------------------------------------------
             # # EOL comment --
             # #--------------------------------------------------
-            # # TODO: check comment processing appiled in use parser
+            # # TODO:- check comment processing appiled in use parser
             # # End of line (EOL comment)
             # r = r'^(?P<content>.*?)--(?P<comment>[^@]?.*)$'
             # m = re.match(r, line)
@@ -762,7 +760,7 @@ class _SexOrSoilSource(ModelOldSourceFile):
                         continue
                     if _S.main_block is not None:
 
-                        # TODO: this limitation could be removed. But this
+                        # TODO:- this limitation could be removed. But this
                         # requires some analysis.The problem seems to be
                         # that the order of block could is not enough to
                         # know the order of statement.
@@ -809,7 +807,7 @@ class _SexOrSoilSource(ModelOldSourceFile):
                 r = (begin
                      +r'--@usecasei'
                      +r' +(?P<name>\w+)'
-                     # TODO: add online definition of actor instance
+                     # TODO:- add online definition of actor instance
                      # +r' *(: *(?P<actor>\w+))?'
                      +r' *(?P<usecase>\w+)'
                      +end)
@@ -1171,7 +1169,7 @@ class _SexOrSoilSource(ModelOldSourceFile):
                         block=_get_block(),
                         variableName=name,
                     )
-                    # TODO implement deletion with ripple effect
+                    # TODO- implement deletion with ripple effect
                     LocalizedSourceIssue(
                         sourceFile=self,
                         level=Levels.Fatal,
@@ -1214,7 +1212,7 @@ class _SexOrSoilSource(ModelOldSourceFile):
                             association_name,
                             object_names
                         ))
-                    # TODO implement deletion
+                    # TODO:- implement deletion
                     LocalizedSourceIssue(
                         sourceFile=self,
                         level=Levels.Fatal,
@@ -1785,7 +1783,7 @@ class _SexOrSoilSource(ModelOldSourceFile):
             # # Line comment --
             # #---------------------------------
             #
-            # # TODO: check comment processing appiled in use parser
+            # # TODO:- check comment processing appiled in use parser
             # Full line comment
 
             r = begin + '--(?P<comment>[^@]?.*)' + end
@@ -1877,14 +1875,14 @@ class SexSource(_SexOrSoilSource):
             allowedFeatures=allowedFeatures
             )
 
-        # TODO: remove this restriction
+        # TODO:- remove this restriction
         # The classModel must exist
         # assert self.classModel is not None
         # assert self.classSource is not None
 
         # # The classModel must have a source to be parsed by USE
         # assert self.classModel.source is not None
-        # # TODO: it would be possible to parse/evaluate
+        # # TODO:- it would be possible to parse/evaluate
         # # In fact the scn without .use or to generate a source from
         # # the model. Low priority for now.
 
@@ -1993,7 +1991,7 @@ class SexSource(_SexOrSoilSource):
 
         # Execute USE OCL to generate the sex file
         try:
-            # FIXME:1 must preprocess .cls file first to make it use
+            # TODO:- must preprocess .cls file first to make it use
             sex_file=USEEngine.executeSoilFileAsSex(
                 useFile=useFileName,
                 soilFile=soilFileName,

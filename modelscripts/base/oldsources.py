@@ -21,7 +21,7 @@ from modelscripts.base.issues import (
     Levels,
 )
 
-#TODO:3 This dependency should be removed
+#TODO:4 This dependency should be removed
 # With inheritance this is not so easy because
 # the __init__ method would call WithIssueList wihch
 # do not register the issue box in the megamodel
@@ -49,7 +49,7 @@ class SourceElement(object):
 
 
 
-class OldSourceFile(WithIssueModel):  # TODO: should be WithIssueList
+class OldSourceFile(WithIssueModel):  # TODO:4 should be WithIssueList
     """
     A source file seen as as sequence of lines.
     The source file may contains some list of errors.

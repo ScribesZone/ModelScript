@@ -249,7 +249,7 @@ class UseClassPrinter(AbstractPrinter):
             indent=1)
 
 
-# TODO:
+# TODO:4
 # METAMODEL.registerModelPrinter(ClassModelPrinter)
 # METAMODEL.registerSourcePrinter(ModelSourcePrinter)
 

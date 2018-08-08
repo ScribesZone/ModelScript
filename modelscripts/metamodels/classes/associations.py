@@ -1,7 +1,8 @@
+from __future__ import print_function
 import abc
 import collections
 
-from typing import Union
+from typing import Union, Optional, Text
 
 from modelscripts.megamodels.elements import SourceModelElement
 from modelscripts.megamodels.py import MAttribute, MReference
@@ -35,15 +36,17 @@ class Association(PackagableElement, Entity):
     def __init__(self,
                  name, model, kind=None, package=None,
                  lineNo=None, description=None, astNode=None):
-        # type: (Text,ClassModel,Optional[Text], Optional[Package] ,Optional[int],Optional[Text],Optional[Text]) -> None
+        # type: (Text, 'ClassModel',Optional[Text], Optional['Package'] ,Optional[int],Optional[Text],Optional[Text]) -> None
         super(Association, self).__init__(
             name=name,
             model=model,
             package=package,
             astNode=astNode,
             lineNo=lineNo, description=description)
-        self.kind = kind   # association|composition|aggregation|associationclass  # TODO:should associationclass be
-        # there?
+        self.kind = kind
+        #type: Text
+        # association|composition|aggregation|associationclass
+        # TODO:3 check if 'associationclass' is ok there
         self.roleNamed = collections.OrderedDict() # indexed by name
 
     @property

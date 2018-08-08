@@ -70,7 +70,7 @@ class ModelPrinter(ContentPrinter):
         self.theModel = theModel
         if config is None:
             config=ModelPrinterConfig()
-        # TODO: use abstractView parameter
+        # TODO:4 use abstractView parameter
         super(ModelPrinter, self).__init__(
             config=config,
         )
@@ -89,7 +89,7 @@ class ModelPrinter(ContentPrinter):
         return self.output
 
     def doSourceContent(self):
-        #FIXME: the called method is not defined  (???)
+        #FIXME:3 ??? the called method is not defined
 
         self.out(self.theModel.source.str(
             # method='doSourceContent',
@@ -102,7 +102,7 @@ class ModelPrinter(ContentPrinter):
         return self.output
 
     def doModelContent(self):
-        #FIXME: Change this impl when model has dependency box
+        #FIXME:3 Change this impl when model has dependency box
         #       Currently only sources has a import box
         #       The model do not have this. See the comment
         #       in the model.py.

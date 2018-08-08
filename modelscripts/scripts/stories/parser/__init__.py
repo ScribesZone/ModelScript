@@ -18,6 +18,7 @@ to control a proprt subset of the (more general) language.
 """
 from __future__ import print_function
 from typing import Union, Text, Callable, Optional, List
+from modelscripts.base.grammars import AST
 from modelscripts.base.grammars import (
     ASTNodeSourceIssue
 )
@@ -66,8 +67,7 @@ ISSUES={
     'BAD_VALUE':'st.syn.Value.Bad',
     'NO_ENUM':'st.syn.Value.NoEnum',
     'NO_LITERAL':'st.syn.Value.NoLiteral',
-
-
+    'ADD_CHECK':'st.syn.Stpry.AddCheck',
 }
 def icode(ilabel):
     return ISSUES[ilabel]
@@ -86,18 +86,28 @@ class StoryFiller():
 
     def __init__(self,
                  model,
-                 contextMessage,  # e.g. "object model" or "context"
+                 storyKind,
+                 # e.g. "object model", "context" ...
+                 ensureCheckAfter,
+                 infoIfCheckAdded,
                  allowDefinition,
                  allowAction,
                  allowVerb,
                  allowedIncludeKinds,
                  getStoryId,
                  astStory):
-        #type: ('Model', Text, bool, bool, bool, List[Text], Optional[GetStoryFun], 'ASTStory') -> None
+        #type: ('Model', Text, bool, bool, bool, bool, bool, List[Text], Optional[GetStoryFun], 'ASTStory') -> None
         """
         Create a StoryFiller with various parameters controlling what
         is accepted or not. The AST story to be parsed must be given.
         Use story() method to launch the parsing and get the result.
+
+        The parameter "ensureCheckAfter" indicates if an implicit
+        "check" statement must be added after the last step
+        (if this is not a check).
+
+        "infoIfCheckAdded" indicates if an Info issues should be
+        generated when a check is added.
 
         The parameters "allowXXX" should speak for themselves.
 
@@ -121,9 +131,16 @@ class StoryFiller():
         self.astStory=astStory
         self.model=model
 
-        self.contextMessage=contextMessage
+        self.storyKind=storyKind
+        #type: Text
         # Some string like "object model" or "context".
         # This string is used in error message.
+
+        self.ensureCheckAfter=ensureCheckAfter
+        #type: bool
+
+        self.infoIfCheckAdded=infoIfCheckAdded
+        #type: bool
 
         self.allowDefinition=allowDefinition
         #type: bool
@@ -161,24 +178,24 @@ class StoryFiller():
         # to step and in particular to object step. It is useful
         # as well for the computation of superSubjects/subjectLabel
 
+        self.checkSteps=[]
+        #type: List[CheckStep]
+        # List of all CheckStep of the story, including implicit
+        # (before/after) checks.
+
         self._is_check_needed=False
         # type: bool
-        # This variable is "temporary" variable with respect to the
-        # construction of Story. It is used by control the
+        # This variable is a "temporary" variable with respect to
+        # the construction of Story. It is used to control the
         # creation of implicit CheckStep.
         # These steps should be created only if at least an operation
-        # was issued before the potential check point.
+        # was issued just before the potential check point.
         # Variable to keep along the creation of statements the
         # need to create an implict check statement. This is the
         # case when a new operation occur. Otherwise text block
         # do not count, and check statements set it to no.
         # See _add_check_if_needed.
 
-        self._check_number=0
-        # Just like _is_check_needed this is a "temporary" variable.
-        # This is a counter incremented each time a step is created.
-        # This allows to give a distinct number to each CheckStep in
-        # the story.
 
     def story(self):
         #type: () -> Story
@@ -192,7 +209,13 @@ class StoryFiller():
                     parent=self.story,
                     astStep=ast_step
                 )
-        self._add_check_if_needed(self.story, 'after', self.astStory)
+        if self.ensureCheckAfter:
+            self._add_check_if_needed(
+                parent=self.story,
+                kind='after',
+                astNode=self.astStory,
+                location=self.storyKind)
+        self.story.checkSteps=self.checkSteps
         return self.story
 
     def _fill_step(self, parent, astStep):
@@ -239,8 +262,8 @@ class StoryFiller():
                 code=icode('NO_INCLUDE'),
                 astNode=astStep,
                 level=Levels.Fatal,
-                message='Includes are forbidden in %s.' %
-                        self.contextMessage)
+                message='"include" forbidden in a %s.' %
+                        self.storyKind)
         else:
             story_external_kind=astStep.storyId.kind
             story_external_name=astStep.storyId.name
@@ -256,7 +279,6 @@ class StoryFiller():
                     message='Invalid include.')
             story_internal_kind = story_id.kind
             if story_internal_kind in self.allowedIncludeKinds:
-                print('ZZ'*10, str(story_id))
                 step = IncludeStep(
                     parent=parent,
                     storyId=story_id,
@@ -268,8 +290,9 @@ class StoryFiller():
                     code=icode('WRONG_INCLUDE'),
                     astNode=astStep,
                     level=Levels.Fatal,
-                    message='This kind of includes is not allowed in %s' %
-                               self.contextMessage)
+                    message='"include" forbidden in a %s.' %
+                            self.storyKind)
+            self._is_check_needed=True
 
     def _fill_text_step(self, parent, astStep):
         text_block = astTextBlockToTextBlock(
@@ -288,10 +311,13 @@ class StoryFiller():
 
     def _fill_verb_step(self, parent, astStep):
         if self.allowVerb:
+            #TODO:2 test message of Info issues for verb-step
+            #   Check in particular before/after
             self._add_check_if_needed(
-                parent,
-                'before',
-                astStep)
+                parent=parent,
+                kind='before',
+                astNode=astStep,
+                location=astStep.verbName)
             step=VerbStep(
                 parent=parent,
                 subjectName=astStep.subjectName,
@@ -303,9 +329,10 @@ class StoryFiller():
                     astStep=sub_ast_step
                 )
             self._add_check_if_needed(
-                parent,
-                'after',
-                astStep)
+                parent=parent,
+                kind='after',
+                astNode=astStep,
+                location=astStep.verbName)
             return step
         else:
             ASTNodeSourceIssue(
@@ -314,7 +341,7 @@ class StoryFiller():
                 level=Levels.Fatal,
                 message=(
                     'Statement not allowed in %s'
-                    % self.contextMessage))
+                    % self.storyKind))
 
     def _fill_object_creation_step(self, parent, astStep):
         self._is_check_needed=True
@@ -399,13 +426,14 @@ class StoryFiller():
                     # Instanciate an object via the python
                     # implementation class.
                     pyclass=datatype.implementationClass
-                    #TODO: optimize creation if required
-                    # here we create a distinct
-                    # datavalue for each occurence.
-                    # This means that there will be
-                    # many 5 integer values and many null
-                    # values. Care should be taken with
-                    # comparisons.
+                    #TODO:4 optimize creation of datavalue
+                    #   do this just if required
+                    #   here we create a distinct
+                    #   datavalue for each occurence.
+                    #   This means that there will be
+                    #   many 5 integer values and many null
+                    #   values. Care should be taken with
+                    #   comparisons.
                     datavalue=pyclass(
                         stringRepr=repr,
                         type=datatype)
@@ -487,7 +515,8 @@ class StoryFiller():
                 astNode=astStep,
                 level=Levels.Fatal,
                 message=(
-                    'Association class "%s" does not exist.' % ac_name))
+                    'Association class "%s" does not exist.'
+                    % ac_name))
         else:
             step = LinkObjectCreationStep(
                 parent=parent,
@@ -508,13 +537,13 @@ class StoryFiller():
         return step
 
     def _fill_check_step(self, parent, astStep):
-        self._check_number +=1
         step=CheckStep(
             parent=parent,
-            number=self._check_number,
+            number=len(self.checkSteps)+1,
             position=None,
             astNode=astStep
         )
+        self.checkSteps.append(step)
         self._is_check_needed=False
         return step
 
@@ -532,8 +561,6 @@ class StoryFiller():
         conforms to  allowAction and allowDefinition.
         This assume that all ast node provided has an
         action part.
-        :param astStep:
-        :return:
         """
         isAction = astStep.action is not None
         if not self.allowAction and isAction:
@@ -544,7 +571,7 @@ class StoryFiller():
                 message=(
                     '"%s" actions are forbidden in %s.' % (
                         astStep.action,
-                        self.contextMessage)))
+                        self.storyKind)))
         if not self.allowDefinition and not isAction:
             ASTNodeSourceIssue(
                 code=icode('NO_DEFINITION'),
@@ -552,17 +579,30 @@ class StoryFiller():
                 level=Levels.Fatal,
                 message=(
                     'Definitions are forbidden in %s.' % (
-                        self.contextMessage)))
+                        self.storyKind)))
 
-    def _add_check_if_needed(self, parent, kind, astNode):
+    def _add_check_if_needed(self,
+                             parent, kind,
+                             astNode, location):
         if self._is_check_needed:
-            self._check_number +=1
-            CheckStep(
+            cs=CheckStep(
                 parent=parent,
-                number=self._check_number,
+                number=len(self.checkSteps)+1,
                 position=kind,
                 astNode=astNode
             )
+            self.checkSteps.append(cs)
+            if self.infoIfCheckAdded:
+                ASTNodeSourceIssue(
+                    code=icode('ADD_CHECK'),
+                    astNode=astNode,
+                    level=Levels.Info,
+                    position=kind,
+                    message='Implicit "check" added %s %s.'
+                            % (kind, location))
+
         self._is_check_needed=False
 
-    # TODO: add a check so that object model / context is at the top
+    #TODO:2 add a check so that includes are at the top
+    #   only for object model and context
+    #   fragment can be include anywhere

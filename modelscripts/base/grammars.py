@@ -1,7 +1,8 @@
+from __future__  import print_function
 import os
 import sys
 import re
-from typing import Text, Optional
+from typing import Text, Optional, Union
 from abc import abstractmethod
 from textx import metamodel_from_str
 from textx.export import (
@@ -13,15 +14,13 @@ from textx.export import (
 from textx.model import model_root as get_model
 
 from modelscripts.base.brackets import (
-    BracketedScript,
-
-)
+    BracketedScript)
 from modelscripts.base.issues import (
     IssueBox,
     FatalError,
+    Level,
     LocalizedSourceIssue,
-    Levels
-)
+    Levels)
 from modelscripts.megamodels.sources import ASTBasedModelSourceFile
 
 __all__= (
@@ -36,7 +35,7 @@ from modelscripts.scripts.textblocks.parser import (
     astTextBlockToTextBlock
 )
 
-#TODO: remove the kludge below and add some kind of include grammar
+#TODO:4 remove the include grammar kludge
 
 INCLUDES= (
     '../scripts/megamodels/parser/grammar.tx',
@@ -274,8 +273,13 @@ class ASTNodeSourceIssue(LocalizedSourceIssue):
     """
     An issue based on a ASTNode.
     """
-    def __init__(self, astNode, level, message, code=None,
+    def __init__(self,
+                 astNode,
+                 level,
+                 message,
+                 code=None,
                  position=None):
+        #type: ('ASTNode', Level, Text, '?', Optional[Union['before','after']]) -> None
         ast=AST.ast(astNode)
         if position==None:
             line=line=ast.line(astNode)

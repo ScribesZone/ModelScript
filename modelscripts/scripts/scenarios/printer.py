@@ -59,7 +59,7 @@ class ScenarioModelPrinterConfig(ModelPrinterConfig):
                  displayBlockSeparators=True,
                  displayEvaluation=True,
                  originalOrder=True,
-                 useSyntax=True   #<-- TODO: change to False
+                 useSyntax=True   #<-- TODO:- change to False
                  ):
         super(ScenarioModelPrinterConfig, self).__init__(
             styled=styled,
@@ -93,7 +93,8 @@ class ScenarioModelPrinter(ModelPrinter):
         else:
 
             #----------------------------------------------
-            #TODO: the following code is an adapter that
+            #TODO:- remove the adapter when possible
+            #       the following code is an adapter that
             #       must be removed when a solution is found
             #       to have configuration dependent options
             #       In that case, the config provide will
@@ -163,7 +164,7 @@ class ScenarioModelPrinter(ModelPrinter):
         text = StoryBestPrinter(
             story=context.story,
             storyEvaluation=context.storyEvaluation,
-            # TODO: add selection to configuraiton
+            # TODO:- add selection to configuraiton
             # useStory=XXX
         ).do()
         self.out(text)
@@ -176,13 +177,13 @@ class ScenarioModelPrinter(ModelPrinter):
         text = StoryBestPrinter(
             story=scenario.story,
             storyEvaluation=scenario.storyEvaluation,
-            # TODO: add selection to configuraiton
+            # TODO:- add selection to configuraiton
             # useStory=XXX
         ).do()
         self.out(text)
 
     def doDescriptor(self, descriptor):
-        #TODO: generalize the value of descriptor
+        #TODO:- generalize the value of descriptor
         #      currently only textBlock
         #      To be changed in the parser and may be add a
         #      descriptor value

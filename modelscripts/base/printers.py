@@ -30,8 +30,8 @@ def indent(prefix, s, suffix='', firstPrefix=None):
     outLines.extend([prefix+l+suffix for l in lines[1:]])
     return '\n'.join(outLines)
 
-# TODO: add support for multines
-# TODO: improve with surronding lines with padding
+# TODO:4 add support for multines
+# TODO:4 improve with surronding lines with padding
 def box(s,
         length=80, hline='N',
         fill='*', padding='', around=' ',

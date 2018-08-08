@@ -19,10 +19,6 @@ from modelscripts.scripts.usecases.graphviz import (
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
 
-# TODO: add this again
-# def test_UseOclModel_Simple():
-#     check_isValid('Demo.use')
-
 @attr('slow')
 def testGenerator_UssGraphviz():
     test_dir=os.path.join(

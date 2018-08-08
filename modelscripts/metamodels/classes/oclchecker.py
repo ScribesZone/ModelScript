@@ -73,7 +73,8 @@ class ClassOCLChecker(object):
             exit_code = USEEngine.analyzeUSEModel(
                 self.useFileName,
                 workerSpace='self')
-        except Exception as e:  # TODO: check what to do
+        except Exception as e:
+            # TODO:2 check what to do when exception in OCL engine
             Issue(
                 origin=self.model,
                 level=Levels.Info,

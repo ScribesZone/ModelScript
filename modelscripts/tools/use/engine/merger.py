@@ -1,5 +1,8 @@
 # coding=utf-8
 """
+WARNING: This module might be unused.
+    It is used only when executeSoilFileAsSex() os called
+
 Merge a .soil file with a .stc file and return a .sex file::
 
 * .soil files are command file used by USE OCL tool
@@ -27,7 +30,8 @@ This merger aims to take execution results from the trace
 (.soil) file.
 """
 
-# TODO: add support for errors as well as corresponding test cases
+
+#TODO:3 add support for errors as well as corresponding test cases
 
 from __future__ import  print_function
 from typing import Text, Optional
@@ -172,8 +176,8 @@ def merge(soilFile, traceFile, prequelFileName, sexFileName=None):
             continue
 
         #---- message for empty files -------------------------------------
-        #FIXME: check why merging does not work when there is this answer
-        #TODO: add a test for it.
+        #FIXME:2 check why merging does not work when there is this answer
+        #TODO:3 add a test for it.
         if re.match('^Nothing to do, because file .*contains no data!',line):
             if DEBUG>=2:
                 print('MGR:'+' ' * 10 + 'skip')

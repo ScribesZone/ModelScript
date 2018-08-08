@@ -211,7 +211,9 @@ def processSourceFile(filename, manySourceFiles, args):
         return str(e)
     if manySourceFiles:
         cprint('#' * 30 + ' ' + filename + ' ' + '#' * 30, 'blue')
-    printer_config=ModelPrinterConfig(# ContentPrinterConfig(  # TODO: check if creating a ModelPrinterConfig is better
+    # ContentPrinterConfig(
+    #  TODO:4 check if creating a ModelPrinterConfig is better
+    printer_config=ModelPrinterConfig(
         #  for models
         styled=not args.bw,
         verbose=args.verbose,

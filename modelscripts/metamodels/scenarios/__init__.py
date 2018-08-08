@@ -18,15 +18,13 @@ The structure of is the following::
     ---- name
     ---- Actor
 
-    StoryContainer A
+    StoryContainer
     ---> Story
-    ---> StoryEvaluation  # TODO: not sure (comment below)
     <|-- Context
     <|-- Fragment
     <|-- Scenario
+    <|-- ObjectModelStoryContainer
 """
-
-# TODO: add support for  'include <x.obs>
 
 from collections import OrderedDict
 
@@ -84,7 +82,6 @@ class ScenarioModel(Model, Subject):
         'actorInstances',
         # 'stories',
     ]
-    # TODO: add the inplace object model
 
     def __init__(self):
         #type: () -> None
@@ -227,12 +224,16 @@ class ScenarioModel(Model, Subject):
         #type: () -> Metrics
         ms=super(ScenarioModel, self).metrics
         ms.addList((
-            #TODO: add metrics
             ('actor instance', len(self.actorInstances)),
-            ('scenario', len(self.scenarios)),
             ('context', len(self.contexts)),
-
+            ('fragment', len(self.fragments)),
+            ('scenario', len(self.scenarios)),
         ))
+        # object model not included. Not sure if useful.
+        containers=self.contexts+self.fragments+self.scenarios
+        stories=[
+            c.story for c in containers]
+        ms.collect(stories)
         return ms
 
 
@@ -263,19 +264,6 @@ class StoryContainer(SourceModelElement, Subject):
     Container of a story. This abstract class is useful to
     deal with common characteristics of Context, Fragment and
     Scenario at the same time. These are basically just story block.
-
-    A story container contains:
-    *   a story
-    *   a story evaluation. This makes sense since there is only
-        one evaluation for a given context and for a given main
-        scenario.
-
-
-    TODO: Check if this class could be suppressed.
-        This comment is outdated. The evaluation is no longer linked
-        to Context/Fragment "blocks" since they can be composed
-        in various way and there is no point to save the evaluation
-        to optimize execution.
     """
     __metaclass__ = ABCMeta
 

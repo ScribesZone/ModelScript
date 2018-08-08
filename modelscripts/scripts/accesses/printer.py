@@ -8,13 +8,8 @@ from modelscripts.metamodels.permissions.accesses import (
     METAMODEL,
     AccessModel,
 )
-# from modelscripts.scripts.permissions.printer import (
-#     opString,  # FIXME: check where is this stuff
-#     resourceString
-# )
 
-
-class AccessModelPrinter(AbstractPrinter): # TODO: check this
+class AccessModelPrinter(AbstractPrinter): # TODO:4 check this
 
     def __init__(self, accessModel, displayLineNos=True):
         #type: (AccessModel, bool) -> None
@@ -30,12 +25,12 @@ class AccessModelPrinter(AbstractPrinter): # TODO: check this
     def _accessModel(self, accessModel):
         self.outLine(
             'access model',
-            lineNo=None, #usecaseModel.lineNo)  # TODO: change parser
+            lineNo=None, #usecaseModel.lineNo)  # TODO:4 change parser
             linesAfter=1 )
         self._accessSet(accessModel.accessSet)
 
     def _accessSet(self, accessSet):
-        self.container   # TODO: check this
+        self.container   # TODO:4 check this
         for access in accessSet.accesses:
             self._access(access)
 

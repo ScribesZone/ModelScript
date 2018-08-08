@@ -87,7 +87,8 @@ class ObjectPlantUMLPrinter(object):
                 "" if aname is None else ": "+aname,
             ))
 
-    ## TODO: remove code duplication (class, object, usecase)
+    #TODO:4 remove code duplication (class, object, usecase)
+    # This method is the same as the in classes/plantuml.py ...
     def generate(self, pumlFile, finalOutputDir=None, format='svg'):
         """
         Generate directly the .plantuml file and the output (e.g. .svg)

@@ -109,7 +109,9 @@ class BracketedScript(object):
                     )
                 if delta>1:
                     # this will never happened for the last line
-                    raise SyntaxError(   #TODO: catch this exception
+
+                    # TODO:1 Catch the exception bracket-SyntaxError
+                    raise SyntaxError(
                         'Line %i: Wrong indentation: "%s"' %(
                             index,
                             line))

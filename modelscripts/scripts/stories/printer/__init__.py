@@ -100,7 +100,7 @@ class StoryPrinter(AbstractPrinter):
         return self.output
 
     def doIncludeStep(self, step, indent):
-        # TODO: does not display kwd properly.
+        # TODO:- does not display kwd properly.
         self.outLine(
             '%s %s' % (
                 self.kwd('include'),

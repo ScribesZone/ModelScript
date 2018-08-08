@@ -118,7 +118,7 @@ class Environment(object):
                 raise IOError(
                     'Cannot create worker file in system temp directory.')
         elif space=='home':
-            # TODO:5 could be use if need to flatten names
+            # TODO:4 could be use if need to flatten names
             # @classmethod
             # def pathToLabel(cls, path, last=1):
             #     all=path.split(os.path.sep)

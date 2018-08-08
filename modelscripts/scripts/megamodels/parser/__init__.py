@@ -33,14 +33,16 @@ __all__=(
     'isMegamodelStatement',
 )
 
-ModelSourceFile='ModelOldSourceFile'
+# ModelSourceFile='ModelOldSourceFile'
 
 
 
 DEBUG=3
 
-#TODO: find a handy solution/convention for file naming
-#      The variable below allow to keep some check
+#TODO:2 find a handy solution/convention for file naming
+#      Currently the variable below allow to keep
+#      a sync between filenames and models but this
+#      could be changed/relaxed.
 CHECK_FILENAMES_AND_MODELS=False
 
 ISSUES={
@@ -181,7 +183,7 @@ def getModelImportStatement(modelSourceFile, astModelImport):
                     target_metamodel.label)))
 
     # Check imported file path and extension
-    # TODO: make the target path optional
+    # TODO:2 make the target path optional
     literal_target_filename=astModelImport.targetPath
     abs_target_filename = os.path.abspath(
         os.path.join(modelSourceFile.directory,
@@ -288,7 +290,7 @@ def fillDependencies(modelSource):
                     'Unamed model.'
                     ' Add "%s model <name>".'
                     % m2_label))
-        # TODO: add here other checks about import cards
+        #TODO:2 add here other checks about import cards
 
 
     ast_megamodelPart=modelSource.ast.model.megamodelPart

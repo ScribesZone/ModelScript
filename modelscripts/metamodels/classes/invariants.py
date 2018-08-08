@@ -22,7 +22,8 @@ class Invariant(PackagableElement, Item):
         #type: Optional['Item']
 
         self.scopeItems = scopeItems
-        #type: List[Text,Optional[Text]]  # TODO: transform to ~"Item"
+        #type: List[Text,Optional[Text]]
+        # TODO:3 transform Invariant Item references to ~"Item"
 
         self.oclInvariants=[]
         #type: List[OCLInvariant]
@@ -46,8 +47,8 @@ class OCLInvariant(SourceModelElement):
                  lineNo=None, description=None, astNode=None):
 
         # add nth to invariant name except for 1st
-        nth=str(len(invariant.oclInvariants)+1)
-        suffix=nth if nth>=2 else ''
+        nth=len(invariant.oclInvariants)+1
+        suffix=str(nth) if nth>=2 else ''
 
         super(OCLInvariant, self).__init__(
             name=invariant.name+suffix,
@@ -85,7 +86,7 @@ class OCLContext(SourceModelElement):
             description=description)
 
         self.class_=class_
-        #type: Text # TODO: do resolution
+        #type: Text # TODO:3 do resolution on OCL class name
 
         # Back link
         invariant.context=self

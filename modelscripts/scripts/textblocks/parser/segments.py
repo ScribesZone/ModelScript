@@ -61,7 +61,8 @@ def segmentsAndErrors(line):
         nextstart=0
         while True:
             start= nextstart
-            (before, token, pos, nextstart) = nextSearch(line, nextstart)
+            (before, token, pos, nextstart)= \
+                nextSearch(line, nextstart)
             segments.append(StringSegment(before, start) )
             if token is not None:
                 segments.append(
@@ -71,19 +72,18 @@ def segmentsAndErrors(line):
             if nextstart >= len(line):
                 break
         # remove last element since it is always None
-        # since there the algorithm always ebd with None
+        # since there the algorithm always ends with None
         if segments[-1] is None:
             return segments[:-1]
         else:
             return segments
-
 
     segments= segment_list(line)
     # now check
     error_positions=[]
     for seg in segments:
         if isinstance(seg, StringSegment):
-            pass  # TODO: implement the list of error positions
+            pass  # TODO:2 implement the list of error positions
 
     return (segments, error_positions)
 

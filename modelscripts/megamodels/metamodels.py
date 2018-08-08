@@ -14,7 +14,7 @@ OptCls=Optional[Cls]
 
 
 class Metamodel(MegamodelElement):
-    # TODO:5 should be (Model) instead of (Object)
+    # TODO:4 should be (Model) instead of (Object)
 
     def __init__(self,
                  id,

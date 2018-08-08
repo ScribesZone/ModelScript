@@ -81,7 +81,6 @@ class CheckStepEvaluation(OperationStepEvaluation):
             parent=parent,
             step=step,
             name=name)
-        print('HH'*20, 'XX')
 
         self.frozenState=currentState.copy()
         #assoc: FrozesState

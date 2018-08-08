@@ -99,7 +99,9 @@ class StepEvaluation(SourceModelElement, Subject):
 
         self.name=name
         #type: Optional[Text]
-        # TODO: seems that this should better go to the StoryEvaluation ?
+        # TODO:4 this attribute should better go to Story
+        #   Not sure why this attribute got here.
+        #   Make more sense to have
         # An optional name for the evaluation. For further
         # usage. It could be for instance the name of a
         # scenario for a story, or a label given to a step.
@@ -108,8 +110,8 @@ class StepEvaluation(SourceModelElement, Subject):
         self.accesses=accesses
         #type: List[Access]
         #assoc: Accesses
-        # TODO: check how it works
-        # Not sure if it should be on leaf steps or composite as well.
+        # TODO:3 check accesses works
+        #   Not sure if it should be on leaf steps or composite as well.
 
         self.issues=[]
         #type: List[Issue]
@@ -139,7 +141,6 @@ class StepEvaluation(SourceModelElement, Subject):
     def subjectLabel(self):
         # the label is the same as the step label + a opt name.
         # In principle we should add a label for the
-        #
         return '%s%s' % (
             '' if self.name is None else self.name,
             self.step.subjectLabel)

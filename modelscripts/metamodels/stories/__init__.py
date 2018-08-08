@@ -31,7 +31,7 @@ from typing import Optional, List, Text, Union
 from abc import ABCMeta, abstractproperty, abstractmethod
 from modelscripts.megamodels.elements import SourceModelElement
 from modelscripts.metamodels.permissions.sar import Subject
-
+from modelscripts.base.metrics import Metrics, Metric
 
 META_CLASSES=(
     'Story',
@@ -90,7 +90,9 @@ class Step(SourceModelElement, Subject):
     @property
     def subjectLabel(self):
         """
-        Label of step. Using something like "story.3.2.5"
+        Label of step. Using something like
+        * "story.3.2.5" if a story is unamed (no container)
+        * or "A.2.1" if the story is in a container named A
         """
         parent_label=self.parent.subjectLabel
         nth_label=self.parent.steps.index(self)+1
@@ -136,8 +138,8 @@ class Story(CompositeStep):
     A story, that is, a root of a Step hierarchy.
     Note that multiple stories can exists in the
     context of AbstractStoryCollection.
-    Since they are rool, all stories have parent
-    is None.
+    Since they are root, all stories have None parent.
+
     NOTE: while a Story is a root, this is not
     the case for StoryEvaluation since these can
     be included. See StoryEvaluation for more
@@ -175,6 +177,52 @@ class Story(CompositeStep):
         # is left implicit above because the whole module have been
         # designed to be independent from 'scenarios'.
         # Here the variable is just used to improve labels.
+
+        self.checkSteps=[]
+        #type: List['CheckStep']
+        # List of all CheckStep of the story, including implicit
+        # (before/after) checks.
+        # Filled by StoryFiller.story()
+
+    @property
+    def metrics(self):
+        # type: () -> Metrics
+        ms = Metrics()
+        ms.addList((
+            ('check step', len(self.checkSteps)),
+            ('implicit check step', len([
+                cs for cs in self.checkSteps if cs.isImplicit]))
+        ))
+            # ('after check step', len(self.dataTypes)),
+            # ('enumeration', len(self.enumerations)),
+            # ('enumeration literal', len(
+            #     [el
+            #      for e in self.enumerations
+            #      for el in e.literals])),
+            # ('class', len(self.classes)),
+            # ('plain class', len(self.plainClasses)),
+            # ('association', len(self.associations)),
+            # ('plain association',
+            #  len(self.plainAssociations)),
+            # ('association class', len(self.associationClasses)),
+            # ('attribute', len(
+            #     [a
+            #      for c in self.classes
+            #      for a in c.attributes])),
+            # ('owned attribute', len(
+            #     [a
+            #      for c in self.classes
+            #      for a in c.ownedAttributes])),
+            # ('inherited attribute', len(
+            #     [a
+            #      for c in self.classes
+            #      for a in c.inheritedAttributes])),
+            # ('role', len(
+            #     [r
+            #      for a in self.associations
+            #      for r in a.roles])),
+            # ('invariant', len(self.invariants))))
+        return ms
 
     @property
     def superSubjects(self):

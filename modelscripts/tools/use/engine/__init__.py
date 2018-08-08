@@ -98,18 +98,21 @@ class USEEngine(object):
         #type: (Text, Text, Text, Text, bool, Text) -> int
 
         """
-        Execute use command with the given model and given soil file.
-        This method is private and is not expected to be used direcltly.
+        Execute "use" command with the given model and given soil file.
+        This method is private and is not expected to be used directly.
         The soil file **MUST** terminate by a 'quit' statement so that
-        the process finish. There is therefore always a soil file, at least
-        to quit and even if the goal is just to compile a model.
+        the process finish. There is therefore always a soil file,
+        at least to quit and even if the goal is just to compile a model.
 
-        # it seems that this is not necessary. So remove this.
-        #    The process is executed in the specified 'executionDirectory'.
-        #    If not specified the execution directory is set to the directory
-        #    of the use file given as a parameter. This directory could be
-        #    important if the soil files contains references to relative path.
-        #    This is in particular the case of 'open file.soil' rules.
+        NOTE: it seems that the restriction explained below
+            is not necessary. So remove this =>
+            The process is executed in the specified
+            executionDirectory'.
+            If not specified the execution directory is set to
+            the directory of the use file given as a parameter.
+            This directory could be important if the soil files
+            contains references to relative path.
+            This is in particular the case of 'open file.soil' rules.
         """
 
         # def getWorkerFileLabel():
@@ -132,7 +135,7 @@ class USEEngine(object):
         def readAndRemove(filename):
             with open(filename, 'r') as f:
                 _ = f.read()
-            # FIXME os.remove(filename)
+            #TODO:4 use os.remove(filename)
             return _
 
         # The tool will produce some errors if files
@@ -215,7 +218,8 @@ class USEEngine(object):
         if DEBUG>=2 or Config.realtimeUSE>=1:
             print('USE:        exit code  : %s' % cls.commandExitCode)
         if errWithOut:
-             if cls.commandExitCode != 0:   #FIXME: was != 0 but  with a bug
+             if cls.commandExitCode != 0:
+                 #FIXME:- was != 0 but  with a bug
                  cls.outAndErr = None
              else:
                  cls.outAndErr = readAndRemove(output_filename)

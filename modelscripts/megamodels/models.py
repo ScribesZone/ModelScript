@@ -86,8 +86,8 @@ class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
         # Set later
         # a keyword like "draft" | "" | "consolidated"
 
-        # FIXME: add model dependencies.
-        # FIXME first check the code below (outDep, etc.)
+        # FIXME:3 add model dependencies.
+        # First check the code below (outDep, etc.)
         # The source contains importBox, but
         # here we should have dependency box
 

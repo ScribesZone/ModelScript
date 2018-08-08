@@ -63,7 +63,7 @@ class GlossaryModelPrinter(ModelPrinter):
             lineNo=entry.lineNo,
             linesBefore=1
         )
-        #TODO: add detailled information from entries
+        #TODO:3 ? ToCHeck: "add detailled information from entries"
         self.doModelTextBlock(entry.description)
 
         if len(entry.synonyms)>0:

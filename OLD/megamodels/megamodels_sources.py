@@ -60,7 +60,7 @@ class ModelOldSourceFile(OldSourceFile):
                  fileName,
                  realFileName=None,
                  prequelFileName=None,
-                 preErrorMessages=(),  #TODO: check the type
+                 preErrorMessages=(),  #TODO:4 check the type
                  readFileLater=False,
                  fillImportBoxLater=False,
                  parseFileLater=False,

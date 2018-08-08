@@ -37,7 +37,8 @@ class _ClassPrint(object):
     Use equals() for that.
     """
     def __init__(self, object, onlyIds=False, inherited=False):
-        # TODO: care should be taken with inheritance (additional param?)
+        # TODO:3 check impact of inheritance
+        #   care should be taken with inheritance (additional param?)
         self.object=object
         self.attVal=OrderedDict()
         #type: Dict[Text, Optional[Text]]

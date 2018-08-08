@@ -35,9 +35,9 @@ __all__=(
     'RelationModelSource'
 )
 
-#FIXME: the name of the model is set to ''
+#TODO:3 the name of the model is set to ''
 #       it should be set to the name of the file
-#       and this should be done in ModelOldSourceFile
+#       and this should be done in ModelOldSourceFile (???)
 
 DEBUG=0
 

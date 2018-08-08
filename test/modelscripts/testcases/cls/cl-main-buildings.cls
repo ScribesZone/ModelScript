@@ -42,7 +42,8 @@ class Bedroom < Room
         isNonSmoking    : Boolean
         / nbOfUnits     : Integer
 
-composition ContainsRooms
+# TODO: composition ContainsRooms
+association ContainsRooms
     roles
         residence : Residence[1]
         rooms : Room[*]
@@ -108,7 +109,8 @@ association class Rent
         / discount : Real
         / rate     : Real
 
-composition HasDiscounts
+#TODO: composition HasDiscounts
+association HasDiscounts
     roles
         rent : Rent[1]
         discounts : Discount[0..*]

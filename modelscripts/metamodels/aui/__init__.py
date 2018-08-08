@@ -5,10 +5,6 @@ from collections import OrderedDict
 from typing import List, Optional, Dict, Text, Union
 from abc import ABCMeta, abstractmethod
 
-# TODO: to be continued
-from modelscripts.megamodels.py import (
-    MAttribute
-)
 from modelscripts.megamodels.elements import SourceModelElement
 from modelscripts.base.metrics import Metrics
 from modelscripts.megamodels.metamodels import Metamodel

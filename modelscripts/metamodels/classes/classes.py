@@ -21,7 +21,7 @@ class Class(PackagableElement, Entity):
     __metaclass__ = abc.ABCMeta
 
     META_COMPOSITIONS = [
-    #    'attributes', TODO: restore, raise an exception
+    #    'attributes', TODO:3 restore, raise an exception
     ]
 
     def __init__(self, name, model,
@@ -46,7 +46,7 @@ class Class(PackagableElement, Entity):
         # Will be filled by the parser fillModel
 
 
-        # TODO: deal with operation and operation names
+        # TODO:3 deal with operation and operation names
         # Signature looks like op(p1:X):Z
         self.operationNamed = collections.OrderedDict()
 
