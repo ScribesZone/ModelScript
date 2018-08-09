@@ -170,7 +170,6 @@
 #   Scenarios/object model
 #================================================================
 
-
 #TODO:3 add a check for "context/fragment" unused
 
 #TODO:3 add OCL assert support in scenario
