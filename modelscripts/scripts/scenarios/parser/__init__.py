@@ -182,7 +182,7 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
                         )))
             else:
                 actor=self.usecaseModel.actorNamed[actor_name]
-                #TODO:3 check not already defined
+                #TODO:3 scenarios: check actor not already defined
                 ActorInstance(
                     model=self.scenarioModel,
                     name=actori_name,
@@ -190,8 +190,8 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
                     astNode=ast_actori_decl
                 )
 
-        #TODO:2 validate the existence of Actor
-        #TODO:2 validate the existence of Verb
+        #TODO:2 scenarios: validate the existence of Actor
+        #TODO:2 scenarios: validate the existence of Verb
 
         def define_usecase_node(parent, astStep):
             ain=astStep.actorInstanceName
