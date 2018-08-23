@@ -24,6 +24,11 @@
 #   ??? on a postit
 #   bracket.py might raise an exception not caught by parser
 
+#TODO:1 deployment: check how to deploy modelscript
+#   should it be with ScribesInfra ?
+#   a python package ?
+#   check if it works at uni
+
 #TODO:2 create coloring scheme for GEdit
 
 #TODO:3 fix strange printing for models
