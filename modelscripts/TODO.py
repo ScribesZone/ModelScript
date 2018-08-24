@@ -30,7 +30,7 @@
 #   check if it works at uni
 
 #TODO:2 create coloring scheme for GEdit
-    check how to deploy it at uni
+#    check how to deploy the styles at uni
 
 #TODO:3 fix strange printing for models
 
