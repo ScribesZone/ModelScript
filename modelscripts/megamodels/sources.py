@@ -23,33 +23,24 @@ from modelscripts.base.issues import (
     IssueBox,
     FatalError,
     LocalizedSourceIssue,
-    Levels
-
-)
-
-# from modelscripts.megamodels import (
-#     Megamodel
-# )
+    Levels)
+from modelscripts.base.brackets import (
+    BracketError)
+from modelscripts.megamodels.models import (
+    Model)
+from modelscripts.megamodels.dependencies.sources import (
+    ImportBox,
+    SourceImport)
+from modelscripts.megamodels.elements import (
+    SourceModelElement)
+from modelscripts.scripts.megamodels.parser import (
+    fillDependencies)
 from modelscripts.megamodels.metamodels import (
     Metamodel
 )
-from modelscripts.megamodels.models import (
-    Model
-)
-from modelscripts.megamodels.dependencies.sources import (
-    ImportBox,
-    SourceImport
-)
-from modelscripts.megamodels.elements import (
-    SourceModelElement
-)
-from modelscripts.scripts.megamodels.parser import (
-    fillDependencies
-)
 
 __all__=(
-    'ModelSourceFile',
-    'ModelSourceMapping',
+    'ASTBasedModelSourceFile',
 )
 
 
@@ -196,9 +187,16 @@ class ASTBasedModelSourceFile(SourceFile):
                 code='src.syn',
                 sourceFile=self,
                 level=Levels.Fatal,
-                message='Syntax error. %s' %err.message,
+                message='Syntax error. %s' % err.message,
                 line=err.line,
                 column=err.column)
+        except BracketError as e:
+            LocalizedSourceIssue(
+                code='src.bra',
+                sourceFile=self,
+                level=Levels.Fatal,
+                message='Wrong indentation. %s' % e.message,
+                line=e.line)
 
     @abstractmethod
     def fillModel(self):

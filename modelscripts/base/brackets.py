@@ -1,16 +1,3 @@
-
-
-
-#######################################################
-#
-# This file is symlinked in _Sandbox
-#
-#######################################################
-
-
-
-
-
 import re
 
 # The following dependencies could be removed if necessary.
@@ -18,6 +5,13 @@ import re
 # convenient way.
 
 from modelscripts.interfaces.environment import Environment
+
+class BracketError(Exception):
+
+    def __init__(self, message, line):
+        super(BracketError, self).__init__(message)
+        self.line = line
+
 
 class BracketedScript(object):
 
@@ -78,8 +72,10 @@ class BracketedScript(object):
         if blanks % self.SPACE_INDENT==0:
             return blanks // self.SPACE_INDENT
         else:
-            raise SyntaxError('Wrong indentation: "%s"' %
-                              self.lines[index])
+            raise BracketError(
+                message='%i spaces found. Multiple of %i expected.'
+                        % (blanks, self.SPACE_INDENT),
+                line=index+1)
 
     def _suffix(self, delta):
         if delta==1:
@@ -110,11 +106,9 @@ class BracketedScript(object):
                 if delta>1:
                     # this will never happened for the last line
 
-                    # TODO:1 Catch the exception bracket-SyntaxError
-                    raise SyntaxError(
-                        'Line %i: Wrong indentation: "%s"' %(
-                            index,
-                            line))
+                    raise BracketError(
+                        message='"%s"' % line,
+                        line=index+1)
                 else:
                     if lnbl_index!=-1:
                         self.bracketedLines[lnbl_index] += self._suffix(delta)

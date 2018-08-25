@@ -20,10 +20,6 @@
 #       model specific option. Currently the SecenarioPrinter
 #       add some attributs on the fly. This should be removed.
 
-#TODO:1 bracket syntax error
-#   ??? on a postit
-#   bracket.py might raise an exception not caught by parser
-
 #TODO:1 deployment: check how to deploy modelscript
 #   should it be with ScribesInfra ?
 #   a python package ?
