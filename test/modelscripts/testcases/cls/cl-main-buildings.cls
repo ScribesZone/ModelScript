@@ -1,7 +1,3 @@
-    #@Issue cl.syn.Association.NoCompo 2
-    #@Issue else *
-
-
 class model Building
 
 #---------------------------------------------------------------------
