@@ -1,0 +1,6 @@
+    #@Issue src.syn 1
+    #@Issue else *
+
+usecase model Us_doc01
+
+    actor X
