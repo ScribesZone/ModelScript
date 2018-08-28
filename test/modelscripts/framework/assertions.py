@@ -11,13 +11,9 @@ from modelscripts.base.issues import (
     Levels,
 )
 
-from test.modelscripts.drivers import (
-    getTestFiles,
-    getTestFile
-)
+from test.modelscripts.framework import getTestFile, patternFromArgV, \
+    getTestFiles
 from modelscripts.megamodels import Megamodel
-from test.modelscripts.drivers import (
-    patternFromArgV)
 
 #------------------------------------------------------------------------
 # This package allows to check assertions against test case.
@@ -81,7 +77,6 @@ def assertIssueBox(
     # {F: 0, E:1, 'mgm.sem.Import.Allowed':1 'else': 0},
     # {F: 0, E:1, 'mgm.sem.Import.Allowed':2 'else': '*'},
 
-
     def printError(nbFound, label, nbExpected):
         print(
             'TST: ' + '####' + \
@@ -107,8 +102,8 @@ def assertIssueBox(
     if 'else' in expectedSummaryMap:
         else_value=expectedSummaryMap['else']
         if else_value!='*':
-            raise ValueError(
-                'In issue specification "else" parameter must be "*".'
+            raise ValueError( #raise:OK
+                'TST: In issue specification "else" parameter must be "*".'
                 '%s found. Mapping is %s' %
                 (else_value, expectedSummaryMap))
         del expectedSummaryMap['else']
@@ -118,7 +113,7 @@ def assertIssueBox(
     if 'level' in expectedSummaryMap:
         lval=expectedSummaryMap['level']
         if lval!='*':
-            raise ValueError(
+            raise ValueError(  #raise:OK
                 'In metrics specification "level" parameter must be "*".'
                 '%s found. Mapping is %s' %
                 (lval, expectedSummaryMap))
@@ -254,7 +249,8 @@ def extractExpectedIssuesMapFromFile(fileName):
     def error(lineNo, message):
         text='%s:%i. Error: %s' % (fileName, lineNo, message)
         print('TST: '+text)
-        raise SyntaxError(text)
+        raise SyntaxError( #raise:OK
+            text)
 
     expectedIssuesMap={}
     with open(fileName) as f:
