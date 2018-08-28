@@ -257,8 +257,8 @@ class StoryEvaluator(object):
         elif isinstance(step, CheckStep):
             return self._eval_check(step, parent)
         else:
-            raise NotImplementedError(
-                'Unexpected step. type=:"%s"' % type(step))
+            raise NotImplementedError( #raise:OK
+                'INTERNAL ERROR: Unexpected step. type=:"%s"' % type(step))
 
     def _eval_story(self, step, parent):
         #type: (Story, Optional[StoryIncludeEvaluation]) -> StoryEvaluation
@@ -567,8 +567,8 @@ class StoryEvaluator(object):
                     self.accessSet)]
             pass
         else:
-            raise NotImplementedError(
-                'Unexpected type: "%s"' % type(step))
+            raise NotImplementedError(  #raise:OK
+                'INTERNAL ERROR: Unexpected type: "%s"' % type(step))
         return step_eval
 
     def _eval_check(self, step, parent):

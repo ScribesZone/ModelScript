@@ -1,12 +1,9 @@
 # coding=utf-8
-
 """
 Wrapper to the USE engine. Call the 'use' command.
 If "use" command is not in the system path, then
 the value UseEngine.USE_OCL_COMMAND should be set explicitely.
 """
-
-
 
 from typing import Text, Optional
 
@@ -18,11 +15,26 @@ from modelscripts.interfaces.environment import Environment
 from modelscripts.base.files import (
     replaceExtension,
     readFileLines,
-    writeFileLines
-)
+    writeFileLines)
+
 __all__ = [
     'USEEngine',
+    'USEError',
+    'USEInstallationError',
+    'USEExecutionError',
 ]
+
+class USEError(Exception):
+    pass
+
+
+class USEInstallationError(USEError):
+    pass
+
+
+class USEExecutionError(USEError):
+    pass
+
 
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
@@ -37,7 +49,6 @@ DEBUG=4
 #:
 #:     USEEngine.USE_OCL_COMMAND = \
 #          r'c:\Path\To\UseCommand\bin\use'
-
 
 USE_SYSTEM_INSTALLED_USE=False
 
@@ -80,8 +91,8 @@ class USEEngine(object):
             os.path.dirname(os.path.abspath(__file__)),
             'res', name)
         if not os.path.isfile(soil):
-            raise EnvironmentError(
-                'Wrong installation. %s not found!' %
+            raise USEInstallationError( #raise:TODO:4
+                'Installation is wrong. %s is not found.' %
                 soil)
         else:
             return soil
@@ -274,8 +285,8 @@ class USEEngine(object):
         if m:
             return m.group('version')
         else:
-            msg = "Cannot execute USE OCL or get its version. Is this program installed?\n"
-            raise EnvironmentError(msg)
+            raise USEInstallationError( #raise:TODO:4
+                "Cannot execute USE OCL or get its version. ")
 
     @classmethod
     def withUseOCL(cls):

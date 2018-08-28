@@ -6,11 +6,12 @@ from abc import ABCMeta, abstractmethod
 
 
 from modelscripts.base.issues import (
-    Levels
-)
+    Levels)
 from modelscripts.megamodels.issues import (
-    ModelElementIssue
-)
+    ModelElementIssue)
+from modelscripts.base.exceptions import (
+    MethodNotDefined,
+    UnexpectedCase)
 
 DEBUG=0
 
@@ -79,7 +80,7 @@ class Checker(object):
         self.params=params
         self.name=type(self).__name__
         if 'metaclasses' not in params:
-            raise ValueError(
+            raise ValueError( #raise;TODO:3
                 '%s do not define metaclasses' % self.name)
         self.metaclasses=params.get('metaclasses')
         self.level=params.get('level', Levels.Error)
@@ -87,7 +88,7 @@ class Checker(object):
 
 
     def doCheck(self, e):
-        raise NotImplementedError(
+        raise MethodNotDefined( #raise:TODO:3
             'CKK: Checker %s on %s is not implemented ' % (
                 self.name,
                 type(e).__name__
@@ -137,7 +138,8 @@ class LimitsChecker(Checker):
 
     @abstractmethod
     def size(self, e):
-        raise NotImplementedError()
+        raise MethodNotDefined( #raise: TODO:3
+            'size() not implemented.')
 
     def doCheck(self, e):
         l=self.size(e)

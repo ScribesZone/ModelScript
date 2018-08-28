@@ -26,20 +26,17 @@ import xml.etree.ElementTree as ET
 
 # decomposition:  SEQ, LEAF
 # executant: ABS USER SYS INT
-
+from modelscripts.base.exceptions import (
+    UnexpectedCase)
 from modelscripts.scripts.textblocks.parser import (
-    astTextBlockToTextBlock
-)
-
+    astTextBlockToTextBlock)
 from modelscripts.metamodels.tasks import (
     TaskModel,
     TaskDecomposition,
     TaskExecutant,
-    Task,
-)
+    Task)
 from modelscripts.scripts.tasks.printer import (
-    TaskModelPrinter
-)
+    TaskModelPrinter)
 
 HEADER='''
 <?xml version="1.0" encoding="UTF-8"?>
@@ -79,14 +76,18 @@ class KmadeConcreteSyntax(object):
         for (c,a) in pairs:
             if c==concrete:
                 return a
-        raise NotImplementedError('"%s" is unexpected' % concrete)
+        raise UnexpectedCase( #raise:TODO:4
+            # check how to catch this exception if needed
+            '"%s" is unexpected' % concrete)
 
     @classmethod
     def _find_backward(cls, pairs, abstract):
         for (c,a) in pairs:
             if a==abstract:
                 return c
-        raise NotImplementedError('"%s" is unexpected' % abstract)
+        raise UnexpectedCase( #raise:TODO:4
+            # check how to catch this exception if needed
+            '"%s" is unexpected' % abstract)
 
     @classmethod
     def abstractDecomposition(cls, concrete):

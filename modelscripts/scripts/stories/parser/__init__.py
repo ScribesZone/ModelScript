@@ -20,26 +20,22 @@ from __future__ import print_function
 from typing import Union, Text, Callable, Optional, List
 from modelscripts.base.grammars import AST
 from modelscripts.base.grammars import (
-    ASTNodeSourceIssue
-)
+    ASTNodeSourceIssue)
 from modelscripts.base.issues import (
-    Levels,
-)
+    Levels)
+from modelscripts.base.exceptions import (
+    UnexpectedCase)
 from modelscripts.scripts.textblocks.parser import (
-    astTextBlockToTextBlock
-)
+    astTextBlockToTextBlock)
 from modelscripts.metamodels.classes.core import (
-    dataTypeFromDataValueName
-)
+    dataTypeFromDataValueName)
 from modelscripts.metamodels.stories import (
     Story,
     TextStep,
     VerbStep,
     IncludeStep,
-    AbstractStoryId
-)
+    AbstractStoryId)
 from modelscripts.metamodels.classes.types import EnumerationValue
-
 from modelscripts.metamodels.stories.operations import (
     ObjectCreationStep,
     ObjectDeletionStep,
@@ -48,8 +44,7 @@ from modelscripts.metamodels.stories.operations import (
     LinkDeletionStep,
     LinkObjectCreationStep,
     CheckStep,
-    ReadStep
-)
+    ReadStep)
 
 ISSUES={
     # 'DESCRIPTOR_TWICE':'st.syn.Descriptor.Twice',
@@ -251,7 +246,7 @@ class StoryFiller():
             step=self._fill_link_object_creation_step(
                 parent, astStep)
         else:
-            raise NotImplementedError(
+            raise UnexpectedCase( #raise:OK
                 'AST type not expected: %s' % type_)
         return step
 
@@ -496,7 +491,7 @@ class StoryFiller():
             )
             return step
         else:
-            raise NotImplementedError(
+            raise UnexpectedCase( #raise:OK
                 'Action not expected: %s' % action)
 
     def _fill_link_object_creation_step(self, parent, astStep):

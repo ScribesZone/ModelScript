@@ -20,6 +20,8 @@ from modelscripts.megamodels.megamodels._registries.metamodels import _Metamodel
 # from modelscripts.megamodels.metamodels import Metamodel
 from modelscripts.megamodels.megamodels._registries.models import _ModelRegistry
 from modelscripts.megamodels.megamodels._registries.sources import _SourceRegistry
+from modelscripts.base.exceptions import (
+    MethodNotDefined)
 
 __all__=(
     'MegamodelElement',
@@ -42,12 +44,14 @@ class MegamodelElement(object):
     @abstractproperty
     def outgoingDependencies(self):
         #type: () -> List[Dependency]
-        raise NotImplementedError
+        raise MethodNotDefined( #raise:OK
+            'outgoingDependencies() is not defined.')
 
     @abstractproperty
     def incomingDependencies(self):
         #type: () -> List[Dependency]
-        raise NotImplementedError
+        raise MethodNotDefined( #raise:OK
+            'incomingDependencies() is not defined.')
 
     def targets(self):
         #type: () -> List[MegamodelElement]

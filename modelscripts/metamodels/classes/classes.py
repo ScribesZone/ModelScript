@@ -11,6 +11,8 @@ from modelscripts.metamodels.classes import (
     Member)
 from modelscripts.metamodels.classes.associations import (
     Role)
+from modelscripts.base.exceptions import (
+    MethodNotDefined)
 
 
 class Class(PackagableElement, Entity):
@@ -308,7 +310,9 @@ class Class(PackagableElement, Entity):
         # This method is not really useful as isinstance can be used.
         # It is just used to prevent creating object of this class
         # (using ABCMeta is not enough to prevent this).
-        raise NotImplementedError()
+        raise MethodNotDefined( #raise:OK
+            'method isPlainClass() must be defined.'
+        )
 
     def __str__(self):
         return self.name

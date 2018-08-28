@@ -17,8 +17,7 @@ from textx.exceptions import TextXSyntaxError
 from modelscripts.base.sources import SourceFile
 from modelscripts.base.metrics import (
     Metrics,
-    Metric
-)
+    Metric)
 from modelscripts.base.issues import (
     IssueBox,
     FatalError,
@@ -36,8 +35,11 @@ from modelscripts.megamodels.elements import (
 from modelscripts.scripts.megamodels.parser import (
     fillDependencies)
 from modelscripts.megamodels.metamodels import (
-    Metamodel
-)
+    Metamodel)
+
+from modelscripts.base.exceptions import (
+    MethodNotDefined,
+    UnexpectedCase)
 
 __all__=(
     'ASTBasedModelSourceFile',
@@ -95,7 +97,8 @@ class ASTBasedModelSourceFile(SourceFile):
             )
         except FatalError:
             pass   # an error as already been registered
-
+        super(ASTBasedModelSourceFile, self).__init__(
+            fileName=fileName)
 
         #----- (2) register/link models/sources/issues----
 
@@ -115,29 +118,23 @@ class ASTBasedModelSourceFile(SourceFile):
         #----- (2) syntactic parsing, create the ast
         self.grammarFile=grammarFile
         #type: Text
-        # from modelscripts.base.grammars import (Grammar, ModelSourceAST)
-        # self.grammar=Grammar(grammarFile)
-        # #type: Grammar
-        #
-        # self.ast = ModelSourceAST(self.grammar, self, fileName)
-
-
-
 
         # Create first an empty ImportBox.
         self.importBox=ImportBox(self)
 
         # Then fill it by reading megamodel statements,
         # unless specified.
+
+        # removed this code
         try:
             self.fillAST()
             fillDependencies(self)
             self.fillModel()
             self.resolve()
             self.finalize()
-
         except FatalError:
             pass  # nothing to do, the issue has been registered
+
 
     def resolve(self):
         self.model.resolve()
@@ -201,7 +198,8 @@ class ASTBasedModelSourceFile(SourceFile):
     @abstractmethod
     def fillModel(self):
         #type: () -> None
-        raise NotImplementedError('Method must be implemented')
+        raise MethodNotDefined( #raise:OK
+            'fillModel() must be implemented')
 
     @abstractproperty
     def metamodel(self):
@@ -210,7 +208,8 @@ class ASTBasedModelSourceFile(SourceFile):
         The model corresponding to the parser.
         This must be implemented by all parsers.
         """
-        raise NotImplementedError('Method must be implemented')
+        raise MethodNotDefined( #raise:OK
+            'metamodel() must be implemented')
 
     def emptyModel(self):
         # type: () -> Model
@@ -272,7 +271,7 @@ class ASTBasedModelSourceFile(SourceFile):
             the_method = getattr(printer_class, method)
             return the_method(printer)
         except AttributeError:
-            raise NotImplementedError(
+            raise MethodNotDefined(  # raise:OK
                 "Class `{}` does not implement `{}`".format(
                     printer_class.__class__.__name__,
                     method))

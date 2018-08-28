@@ -79,47 +79,47 @@ class RelationModelSource(ASTBasedModelSourceFile):
 
          for declaration in self.ast.model.declarations:
             type_=declaration.__class__.__name__
-
-            if type_=='Actor':
-                actor_decl=declaration
-                a=_ensureActor(
-                    name=actor_decl.name,
-                    astnode=actor_decl,
-                    implicit=False)
-                a.kind=(
-                    'human' if actor_decl.kind is None
-                    else actor_decl.kind)
-
-                a.superActors=actor_decl.superActors
-                a.description=astTextBlockToTextBlock(
-                    container=a,
-                    astTextBlock=actor_decl.textBlock)
-
-
-            elif type_=='Usecase':
-                usecase_decl=declaration
-                u=_ensureUsecase(
-                    name=usecase_decl.name,
-                    astnode=usecase_decl,
-                    implicit=False)
-                u.description=astTextBlockToTextBlock(
-                    container=u,
-                    astTextBlock=usecase_decl.textBlock)
-
-            elif type_=='Interactions':
-                for interaction in declaration.interactions:
-                    a=_ensureActor(
-                        interaction.actor,
-                        astnode=interaction,
-                        implicit=True)
-                    u=_ensureUsecase(
-                        interaction.usecase,
-                        astnode=interaction,
-                        implicit=True)
-                    a.addUsecase(u)
-            else:
-                raise NotImplementedError(
-                    'Unexpected type %s' % type_)
+            pass
+            # if type_=='Actor':
+            #     actor_decl=declaration
+            #     a=_ensureActor(
+            #         name=actor_decl.name,
+            #         astnode=actor_decl,
+            #         implicit=False)
+            #     a.kind=(
+            #         'human' if actor_decl.kind is None
+            #         else actor_decl.kind)
+            #
+            #     a.superActors=actor_decl.superActors
+            #     a.description=astTextBlockToTextBlock(
+            #         container=a,
+            #         astTextBlock=actor_decl.textBlock)
+            #
+            #
+            # elif type_=='Usecase':
+            #     usecase_decl=declaration
+            #     u=_ensureUsecase(
+            #         name=usecase_decl.name,
+            #         astnode=usecase_decl,
+            #         implicit=False)
+            #     u.description=astTextBlockToTextBlock(
+            #         container=u,
+            #         astTextBlock=usecase_decl.textBlock)
+            #
+            # elif type_=='Interactions':
+            #     for interaction in declaration.interactions:
+            #         a=_ensureActor(
+            #             interaction.actor,
+            #             astnode=interaction,
+            #             implicit=True)
+            #         u=_ensureUsecase(
+            #             interaction.usecase,
+            #             astnode=interaction,
+            #             implicit=True)
+            #         a.addUsecase(u)
+            # else:
+            #     raise NotImplementedError(
+            #         'Unexpected type %s' % type_)
 
     def resolve(self):
         pass

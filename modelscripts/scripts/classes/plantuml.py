@@ -11,6 +11,8 @@ from modelscripts.metamodels.classes import (
     METAMODEL)
 from modelscripts.metamodels.classes.associations import Association
 from modelscripts.tools.plantuml.engine import PlantUMLEngine
+from modelscripts.base.exceptions import (
+    NoSuchFeature)
 
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
@@ -160,7 +162,8 @@ class ClassPlantUMLPrinter(object):
             ('aggregation','forward') : 'o-->',
         }[ (association.kind, association.navigability)]
         if len(association.roles) >= 3:
-            raise NotImplementedError('%s have %i roles. n-ary association are not implemented' % (
+            raise NoSuchFeature( #raise:TODO:3
+                '%s have %i roles. n-ary association are not implemented' % (
                 association.name,
                 len(association.roles),
             ))

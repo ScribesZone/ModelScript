@@ -2,12 +2,13 @@
 
 from typing import Any, Optional
 
+from modelscripts.base.exceptions import (
+    UnexpectedCase)
 from modelscripts.metamodels.textblocks import (
     TextBlock,
     TextLine,
     PlainText,
-    TextReference
-)
+    TextReference)
 #  import modelscripts.metamodels.textblocks in script due to cycle
 from modelscripts.metamodels.glossaries import GlossaryModel
 
@@ -35,7 +36,7 @@ def astTextBlockToTextBlock(container, astTextBlock, glossary=None):
                         text=ast_text_token.text,
                         astTextReference=ast_text_token)
                 else:
-                    raise NotImplementedError(
+                    raise UnexpectedCase( #raise:OK
                         'Type %s not supported' % type_)
 
 

@@ -37,7 +37,11 @@ DEBUG=1
 
 
 
-class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
+class Model(
+    MegamodelElement,
+    ModelElement,
+    WithIssueModel,
+    WithTextBlocks):
     """
     The root class for all models.
 
@@ -94,8 +98,14 @@ class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
     @abc.abstractproperty
     def metamodel(self):
         #type: () -> Metamodel
-        raise NotImplementedError()
 
+        # Makes it sure that subclasses define metamodel()
+        # This should never happened if all model classes
+        # are properly defined.
+        raise NotImplementedError( #raise:OK
+            'INTERNAL ERROR: The model class "%s"'
+            ' does not redefine metamodel()' % self.name
+        )
 
     @property
     def label(self):
@@ -172,7 +182,8 @@ class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
             the_method = getattr(printer_class, method)
             return the_method(printer)
         except AttributeError:
-            raise NotImplementedError(
+            raise NotImplementedError(  #raise:OK
+                "INTERNAL ERROR: "
                 "Class `{}` does not implement `{}`".format(
                     printer_class.__class__.__name__,
                     method))
@@ -183,11 +194,11 @@ class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
             if acceptNone:
                 return None
             else:
-                raise ValueError(
+                raise ValueError( #raise:TODO:2
                     'No %s model found. Expected one.'
                     % targetMetamodel.label)
         elif len(lm)>=2:
-            raise ValueError(
+            raise ValueError(   #raise:TODO:2
                 '%i %s models found. Expected one.'
                 % (len(lm), targetMetamodel.label))
         else:
@@ -237,6 +248,7 @@ class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
             return [
                 dep for dep in deps
                     # could raise ValueError, but should not
+                    # raise:except:TODO:2
                     if (dep.metamodelDependency
                         == metamodelDependency)
             ]
@@ -274,7 +286,7 @@ class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
         Check if this model has not problems with
         dependencies.
         Do nothing if this is not the case. Otherwise
-        it is else raise a ValueError.
+        raise a ValueError.
         This could be because there is no corresponding
         metamodel dependency for a model metamodel.
         This could also due because of too much outgoing
@@ -297,12 +309,12 @@ class Model(MegamodelElement, ModelElement, WithIssueModel, WithTextBlocks):
             m_deps=self.outDependencies(
                 metamodelDependency=mm_dep)
             if len(m_deps)==0 and not mm_dep.optional:
-                raise ValueError(
+                raise ValueError( #raise:TODO:2
                     'Reference to a %s model'
                     ' is model is missing'
                     % mm_dep.targetMetamodel)
             elif len(m_deps)>=0 and not mm_dep.multiple:
-                raise ValueError(
+                raise ValueError( #raise:TODO:2
                     'Too many %s models associated'
                     ' with this model'
                     % mm_dep.targetMetamodel)

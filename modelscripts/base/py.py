@@ -2,7 +2,7 @@
 
 def getObjectValues(object, name, asList=True):
     if not hasattr(object, name):
-        raise ValueError('Class %s has not attribute %s' % (
+        raise ValueError('Class %s has not attribute %s' % ( #raise:TODO:4
             object.__class__.__name__,
             name))
     x = getattr(object, name)

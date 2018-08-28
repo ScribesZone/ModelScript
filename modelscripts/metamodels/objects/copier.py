@@ -9,7 +9,8 @@ from modelscripts.metamodels.objects.objects import (
     Object,
     PlainObject,
     Slot)
-
+from modelscripts.base.exceptions import (
+    TODO)
 
 class ObjectModelCopier(object):
 
@@ -53,7 +54,7 @@ class ObjectModelCopier(object):
     def _copy_plain_object(self, plain_object):
 
         if plain_object.package is not None:
-            raise NotImplementedError(
+            raise TODO( #raise:OK
                 'The usage of package is not supported yet')
 
         # The step does not change. The creation of the object
@@ -76,7 +77,7 @@ class ObjectModelCopier(object):
 
     def _copy_plain_link(self, plain_link):
         if plain_link.package is not None:
-            raise NotImplementedError(
+            raise TODO( #raise:OK
                 'The usage of package is not supported yet')
 
         # The step does not change. The creation of the link
@@ -98,7 +99,7 @@ class ObjectModelCopier(object):
 
     def _copy_link_object(self, link_object):
         if link_object.package is not None:
-            raise NotImplementedError(
+            raise TODO( #raise:OK
                 'The usage of package is not supported yet')
         # The step does not change. The creation of the link
         # is defined at only one place (the step)

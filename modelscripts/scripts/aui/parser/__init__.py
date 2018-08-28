@@ -1,37 +1,29 @@
 # coding=utf-8
 
 from __future__ import (
-    unicode_literals, print_function, absolute_import, division
-)
+    unicode_literals, print_function, absolute_import, division)
 
 import os
-
 from typing import Text
-
 from modelscripts.base.grammars import (
     # ModelSourceAST, \
     # ASTBasedModelSourceFile,
-    ASTNodeSourceIssue
-)
+    ASTNodeSourceIssue)
 from modelscripts.base.issues import (
-    Levels,
-)
+    Levels)
 from modelscripts.metamodels.aui import (
-    METAMODEL
-)
+    METAMODEL)
 from modelscripts.metamodels.relations import (
     RelationModel,
     Relation,
-    Column,
-)
+    Column,)
 from modelscripts.megamodels.metamodels import Metamodel
-
 from modelscripts.megamodels.sources import (
-    ASTBasedModelSourceFile
-)
+    ASTBasedModelSourceFile)
 from modelscripts.scripts.textblocks.parser import (
-    astTextBlockToTextBlock
-)
+    astTextBlockToTextBlock)
+from modelscripts.base.exceptions import (
+    UnexpectedCase)
 
 __all__=(
     'AUIModelSource'
@@ -86,7 +78,7 @@ class AUIModelSource(ASTBasedModelSourceFile):
                 actor_decl=declaration
 
             else:
-                raise NotImplementedError(
+                raise UnexpectedCase( #raise:OK
                     'Unexpected type %s' % type_)
 
     def resolve(self):

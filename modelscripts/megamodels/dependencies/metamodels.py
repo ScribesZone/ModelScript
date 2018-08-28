@@ -6,6 +6,9 @@ depend on usecases and classes.
 from typing import Text, List
 from modelscripts.megamodels.metamodels import Metamodel
 from modelscripts.megamodels.dependencies import Dependency
+from modelscripts.base.exceptions import (
+    UnexpectedState)
+
 # Model='Model'
 # Metamodel='Metamodel'
 # M='SourceElement'
@@ -50,11 +53,10 @@ class MetamodelDependency(Dependency):
             from modelscripts.megamodels import Megamodel
             return Megamodel.theMetamodel(id=self.sourceId)
         except:
-            raise ValueError(
+            raise UnexpectedState( #raise:TODO:3
                 'No target "%s" metamodel registered from %s' % (
                     self.sourceId,
-                    self.targetId
-                ))
+                    self.targetId))
 
     @property
     def source(self):
@@ -72,7 +74,7 @@ class MetamodelDependency(Dependency):
 
             return Megamodel.theMetamodel(id=self.targetId)
         except:
-            raise ValueError(
+            raise UnexpectedState( #raise:TODO:3
                 'From "%s" metamodel not registered to %s' % (
                     self.sourceId,
                     self.targetId

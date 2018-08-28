@@ -1,4 +1,7 @@
 # coding=utf-8
+"""
+Facet of Megamodel class.
+"""
 from collections import OrderedDict
 
 from typing import Dict,  List, Optional

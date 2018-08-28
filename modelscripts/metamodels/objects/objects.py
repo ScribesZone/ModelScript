@@ -15,6 +15,9 @@ from modelscripts.metamodels.objects import (
     Member,
     PackagableElement,
     Entity)
+from modelscripts.base.exceptions import (
+    MethodNotDefined,
+    NoSuchFeature)
 
 
 class _ClassPrint(object):
@@ -132,7 +135,7 @@ class Object(PackagableElement, Entity):
         if role in self._link_roles_per_role:
             return len(self._link_roles_per_role[role])
         else:
-            raise ValueError(
+            raise NoSuchFeature( #raise:OK
                 'Unexpected role "%s" for an object of class "%s"' % (
                     role.name,
                     self.class_.name))
@@ -163,7 +166,8 @@ class Object(PackagableElement, Entity):
         # This method is not really useful as isinstance can be used.
         # It is just used to prevent creating object of this class
         # (using ABCMeta is not enough to prevent this).
-        raise NotImplementedError()
+        raise MethodNotDefined( #raise:OK
+            'isPlainObject() is not defined')
 
     # def _class_print(self, onlyIds=False):
     #     #type: (bool) -> Dict[Text, Optional[SimpleValue]]

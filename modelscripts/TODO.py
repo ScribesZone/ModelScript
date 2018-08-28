@@ -7,26 +7,46 @@
 #   General
 #================================================================
 
+#TODO:1 improve test for modelc
+#   add a generator to separate execution and have different test
+
+#TODO:1 check display of error
+#   In modelc just the issue summary is printed
+#   ORIGIN:M:WARNING:?:xxx
+
+#TODO:1 display of errors for megamodel top level
+#   see modelc.py
+
 #TODO:1 check modelc interface
-#   -> Check current state
+#   -> check command line options
+#   -> check how files are loaded and compare it to tests
 #   -> old comment:
 #       currently the modelc interpreter support only general
 #       options independent from models.
 #       The scenario printer configuration has model option
 #       but they are not used since modelc interpeter
-#       does not create
-#       a ScenarioPrinterConfiguration.
+#       does not create a ScenarioPrinterConfiguration.
 #       It is necessary to find a way to change this to support
 #       model specific option. Currently the SecenarioPrinter
 #       add some attributs on the fly. This should be removed.
 
-#TODO:1 deployment: check how to deploy modelscript
+
+
+#TODO:2 deployment: check how to deploy modelscript
 #   should it be with ScribesInfra ?
 #   a python package ?
 #   check if it works at uni
 
-#TODO:2 create coloring scheme for GEdit
-#    check how to deploy the styles at uni
+#TODO:2 add first documentation
+#   This could at least be one page per language
+#   with objectives / examples / concepts / current states
+
+
+#TODO:2 finish coloring scheme for GEdit
+#   check how to deploy the styles at uni
+
+#TODO:2 restore/finalize modela
+#   check how to configure it at uni
 
 #TODO:3 fix strange printing for models
 
@@ -48,6 +68,7 @@
 #   object > link object > link
 #   but this could fail if link object depends on link object
 #   Not a priority a priori
+
 
 #TODO:2 add composition
 #   -> schema: constraint [0..1,1]
@@ -84,6 +105,13 @@
 
 
 #TODO:2 add [0..1] constraint   not self.x->isUndefined
+
+# TODO:3 restore the ability to call USE
+#   this could be
+#   1. for the user interface (drawing diagrams, OCL queries)
+#   2. for the CLI (OCL queries)
+#   3. as a compiler (not useful with new syntax)
+# See modelscripts.tools.use.interfaces
 
 #================================================================
 #   OCL

@@ -1,7 +1,6 @@
 # coding=utf-8
 from __future__ import unicode_literals, print_function, absolute_import, \
     division
-
 from typing import Optional
 
 from modelscripts.base.modelprinters import (
@@ -12,14 +11,14 @@ from modelscripts.scripts.textblocks.printer import (
     TextBlockPrinter)
 from modelscripts.metamodels.objects import (
     ObjectModel,
-    METAMODEL
-)
+    METAMODEL)
+from modelscripts.base.exceptions import (
+    UnexpectedCase)
 from modelscripts.metamodels.objects.linkobjects import LinkObject
 from modelscripts.metamodels.objects.objects import Object, Slot
 from modelscripts.metamodels.objects.links import Link
 from modelscripts.megamodels.models import (
-    Placeholder
-)
+    Placeholder)
 # from modelscripts.scripts.stories.printer import (
 #     StoryPrinter
 # )
@@ -92,7 +91,7 @@ class ObjectModelPrinter(ModelPrinter):
             self.doLinkDefinition(d, indent=indent)
             # TODO:4 check what to do with LinkObject
         else:
-            raise NotImplementedError(
+            raise UnexpectedCase( #raise:OK
                 'Unexpected type: %s' % type(d))
 
 

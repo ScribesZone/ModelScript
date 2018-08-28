@@ -29,8 +29,10 @@ from collections import OrderedDict
 
 from modelscripts.base.issues import (
     Levels,
-    Issue
-)
+    Issue)
+from modelscripts.base.exceptions import (
+    NotFound)
+
 # from modelscripts.megamodels import Megamodel
 
 DEBUG=1
@@ -116,23 +118,25 @@ class SourceImport(SourceFileDependency):
         # filled in ImportBox.addImport
 
         try:
-            # already registered
+            #--- already registered
             from modelscripts.megamodels import Megamodel
             importedSourceFile=Megamodel.source(
                 importStmt.absoluteTargetFilename)
-        except ValueError :
-            # Not registered yet:
+        except NotFound :
+            #--- Not registered yet:
             # actually perform the import
             importedSourceFile=self._doImport(importStmt)
             # XXXXXXZZZZZZZ
-        except:
-            import traceback
-            for i in range(0, 10):
-                print('ZZ'*80)
-            print(traceback.format_exc())
-            for i in range(0, 10):
-                print('ZZ'*80)
-            raise
+        # except: #except:
+        #     import traceback
+        #     for i in range(0, 10):
+        #         print('ZZ'*80)
+        #     print('AN UNEXPECTED EXCEPTION WAS RAISED')
+        #     print(traceback.format_exc())
+        #     print('AN UNEXPECTED EXCEPTION WAS RAISED')
+        #     for i in range(0, 10):
+        #         print('ZZ'*80)
+        #     raise #raise:TODO:2
 
         super(SourceImport, self).__init__(
             self.importStmt.modelSourceFile,

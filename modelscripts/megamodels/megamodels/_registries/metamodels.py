@@ -1,6 +1,9 @@
 # coding=utf-8
 from typing import Dict, Text, List, Optional
 from collections import OrderedDict
+from modelscripts.base.exceptions import (
+    UnexpectedValue,
+    UnexpectedState)
 
 Metamodel= 'Metamodel'
 MetamodelDependency='MetamodelDepndency'
@@ -85,23 +88,23 @@ class _MetamodelRegistry(object):
             or label is not None
             or ext is not None)
         if id is not None:
-            try:
+            if id in cls._metamodelById:
                 return cls._metamodelById[id]
-            except:
-                raise ValueError('No "%s" metamodel registered'
-                          % id)
+            else:
+                raise UnexpectedValue( #raise:TODO:4
+                    'No "%s" metamodel registered' % id)
         if label is not None:
-            try:
+            if label in cls._metamodelByLabel:
                 return cls._metamodelByLabel[label]
-            except:
-                raise ValueError('No "%s" metamodel registered'
-                                 %label)
+            else:
+                raise UnexpectedValue( #raise:TODO:4
+                    'No "%s" metamodel registered' % label)
         if ext is not None:
-            try:
+            if ext in cls._metamodelByExtension:
                 return cls._metamodelByExtension[ext]
-            except:
-                raise ValueError('No "%s" metamodel registered'
-                                 % ext)
+            else:
+                raise UnexpectedValue( #raise:TODO:4
+                      'No "%s" metamodel registered' % ext)
 
     @classmethod
     def metamodelDependencies(cls, source=None, target=None):
@@ -135,20 +138,18 @@ class _MetamodelRegistry(object):
         """
         ds = cls.metamodelDependencies(source=source, target=target)
         if (len(ds) == 0):
-            raise ValueError(
+            raise UnexpectedState( #raise:TODO:2
                 'Invalid dependency between %s'
                 ' metamodel towards %s metamodel'
                 % (source.label, target.label))
         elif (len(ds) >= 2):
             # This should not occur as metamodels should be ok
-            raise ValueError(
+            raise UnexpectedState( #raise:TODO:2
                 'More that one dependency (%s) '
                 'between %s metamodel towards %s metamodel'
                 % (len(ds), source.label, target.label))
         else:
             return ds[0]
-
-
 
     @classmethod
     def checkMetamodelLevel(cls):

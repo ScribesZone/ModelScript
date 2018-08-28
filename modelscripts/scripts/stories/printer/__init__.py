@@ -4,19 +4,17 @@
 """
 from __future__ import unicode_literals, print_function, absolute_import, division
 from typing import Optional
-
 from modelscripts.base.printers import (
     AbstractPrinter,
     AbstractPrinterConfig,
-    Styles
-)
-
+    Styles)
+from modelscripts.base.exceptions import (
+    UnexpectedCase)
 from modelscripts.metamodels.stories import (
     Story,
     TextStep,
     VerbStep,
-    IncludeStep,
-)
+    IncludeStep)
 from modelscripts.metamodels.stories.operations import (
     ObjectCreationStep,
     ObjectDeletionStep,
@@ -25,13 +23,9 @@ from modelscripts.metamodels.stories.operations import (
     LinkDeletionStep,
     LinkObjectCreationStep,
     CheckStep,
-    ReadStep
-)
-
-
+    ReadStep)
 from modelscripts.scripts.textblocks.printer import (
-    TextBlockPrinter
-)
+    TextBlockPrinter)
 
 __all__=(
     'StoryEvaluationPrinter'
@@ -83,7 +77,7 @@ class StoryPrinter(AbstractPrinter):
         elif isinstance(step, CheckStep):
             return self.doCheck(step, indent)
         else:
-            raise NotImplementedError(
+            raise UnexpectedCase( #raise:OK
                 'Unexpected step. type=:"%s"' % step)
 
     def doVerbStep(self, step, indent, recursive=True):

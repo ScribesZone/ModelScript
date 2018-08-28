@@ -31,7 +31,6 @@ PermissionModel
 from abc import ABCMeta
 from typing import List, Optional, Set
 
-from modelscripts.base.oldsources import SourceElement
 from modelscripts.megamodels.models import Model
 from modelscripts.metamodels.permissions.sar import SAR
 from modelscripts.megamodels.elements import SourceModelElement

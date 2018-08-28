@@ -7,16 +7,15 @@ import os
 from modelscripts.base.grammars import (
     # ModelSourceAST, \
     # ASTBasedModelSourceFile,
-    ASTNodeSourceIssue
-)
+    ASTNodeSourceIssue)
 from modelscripts.base.issues import (
-    Levels
-)
+    Levels)
+from modelscripts.base.exceptions import (
+    UnexpectedCase)
 from modelscripts.metamodels.classes import (
     ClassModel,
     Package,
-    METAMODEL
-)
+    METAMODEL)
 from modelscripts.metamodels.classes.assocclasses import (
     AssociationClass)
 from modelscripts.metamodels.classes.associations import (
@@ -36,14 +35,13 @@ from modelscripts.metamodels.classes.invariants import (
     OCLContext,
     OCLLine)
 from modelscripts.megamodels.metamodels import Metamodel
-
 from modelscripts.megamodels.sources import (
-    ASTBasedModelSourceFile
-)
+    ASTBasedModelSourceFile)
 from modelscripts.scripts.textblocks.parser import (
-    astTextBlockToTextBlock
-)
-from modelscripts.megamodels.models import Model, Placeholder
+    astTextBlockToTextBlock)
+from modelscripts.megamodels.models import (
+    Model,
+    Placeholder)
 
 
 __all__=(
@@ -70,7 +68,6 @@ ISSUES={
     'CLASS_NO_SUPER':'cl.res.Class.NoSuper',
     'ATTRIBUTE_NO_TYPE':'cl.res.Attribute.NoType',
     'ROLE_NO_CLASS':'cl.res.Role.NoClass',
-
 }
 
 def icode(ilabel):
@@ -531,7 +528,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
             elif type_=='Invariant':
                 define_invariant(declaration)
             else:
-                raise NotImplementedError(
+                raise UnexpectedCase( #raise:OK
                     'declaration of %s not implemented' % type_)
 
     #----------------------------------------------------------------

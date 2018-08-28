@@ -7,6 +7,9 @@ from modelscripts.base.files import (
     writeFileLines,
     writeFile
 )
+from modelscripts.base.exceptions import (
+    FileSystemError,
+    UnexpectedCase)
 
 
 def replaceExtension(filename, extension):
@@ -114,9 +117,10 @@ class Environment(object):
                     text=True)
                 os.close(f)
                 return tmp_file
-            except:
-                raise IOError(
-                    'Cannot create worker file in system temp directory.')
+            except Exception: #except:OK
+                raise FileSystemError( #raise:OK
+                    'Cannot create file in'
+                    ' system temporary directory.')
         elif space=='home':
             # TODO:4 could be use if need to flatten names
             # @classmethod
@@ -136,7 +140,7 @@ class Environment(object):
             ensureDir(dir)
             return os.path.join(dir, os.path.basename(filename))
         else:
-            raise NotImplementedError(
+            raise UnexpectedCase(
                 'WorkerSpace not implemented: %s' % space )
 
 

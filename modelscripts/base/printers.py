@@ -9,8 +9,9 @@ from abc import ABCMeta, abstractmethod
 from typing import Text, Optional
 
 from modelscripts.base.styles import Styles
-
-
+from modelscripts.base.exceptions import (
+    MethodNotDefined,
+    UnexpectedCase)
 #----------------------------------------------------------------------------
 #    Strings
 #----------------------------------------------------------------------------
@@ -46,7 +47,7 @@ def box(s,
     elif align=='L':
         body=(around+s).rjust(length, fill)
     else:
-        raise NotImplementedError(
+        raise UnexpectedCase( #raise:OK
             'no alignment mode: "%s"' % align)
     mainline=padding+body+padding
     borderline=padding+fill*length+padding
@@ -83,11 +84,10 @@ class AbstractPrinterConfig(object):
         self.verbose=verbose
         self.quiet=quiet
 
+
 class AbstractPrinterConfigs(object):
     default=AbstractPrinterConfig()
     
-    
-
 
 class AbstractPrinter(object):
     __metaclass__ = ABCMeta
@@ -105,7 +105,6 @@ class AbstractPrinter(object):
     @property
     def currentLineNo(self):
         return self.output.count('\n')+1
-
 
     def kwd(self, text):
         if text=='':  # necessary, otherwise style go to next string
@@ -133,7 +132,6 @@ class AbstractPrinter(object):
                 text,
                 styled=self.config.styled
             )
-
 
     def indent(self, n=1):
         self._baseIndent+=n
@@ -185,7 +183,6 @@ class AbstractPrinter(object):
                 self.outLine('')
         return self.output
 
-
     def _indentPrefix(self, indent=0):
         return ' '*4*(self._baseIndent+indent)
 
@@ -204,7 +201,7 @@ class AbstractPrinter(object):
     
     @abstractmethod
     def do(self):
-        raise NotImplementedError()
+        raise MethodNotDefined() #raise:OK
 
     def display(self, removeLastEOL=False, addLastEOL=True):
         text=self.do()
@@ -244,9 +241,9 @@ class StructuredPrinterConfig(AbstractPrinterConfig):
         self.title = title
         self.issuesMode = issuesMode
 
+
 class StructuredPrinterConfigs(object):
     default=StructuredPrinterConfig()
-
 
 
 class StructuredPrinter(AbstractPrinter):
@@ -266,6 +263,7 @@ class StructuredPrinter(AbstractPrinter):
         doBottom
             doBottomInner
             doIssues         if issueMode='bottom'
+            doIssueSummary
             doBottomTitle
     """
     __metaclass__ = ABCMeta
@@ -335,10 +333,6 @@ class StructuredPrinter(AbstractPrinter):
         self.currentLineNoDisplay=True
         return self.output
 
-
-
-
-
     # def doSummary(self):
     #     return self.output
 
@@ -364,18 +358,12 @@ class StructuredPrinter(AbstractPrinter):
         """
         pass
 
-
     def doBottomTitle(self):
         if not self.config.quiet:
             self.outLine(box('end of '+self.config.title))
         return self.output
 
-
-
-
-
     #---- bottom --------------------------------------------------
-
 
     @property
     def hasIssues(self):
@@ -453,8 +441,10 @@ class ContentPrinterConfig(StructuredPrinterConfig):
         self.contentMode = contentMode
         self.summaryMode = summaryMode
 
+
 class ContentPrinterConfigs(object):
     default=ContentPrinterConfig()
+
 
 class ContentPrinter(StructuredPrinter):
     __metaclass__ = ABCMeta

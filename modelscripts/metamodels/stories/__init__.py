@@ -32,6 +32,8 @@ from abc import ABCMeta, abstractproperty, abstractmethod
 from modelscripts.megamodels.elements import SourceModelElement
 from modelscripts.metamodels.permissions.sar import Subject
 from modelscripts.base.metrics import Metrics, Metric
+from modelscripts.base.exceptions import (
+    MethodNotDefined)
 
 META_CLASSES=(
     'Story',
@@ -348,7 +350,8 @@ class AbstractStoryCollection(object):
         If there is no such story available for this story then
         return None.
         """
-        raise NotImplementedError('story() not implemented')
+        raise MethodNotDefined( #raise:OK
+            'method story() is not implemented.')
 
 
 class EmptyStoryCollection(AbstractStoryCollection):

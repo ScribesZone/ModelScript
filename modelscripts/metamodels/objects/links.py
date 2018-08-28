@@ -3,8 +3,9 @@ from collections import OrderedDict
 
 from modelscripts.metamodels.classes.associations import opposite
 from modelscripts.metamodels.objects import PackagableElement, Entity
-
-
+from modelscripts.base.exceptions import (
+    UnexpectedCase,
+    MethodNotDefined)
 class Link(PackagableElement, Entity):
     __metaclass__ = ABCMeta
 
@@ -49,7 +50,9 @@ class Link(PackagableElement, Entity):
     def isPlainLink(self):
         # just used to prevent creating object of this class
         # (ABCMeta is not enough)
-        raise NotImplementedError()
+        raise MethodNotDefined( #raise:OK
+            'method isPlainLink() is not defined.'
+        )
 
     def object(self, position):
         #type: () -> RolePosition
@@ -58,7 +61,7 @@ class Link(PackagableElement, Entity):
         elif position=='target':
             return self.targetObject
         else:
-            raise NotImplementedError(
+            raise UnexpectedCase( #raise:OK
                 'role position "%s" is not implemented' % position)
 
     def linkRole(self, position):
@@ -116,7 +119,7 @@ class LinkRole(object):
                 self.link.targetObject.name
             )
         else:
-            raise NotImplementedError(
+            raise UnexpectedCase( #raise:OK
                 'Unexpected position: %s' % self.position)
 
 

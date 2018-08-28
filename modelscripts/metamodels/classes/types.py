@@ -5,7 +5,8 @@ from modelscripts.megamodels.py import MAttribute, MComposition
 from modelscripts.metamodels.classes import (
     PackagableElement,
     Item)
-
+from modelscripts.base.exceptions import (
+    MethodNotDefined)
 
 class SimpleType(PackagableElement, Item):
     """
@@ -117,11 +118,13 @@ class SimpleValue(object):
 
     @abc.abstractproperty
     def type(self):
-        raise NotImplementedError('type not implemented')
+        raise MethodNotDefined( #raise:OK
+            'property .type not implemented')
 
     @abc.abstractmethod
     def equals(self, simpleValue):
-        raise NotImplementedError('compare() not implemented')
+        raise MethodNotDefined( #raise:OK
+            'equals() not implemented')
 
 
 class EnumerationValue(object):

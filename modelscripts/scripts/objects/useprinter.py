@@ -12,21 +12,16 @@ from modelscripts.scripts.textblocks.printer import (
     TextBlockPrinter)
 from modelscripts.metamodels.objects import (
     ObjectModel,
-    METAMODEL
-)
+    METAMODEL)
 from modelscripts.metamodels.objects.linkobjects import LinkObject
 from modelscripts.metamodels.objects.objects import Object, Slot
 from modelscripts.metamodels.objects.links import Link
 from modelscripts.megamodels.models import (
-    Placeholder
-)
-# from modelscripts.scripts.stories.printer import (
-#     StoryPrinter
-# )
+    Placeholder)
 from modelscripts.scripts.stories.printer.evaluation import (
-    #StoryEvaluationPrinter
-    StoryBestPrinter
-)
+    StoryBestPrinter)
+from modelscripts.base.exceptions import (
+    UnexpectedCase)
 
 class ObjectModelPrinter(ModelPrinter):
 
@@ -92,7 +87,7 @@ class ObjectModelPrinter(ModelPrinter):
             self.doLinkDefinition(d, indent=indent)
             #TODO:3 check what to do with LinkObject
         else:
-            raise NotImplementedError(
+            raise UnexpectedCase( #raise:OK
                 'Unexpected type: %s' % type(d))
 
 

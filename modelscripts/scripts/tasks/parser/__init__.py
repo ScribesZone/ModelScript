@@ -79,14 +79,16 @@ class ConcreteSyntax(object):
         for (c,a) in pairs:
             if c==concrete:
                 return a
-        raise NotImplementedError('"%s" is unexpected' % concrete)
+        raise NotImplementedError( #raise:TODO:4
+            '"%s" is unexpected' % concrete)
 
     @classmethod
     def _find_backward(cls, pairs, abstract):
         for (c,a) in pairs:
             if a==abstract:
                 return c
-        raise NotImplementedError('"%s" is unexpected' % abstract)
+        raise NotImplementedError( #raise:TODO:4
+            '"%s" is unexpected' % abstract)
 
     @classmethod
     def abstractDecomposition(cls, concrete):

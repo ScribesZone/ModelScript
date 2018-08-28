@@ -10,16 +10,13 @@ import os
 from modelscripts.base.grammars import AST
 from modelscripts.megamodels.models import Model, Placeholder
 from modelscripts.base.grammars import (
-    # ModelSourceAST, \
-    # ASTBasedModelSourceFile,
-    ASTNodeSourceIssue
-)
+    ASTNodeSourceIssue)
 from modelscripts.base.issues import (
-    Levels,
-)
+    Levels,)
+from modelscripts.base.exceptions import (
+    UnexpectedCase)
 from modelscripts.megamodels.elements import (
-    Descriptor
-)
+    Descriptor)
 from modelscripts.metamodels.scenarios import (
     ScenarioModel,
     ActorInstance,
@@ -28,47 +25,30 @@ from modelscripts.metamodels.scenarios import (
     Scenario,
     ObjectModelStoryContainer,
     StoryId,
-    METAMODEL
-)
+    METAMODEL)
 from modelscripts.metamodels.objects import (
-    ShadowObjectModel,
-)
+    ShadowObjectModel,)
 from modelscripts.metamodels.classes import (
-    ClassModel
-)
+    ClassModel)
 from modelscripts.metamodels.usecases import (
-    UsecaseModel
-)
+    UsecaseModel)
 from modelscripts.metamodels.glossaries import (
-    GlossaryModel
-)
+    GlossaryModel)
 from modelscripts.metamodels.permissions import (
-    PermissionModel
-)
+    PermissionModel)
 from modelscripts.metamodels.objects import (
-    ObjectModel
-)
+    ObjectModel)
 from modelscripts.megamodels.sources import (
-    ASTBasedModelSourceFile
-)
+    ASTBasedModelSourceFile)
 from modelscripts.scripts.textblocks.parser import (
-    astTextBlockToTextBlock
-)
+    astTextBlockToTextBlock)
 from modelscripts.scripts.stories.parser import (
-    StoryFiller
-)
+    StoryFiller)
 from modelscripts.metamodels.stories import (
-    AbstractStoryId
-)
+    AbstractStoryId)
 from modelscripts.metamodels.stories.evaluations.evaluator import (
-    StoryEvaluator,
-)
-# from modelscripts.metamodels.stories import (
-#     CompositeStory
-# )
-# from modelscripts.metamodels.stories.evaluations import (
-#     CompositeStoryEvaluation
-# )
+    StoryEvaluator,)
+
 
 __all__=(
     'ObjectModelSource'
@@ -381,7 +361,7 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
             elif type_=='Scenario':
                 define_scenario(declaration)
             else:
-                raise NotImplementedError(
+                raise UnexpectedCase( #raise:OK
                     'AST type not expected: %s' % type_)
 
 

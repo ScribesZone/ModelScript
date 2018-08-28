@@ -2,9 +2,13 @@
 from collections import OrderedDict
 from typing import List, Dict, Optional
 
+from modelscripts.base.exceptions import (
+    NotFound)
+
 __all__=(
     '_SourceRegistry'
 )
+
 
 
 Metamodel= 'Metamodel'
@@ -16,6 +20,7 @@ ModelDependency='ModelDependency'
 ModelSourceFile='ModelOldSourceFile'
 SourceFileDependency='SourceFileDependency'
 OptSource=Optional[ModelSourceFile]
+
 
 class _SourceRegistry(object):
     """
@@ -125,12 +130,13 @@ class _SourceRegistry(object):
     def source(cls, path):
         # type: () -> Metamodel
         """
-        Return a source given its path or raise ValueError.
+        Return a source given its path or raise NotFound.
         """
-        try:
+        if path in cls._sourceFileByPath:
             return cls._sourceFileByPath[path]
-        except:
-            raise ValueError('No source at "%s"' % path)
+        else:
+            raise NotFound( #raise:ok
+                'No source at "%s"' % path)
 
     @classmethod
     def _outSourceDependencies(cls, source):

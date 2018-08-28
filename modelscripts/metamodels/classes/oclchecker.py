@@ -1,5 +1,3 @@
-
-
 from typing import Optional, Text
 
 import re
@@ -10,13 +8,14 @@ from modelscripts.base.issues import (
     Issue,
     FatalError)
 from modelscripts.base.grammars import (
-    ASTNodeSourceIssue
-)
+    ASTNodeSourceIssue)
 from modelscripts.metamodels.classes import (
     ClassModel)
 from modelscripts.scripts.classes.useprinter import (
     UseClassPrinter)
 from modelscripts.tools.use.engine import USEEngine
+from modelscripts.base.exceptions import (
+    TODO)
 
 ISSUES={
     'USE_OCL_ERROR': 'cl.fin.USE.ClassModelError',
@@ -55,7 +54,8 @@ class ClassOCLChecker(object):
                 extension='.use',
                 workerSpace='inline')
         else:
-            raise NotImplemented('TODO: model with no source')
+            raise TODO( #raise:OK
+                'TODO: model with no source')
 
     def _generateUseFile(self):
         self.usePrinter = UseClassPrinter(self.model)

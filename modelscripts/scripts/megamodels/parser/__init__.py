@@ -10,28 +10,20 @@ import os
 
 from modelscripts.base.issues import (
     Issue,
-    Levels,
-)
+    Levels)
 from modelscripts.base.symbols import (
-    Symbol
-)
+    Symbol)
 from modelscripts.megamodels.dependencies.sources import SourceImport
-# from modelscripts.megamodels import (
-#     Megamodel
-# )
 from modelscripts.megamodels.metamodels import (
-    Metamodel
-)
-from modelscripts.scripts.megamodels.parser.statements import \
-    ImportStatement, DefinitionStatement
-from modelscripts.scripts.textblocks.parser import astTextBlockToTextBlock
+    Metamodel)
+from modelscripts.scripts.megamodels.parser.statements import (
+    ImportStatement,
+    DefinitionStatement)
+from modelscripts.scripts.textblocks.parser import (
+    astTextBlockToTextBlock)
+from modelscripts.base.exceptions import (
+    UnexpectedValue)
 
-__all__=(
-    'MegamodelStatement'
-    'ImportStatement',
-    'fillDependencies',
-    'isMegamodelStatement',
-)
 
 # ModelSourceFile='ModelOldSourceFile'
 
@@ -86,11 +78,11 @@ def getModelDefinitionStatement(modelSourceFile, astModelDefinition):
 
     # get the actual metamodel based on the metamodel label
     try:
-        # could raise ValueError
+        # could raise UnexpectedValue
         from modelscripts.megamodels import Megamodel
         metamodel=Megamodel.theMetamodel(
             label=metamodel_label) #type: Metamodel
-    except ValueError as e:
+    except UnexpectedValue as e: #except:OK
         ASTNodeSourceIssue(
             code=icode('DEFINITION_EXCEPTION'),
             astNode=astModelDefinition,
@@ -146,10 +138,6 @@ def getModelDefinitionStatement(modelSourceFile, astModelDefinition):
     )
     return ds
 
-
-
-
-
 def getModelImportStatement(modelSourceFile, astModelImport):
     from modelscripts.base.grammars import ASTNodeSourceIssue
 
@@ -158,11 +146,11 @@ def getModelImportStatement(modelSourceFile, astModelImport):
     # get metamodel imported
     target_metamodel_label = astModelImport.targetMetamodel
     try:
-        # could raise ValueError
+        # could raise UnexpectedValue
         from modelscripts.megamodels import Megamodel
         target_metamodel = Megamodel.theMetamodel(
             label=target_metamodel_label)  # type: Metamodel
-    except ValueError as e:
+    except UnexpectedValue as e:  #except:OK
         ASTNodeSourceIssue(
             code=icode('IMPORT_EXCEPTION'),
             astNode=astModelImport,

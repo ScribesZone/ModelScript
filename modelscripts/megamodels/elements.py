@@ -1,9 +1,8 @@
 # coding=utf-8
 
-from abc import ABCMeta, abstractproperty
+from abc import ABCMeta
 from collections import OrderedDict
-from modelscripts.base.oldsources import SourceElement
-from typing import Optional, List, Any, Dict, Text
+from typing import Optional, Any, Dict, Text
 
 __all__=(
     'ModelElement',
@@ -14,6 +13,25 @@ from modelscripts.base import py
 from modelscripts.megamodels.checkers import (
     CheckList
 )
+
+class SourceElement(object):
+    """
+    Element of a source file.
+    """
+    __metaclass__ = ABCMeta
+    def __init__(self,
+                 name=None,
+                 astNode=None,
+                 lineNo=None,
+                 code=None,
+                 description=None,
+                 eolComment=None):
+        self.name = name
+        self.astNode=astNode
+        self.lineNo = lineNo
+        self.code=code
+        self.description = description
+        self.eolComment = eolComment
 
 class Descriptor(object):
 

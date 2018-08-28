@@ -22,11 +22,15 @@ __all__=(
 )
 
 def ensureDir(dir):
+    """
+    :raises: IOError
+    """
     if not os.path.isdir(dir):
         try:
             mkpath(dir)
-        except:
-            raise IOError('Cannot create directory %s' % dir)
+        except Exception: #except:OK
+            raise IOError(
+                'Cannot create directory %s' % dir) #raise:TODO:3
 
 def extension(path):
     filename, file_extension =os.path.splitext(os.path.basename(path))
@@ -42,7 +46,7 @@ def replaceExtension(path, ext):
 
 def raiseIssueOrException(exception, message, issueOrigin):
     if issueOrigin is None:
-        raise exception
+        raise exception  #raise:TODO:1
     else:
         Issue(
             origin=issueOrigin,

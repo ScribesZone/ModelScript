@@ -118,4 +118,4 @@ class SourceFile(WithIssueModel):  # TODO:3 should be WithIssueList
         return len(self.sourceLines)
 
     def __repr__(self):
-        return ('OldSourceFile(%s)'%self.fileName)
+        return ('SourceFile(%s)'%self.fileName)

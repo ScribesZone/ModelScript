@@ -8,11 +8,8 @@ from modelscripts.base.printers import (
     Styles
 )
 
-# from modelscripts.metamodels.textblocks import (
-#     TextBlock,
-#     PlainText,
-#     TextReference
-# )
+from modelscripts.base.exceptions import (
+    UnexpectedCase)
 
 __all__=(
     'TextBlockPrinter'
@@ -75,7 +72,7 @@ class TextBlockPrinter(AbstractPrinter):
                 token.text,
                 styled=self.config.styled)
         else:
-            raise NotImplementedError(
+            raise UnexpectedCase( #raise:OK
                 'Printing %s is not implemented'
                 % type(token))
         self.out(x)

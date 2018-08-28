@@ -1,16 +1,4 @@
 # coding=utf-8
-from typing import List, Optional
-
-from modelscripts.megamodels.metamodels import Metamodel
-from modelscripts.megamodels.dependencies.metamodels import (
-    MetamodelDependency
-)
-from modelscripts.megamodels.models import Model
-from modelscripts.metamodels.permissions import (
-    PermissionSet
-)
-from modelscripts.metamodels.permissions.gpermissions import Control, Authorisation, Denial
-from modelscripts.metamodels.permissions.sar import Subject, Action, Resource, SAR
 """
 Classes to model access from subject to resources through actions.
 
@@ -19,8 +7,27 @@ AccessModel
     -o> PermissionSet
     <>- Access
         -o> Control
-    
+
 """
+from typing import List, Optional
+
+from modelscripts.megamodels.metamodels import Metamodel
+from modelscripts.megamodels.dependencies.metamodels import (
+    MetamodelDependency)
+from modelscripts.megamodels.models import Model
+from modelscripts.metamodels.permissions import (
+    PermissionSet)
+from modelscripts.metamodels.permissions.gpermissions import (
+    Control,
+    Authorisation,
+    Denial)
+from modelscripts.metamodels.permissions.sar import (
+    Subject,
+    Action,
+    Resource,
+    SAR)
+from modelscripts.base.exceptions import (
+    UnexpectedValue)
 
 __all__=(
     # semantics
@@ -28,10 +35,10 @@ __all__=(
     'Access',
 
     # abstract syntax
-    'AcessModel',
-    ''
-
+    'AccessModel'
 )
+
+
 class AccessSet(object):
     """
     A set of access optionally controlled by a permission set.
@@ -44,7 +51,6 @@ class AccessSet(object):
 
         self.permissionSet=permissionSet
         #type: Optional[PermissionSet]
-
 
 
 class Access(SAR):
@@ -88,7 +94,8 @@ class Access(SAR):
         elif isinstance(self.control, Denial):
             _='Access denied'
         else:
-            raise NotImplementedError()
+            raise UnexpectedValue( #raise:OK
+                'unexpected control')
         return '%s: %s' % (
             _,
             SAR.__str__(self))

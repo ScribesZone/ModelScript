@@ -1,19 +1,41 @@
+
+"""
+Implement a megamodel as a singleton.
+"""
+from typing import Text, Optional
 import os
 
 from modelscripts.megamodels.models import Model
-
 from modelscripts.megamodels.dependencies import Dependency
-from modelscripts.megamodels.megamodels._registries.metamodels import _MetamodelRegistry
-from modelscripts.megamodels.megamodels._registries.models import _ModelRegistry
-from modelscripts.megamodels.megamodels._registries.sources import _SourceRegistry
-from modelscripts.megamodels.megamodels._registries.metapackages import _MetaPackageRegistry
-from modelscripts.megamodels.megamodels._registries.metacheckers import _MetaCheckerPackageRegistry
-from modelscripts.megamodels.megamodels._registries.issues import _IssueBoxRegistry
 
+# import facets for extending Megamodel
+from modelscripts.megamodels.megamodels._registries.metamodels import (
+    _MetamodelRegistry)
+from modelscripts.megamodels.megamodels._registries.models import (
+    _ModelRegistry)
+from modelscripts.megamodels.megamodels._registries.sources import (
+    _SourceRegistry)
+from modelscripts.megamodels.megamodels._registries.metapackages import (
+    _MetaPackageRegistry)
+from modelscripts.megamodels.megamodels._registries.metacheckers import (
+    _MetaCheckerPackageRegistry)
+from modelscripts.megamodels.megamodels._registries.issues import (
+    _IssueBoxRegistry)
 
+from modelscripts.base.exceptions import (
+    MethodNotDefined)
+from modelscripts.base.issues import (
+    Issue,
+    Levels,
+    FatalError)
 
 from modelscripts.megamodels.models import Model
 from modelscripts.megamodels.metamodels import Metamodel
+from modelscripts.base.exceptions import (
+    NotFound,
+    NoSuchFeature,
+    UnexpectedValue)
+
 # from modelscripts.megamodels import Megamodel
 
 # class MegamodelModel(Model, Megamodel):
@@ -25,9 +47,20 @@ from modelscripts.megamodels.metamodels import Metamodel
 #         #type: () -> Metamodel
 #         return METAMODEL
 
+ISSUES={
+    'NO_FILE': 'mg.FileNotFound',
+    'NO_META': 'mg.NoMetamodel',
+    'NO_PARSER': 'mg.NoParser',
+}
+
+def icode(ilabel):
+    return ISSUES[ilabel]
 
 class Megamodel(
     Model,
+    # All the classes below make it possible to define related
+    # methods in separated modules. This avoid having a huge class
+    # with unhundreds of methods.
     _MetamodelRegistry,
     _ModelRegistry,
     _SourceRegistry,
@@ -39,14 +72,12 @@ class Megamodel(
     """
     A unique instance of Megamodel()
     """
-    # Will be filled later by a unique instance
-    # of MegamodelModel()
+    # Will be filled later by a unique instance of MegamodelModel()
     # This cannot be done now as this creates a
     # circular dependency between Megamodel and MegamodelModel
 
     """
-    Static class containing a global registry
-    of metamodels
+    Static class containing a global registry of metamodels
     and models and corresponding dependencies.
     """
 
@@ -60,40 +91,81 @@ class Megamodel(
 
     @classmethod
     def fileMetamodel(cls, filename):
+        """
+        The metamodel corresponding to a given file or None.
+        The extension of the file is used to determine the metamodel.
+        If no metamodel is found return None
+        """
         try:
             extension = os.path.splitext(filename)[1]
             return cls.theMetamodel(ext=extension)
-        except:
+        except UnexpectedValue: #except:TODO:4
             return None
 
     @classmethod
     def loadFile(cls, filename):
-        if not os.path.exists(filename):
-            raise ValueError('File not found: %s' % filename)
+        #type: (Text)->Optional['ModelSource']
+        """
+        Load a given file into the megamodel.
+        Return a model source file. This source file can
+        naturally contain some issues in its issue box.
+        If it not possible at all to create such a source file
+        then return None. In this case the issue that cause
+        and the corresponding issue is stored in the global megamodel
+        issue box.
+        """
         try:
-            path = os.path.realpath(filename)
-            # check if already registered
-            return cls.source(path=path)
-        except:
-            # source not registered, so builf it
-            mm = cls.fileMetamodel(filename)
-            if mm is None:
-                b = os.path.basename(filename)
-                raise ValueError(
-                    'No metamodel available for %s' % b)
+            if not os.path.exists(filename):
+                message='File not found:  %s' % filename
+                Issue(
+                    origin=cls.model, # the megamodel itself,
+                    level=Levels.Fatal,  # see below
+                    # The lovel should be Fatal but except Fatal
+                    # is within the context of the source.
+                    # Here it will necessary to catch the Fatal
+                    # again. A much simpler way to
+                    message=message,
+                    code=icode('NO_FILE'))
             try:
-                factory = mm.sourceClass
-            except NotImplementedError:
-                raise ValueError(
-                    'No parser available for %s' %
-                    mm.name)
-            else:
-                return factory(filename)
+                path = os.path.realpath(filename)
+                # check if already registered
+                return cls.source(path=path)
+            except NotFound:
+                # source not registered, so builf it
+                mm = cls.fileMetamodel(filename)
+                if mm is None:
+                    b = os.path.basename(filename)
+                    message='No metamodel available for %s' % b
+                    Issue(
+                        origin=cls.model,  # the megamodel itself,
+                        level=Levels.Fatal,
+                        message=message,
+                        code=icode('NO_META'))
+                try:
+                    factory = mm.sourceClass
+                except NoSuchFeature:
+                    Issue(  # TODO:1 check why it is not caught
+                        origin=cls.model,  # the megamodel itself,
+                        level=Levels.Fatal,
+                        message=
+                            'No parser available for %s metamodel'
+                            % mm.label,
+                        code=icode('NO_PARSER')
+                    )
+                else:
+                    return factory(filename)
+        except FatalError:
+            return None
+
 
     @classmethod
     def displayModel(cls,
                      model,
                      config=None):
+        """
+        Display the given model with the associated printer.
+        A configration can be provided.
+        """
         printer = model.metamodel.modelPrinterClass(
             theModel=model,
             config=config)
@@ -103,6 +175,10 @@ class Megamodel(
     def displaySource(cls,
                       source,
                       config=None):
+        """
+        Display the given source with the associated printer.
+        A configration can be provided.
+        """
         printer = source.metamodel.sourcePrinterClass(
             theSource=source,
             config=config)
@@ -113,7 +189,12 @@ class Megamodel(
             cls,
             model,
             config=None):
-        raise NotImplementedError()
+        """
+        Display the given model diagram.
+        """
+        raise MethodNotDefined( #raise:OK
+            'displayModelDiagram() not implemented.'
+        )
 
 
 

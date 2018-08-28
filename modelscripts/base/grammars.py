@@ -22,6 +22,9 @@ from modelscripts.base.issues import (
     LocalizedSourceIssue,
     Levels)
 from modelscripts.megamodels.sources import ASTBasedModelSourceFile
+from modelscripts.base.exceptions import (
+    MethodNotDefined,
+    UnexpectedCase)
 
 __all__= (
     'Grammar',
@@ -266,7 +269,8 @@ class ASTBasedModelSourceFile(ASTBasedModelSourceFile):
 
     @abstractmethod
     def parseMainBody(self):
-        raise NotImplementedError()
+        raise MethodNotDefined( #raise:TODO:4
+            'parseMainBody mist be redefined')
 
 
 class ASTNodeSourceIssue(LocalizedSourceIssue):
@@ -291,8 +295,8 @@ class ASTNodeSourceIssue(LocalizedSourceIssue):
             line=line=ast.lineEnd(astNode)
             column=ast.columnEnd(astNode)
         else:
-            raise NotImplementedError(
-                'unexpected position: %s' % position)
+            raise UnexpectedCase( #raise:OK
+                'Unexpected position: %s' % position)
         super(ASTNodeSourceIssue, self).__init__(
             code=code,
             sourceFile=ast.sourceFile,

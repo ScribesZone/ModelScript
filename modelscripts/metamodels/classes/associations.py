@@ -4,13 +4,22 @@ import collections
 
 from typing import Union, Optional, Text
 
-from modelscripts.megamodels.elements import SourceModelElement
-from modelscripts.megamodels.py import MAttribute, MReference
-from modelscripts.metamodels.classes import PackagableElement, Entity, \
-    Member
+from modelscripts.megamodels.elements import (
+    SourceModelElement)
+from modelscripts.megamodels.py import (
+    MAttribute,
+    MReference)
+from modelscripts.metamodels.classes import (
+    PackagableElement,
+    Entity,
+    Member)
+from modelscripts.base.exceptions import (
+    UnexpectedCase,
+    UnexpectedValue,
+    NoSuchFeature,
+    MethodNotDefined)
 
 RolePosition=Union['source','target']
-
 
 def opposite(rolePosition):
     if rolePosition=='source':
@@ -18,8 +27,8 @@ def opposite(rolePosition):
     elif rolePosition=='target':
         return 'source'
     else:
-        raise NotImplementedError(
-            "Position %s doesn't exists." % rolePosition)
+        raise UnexpectedCase( #raise:OK
+            "Role position '%s' doesn't exists." % rolePosition)
 
 
 class Association(PackagableElement, Entity):
@@ -72,7 +81,7 @@ class Association(PackagableElement, Entity):
     @MReference('Role')
     def sourceRole(self):
         if not self.isBinary:
-            raise ValueError(
+            raise NoSuchFeature( #raise:OK
                 '"sourceRole" is not defined on "%s" n-ary association' % (
                     self.name
                 ))
@@ -81,7 +90,7 @@ class Association(PackagableElement, Entity):
     @MReference('Role')
     def targetRole(self):
         if not self.isBinary:
-            raise ValueError(
+            raise NoSuchFeature( #raise:OK
                 '"targetRole" is not defined on "%s" n-ary association' % (
                     self.name
                 ))
@@ -94,7 +103,7 @@ class Association(PackagableElement, Entity):
         elif position=='target':
             return self.roles[1]
         else:
-            raise NotImplementedError(
+            raise UnexpectedCase( #raise:OK
                 'role position "%s" is not implemented' % position)
 
     @MAttribute('Boolean')
@@ -155,7 +164,8 @@ class Association(PackagableElement, Entity):
         # This method is not really useful as isinstance can be used.
         # It is just used to prevent creating object of this class
         # (using ABCMeta is not enough to prevent this).
-        raise NotImplementedError()
+        raise MethodNotDefined( #raise:OK
+            'isPlainAssociation() must be defined.')
 
 
 class PlainAssociation(Association):
@@ -252,8 +262,9 @@ class Role(SourceModelElement, Member):
     @property
     def opposite(self):
         if self.association.isNAry:
-            raise ValueError(
-                '%s "opposite" is not available for %s n-ary association. Try "opposites"' % (
+            raise NoSuchFeature( #raise:OK
+                '%s "opposite" is not available for %s n-ary association. '
+                'Try "opposites"' % (
                     self.name,
                     self.association.name
                 ))
@@ -297,7 +308,7 @@ class Role(SourceModelElement, Member):
             else:
                 return 'target'
         else:
-            raise NotImplementedError(
+            raise NoSuchFeature( #raise:OK
                 'role.position() not implemented'
                 ' for n-ary association')
 

@@ -5,35 +5,28 @@ Generate a usecase model from a usecase script.
 """
 
 from __future__ import (
-    unicode_literals, print_function, absolute_import, division
-)
+    unicode_literals, print_function, absolute_import, division)
 
 import os
 
 from typing import Text
 
+from modelscripts.base.exceptions import (
+    UnexpectedCase)
 from modelscripts.base.grammars import (
-    # ModelSourceAST, \
-    # ASTBasedModelSourceFile,
-    ASTNodeSourceIssue
-)
+    ASTNodeSourceIssue)
 from modelscripts.base.issues import (
-    Levels,
-)
+    Levels)
 from modelscripts.metamodels.usecases import (
     UsecaseModel,
     Actor,
     Usecase,
-    METAMODEL
-)
+    METAMODEL)
 from modelscripts.megamodels.metamodels import Metamodel
-
 from modelscripts.megamodels.sources import (
-    ASTBasedModelSourceFile
-)
+    ASTBasedModelSourceFile)
 from modelscripts.scripts.textblocks.parser import (
-    astTextBlockToTextBlock
-)
+    astTextBlockToTextBlock)
 
 __all__=(
     'UsecaseModelSource'
@@ -178,7 +171,7 @@ class UsecaseModelSource(ASTBasedModelSourceFile):
                         implicit=True)
                     a.addUsecase(u)
             else:
-                raise NotImplementedError(
+                raise UnexpectedCase( #raise:OK
                     'Unexpected type %s' % type_)
 
     def resolve(self):

@@ -7,8 +7,11 @@ import modelscripts.scripts.megamodels.all
 import modelscripts.scripts.metamodels.all
 import modelscripts.scripts.objects.all
 import modelscripts.scripts.permissions.all
+import modelscripts.scripts.projects.all
+import modelscripts.scripts.qualities.all
 import modelscripts.scripts.relations.all
 import modelscripts.scripts.scenarios.all
 import modelscripts.scripts.stories.all
 import modelscripts.scripts.tasks.all
+import modelscripts.scripts.textblocks.all
 import modelscripts.scripts.usecases.all

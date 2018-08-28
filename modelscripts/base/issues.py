@@ -16,8 +16,12 @@ from modelscripts.base.locations import (
 # TODO:4 it should be better to remove the printer dependency
 from modelscripts.base.styles import Styles
 from modelscripts.config import Config
+from modelscripts.base.exceptions import (
+    UnexpectedCase,
+    MethodNotDefined)
 
 DEBUG=1
+
 
 class FatalError(Exception):
     def __init__(self, SourceError):
@@ -53,7 +57,8 @@ class Level(object):
         elif op=='>=':
             return self >= other
         else:
-            raise NotImplementedError('Operation %s is not allowed'%op)
+            raise UnexpectedCase(  #raise:OK
+                'Operation %s is not allowed'%op)
 
     def str(self, styled=False):
         return self.style.do(self.label, styled=styled)
@@ -85,6 +90,7 @@ class Levels(object):
                 return level
         return None
 
+
 class Issue(object):
     """
     An issue in a given entity with issue list (WithIssueList).
@@ -92,7 +98,11 @@ class Issue(object):
     The class LocalizedSourceIssue must be used instead
     if the error line is known.
     """
-    def __init__(self, origin, level, message, code=None):
+    def __init__(self,
+                 origin,
+                 level,
+                 message,
+                 code=None):
         #type: (WithIssueList, Level, 'Text', Optional['Text']) -> None
         """
         Create a source error and add it to the given OldSourceFile.
@@ -122,7 +132,9 @@ class Issue(object):
             ))
 
         if level==Levels.Fatal:
-            raise FatalError(self)
+            # Raise a real exception for Fatal issue so that
+            # the execution stop immediatly
+            raise FatalError(self) #raise:OK
 
     @property
     def fromModel(self):
@@ -573,7 +585,8 @@ class WithIssueList(object):
 
     @abstractproperty
     def label(self):
-        raise NotImplementedError('ISS: originLabel not defined')
+        raise MethodNotDefined( #raise:OK
+            'ISS: originLabel not defined')
 
     @property
     def isValid(self):

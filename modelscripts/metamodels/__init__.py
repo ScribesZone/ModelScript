@@ -4,15 +4,28 @@ from modelscripts.megamodels.metametamodel import MetaPackage
 from modelscripts.megamodels.metametamodel import MetaCheckerPackage
 from modelscripts.scripts.metamodels.parser import PyMetamodelParser
 META_PACKAGES=(
+    # accesses ?
     'aui',
     'classes',
+    'classes.assocclasses',
+    'classes.classes',
+    'classes.core',
+    'classes.invariants',
+    'classes.types',
     'glossaries',
     'megamodels',
     'objects',
+    'objects.linkobjects',
+    'objects.links',
+    'objects.objects',
+    'objects',
+    'participants',
     'permissions',
     'permissions.accesses',
     'permissions.gpermissions',
     'permissions.sar',
+    'projects',
+    'qualities',
     'relations',
     'scenarios',
     'stories',
@@ -26,6 +39,7 @@ META_PACKAGES=(
 
 META_CHECKER_PACKAGES=(
     'classes.checkers',
+    'glossaries.checkers',
     'usecases.checkers',
 )
 

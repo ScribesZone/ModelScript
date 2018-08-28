@@ -72,7 +72,7 @@ class BracketedScript(object):
         if blanks % self.SPACE_INDENT==0:
             return blanks // self.SPACE_INDENT
         else:
-            raise BracketError(
+            raise BracketError( #raise:OK
                 message='%i spaces found. Multiple of %i expected.'
                         % (blanks, self.SPACE_INDENT),
                 line=index+1)
@@ -106,7 +106,7 @@ class BracketedScript(object):
                 if delta>1:
                     # this will never happened for the last line
 
-                    raise BracketError(
+                    raise BracketError( #raise:OK
                         message='"%s"' % line,
                         line=index+1)
                 else:

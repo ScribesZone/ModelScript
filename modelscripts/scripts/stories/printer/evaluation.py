@@ -2,24 +2,19 @@
 from __future__ import unicode_literals, print_function, absolute_import, division
 from typing import Optional
 
+from modelscripts.base.exceptions import (
+    UnexpectedCase)
 from modelscripts.base.printers import (
     AbstractPrinter,
-    AbstractPrinterConfig,
-    Styles
-)
-
+    AbstractPrinterConfig)
 from modelscripts.metamodels.stories.evaluations import (
     StoryEvaluation,
-    CompositeStepEvaluation
-)
+    CompositeStepEvaluation)
 from modelscripts.metamodels.stories.evaluations.operations import (
     OperationStepEvaluation,
-    CheckStepEvaluation
-)
+    CheckStepEvaluation)
 from modelscripts.scripts.stories.printer import (
-    StoryPrinter
-)
-
+    StoryPrinter)
 
 __all__=(
     'StoryEvaluationPrinter'
@@ -56,8 +51,8 @@ class StoryEvaluationPrinter(AbstractPrinter):
         elif isinstance(stepEval, OperationStepEvaluation):
             self.doOperationStepEvaluation(stepEval, indent)
         else:
-            raise NotImplementedError('Unexpected type: %s' %
-                                      type(stepEval))
+            raise UnexpectedCase( #raise:OK
+                'Unexpected type: %s' % type(stepEval))
 
     def doStoryEvaluation(self, stepEval, indent):
         self.doCompositeStepEvaluation(stepEval, indent)

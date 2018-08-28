@@ -7,10 +7,15 @@ from typing import Text, Callable, Optional, List
 from collections import OrderedDict
 
 from modelscripts.megamodels.megamodels import (
-    MegamodelElement
-)
+    MegamodelElement)
+
 Cls=Callable
 OptCls=Optional[Cls]
+
+from modelscripts.base.exceptions import (
+    MethodNotDefined,
+    NoSuchFeature,
+    UnexpectedCase)
 
 
 class Metamodel(MegamodelElement):
@@ -43,8 +48,9 @@ class Metamodel(MegamodelElement):
     @property
     def modelClass(self):
         if self._modelClass is None:
-            raise NotImplementedError(
-                'Modelscribes: %s.model not implemented yet'
+            raise NoSuchFeature( #raise:OK
+                'Incomplete metamodel. '
+                '%s.model not implemented yet.'
                 % self.label)
         else:
             return self._modelClass
@@ -52,8 +58,9 @@ class Metamodel(MegamodelElement):
     @property
     def sourceClass(self):
         if self._sourceClass is None:
-            raise NotImplementedError(
-                'Modelscribes: %s.source not implemented yet'
+            raise NoSuchFeature( #raise:OK
+                'Incomplete metamodel. '
+                '%s.source not implemented yet.'
                 % self.label)
         else:
             return self._sourceClass
@@ -61,24 +68,28 @@ class Metamodel(MegamodelElement):
     @property
     def modelPrinterClass(self):
         if self._modelPrinterClass is None:
-            raise NotImplementedError(
-                'Modelscribes: %s.modelPrinter not implemented yet' % self.label)
+            raise NoSuchFeature( #raise:OK
+                'Incomplete metamodel. '
+                '%s.modelPrinter not implemented yet.'
+                % self.label)
         else:
             return self._modelPrinterClass
 
     @property
     def sourcePrinterClass(self):
         if self._sourcePrinterClass is None:
-            raise NotImplementedError(
-                'Modelscribes: %s.sourcePrinter not implemented yet' % self.label)
+            raise NoSuchFeature( #raise:OK
+                'Incomplete metamodel. '
+                '%s.sourcePrinter not implemented yet.' % self.label)
         else:
             return self._sourcePrinterClass
 
     @property
     def diagramPrinterClass(self):
         if self._diagramPrinterClass is None:
-            raise NotImplementedError(
-                'Modelscribes: %s.sourcePrinter not implemented yet' % self.label)
+            raise NoSuchFeature( #raise:OK
+                'Incomplete metamodel. '
+                '%s.sourcePrinter not implemented yet.' % self.label)
         else:
             return self._diagramPrinterClass
 

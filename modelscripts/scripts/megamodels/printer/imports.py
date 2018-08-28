@@ -3,12 +3,10 @@ from typing import Optional, Text
 
 from modelscripts.base.printers import (
     AbstractPrinter,
-    AbstractPrinterConfig
-)
-from modelscripts.megamodels.oldsources import (
+    AbstractPrinterConfig)
+from modelscripts.megamodels.dependencies.sources import (
     ImportBox,
-    SourceImport
-)
+    SourceImport)
 
 
 class ImportBoxPrinter(AbstractPrinter):
@@ -49,7 +47,7 @@ class ImportBoxPrinter(AbstractPrinter):
 
 
     def doSourceImport(self, import_):
-        #type: (SourceImport) -> Text
+        #type:(SourceImport) -> Text
         try:
             s=('%s %s %s %s %s' % (
                 self.kwd('import'),

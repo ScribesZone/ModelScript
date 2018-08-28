@@ -2,7 +2,26 @@
 
 import os
 
+__all__=(
+    'PlantUMLEngine',
+    'PlantUMLError',
+    'PlantUMLInstallationError',
+    'PlantUMLExecutionError'
+)
+
 PLANTUML_JAR_FILE='plantuml.1.2018.2.jar'
+
+class PlantUMLError(Exception):
+    pass
+
+
+class PlantUMLInstallationError(PlantUMLError):
+    pass
+
+
+class PlantUMLExecutionError(PlantUMLError):
+    pass
+
 
 class PlantUMLEngine(object):
 
@@ -11,9 +30,10 @@ class PlantUMLEngine(object):
             os.path.dirname(__file__),'res',PLANTUML_JAR_FILE)
         if checks:
             if not os.path.isfile(self.plantumlJar):
-                raise EnvironmentError('cannot find %s'% self.plantumlJar)
+                raise PlantUMLInstallationError( #raise:TODO:3
+                    'cannot find %s'% self.plantumlJar)
             if os.system('java -version') != 0:
-                raise EnvironmentError(
+                raise PlantUMLInstallationError( #raise:TODO:3
                     'java is required but it seems that it is not installed')
         self.defaultFormat=format
         self.defaultOutputDir=outputDir
@@ -64,9 +84,9 @@ class PlantUMLEngine(object):
 
         # TODO:3 check how to get errors from generation
         if errno != 0:
-            RuntimeError('Error in plantuml generation')
+            PlantUMLExecutionError( #raise:TODO:3
+                'Error in plantuml generation')
         rename_output_file(outputDir, format, pumlFile)
-
 
 
 if __name__ == "__main__":

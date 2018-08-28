@@ -14,26 +14,27 @@ class Annotations(object):
 
     @classmethod
     def fullLine(cls, text):
+        """ Full line of * """
         _=cls.prefix+text+' '
         return _+cls.char*(cls.lineLength-len(_))
 
     @classmethod
-    def regexp(cls):
+    def _regexp(cls):
         return (r'^ *(%s|%s)' % (
             re.escape(Annotations.prefix),
             re.escape(Annotations.cont)
         ))
 
     @classmethod
-    def match(cls, line):
-        return re.match(cls.regexp(), line)
+    def _match(cls, line):
+        return re.match(cls._regexp(), line)
 
     @classmethod
     def filterText(cls, text):
         return '\n'.join(
             [
                 line for line in text.split('\n')
-                if not cls.match(line) ])
+                if not cls._match(line) ])
 
     @classmethod
     def filterFile(cls, filename, createTmpFile=True):

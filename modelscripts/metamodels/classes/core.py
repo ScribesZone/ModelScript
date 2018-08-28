@@ -98,7 +98,7 @@ class RealValue(CoreDataValue):
         try:
             value=float(stringRepr)
         except ValueError:
-            raise ValueError(
+            raise ValueError( #raise:TODO:2
                 'Invalid real value: "%s"' % stringRepr)
         super(RealValue, self).__init__(
             stringRepr=stringRepr,
@@ -119,7 +119,7 @@ class BooleanValue(CoreDataValue):
             }[stringRepr]
             self.stringRepr = stringRepr
         except KeyError:
-            raise ValueError(
+            raise ValueError(  #raise:TODO:2
                 'Invalid boolean value: "%s"' % stringRepr)
         super(BooleanValue, self).__init__(
             stringRepr=stringRepr,
@@ -134,7 +134,8 @@ class DateValue(CoreDataValue):
         try:
             value = datetime.strptime(stringRepr, '%d/%m/%Y')
         except ValueError:
-            raise ValueError('Invalid date value: "%s"' % stringRepr)
+            raise ValueError(  #raise:TODO:2
+                'Invalid date value: "%s"' % stringRepr)
         super(DateValue, self).__init__(
             stringRepr=stringRepr,
             value=value,
@@ -150,8 +151,8 @@ class DateTimeValue(CoreDataValue):
                 stringRepr,
                 '%d/%m/%Y-%H:%M:%S')
         except ValueError:
-            raise ValueError('Invalid datetime value: "%s"'
-                             % stringRepr)
+            raise ValueError(  #raise:TODO:2
+                'Invalid datetime value: "%s"' % stringRepr)
         super(DateTimeValue, self).__init__(
             stringRepr=stringRepr,
             value=value,
@@ -165,8 +166,9 @@ class TimeValue(CoreDataValue):
         try:
             value = datetime.strptime(stringRepr, '%H:%M:%S')
         except ValueError:
-            raise ValueError('Invalid time value: "%s"'
-                             % stringRepr)
+            raise ValueError(  #raise:TODO:2
+                'Invalid time value: "%s"'
+                 % stringRepr)
         super(TimeValue, self).__init__(
             stringRepr=stringRepr,
             value=value,

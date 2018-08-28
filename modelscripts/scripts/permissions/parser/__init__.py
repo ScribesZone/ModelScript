@@ -6,41 +6,34 @@ import os
 
 from modelscripts.megamodels.models import Model, Placeholder
 from modelscripts.base.grammars import (
-    ASTNodeSourceIssue
-)
+    ASTNodeSourceIssue)
 from modelscripts.base.issues import (
-    Levels,
-)
+    Levels,)
 from modelscripts.scripts.textblocks.parser import (
-    astTextBlockToTextBlock
-)
+    astTextBlockToTextBlock)
 from modelscripts.metamodels.permissions.sar import (
     Subject,
     Action,
-    Resource
-)
+    Resource)
 from modelscripts.metamodels.permissions import (
     METAMODEL,
     PermissionModel,
     UCPermissionModel,
-    FactorizedPermissionRule,
-)
-
+    FactorizedPermissionRule,)
 from modelscripts.metamodels.classes import (
-    ClassModel,
-)
+    ClassModel)
 from modelscripts.metamodels.classes.classes import Class
 from modelscripts.metamodels.classes.associations import Association
-from modelscripts.metamodels.classes.assocclasses import AssociationClass
+from modelscripts.metamodels.classes.assocclasses import (
+    AssociationClass)
 from modelscripts.metamodels.permissions.sar import (
     Subject,
     Action,
-    Resource
-)
+    Resource)
 from modelscripts.megamodels.sources import (
-    ASTBasedModelSourceFile
-)
-
+    ASTBasedModelSourceFile)
+from modelscripts.base.exceptions import (
+    UnexpectedCase)
 
 __all__=(
     'PermissionModelSource'
@@ -146,7 +139,7 @@ class PermissionModelSource(ASTBasedModelSourceFile):
                          'FRSpeechRuleDeclaration']:
                 define_rule_declaration(declaration)
             else:
-                raise NotImplementedError(
+                raise UnexpectedCase( #raise:OK
                     'declaration of %s not implemented' % type_)
 
     def resolve(self):
@@ -280,7 +273,7 @@ def _find_resource(classModel, expr, astNode):
                     '"%s.%s" not found.' % (
                         entity_name, member_name)))
     else:
-        raise NotImplementedError(
+        raise UnexpectedCase(   #raise:OK
             'Unexpected entity type: %s' % type(entity))
 
 
