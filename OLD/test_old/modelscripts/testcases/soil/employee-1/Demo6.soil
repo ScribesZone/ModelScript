@@ -1,6 +1,0 @@
--- @actori maria:Secretary
--- @uci maria RegisterNewEmployee
-    !ioannis := new Employee
-    !ioannis.salary := 2000
--- @enduci
-

@@ -1,2 +1,0 @@
-model M
-class A < B end

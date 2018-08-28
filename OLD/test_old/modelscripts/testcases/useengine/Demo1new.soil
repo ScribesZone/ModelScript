@@ -1,6 +1,0 @@
-!djamel := new Employee
-!djamel.name := 'Djamel'
-!djamel.salary := 2600
-
-!marie := new Employee('m')
-

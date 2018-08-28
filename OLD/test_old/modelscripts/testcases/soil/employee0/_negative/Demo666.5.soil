@@ -1,4 +1,0 @@
-! x := new Employee('sophie')
-check -v -d -a
-! x := new Employee('mario')
-check -d -a

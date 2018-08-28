@@ -1,4 +1,0 @@
-constraints -load car-car-1.ocs
-constraints -load car-person-1.ocs
-constraints -loaded
-coverage
