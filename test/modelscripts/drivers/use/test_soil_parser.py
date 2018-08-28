@@ -5,8 +5,7 @@ import re
 from nose.plugins.attrib import attr
 
 from modelscripts.interfaces.environment import Environment
-from test.modelscripts.drivers import (
-    TEST_CASES_DIRECTORY)
+from test.modelscripts.framework import TEST_CASES_DIRECTORY
 from modelscripts.tools.use.engine import (
     USEEngine)
 from modelscripts.base.printers import AbstractPrinterConfig

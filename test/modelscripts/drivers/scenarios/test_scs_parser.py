@@ -1,6 +1,6 @@
 # coding=utf-8
 from __future__ import print_function
-from test.modelscripts.drivers.assertions import (
+from test.modelscripts.framework.assertions import (
     simpleTestDeneratorAssertions)
 from modelscripts.scripts.megamodels.printer.megamodels import \
     MegamodelPrinter

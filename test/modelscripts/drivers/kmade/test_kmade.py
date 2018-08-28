@@ -7,10 +7,7 @@ from modelscripts.scripts.tasks.printer import (
 from modelscripts.tools.kmade.engine import (
     KmadeReader
 )
-from test.modelscripts.drivers import (
-    getTestFiles,
-    getTestFile
-)
+from test.modelscripts.framework import getTestFile, getTestFiles
 
 
 def testGenerator_Assertions():

@@ -2,7 +2,8 @@
 from __future__ import print_function
 import os
 from modelscripts.scripts.classes.parser import ClassModelSource
-from test.modelscripts.drivers import getTestFile
+from test.modelscripts.framework import getTestFile
+
 
 class TestClassModel(object):
     THE_MODEL=None

@@ -3,8 +3,7 @@ from __future__ import print_function
 import logging
 
 from modelscripts.interfaces.environment import Environment
-from test.modelscripts.drivers import (
-    TEST_CASES_DIRECTORY)
+from test.modelscripts.framework import TEST_CASES_DIRECTORY
 from modelscripts.tools.use.engine import (
     USEEngine)
 import os
