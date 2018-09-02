@@ -1,0 +1,92 @@
+    digraph G {
+      graph [
+        rankdir = BT,
+        compound = true ]
+      node [fillcolor=wheat, style="filled" , shape=box] ;
+
+      subgraph clusterRequirements {
+          cr ;
+          scenarios ;
+          docs ;
+
+          exemples ;
+
+      }
+      subgraph clusterModels {
+      gl [fillcolor=lightgreen, label="gl\nGlossaries", penwidth=2] ;
+      cl [fillcolor=green1, label="cl\nClasses", penwidth=5] ;
+      ob [fillcolor=green1, label="ob\nObjects",  penwidth=2] ;
+      sc [fillcolor=lightgreen, label="sc\nScenarios",  penwidth=4] ;
+      us [fillcolor=green1, label="us\nUsecases", penwidth=2] ;
+      pe [fillcolor=darkseagreen1, label="pe\nPermissions", penwidth=2] ;
+      re [fillcolor=gold1, label="re\nRelations", penwidth=2] ;
+      ta [fillcolor=darkseagreen1, label="ta\nTasks", penwidth=2] ;
+      pr [fillcolor=indianred1, label="pr\nProjects", penwidth=2] ;
+      qu [fillcolor=lightsalmon, label="qu\nQualities", penwidth=2] ;
+      pa [fillcolor=gold1, label="pa\nParticipants", penwidth=1] ;
+      au [fillcolor=gold1, label="au\nAUIs", penwidth=2] ;
+      cl -> gl ;
+      ob -> gl ;
+      ob -> cl [penwidth=4];
+      re -> ob ;
+      re -> cl ;
+      pa -> gl ;
+      us -> gl ;
+      us -> pa ;
+      ta -> pa ;
+      ta -> gl ;
+      ta -> us ;
+      au -> ta ;
+      au -> gl ;
+      au -> cl ;
+      pe -> gl ;
+      pe -> re ;
+      pe -> cl ;
+      pe -> ta ;
+      pe -> us ;
+      pe -> pa ;
+      pe -> au ;
+      sc -> cl [penwidth=4] ;
+      sc -> re ;
+      sc -> ob [penwidth=2] ;
+      sc -> pa ;
+      sc -> us [penwidth=2] ;
+      sc -> ta [penwidth=3] ;
+      sc -> pe [penwidth=3] ;
+      qu -> gl ;
+      pr -> gl ;
+      pr -> pa ;
+      pr -> qu ;
+      /*
+      sql -> re ;
+      java -> cl ;
+      java -> sql ;
+      html -> au ;
+    */
+     }
+     subgraph clusterImplementation {
+         java ;
+         sql ;
+         html ;
+         demo ;
+         js ;
+         jsp ;
+         css ;
+
+     }
+      // requirements [width=2, color=white, fontcolor=grey28, fillcolor=grey90] ;
+
+      gl -> scenarios [ltail=clusterModels, lhead=clusterRequirements];
+      sql -> sc [lhead=clusterModels];
+      sql -> re ;
+      java -> cl ;
+      java -> sql ;
+      java -> au ;
+      jsp -> au ;
+      java -> jsp ;
+
+               demo -> java ;
+      jsp -> js ;
+      html -> css ;
+    }
+
