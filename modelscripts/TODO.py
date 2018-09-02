@@ -7,15 +7,33 @@
 #   General
 #================================================================
 
-#TODO:1 improve test for modelc
-#   add a generator to separate execution and have different test
 
-#TODO:1 check display of error
-#   In modelc just the issue summary is printed
-#   ORIGIN:M:WARNING:?:xxx
 
-#TODO:1 display of errors for megamodel top level
-#   see modelc.py
+#TODO:1 make a brand new source issue printer
+#   this will start with a graph of sources
+#   sorted in a topological order and then print both
+#   source/model issues
+#   option grouped
+
+#TODO:1 Unexpected exception
+#   when in source "except FatalError" -> FatalError exception
+#   globally as well
+
+
+#TODO:1 Uniqueness of metamodel
+#   add "allUsedSourceFiles" (transitive)
+#   add "onePerGraph" model in metamodel
+#   check in import xxx if no duplication
+#   change all models
+
+
+
+#TODO:1 check issue "Serious issues(s) found
+#   There is no source
+
+#TODO:2 the list of source in testFinalMegamodel is not accurate
+#   see the end of the tests
+
 
 #TODO:1 check modelc interface
 #   -> check command line options
@@ -52,9 +70,34 @@
 
 
 #================================================================
+#   Glossary Model
+#================================================================
+
+#TODO:1 glossary: check what works or not
+#   Using glossary is much better when using GEdit integration
+#   since `ok`!  and `ko`? are displayed. Otherwise in colored
+#   terminal.
+
+#TODO:2 add management of errors
+
+#TODO:2 generalize astTextBlock2TextBlock to collect block
+#   Somewhere (usecases?) a little framework has been defined
+#   so that source element can define which textblock it owns.
+#   A method should be added. This is cumbersome. It might be
+#   better to use astTextBlock2TextBlock to collect easily all
+#   TextBlock. To be checked.
+
+#TODO:3 add some memoization or store some stuff
+
+
+#================================================================
 #   Class model
 #================================================================
 
+#FIXME:1 Duplicated issue box
+# see for instance us-actor02.uss
+# the number of issue box is strange
+# the child/parent relationship is strange
 
 #TODO:1 add inheritance of oppositeRoles/playedRoles
 #   => add_inherited_attached_roles
@@ -256,27 +299,6 @@
 
 
 #================================================================
-#   Glossary Model
-#================================================================
-
-#TODO:1 glossary: check what works or not
-#   Using glossary is much better when using GEdit integration
-#   since `ok`!  and `ko`? are displayed. Otherwise in colored
-#   terminal.
-
-#TODO:2 add management of errors
-
-#TODO:2 generalize astTextBlock2TextBlock to collect block
-#   Somewhere (usecases?) a little framework has been defined
-#   so that source element can define which textblock it owns.
-#   A method should be added. This is cumbersome. It might be
-#   better to use astTextBlock2TextBlock to collect easily all
-#   TextBlock. To be checked.
-
-#TODO:3 add some memoization or store some stuff
-
-
-#================================================================
 #   Usecase model
 #================================================================
 
@@ -366,6 +388,15 @@
 #   but it could be ok for scenario.
 #   The poperty 'single' could be relative to a subgraph.
 #   => megamodel.parser ?
+
+#TODO:4 check how to restart/reset modelscritps in modelc nose tests
+#   currently tests are run in an accumulated state
+#   rather that a state from scratch
+#   That means that the megamodel always accumulate information,
+#   issue boxes and so on.
+#   It would makes much more sense to start again the modelc.
+#   Dunno how to do this with nose.
+#   One option would be to have a "reset" feature on Megamodel
 
 #TODO:3 add hierachical metrics
 
