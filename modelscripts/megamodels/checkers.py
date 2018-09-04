@@ -10,7 +10,7 @@ from modelscripts.base.issues import (
 from modelscripts.megamodels.issues import (
     ModelElementIssue)
 from modelscripts.base.exceptions import (
-    MethodNotDefined,
+    MethodToBeDefined,
     UnexpectedCase)
 
 DEBUG=0
@@ -88,7 +88,7 @@ class Checker(object):
 
 
     def doCheck(self, e):
-        raise MethodNotDefined( #raise:TODO:3
+        raise MethodToBeDefined( #raise:TODO:3
             'CKK: Checker %s on %s is not implemented ' % (
                 self.name,
                 type(e).__name__
@@ -138,7 +138,7 @@ class LimitsChecker(Checker):
 
     @abstractmethod
     def size(self, e):
-        raise MethodNotDefined( #raise: TODO:3
+        raise MethodToBeDefined( #raise: TODO:3
             'size() not implemented.')
 
     def doCheck(self, e):

@@ -14,7 +14,7 @@ from modelscripts.megamodels.megamodels._registries.metamodels import (
 from modelscripts.megamodels.megamodels._registries.models import (
     _ModelRegistry)
 from modelscripts.megamodels.megamodels._registries.sources import (
-    _SourceRegistry)
+    _SourceFileRegistry)
 from modelscripts.megamodels.megamodels._registries.metapackages import (
     _MetaPackageRegistry)
 from modelscripts.megamodels.megamodels._registries.metacheckers import (
@@ -23,7 +23,7 @@ from modelscripts.megamodels.megamodels._registries.issues import (
     _IssueBoxRegistry)
 
 from modelscripts.base.exceptions import (
-    MethodNotDefined)
+    MethodToBeDefined)
 from modelscripts.base.issues import (
     Issue,
     Levels,
@@ -36,16 +36,6 @@ from modelscripts.base.exceptions import (
     NoSuchFeature,
     UnexpectedValue)
 
-# from modelscripts.megamodels import Megamodel
-
-# class MegamodelModel(Model, Megamodel):
-#     def __init__(self):
-#         super(MegamodelModel, self).__init__()
-#
-#     @property
-#     def metamodel(self):
-#         #type: () -> Metamodel
-#         return METAMODEL
 
 ISSUES={
     'NO_FILE': 'mg.FileNotFound',
@@ -63,7 +53,7 @@ class Megamodel(
     # with unhundreds of methods.
     _MetamodelRegistry,
     _ModelRegistry,
-    _SourceRegistry,
+    _SourceFileRegistry,
     _MetaPackageRegistry,
     _MetaCheckerPackageRegistry,
     _IssueBoxRegistry):
@@ -102,23 +92,28 @@ class Megamodel(
         except UnexpectedValue: #except:TODO:4
             return None
 
+    #TODO:3 check the difference between loadFile() vs. sourceFile()
+    #   not sure if sourceFile contains so different code from
+    #   loadFile. It could make sense to extend sourceFile()
     @classmethod
-    def loadFile(cls, filename):
-        #type: (Text)->Optional['ModelSource']
+    def loadFile(cls, filename, withIssueList=None):
+        #type: (Text, 'WithIssueList')->Optional['ModelSource']
         """
         Load a given file into the megamodel.
         Return a model source file. This source file can
         naturally contain some issues in its issue box.
         If it not possible at all to create such a source file
         then return None. In this case the issue that cause
-        and the corresponding issue is stored in the global megamodel
-        issue box.
+        and the corresponding issue is stored in the issue box
+        of the givenparameter. If withIssueList is none then
+        then the issue goes to issue box of the global megamodel.
         """
+        origin=cls.model if withIssueList is None else withIssueList
         try:
             if not os.path.exists(filename):
                 message='File not found:  %s' % filename
                 Issue(
-                    origin=cls.model, # the megamodel itself,
+                    origin=origin,
                     level=Levels.Fatal,  # see below
                     # The lovel should be Fatal but except Fatal
                     # is within the context of the source.
@@ -129,7 +124,7 @@ class Megamodel(
             try:
                 path = os.path.realpath(filename)
                 # check if already registered
-                return cls.source(path=path)
+                return cls.sourceFile(path=path)
             except NotFound:
                 # source not registered, so builf it
                 mm = cls.fileMetamodel(filename)
@@ -137,14 +132,14 @@ class Megamodel(
                     b = os.path.basename(filename)
                     message='No metamodel available for %s' % b
                     Issue(
-                        origin=cls.model,  # the megamodel itself,
+                        origin=origin,
                         level=Levels.Fatal,
                         message=message,
                         code=icode('NO_META'))
                 try:
                     factory = mm.sourceClass
                 except NoSuchFeature:
-                    Issue(  # TODO:1 check why it is not caught
+                    Issue(  # TODO:3 check why it is not caught
                         origin=cls.model,  # the megamodel itself,
                         level=Levels.Fatal,
                         message=
@@ -192,7 +187,7 @@ class Megamodel(
         """
         Display the given model diagram.
         """
-        raise MethodNotDefined( #raise:OK
+        raise MethodToBeDefined( #raise:OK
             'displayModelDiagram() not implemented.'
         )
 

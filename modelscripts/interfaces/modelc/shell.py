@@ -1,5 +1,6 @@
 import os
 import sys
+import traceback
 
 def setup():
     """
@@ -16,7 +17,16 @@ def setup():
 
 setup()
 
-from modelscripts.interfaces.modelc.build import build
+from modelscripts.interfaces.modelc.build import BuildContext
+from modelscripts.libs.termcolor import cprint
 
-build(sys.argv)
+try:
+    bc=BuildContext(sys.argv[1:])
+    bc.display()
+except Exception as ex:
+    title = ' SYSTEM ERROR in %s '
+    cprint(title.center(80, '!'), 'red')
+    cprint(str(ex), 'red')
+    traceback.print_exc(ex)
+    cprint('!' * 80, 'red')
 

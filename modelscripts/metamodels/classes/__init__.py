@@ -745,7 +745,8 @@ METAMODEL = Metamodel(
     id='cl',
     label='class',
     extension='.cls',
-    modelClass=ClassModel
+    modelClass=ClassModel,
+    uniqueness=True
 )
 
 MetamodelDependency(

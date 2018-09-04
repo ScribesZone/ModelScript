@@ -10,7 +10,7 @@ from typing import Text, Optional
 
 from modelscripts.base.styles import Styles
 from modelscripts.base.exceptions import (
-    MethodNotDefined,
+    MethodToBeDefined,
     UnexpectedCase)
 #----------------------------------------------------------------------------
 #    Strings
@@ -201,7 +201,7 @@ class AbstractPrinter(object):
     
     @abstractmethod
     def do(self):
-        raise MethodNotDefined() #raise:OK
+        raise MethodToBeDefined() #raise:OK
 
     def display(self, removeLastEOL=False, addLastEOL=True):
         text=self.do()

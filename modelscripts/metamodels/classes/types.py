@@ -6,7 +6,7 @@ from modelscripts.metamodels.classes import (
     PackagableElement,
     Item)
 from modelscripts.base.exceptions import (
-    MethodNotDefined)
+    MethodToBeDefined)
 
 class SimpleType(PackagableElement, Item):
     """
@@ -118,12 +118,12 @@ class SimpleValue(object):
 
     @abc.abstractproperty
     def type(self):
-        raise MethodNotDefined( #raise:OK
+        raise MethodToBeDefined( #raise:OK
             'property .type not implemented')
 
     @abc.abstractmethod
     def equals(self, simpleValue):
-        raise MethodNotDefined( #raise:OK
+        raise MethodToBeDefined( #raise:OK
             'equals() not implemented')
 
 

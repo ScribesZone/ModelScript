@@ -5,7 +5,7 @@ from modelscripts.metamodels.classes.associations import opposite
 from modelscripts.metamodels.objects import PackagableElement, Entity
 from modelscripts.base.exceptions import (
     UnexpectedCase,
-    MethodNotDefined)
+    MethodToBeDefined)
 class Link(PackagableElement, Entity):
     __metaclass__ = ABCMeta
 
@@ -50,7 +50,7 @@ class Link(PackagableElement, Entity):
     def isPlainLink(self):
         # just used to prevent creating object of this class
         # (ABCMeta is not enough)
-        raise MethodNotDefined( #raise:OK
+        raise MethodToBeDefined( #raise:OK
             'method isPlainLink() is not defined.'
         )
 

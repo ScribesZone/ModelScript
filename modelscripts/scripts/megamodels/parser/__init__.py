@@ -29,7 +29,7 @@ from modelscripts.base.exceptions import (
 
 
 
-DEBUG=3
+DEBUG=0
 
 #TODO:2 find a handy solution/convention for file naming
 #      Currently the variable below allow to keep
@@ -221,51 +221,22 @@ def fillDependencies(modelSource):
     - when there is more than one model definition
 
     This method can raise an exception FatalError
-
-
     """
     assert modelSource.sourceLines is not None
     assert modelSource.model is not None
     assert modelSource.importBox is not None
 
-    # def _parse():
-    #     for line_no in range(1, len(modelSource.sourceLines) + 1):
-    #
-    #         mi = _matchModelImport(
-    #             lineNo=line_no,
-    #             modelSourceFile=modelSource,
-    #             justMatch=False )
-    #
-    #         if mi is not None:
-    #             if DEBUG>=1 or Config.realtimeImportPrint >=1:
-    #                 print('\nimp: >>>>>>>> '+repr(mi))
-    #             print('>>'*20, 'import')
-    #
-    #             modelSource.importBox.addImport(
-    #                 SourceImport(importStmt=mi)
-    #             )
-    #
-    #
-    #             if DEBUG>=1 or Config.realtimeImportPrint >=1:
-    #                 from modelscripts.scripts.megamodels.printer.imports import ImportBoxPrinter
-    #                 ImportBoxPrinter(modelSource.importBox).display()
-    #                 print('imp: <<<<<<<< '+repr(mi)+'\n')
-    #             continue
-    #
-    #         # --------- any other line is ok -------------------
-    #         continue
-
     def doImport(modelImportStatement):
         if DEBUG >= 1:
             print('\nMEG: >>>>>>>> ' + repr(modelImportStatement))
-        modelSource.importBox.addImport(
-            SourceImport(importStmt=modelImportStatement)
-        )
+        source_import=SourceImport(importStmt=modelImportStatement)
+        modelSource.importBox.addImport(source_import)
         if DEBUG >= 1:
             from modelscripts.scripts.megamodels.printer.imports import \
                 ImportBoxPrinter
             ImportBoxPrinter(modelSource.importBox).display()
             print('MEG: <<<<<<<< ' + repr(modelImportStatement) + '\n')
+        return source_import
 
     def _check():
         if modelSource.importBox.modelName is None:
@@ -294,21 +265,30 @@ def fillDependencies(modelSource):
 
 
 
-
+    imports_with_big_issues=False
     for ast_modelImport in ast_megamodelPart.modelImports:
-        print('MGE: >> "%s" "%s" model from "%s"' % (
-              ast_modelImport.modifier,
-              ast_modelImport.targetMetamodel,
-              ast_modelImport.targetPath))
+        if DEBUG>=2:
+            print('MEG: >> "%s" "%s" model from "%s"' % (
+                  ast_modelImport.modifier,
+                  ast_modelImport.targetMetamodel,
+                  ast_modelImport.targetPath))
         import_statement=getModelImportStatement(
             modelSource,
             ast_modelImport
         )
-        doImport(import_statement)
+        source_import=doImport(import_statement)
+        with_big_issues=\
+            source_import.importedSourceFile.issues.bigIssues
+        imports_with_big_issues=\
+            imports_with_big_issues or with_big_issues
 
-        # modelSource.importBox.addImport(
-        #     SourceImport(importStmt=mi)
-        # )
+    if imports_with_big_issues:
+        Issue(
+            code='iss.source.import.fatal',
+            origin=modelSource,
+            level=Levels.Fatal,
+            message=
+                'Serious issue(s) found during import. Analysis stopped.')
+
     _check()
-
 

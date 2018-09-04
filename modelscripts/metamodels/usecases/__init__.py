@@ -12,8 +12,7 @@ from modelscripts.megamodels.elements import SourceModelElement
 from modelscripts.base.metrics import Metrics
 from modelscripts.megamodels.metamodels import Metamodel
 from modelscripts.megamodels.dependencies.metamodels import (
-    MetamodelDependency
-)
+    MetamodelDependency)
 from modelscripts.megamodels.models import Model
 from modelscripts.metamodels.permissions.sar import Subject
 
@@ -249,4 +248,9 @@ MetamodelDependency(
     optional=True,
     multiple=True,
 )
-
+MetamodelDependency(
+    sourceId='us',
+    targetId='pa',
+    optional=True,
+    multiple=True,
+)

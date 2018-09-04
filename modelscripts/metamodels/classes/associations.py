@@ -17,7 +17,7 @@ from modelscripts.base.exceptions import (
     UnexpectedCase,
     UnexpectedValue,
     NoSuchFeature,
-    MethodNotDefined)
+    MethodToBeDefined)
 
 RolePosition=Union['source','target']
 
@@ -164,7 +164,7 @@ class Association(PackagableElement, Entity):
         # This method is not really useful as isinstance can be used.
         # It is just used to prevent creating object of this class
         # (using ABCMeta is not enough to prevent this).
-        raise MethodNotDefined( #raise:OK
+        raise MethodToBeDefined( #raise:OK
             'isPlainAssociation() must be defined.')
 
 

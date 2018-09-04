@@ -9,7 +9,7 @@ contains:
 *   an _issueBox containing all import statements.
 *   the model declaration statement.
 """
-from typing import Text, Optional, List, Any, Union, Dict
+from typing import Text, Optional, List, Any, Union, Dict, Set
 from abc import ABCMeta, abstractproperty, abstractmethod
 import collections
 import sys
@@ -38,7 +38,7 @@ from modelscripts.megamodels.metamodels import (
     Metamodel)
 
 from modelscripts.base.exceptions import (
-    MethodNotDefined,
+    MethodToBeDefined,
     UnexpectedCase)
 
 __all__=(
@@ -103,7 +103,7 @@ class ASTBasedModelSourceFile(SourceFile):
         #----- (2) register/link models/sources/issues----
 
         from modelscripts.megamodels import Megamodel
-        Megamodel.registerSource(self)
+        Megamodel.registerSourceFile(self)
         Megamodel.registerModel(self.model)
 
         # Backward link
@@ -198,7 +198,7 @@ class ASTBasedModelSourceFile(SourceFile):
     @abstractmethod
     def fillModel(self):
         #type: () -> None
-        raise MethodNotDefined( #raise:OK
+        raise MethodToBeDefined( #raise:OK
             'fillModel() must be implemented')
 
     @abstractproperty
@@ -208,7 +208,7 @@ class ASTBasedModelSourceFile(SourceFile):
         The model corresponding to the parser.
         This must be implemented by all parsers.
         """
-        raise MethodNotDefined( #raise:OK
+        raise MethodToBeDefined( #raise:OK
             'metamodel() must be implemented')
 
     def emptyModel(self):
@@ -236,6 +236,32 @@ class ASTBasedModelSourceFile(SourceFile):
         #type: () -> List[SourceImport]
         from modelscripts.megamodels import Megamodel
         return Megamodel.sourceDependencies(target=self)
+
+    @property
+    def usedSourceFiles(self):
+        #type: () -> List[SourceFile]
+        return [ dep.target
+                 for dep in self.outgoingDependencies ]
+
+    @property
+    def allUsedSourceFiles(self):
+        #type: () -> Set[SourceFile]
+        all=set()
+        for us in self.usedSourceFiles:
+            all=all.union(us.allUsedSourceFiles)
+        return all
+
+    @property
+    def allUsedMetamodels(self):
+        #type: ()-> Set[Metamodel]
+        return [
+            sf.metamodel for sf in self.allUsedSourceFiles]
+
+    @property
+    def usingSourceFiles(self):
+        #type: () -> [SourceFile]
+        return [ dep.source
+                 for dep in self.incomingDependencies ]
 
     @property
     def metrics(self):
@@ -271,7 +297,7 @@ class ASTBasedModelSourceFile(SourceFile):
             the_method = getattr(printer_class, method)
             return the_method(printer)
         except AttributeError:
-            raise MethodNotDefined(  # raise:OK
+            raise MethodToBeDefined(  # raise:OK
                 "Class `{}` does not implement `{}`".format(
                     printer_class.__class__.__name__,
                     method))
@@ -347,7 +373,7 @@ class ASTBasedModelSourceFile(SourceFile):
 #             pass   # an error as already been registered
 #
 #         from modelscripts.megamodels import Megamodel
-#         Megamodel.registerSource(self)
+#         Megamodel.registerSourceFile(self)
 #         Megamodel.registerModel(self.model)
 #
 #

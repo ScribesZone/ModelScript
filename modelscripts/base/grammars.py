@@ -23,7 +23,7 @@ from modelscripts.base.issues import (
     Levels)
 from modelscripts.megamodels.sources import ASTBasedModelSourceFile
 from modelscripts.base.exceptions import (
-    MethodNotDefined,
+    MethodToBeDefined,
     UnexpectedCase)
 
 __all__= (
@@ -269,7 +269,7 @@ class ASTBasedModelSourceFile(ASTBasedModelSourceFile):
 
     @abstractmethod
     def parseMainBody(self):
-        raise MethodNotDefined( #raise:TODO:4
+        raise MethodToBeDefined( #raise:TODO:4
             'parseMainBody mist be redefined')
 
 

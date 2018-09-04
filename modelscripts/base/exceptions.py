@@ -18,7 +18,7 @@ class UnexpectedValue(InternalError):
 class NoSuchFeature(InternalError):
     pass
 
-class MethodNotDefined(InternalError):
+class MethodToBeDefined(InternalError):
     pass
 
 class FileSystemError(InternalError):

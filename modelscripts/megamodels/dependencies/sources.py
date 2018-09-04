@@ -66,10 +66,11 @@ class SourceFileDependency(Dependency):
         """ Imported source file. The target of the import"""
 
         from modelscripts.megamodels import Megamodel
-        Megamodel.registerSourceDependency(self)
+        Megamodel.registerSourceFileDependency(self)
 
         # register model dependency if not already there
         # (it should not be there)
+
         sm=self.importingSourceFile.model
         tm=self.importedSourceFile.model
         if Megamodel.modelDependency(sm, tm) is None:
@@ -90,70 +91,70 @@ class SourceFileDependency(Dependency):
 
 class SourceImport(SourceFileDependency):
     """
-    A SourceFileDependency with its concrete representation
-    in the term of the source import statement
-    located the source in the form
-    of a ImportStatement created by the megamodel parser.
+    A SourceFileDependency.
+    The importStmt given as a parameter is the concrete
+    representation of this SourceImport. The importStmt is
+    a syntactic element located in the source file.
+    The ImportStatement is created by the megamodel parser.
+    The source import is the semantical element build from it.
     """
     def __init__(self, importStmt):
         #type: (ImportStatement) -> None
         """
         Create an SourceImport and actually perform the
-        actuel import of target source file. If the target
-        source file is not already registered in the megamodel
-        then the target is
-        read and a ModelOldSourceFile is therefore created.
+        import of target source file.
+
+        If the target source file is not already registered
+        in the megamodel then the target is read and a
+        ModelSourceFile is therefore created.
         This possibly could generate some issues but these
-        are stored in the target ModelOldSourceFile.
-        The _issueBox of the importing ModelOldSourceFile is
+        are stored in the target ModelSourceFile.
+
+        The _issueBox of the importing ModelSourceFile is
         linked to the one of the target. This allows to
         source to "see" issues produced in the target.
         """
 
-        self.importStmt=importStmt #type: ImportStatement
+        self.importStmt=importStmt
+        #type: ImportStatement
         """ Link to the syntactic import statement """
 
-        self.importBox=None #type: Optional[ImportBox]
+        self.importBox=None #type:
+        # Optional[ImportBox]
         """ Back reference to the containing import box """
         # filled in ImportBox.addImport
 
+        # get the target SourceFile object
         try:
-            #--- already registered
+            #--- case 1: imported file is already registered
+            # just get it
             from modelscripts.megamodels import Megamodel
-            importedSourceFile=Megamodel.source(
+            importedSourceFile=Megamodel.sourceFile(
                 importStmt.absoluteTargetFilename)
         except NotFound :
-            #--- Not registered yet:
-            # actually perform the import
+            #--- case 2: imported file has never been registered
+            #    process it and get it
+            origin_sourcefile=importStmt.modelSourceFile
+            # print('RR'*40)
+            used_metamodels=origin_sourcefile.allUsedMetamodels
+            # print('QQ'*40)
+            # print('QQ'*40+'Importing '+str(importStmt))
+            # XXXXXXXXXXXXXXXX
             importedSourceFile=self._doImport(importStmt)
-            # XXXXXXZZZZZZZ
-        # except: #except:
-        #     import traceback
-        #     for i in range(0, 10):
-        #         print('ZZ'*80)
-        #     print('AN UNEXPECTED EXCEPTION WAS RAISED')
-        #     print(traceback.format_exc())
-        #     print('AN UNEXPECTED EXCEPTION WAS RAISED')
-        #     for i in range(0, 10):
-        #         print('ZZ'*80)
-        #     raise #raise:TODO:2
+
 
         super(SourceImport, self).__init__(
             self.importStmt.modelSourceFile,
             importedSourceFile
         )
 
-        self._doBindIssueBoxes()
-
-        if self.importedSourceFile.issues.bigIssues:
-            Issue(
-                code='iss.source.import.fatal',
-                origin=self.importingSourceFile,
-                level=Levels.Fatal,
-                message=
-                    'Serious issue(s) found when importing "%s"' %
-                    self.importedSourceFile.basename
-            )
+        #--- not more used
+        # The parent relationship is not good enough to represent
+        # a dag with various sources and share parent
+        # "parent" beetween imported issue box has been desactivated
+        # It only remains for model/source.
+        #
+        # self._doBindIssueBoxes()
 
     def _doImport(self, importStmt):
         #type: (ImportStatement) -> ModelSourceFile

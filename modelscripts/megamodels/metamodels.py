@@ -13,7 +13,7 @@ Cls=Callable
 OptCls=Optional[Cls]
 
 from modelscripts.base.exceptions import (
-    MethodNotDefined,
+    MethodToBeDefined,
     NoSuchFeature,
     UnexpectedCase)
 
@@ -31,12 +31,14 @@ class Metamodel(MegamodelElement):
                  modelPrinterClass=None,
                  sourcePrinterClass=None,
                  diagramPrinterClass=None,
+                 uniqueness=False,
                  ):
         #type: (Text, Text, Text, Cls, OptCls, OptCls, OptCls, OptCls) -> None
         self.id=id
         self.label=label
         self.extension=extension
         self.modelKinds=modelKinds
+        self.uniqueness=uniqueness
         self._modelClass=modelClass
         self._sourceClass=sourceClass
         self._modelPrinterClass=modelPrinterClass

@@ -15,12 +15,12 @@ from modelscripts.base.locations import (
 )
 # TODO:4 it should be better to remove the printer dependency
 from modelscripts.base.styles import Styles
-from modelscripts.config import Config
+#from modelscripts.config import Config
 from modelscripts.base.exceptions import (
     UnexpectedCase,
-    MethodNotDefined)
+    MethodToBeDefined)
 
-DEBUG=1
+DEBUG=0
 
 
 class FatalError(Exception):
@@ -71,13 +71,15 @@ class Level(object):
 
 
 class Levels(object):
+    OK=Level('OK', 00, Styles.smallIssue)
     Hint=Level('HINT', 10, Styles.smallIssue)
     Info=Level('INFO', 20, Styles.smallIssue)
     Warning=Level('WARNING', 30, Styles.mediumIssue)
     Error=Level('ERROR', 40, Styles.bigIssue)
-    Fatal=Level('FATAL ERROR', 50, Styles.bigIssue)
+    Fatal=Level('FATAL', 50, Styles.bigIssue)
+    System=Level('SYSTEM ERROR', 60, Styles.bigIssue)
 
-    Levels=[Fatal, Error, Warning, Info, Hint]
+    Levels=[System, Fatal, Error, Warning, Info, Hint]
 
     @classmethod
     def fromCode(cls, code):
@@ -114,7 +116,7 @@ class Issue(object):
         self.code=code
 
         self.origin = origin  #type: WithIssueList
-        """ A source file or a model. """
+        """ A source file or a model or a context. """
 
         self.message = message
         """ The issue message. """
@@ -123,7 +125,7 @@ class Issue(object):
 
         self.origin._issueBox._add(self)
 
-        if DEBUG>=1 or Config.realtimeIssuePrint>=1:
+        if DEBUG>=1:
             print('ISS: ****NEW %s%s IN %s **** -> %s'  % (
                 type(self).__name__,
                 '' if self.code is None else ':'+self.code,
@@ -150,9 +152,25 @@ class Issue(object):
         """M for Model, S for source"""
         return 'M' if self.fromModel else 'S'
 
+    @property
+    def originLabel(self):
+        if hasattr(self.origin, 'source'):
+            src=self.origin.source
+            if src is not None:
+                return src.basename
+            else:
+                return '-'
+        else:
+            if hasattr(self.origin, 'basename'):
+                return self.origin.basename
+            else:
+                return '-'
+
+
     def str(self,
             pattern=None,
-            styled=False): # not used, but in subclasses
+            styled=False,
+            prefix=''): # not used, but in subclasses
 
         """
         Display the issue.
@@ -168,16 +186,17 @@ class Issue(object):
         if pattern is None:
             pattern=(
                 Annotations.prefix
-                + u'{origin}:{kind}:{level}:{location}:{message}')
+                + u'{kind}:{level}:{origin}:{message}')
         text=pattern.format(
-            origin=u'ORIGIN',
+            origin=self.originLabel,
             level=self.level.str(),
             kind=self.kind,
-            location=u'?',
+            location=u'-',
+            line='-',
             message=self.message
         )
         return self.level.style.do(
-            text,
+            prefix+text,
             styled=styled)
 
     def __str__(self):
@@ -198,7 +217,7 @@ class LocalizedSourceIssue(Issue):
                  code=None,
                  column=None,
                  fileName=None):
-        #type: (OldSourceFile, Level, Text, int, Optional[Text], Optional[int], Optional[Text]) -> None
+        #type: ('SourceFile', Level, Text, int, Optional[Text], Optional[int], Optional[Text]) -> None
         """
         Create a localized source file and add it to
         the given source file.
@@ -224,7 +243,7 @@ class LocalizedSourceIssue(Issue):
         """
 
         def __adjust(sourceFile, line, column):
-            #type: (OldSourceFile, int,int) -> Tuple[int,int]
+            #type: ('SourceFile', int,int) -> Tuple[int,int]
             lines = sourceFile.sourceLines
             nblines = len(lines)
             if line == 0:
@@ -297,7 +316,8 @@ class LocalizedSourceIssue(Issue):
 
     def str(self,
             pattern=None,
-            styled=False):
+            styled=False,
+            prefix = ''):
         if pattern is None:
             pattern=(
                 Annotations.prefix
@@ -310,7 +330,7 @@ class LocalizedSourceIssue(Issue):
             message=self.message
         )
         return self.level.style.do(
-            text,
+            prefix+text,
             styled=styled)
 
     def __str__(self):
@@ -323,22 +343,27 @@ class LocalizedSourceIssue(Issue):
 class IssueBox(object):
     """
     A collection of issues for a 'WithIssueList'
-    element (so far a Model oOldSourceFilele).
-    IssueBoxes can be nested following the import
-    graphs. Issue boxes also provide some query mecanisms.
+    element (so far a Model, a SourceFile or a BuildContext).
+    IssueBoxes can be nested following the import graphs.
+    Issue boxes also provide some query mechanisms.
     """
 
     def __init__(self, origin, parents=()):
         #type: (Any, List[IssueBox]) -> None
 
 
-        self.origin=origin #type: Union[OldSourceFile, 'Model']
+        self.origin=origin
+        #type: Union['SourceFile', 'Model', 'BuildContext']
         """
         The container of the issue box, typically a 
-        source file or a model.
+        source file, a model or a build context. 
+        The model can be the megamodel.
         """
 
-        self.label=self.origin.label
+        self.label='issuebox<%s>' % self.origin.label
+        """
+        A label for internal display
+        """
 
         self._issueList=[] #type: List[Issue]
         """ 
@@ -348,8 +373,8 @@ class IssueBox(object):
 
         self.parents=list(parents) #type:List[IssueBox]
         """
-        List of parent issue boxes. These boxes will
-        apprear in this one.
+        List of parent issue boxes. These issue of these boxes 
+        will appear in this one.
         """
 
         self._issuesAtLine=OrderedDict()
@@ -360,7 +385,6 @@ class IssueBox(object):
         _issuesAtLine[0] are for unlocalized issues.
         """
 
-
         if DEBUG>=1:
             print(u'ISS: New issue box for %s -> %s' % (
                 type(self.origin).__name__,
@@ -368,8 +392,8 @@ class IssueBox(object):
 
     def _add(self, issue):
         #type: (Issue) -> None
-        # called by the issue constructor
-        # Issue -> None
+        # Add an issue to the box.
+        # This method is called by the issue constructor.
         self._issueList.append(issue)
         if isinstance(issue, LocalizedSourceIssue):
             index=issue.line
@@ -382,7 +406,7 @@ class IssueBox(object):
     def addParent(self, issueBox):
         #type: (IssueBox) -> None
         """
-        Add the issue box as the last parents.
+        Add the issue box as the last parents in the list.
         If it is already in the list, do nothing.
         """
         if not issueBox in self.parents:
@@ -391,9 +415,6 @@ class IssueBox(object):
                 print(u'ISS: Add parent "%s" -> "%s"' % (
                         self.label,
                         issueBox.label))
-
-
-
 
     def at(self, lineNo, parentsFirst=True):
         """
@@ -407,8 +428,7 @@ class IssueBox(object):
                 for i in p.at(lineNo, parentsFirst=parentsFirst) ]
         self_issues=(
             [] if lineNo not in self._issuesAtLine
-            else self._issuesAtLine[lineNo]
-        )
+            else self._issuesAtLine[lineNo])
         if parentsFirst:
             return parent_issues+self_issues
         else:
@@ -423,8 +443,7 @@ class IssueBox(object):
         return list(
             x
             for p in self.parents
-                for x in p.allParents+[p]
-        )
+                for x in p.allParents+[p])
 
     @property
     def all(self):
@@ -434,8 +453,7 @@ class IssueBox(object):
         return list(
             [ i for p in self.allParents
                     for i in p._issueList ]
-            + self._issueList
-        )
+            + self._issueList)
 
     @property
     def nb(self):
@@ -548,19 +566,25 @@ class IssueBox(object):
             level=None,
             op='=',
             summary=True,
-            styled=False):
+            pattern=None,
+            styled=False,
+            annotations=False):
         if not self.hasIssues:
             return ''
         header=(
-            Annotations.full+'\n'
+            (Annotations.full if annotations else '')+'\n'
             +self.summaryLine+'\n'
-            +Annotations.full) if summary else ''
-        return '\n'.join(
+            +(Annotations.full if annotations else '')
+                if summary else '')
+        return '\n'.join(filter(None,(
             [header]
             + [
-                i.str(styled=styled)
+                i.str(
+                    styled=styled,
+                    pattern=pattern,
+                    prefix='')
                 for i in self.select(level,op)]
-            + [Annotations.full+'\n' ])
+            + [Annotations.full+'\n' if annotations else ''])))
 
     def __str__(self):
         return self.str()
@@ -569,12 +593,52 @@ class IssueBox(object):
         return self.__str__()
 
 
+class OrderedIssueBoxList(object):
+    #TODO:4  refactor to reuse code from IssueBox
+    # This class originates from the need to have issues in issue boxes
+    # displayed in a topological order (see BuildContext)
+    # The code for the number of issues and so on should come from
+    # the issue box class with a composite pattern or so.
+    # In the meantime the code is added here in a ad hoc manner for
+    # the profit of BuildContext.
+
+    def __init__(self, containerList):
+        self.containerList=containerList
+        self.issueBoxes=[
+            container.issues for container in containerList]
+
+    def str(self,
+            withOK=False,
+            pattern='{origin}:{level}:{line}:{message}',
+            styled=True):
+        outputs=[]
+        for issue_box in self.issueBoxes:
+            if issue_box.hasIssues:
+                outputs.append((
+                    issue_box.str(
+                        summary=False,
+                        styled=styled,
+                        pattern=pattern)))
+            else:
+                issue_box_kind=issue_box.origin.__class__.__name__
+                if issue_box_kind!='BuildContext':
+                    outputs.append(
+                        Styles.smallIssue.do(
+                            issue_box.origin.label + ':' + 'OK',
+                            styled=styled))
+        return '\n'.join(outputs)
+
+    @property
+    def nbIssues(self):
+        return sum(box.nb for box in self.issueBoxes)
+
+
 class WithIssueList(object):
     __metaclass__ = ABCMeta
 
     def __init__(self, parents=()):
         #type: (List[IssueBox]) -> None
-        assert(isinstance(parents, list))
+        assert(isinstance(parents, (list, tuple)))
         self._issueBox=IssueBox(
             origin=self,
             parents=parents)
@@ -585,7 +649,7 @@ class WithIssueList(object):
 
     @abstractproperty
     def label(self):
-        raise MethodNotDefined( #raise:OK
+        raise MethodToBeDefined( #raise:OK
             'ISS: originLabel not defined')
 
     @property
@@ -603,5 +667,4 @@ class WithIssueList(object):
 
     def addIssue(self, sourceError):
         self._issueBox._add(sourceError)
-
 

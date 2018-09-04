@@ -1,5 +1,5 @@
 # coding=utf-8
-
+#
 levels={
     'SXP':0,
     'USE':0,
@@ -22,14 +22,15 @@ modules={
     'CCK':'modelscripts.megamodels.checkers',
     'SXP':'modelscripts.use.sex.parser',
 }
+# from modelscripts.base.issues import DEBUG
+# print(DEBUG)
+# ISS=0
 
-# import modelscripts.use.engine
-# import modelscripts.use.engine.merger
 # import modelscripts.megamodels.metametamodel
 # import modelscripts.megamodels.checkers
 # import modelscripts.use.sex.parser
-
-
+#
+#
 # def setDebugLevels():
 #     for key in modules.keys():
 #         print('BB' + key)

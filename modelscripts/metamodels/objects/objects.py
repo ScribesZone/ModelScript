@@ -16,7 +16,7 @@ from modelscripts.metamodels.objects import (
     PackagableElement,
     Entity)
 from modelscripts.base.exceptions import (
-    MethodNotDefined,
+    MethodToBeDefined,
     NoSuchFeature)
 
 
@@ -166,7 +166,7 @@ class Object(PackagableElement, Entity):
         # This method is not really useful as isinstance can be used.
         # It is just used to prevent creating object of this class
         # (using ABCMeta is not enough to prevent this).
-        raise MethodNotDefined( #raise:OK
+        raise MethodToBeDefined( #raise:OK
             'isPlainObject() is not defined')
 
     # def _class_print(self, onlyIds=False):

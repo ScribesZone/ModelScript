@@ -6,10 +6,10 @@ from modelscripts.base.exceptions import (
     NotFound)
 
 __all__=(
-    '_SourceRegistry'
+    '_SourceFileRegistry'
 )
 
-
+DEBUG=0
 
 Metamodel= 'Metamodel'
 MetamodelDependency='MetamodelDepndency'
@@ -22,7 +22,7 @@ SourceFileDependency='SourceFileDependency'
 OptSource=Optional[ModelSourceFile]
 
 
-class _SourceRegistry(object):
+class _SourceFileRegistry(object):
     """
     Part of the megamodel dealing with source files
     """
@@ -51,15 +51,15 @@ class _SourceRegistry(object):
     # --------------------------------------------------
 
     @classmethod
-    def registerSource(cls, source):
+    def registerSourceFile(cls, source):
         # type: (ModelSourceFile) -> None
         """
         Register a source. Register the model as well.
         """
-
+        if DEBUG>=1:
+            print('RSC: registerSourceFile(%s)' % source.fileName)
         if source.path not in cls._sourceFileByPath:
             cls._allSourceFiles.append(source)
-
             # ByPath
             metamodel = source.metamodel
             cls._sourceFileByPath[source.path] = source
@@ -76,7 +76,7 @@ class _SourceRegistry(object):
                 Megamodel.registerModel(source.model)
 
     @classmethod
-    def registerSourceDependency(cls, sourceDependency):
+    def registerSourceFileDependency(cls, sourceDependency):
         # type: (SourceFileDependency) -> None
         """
         Register a source file dependency. Register
@@ -87,8 +87,8 @@ class _SourceRegistry(object):
         target = sourceDependency.target
 
         # Element registration
-        cls.registerSource(source)
-        cls.registerSource(target)
+        cls.registerSourceFile(source)
+        cls.registerSourceFile(target)
         from modelscripts.megamodels import Megamodel
         Megamodel.registerModel(source.model)
         Megamodel.registerModel(target.model)
@@ -115,7 +115,10 @@ class _SourceRegistry(object):
     # --------------------------------------------------
 
     @classmethod
-    def sources(cls, metamodel=None):
+    # The name sourceFile instead of source is due to a conflict
+    # with the method sources() (with targets()) in the
+    # MegamodelElement class.
+    def sourceFiles(cls, metamodel=None):
         # type: () -> List[ModelSourceFile]
         """
         Return all source files for a given metamodel.
@@ -127,10 +130,12 @@ class _SourceRegistry(object):
             return cls._sourceFilesByMetamodel[metamodel]
 
     @classmethod
-    def source(cls, path):
+    def sourceFile(cls, path):
         # type: () -> Metamodel
         """
-        Return a source given its path or raise NotFound.
+        Return a source given its path.
+        If the path does not corresponds to this file then
+        raise NotFound.
         """
         if path in cls._sourceFileByPath:
             return cls._sourceFileByPath[path]
@@ -204,3 +209,22 @@ class _SourceRegistry(object):
             return d[0]
         else:
             return None
+
+    @classmethod
+    def sourceFileList(cls, origins=None):
+
+        if origins is None:
+            origins=cls.sourceFiles()
+        visited=[]
+
+        def visit(source_file):
+            if source_file not in visited:
+                visited.append(source_file)
+                if source_file not in visited:
+                    for x in source_file.usedSourceFiles:
+                        if not x in visited:
+                            visit(x)
+        for x in origins:
+            visit(x)
+
+        return visited

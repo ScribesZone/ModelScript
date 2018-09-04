@@ -131,13 +131,13 @@ METAMODEL = Metamodel(
     modelClass=AUIModel
 )
 MetamodelDependency(
-    sourceId='re',
+    sourceId='au',
     targetId='gl',
     optional=True,
     multiple=True,
 )
 MetamodelDependency(
-    sourceId='re',
+    sourceId='au',
     targetId='cl',
     optional=True,
     multiple=True,

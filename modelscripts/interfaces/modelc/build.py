@@ -3,99 +3,89 @@ import argparse
 import os
 import sys
 import traceback
-from typing import List, Text
-
-# While the virtual env is set by the shell script it is
-# still necessary to add the modelscript package to python path.
-
-
+from typing import List, Text, Dict, Optional
+from collections import OrderedDict
 
 # initialize the megamodel with metamodels and scripts
 
 from modelscripts.libs.termcolor import cprint
 from modelscripts.base.modelprinters import ModelPrinterConfig
-from modelscripts.megamodels import Megamodel
 from modelscripts.interfaces.modelc.options import getOptions
-
-#-------------- Command Line Interface -----------------------------
-
-
+from modelscripts.megamodels import Megamodel
+from modelscripts.base.issues import WithIssueList, OrderedIssueBoxList
 
 
-def processSourceFile(filename, manySourceFiles, options):  #TODO:0 rename to optios
-    """
-    Parse a file and display directly the results.
-    If manySourceFiles the output is enclosed with
-    proper markers
-    """
-    basename=os.path.basename(filename)
-    try:
-        source = Megamodel.loadFile(filename)
-        # source could be None here, if some FatalError detected
-    except Exception as e: #except:OK
-        title=' INTERNAL ERROR in %s ' %  basename
-        cprint(title.center(80, '#'), 'red')
-        cprint(str(e),'red')
-        traceback.print_exc(e)
-        cprint('#'*80, 'red')
-        return str(e)
-    else:
-        if manySourceFiles:
-            title = ' %s ' % filename
-            cprint(title.center(80, '#'), 'blue')
-        if source is None:
-            print('TODO:2 XXX An issue has to be printed')
-        else:
-            #  TODO:4 check if creating a ModelPrinterConfig is better
-            printer_config = ModelPrinterConfig(
-                #  for models
-                styled=not options.bw,
-                verbose=options.verbose,
-                quiet=options.quiet,
-                title=basename,
-                issuesMode=options.issues,
-                contentMode=options.listing,
-                summaryMode=options.summary,
-                # styled=True,
-                # width=120,
-                # baseIndent=0,
-                # displayLineNos=True,
-                # lineNoPadding=' ',
-                # verbose=0,
-                # quiet=False,
-                # # ------------------------
-                # title=None,
-                # issuesMode='top',
-                # # ------------------------
-                # contentMode='self',  # self|source|model|no
-                # summaryMode='top',  # top | down | no
-            )
-            Megamodel.displaySource(
-                source=source,
-                config=printer_config)
-        if manySourceFiles:
-            title=' END %s ' % filename
-            cprint(title.center(80, '#'), 'blue')
+class BuildContext(WithIssueList):
+
+    def __init__(self, args):
+        super(BuildContext, self).__init__()
+        self.args=args
+        self.options=getOptions(args)
+        self.hasManySourceFiles=len(self.options.sources)>=2
+        self.sourceMap=OrderedDict()
+        self._build()
+        self.issueBoxList=OrderedIssueBoxList(
+            self.allSourceFileList
+            +[self])
+        #type: Dict[Text, Optional['SourceFile']]
+        # for each source file name, the corresponding SourceFile
+        # or None if there was an error
+
+    def _build(self):
+        for filename in self.options.sources:
+            source = Megamodel.loadFile(filename, self)
+            self.sourceMap[filename]=source
 
 
-def build(args):
-    """
-    produce the result of the compilation for a given list of arguments.
-    Typically this list is filled from sys.args if this function is
-    called from a shell.
-    """
-    options=getOptions(args)
-    try:
-        manySourceFiles=len(options.sources)>=2
-        for filename in options.sources:
-            processSourceFile(filename, manySourceFiles, options)
-        if Megamodel.model.hasIssues:
-            cprint(' Global issues '.center(80, '#'), 'blue')
-            print(Megamodel.model.issues)
-            cprint('#'*80, 'blue')
+    @property
+    def validSourceFiles(self):
+        return (
+            s for s in self.sourceMap.values()
+            if s is not None)
 
-    except Exception as e:
-        traceback.print_exc(e)
-        cprint(str(e), 'red')
+    @property
+    def nbIssues(self):
+        return self.issueBoxList.nbIssues
+
+    @property
+    def allSourceFileList(self):
+        """
+        The list of all source files involved in this build,
+        directly or not. The list is in a topological order.
+        """
+        return Megamodel.sourceFileList(
+            origins=self.validSourceFiles)
+
+    def label(self):
+        return('buildContext')
 
 
+    def display(self, styled=True):
+        # print(self.issueBoxList.nbIssues)
+        print(self.issueBoxList.str(styled=styled))
+        # displayIssueBoxContainers(
+        #     self.allSourceFileList+[self]
+        # )
+        # for source in self.allSourceFileList:
+        #     print(source.issues.str(
+        #         summary=False,
+        #         styled=True,
+        #         pattern='{origin}:{level}:{line}:{message}'))
+        # if self.hasIssues:
+        #     print(self.issues.str(
+        #         summary=False,
+        #         styled=True,
+        #         pattern='{origin}:{level}:{line}:{message}'
+        #     ))
+
+# # TODO:3 move this to issue.py
+# def displayIssueBoxContainers(containerList):
+#     for container in containerList:
+#         if container.hasIssues:
+#             print(container.issues.str(
+#                 summary=False,
+#                 styled=True,
+#                 pattern='{origin}:{level}:{line}:{message}'))
+#         else:
+#             if not isinstance(container, BuildContext):
+#                 cprint(container.label+':'+'OK', 'green')

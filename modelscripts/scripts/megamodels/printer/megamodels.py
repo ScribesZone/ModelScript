@@ -41,9 +41,9 @@ class MegamodelPrinter(ModelPrinter):
         self.doMetaPackageRegistry(megamodel)
         self.doMetaCheckerPackageRegistry(megamodel)
         self.doModelRegistery(megamodel)
-        self.doSourceRegistery(megamodel)
+        self.doSourceFileRegistery(megamodel)
         self.doIssueBoxRegistery(megamodel)
-        # self.outLine('')
+        #_SELF_OUT_LINE('')
         return self.output
 
     def doMetamodelRegistery(self, megamodel):
@@ -87,13 +87,6 @@ class MegamodelPrinter(ModelPrinter):
         self.outLine(' (M1) models '.center(80,'-'))
         for m in megamodel.models():
             self.doModel(m)
-        # self.outLine(
-        #     ', '.join([
-        #             m.label for m in megamodel.models()] ))
-        # for md in megamodel.modelDependencies():
-        #     self.outLine('%s -> %s' % (
-        #         md.source.label,
-        #         md.target.label))
         return self.output
 
     def doModel(self, m):
@@ -108,18 +101,43 @@ class MegamodelPrinter(ModelPrinter):
             ))
         for ud in m.usedModels():
             self.outLine('-> %s' % ud.label, indent=1)
-        self.outLine('')
+        # self.outLine('')
         return self.output
 
-    def doSourceRegistery(self, megamodel):
+    def doSourceFileRegistery(self, megamodel):
         self.outLine(' (M1) sources '.center(80,'-'))
-        self.outLine(
-            ', '.join([
-                s.label for s in megamodel.sources()]))
-        for sd in megamodel.sourceDependencies():
+        # print('RR-' * 10, megamodel._allSourceFiles)
+        # print('RR*' * 10, megamodel.sourceFiles())
+
+        # self.outLine('ZZ'*20 +str( len(megamodel.sources())))
+
+        for s in megamodel.sourceFiles():
+            self.doSourceFile(s)
+
+        self.outLine(' (M1) source dependencies '.center(80,'-'))
+        for dep in megamodel.sourceDependencies():
             self.outLine('%s -> %s' % (
-                sd.source.label,
-                sd.target.label))
+                         dep.source.label,
+                         dep.target.label))
+
+        self.outLine(' (M1) source topological order '.center(80,'-'))
+        for (i,s) in enumerate(megamodel.sourceFileList()):
+            self.outLine('%i : %s' % (i,s.label))
+        return self.output
+
+        #     self.outLine('%s -> %s' % (
+        #         sd.source.label,
+        #         sd.target.label))
+
+    def doSourceFile(self, source):
+        self.outLine('%s source %s' % (
+            source.metamodel.label,
+            source.label
+        ))
+        for sf in source.usedSourceFiles:
+            self.outLine('  ===> %s' % sf.label )
+        for sf in source.usingSourceFiles:
+            self.outLine('  <--- %s' % sf.label )
         return self.output
 
     def doIssueBoxRegistery(self, megamodel):

@@ -40,7 +40,6 @@ class ClassOCLChecker(object):
         """
         Indicates if the use of the USE tool is required/possible.
         """
-        print('II'*10, self.model.hasOCLCode, self.model.hasBigIssues)
         return (
             self.model.hasOCLCode
             and not self.model.hasBigIssues)

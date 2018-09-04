@@ -55,8 +55,8 @@ class MetamodelDependency(Dependency):
         except:
             raise UnexpectedState( #raise:TODO:3
                 'No target "%s" metamodel registered from %s' % (
-                    self.sourceId,
-                    self.targetId))
+                    self.targetId,
+                    self.sourceId))
 
     @property
     def source(self):

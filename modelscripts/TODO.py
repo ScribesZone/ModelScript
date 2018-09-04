@@ -7,47 +7,30 @@
 #   General
 #================================================================
 
-
-
-#TODO:1 make a brand new source issue printer
-#   this will start with a graph of sources
-#   sorted in a topological order and then print both
-#   source/model issues
-#   option grouped
+#TODO:1 review sourceFileList
+# it does not work (see modelc tests)
+# previous version was ok, except for cycles
 
 #TODO:1 Unexpected exception
 #   when in source "except FatalError" -> FatalError exception
 #   globally as well
+#   To be tested
+
+#TODO:1 metamodel uniquness
+#   check how a dag based uniqueness can be implemented
+#   uniqueness attrib has been added to class Metamodel
+#   FYI import is done in class SourceImport
+#   a method allUsedMetamodels  has been added
+#   all metamodel.uniqueness has to be changed
 
 
-#TODO:1 Uniqueness of metamodel
-#   add "allUsedSourceFiles" (transitive)
-#   add "onePerGraph" model in metamodel
-#   check in import xxx if no duplication
-#   change all models
-
-
-
-#TODO:1 check issue "Serious issues(s) found
-#   There is no source
 
 #TODO:2 the list of source in testFinalMegamodel is not accurate
 #   see the end of the tests
 
 
-#TODO:1 check modelc interface
-#   -> check command line options
-#   -> check how files are loaded and compare it to tests
-#   -> old comment:
-#       currently the modelc interpreter support only general
-#       options independent from models.
-#       The scenario printer configuration has model option
-#       but they are not used since modelc interpeter
-#       does not create a ScenarioPrinterConfiguration.
-#       It is necessary to find a way to change this to support
-#       model specific option. Currently the SecenarioPrinter
-#       add some attributs on the fly. This should be removed.
-
+#TODO:1 review print statement
+#   remove space in command line output
 
 
 #TODO:2 deployment: check how to deploy modelscript
@@ -65,6 +48,8 @@
 
 #TODO:2 restore/finalize modela
 #   check how to configure it at uni
+
+#TODO:2 check cycles in import
 
 #TODO:3 fix strange printing for models
 
@@ -344,6 +329,10 @@
 #   Quality Model
 #================================================================
 
+#TODO:3  Add a simple quality assurance model (qa?)
+#   => voir le model
+#   with rule, enforce rule
+#   control in quality control (qc) model
 
 #================================================================
 #   Relational class model / relation model
@@ -407,3 +396,9 @@
 #   with testcases.
 
 #TODO:3 plantuml, check how to get errors from generation
+
+#TODO:4- clean code with parent issue box
+# The notion of parent between issue box between parents is flawed
+# since we need to deal with a dag with shared parent and various
+# source. The _doBindIssueBoxes has been commented but it
+# might be good to do more cleaning.
