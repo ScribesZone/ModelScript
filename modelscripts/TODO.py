@@ -7,31 +7,25 @@
 #   General
 #================================================================
 
-#TODO:1 review sourceFileList
-# it does not work (see modelc tests)
-# previous version was ok, except for cycles
 
-#TODO:1 Unexpected exception
+#TODO:1 Deal with Unexpected exception
 #   when in source "except FatalError" -> FatalError exception
 #   globally as well
+#   generate a file with diagnosis ?
 #   To be tested
-
-#TODO:1 metamodel uniquness
-#   check how a dag based uniqueness can be implemented
-#   uniqueness attrib has been added to class Metamodel
-#   FYI import is done in class SourceImport
-#   a method allUsedMetamodels  has been added
-#   all metamodel.uniqueness has to be changed
-
-
-
-#TODO:2 the list of source in testFinalMegamodel is not accurate
-#   see the end of the tests
-
 
 #TODO:1 review print statement
 #   remove space in command line output
 
+#TODO:1 add a parameter in modelc for issue selection
+#   the default should be ignoring hint.info (i.e. for info check)
+
+#TODO:1 check if broken issue reporting
+#   see us-import03 04
+#   is seems that removing the parent in issue box
+#   cause problem for understanding print display
+#   or at least the error display has changed
+#   Only "serious issue(s)" is displayed
 
 #TODO:2 deployment: check how to deploy modelscript
 #   should it be with ScribesInfra ?
@@ -43,16 +37,29 @@
 #   with objectives / examples / concepts / current states
 
 
+#TODO:2 the list of source in testFinalMegamodel is not accurate
+#   see the end of the tests
+#   This problem might have been solved with sourceList algo
+
 #TODO:2 finish coloring scheme for GEdit
 #   check how to deploy the styles at uni
 
-#TODO:2 restore/finalize modela
+#TODO:3 restore/finalize modela
 #   check how to configure it at uni
-
-#TODO:2 check cycles in import
 
 #TODO:3 fix strange printing for models
 
+#TODO:2 metamodel uniquness in graph
+#   see test imp-2-oksep01.cls
+#   check how a dag based uniqueness can be implemented
+#   uniqueness attrib has been added to class Metamodel
+#   FYI import is done in class SourceImport
+#   a method allUsedMetamodels  has been added
+#   all metamodel.uniqueness has to be changed
+
+#TODO:4 check what happen with cyclic import structure
+#   at the moment this case is not relevant since
+#   the metamodel types make it impossible
 
 #================================================================
 #   Glossary Model
@@ -62,6 +69,8 @@
 #   Using glossary is much better when using GEdit integration
 #   since `ok`!  and `ko`? are displayed. Otherwise in colored
 #   terminal.
+
+#TODO:1 glossary: add tests
 
 #TODO:2 add management of errors
 
@@ -254,6 +263,7 @@
 #   (2) A bit more complicated that for
 
 #TODO:2 check that there is only one class metamodel imported
+#   TODO duplicated with
 #   since a story interpret the object model with respect to the
 #   current class model, it could be different from the class model
 #   used to validate the object model. It can therefore give less
