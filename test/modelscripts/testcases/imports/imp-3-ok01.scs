@@ -1,0 +1,4 @@
+scenario model L
+import glossary model from 'imp-3-ok01.gls'
+import class model from 'imp-3-ok01.cls'
+import object model from 'imp-3-ok01.obs'

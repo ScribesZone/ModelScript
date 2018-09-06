@@ -1,0 +1,2 @@
+glossary model A
+import glossary model from 'imp-0-circular01.gls'

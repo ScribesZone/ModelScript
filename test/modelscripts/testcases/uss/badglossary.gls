@@ -3,5 +3,5 @@ glossary model BadGlossary
 Term
     | Term is a term
 
-AnotherTerm
+SyntaxError HERE
     | Term is a term

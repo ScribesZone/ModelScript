@@ -1,3 +1,7 @@
+    #@Issue mgm.sem.Import.Allowed 1
+    #@Issue else *
+
+
 glossary model Gl_import03
 import glossary model from "gl-import02.gls"
 

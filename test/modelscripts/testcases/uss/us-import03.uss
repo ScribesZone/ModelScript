@@ -1,0 +1,7 @@
+usecase model Us_import02
+import glossary model from "badglossary.gls"
+
+usecase L
+usecase B
+
+

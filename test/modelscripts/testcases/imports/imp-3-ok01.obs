@@ -1,0 +1,3 @@
+object model L
+import class model from 'imp-3-ok01.cls'
+import glossary model from 'imp-3-ok01.gls'

@@ -1,3 +1,6 @@
+    #@Issue mgm.sem.Import.Allowed 1
+    #@Issue else *
+
 glossary model Gl_import02
     | This is `One` and `Nothing`
 
