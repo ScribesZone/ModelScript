@@ -202,10 +202,3 @@ METAMODEL = Metamodel(
     extension='.gls',
     modelClass=GlossaryModel
 )
-MetamodelDependency(
-    sourceId='gl',
-    targetId='gl',
-    optional=True,
-    multiple=True,
-)
-
