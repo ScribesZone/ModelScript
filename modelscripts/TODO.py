@@ -14,18 +14,17 @@
 #   generate a file with diagnosis ?
 #   To be tested
 
-#TODO:1 review print statement
+#TODO:2 review print statement
 #   remove space in command line output
 
 #TODO:1 add a parameter in modelc for issue selection
 #   the default should be ignoring hint.info (i.e. for info check)
 
-#TODO:1 check if broken issue reporting
+#TODO:3 check issue reporting in Printers
 #   see us-import03 04
-#   is seems that removing the parent in issue box
-#   cause problem for understanding print display
-#   or at least the error display has changed
-#   Only "serious issue(s)" is displayed
+#   removing the "parent" from issue boxes
+#   cause problems for understanding Printer display
+#   Only "serious issue(s)" is displayed in the child context
 
 #TODO:2 deployment: check how to deploy modelscript
 #   should it be with ScribesInfra ?
@@ -70,7 +69,24 @@
 #   since `ok`!  and `ko`? are displayed. Otherwise in colored
 #   terminal.
 
-#TODO:1 glossary: add tests
+#TODO:1 glossary: add tests (see green sheet)
+
+#FIXME:1 resolveTextBlocks() is called twice
+# see for instance test gls/medium1
+
+#TODO:1 change the way to find TextBlocks
+# The best option is to use astTextBlockToTextBlock to
+# register textBlock to a model each time it is created.
+# This will create a model scoped list of text block.
+# Currently there is a list for each model element.
+# See ModelElement.textBlocks to define the list
+# See model.resolve for the resolution.
+# Removing ModelElement.textBlocks should be enough.
+
+#TODO:2 add sequential 'package X' syntax
+# Currently packages are supported but only via an
+# attribute package in each term.
+# It would be better to have the same syntax as class model.
 
 #TODO:2 add management of errors
 
