@@ -1,3 +1,7 @@
+    #@Issue src.syn 1
+    #@Issue else *
+
+
 usecase model Us_import02
 import glossary model from "badglossary.gls"
 

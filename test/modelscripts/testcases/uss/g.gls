@@ -5,3 +5,11 @@ Term
 
 AnotherTerm
     | Term is a term
+
+Something
+    | The definition of `Something` relates
+    | to a `Term` which relates to
+    | `AnotherTerm`
+
+Two
+    | Two is just like Something

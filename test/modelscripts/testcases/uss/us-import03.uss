@@ -1,3 +1,8 @@
+    # error in glossary
+
+    #@Issue iss.source.import.fatal 1
+    #@Issue else *
+
 usecase model Us_import02
 import glossary model from "badglossary.gls"
 
