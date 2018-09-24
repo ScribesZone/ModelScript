@@ -4,13 +4,128 @@ RelationModel:
 ;
 
 Declaration:
-      Relation
+    RelationDeclaration
 ;
 
-Relation:
-    'relation' name=ID
+RelationDeclaration:
+    'relation' ? name=ID (signature=Signature) ?
     (o_
-        textBlock=TextBlock
+        textBlock=TextBlock ?
+        columnsBlock=ColumnsBlock ?
+        constraintsBlock=ConstraintsBlock ?
+        transformationsBlock=TransformationsBlock ?
     _o)? X
 ;
 
+Signature:
+    '('
+    columns *= Column [',']
+    ')'
+;
+
+Column:
+    foreignKey ?='#'
+    name=ID
+    (':' typeSpecification=TypeSpecification) ?
+;
+
+TypeSpecification:
+    name=ID
+    isOptional ?= '?'
+    // TODO: add in {x, y, z}
+;
+
+ColumnLine:
+    Column X
+;
+
+ColumnsBlock:
+    'columns'
+    (o_
+        columns *= ColumnLine
+    _o)? X
+;
+
+ConstraintsBlock:
+    'constraints'
+    (o_
+        constraints *= Constraint
+    _o)? X
+;
+
+
+Constraint:
+      KeyConstraint
+    | DependenceConstraint
+    | DomainConstraint
+    | ForeignKeyConstraint
+;
+
+KeyConstraint:
+    'key'
+    names += ID [',']
+    X
+;
+
+DependenceConstraint:
+    sources += ID [',']
+    '->'
+    targets += ID [',']
+    X
+;
+
+DomainConstraint:
+    domains *= Domain ['=']
+    '='
+    typeSpecification=TypeSpecification
+    X
+;
+
+Domain:
+    'dom' '(' name=ID ')'
+;
+
+
+ForeignKeyConstraint:
+    sourceProjection=Projection
+    operator=Operator
+    targetProjection=Projection
+    X
+    ;
+
+Projection:
+    relationName=ID
+    '['
+    attributeNames *= ID [',']
+    ']'
+    ;
+
+Operator:
+      '<='
+    | '='
+    | '<'
+    ;
+
+TransformationsBlock:
+    'transformation'
+    (o_
+        textBlock=TextBlock ?
+        rules *= Rule
+        conceptsBlock=ConceptsBlock ?
+    _o)? X
+;
+
+Rule:
+    'rule' name=ID X
+;
+
+ConceptsBlock:
+    'concepts'
+    (o_
+        concepts *= Concept
+    _o)? X
+;
+
+Concept:
+    name=ID ('.' subname=ID) ? X
+;
