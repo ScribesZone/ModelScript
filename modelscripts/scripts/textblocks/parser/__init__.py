@@ -39,7 +39,10 @@ def astTextBlockToTextBlock(container, astTextBlock, glossary=None):
                     raise UnexpectedCase( #raise:OK
                         'Type %s not supported' % type_)
 
-
+        #TODO:2 add a reference to this text block into the model
+        # here container.model is the model we need
+        # add something like:
+        #      container.model.textBlocks.append(text_block)
         return text_block
 
 GRAMMAR='''
