@@ -68,21 +68,12 @@ class AUIModelSource(ASTBasedModelSourceFile):
         #type: () -> Metamodel
         return METAMODEL
 
-
     def fillModel(self):
-
-         for declaration in self.ast.model.declarations:
-            type_=declaration.__class__.__name__
-
-            if type_=='Actor':
-                actor_decl=declaration
-
-            else:
-                raise UnexpectedCase( #raise:OK
-                    'Unexpected type %s' % type_)
+        pass
 
     def resolve(self):
         pass
+
 
 
 

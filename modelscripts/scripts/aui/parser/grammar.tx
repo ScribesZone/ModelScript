@@ -14,7 +14,6 @@ Space:
         (conceptsDepartment = ConceptsDepartment) ?
         (linksDepartment = LinksDepartment) ?
     _o)?
-
     X
 ;
 
@@ -33,9 +32,13 @@ LinksDepartment:
 ;
 
 Concept:
-    'TODO:-'
+    name=ID ('.' subname=ID) ? X
 ;
 
 Link:
-    'TODO:-'
+    back ?= BackTo name=ID X
+;
+
+BackTo:
+    'back' 'to'
 ;
