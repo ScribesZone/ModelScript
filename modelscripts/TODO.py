@@ -64,17 +64,24 @@
 #   Glossary Model
 #================================================================
 
-#TODO:1 glossary: check what works or not
-#   Using glossary is much better when using GEdit integration
-#   since `ok`!  and `ko`? are displayed. Otherwise in colored
-#   terminal.
+#TODO:1 add tests of TextBlock for glossary/class/object
+# Add TextBlock in all possible places in these models
+# and check that a unresolved reference raise an error.
+# The test could be created at anytime (without having result),
+# without any other means implemented to check if it works or not.
 
-#TODO:1 glossary: add tests (see green sheet)
+#TODO:1 add tests with/without "import glossary"
+# Depending on the case, this should raise a warning or not
+# for unresolved references.
+# This could be tested in all kind if models
+
+#TODO:1 glossary: check what works or not
 
 #FIXME:1 resolveTextBlocks() is called twice
 # see for instance test gls/medium1
+# This also explain double warning generated
 
-#TODO:1 change the way to find TextBlocks
+#TODO:1 change the way to find TextBlocks -> generic
 # The best option is to use astTextBlockToTextBlock to
 # register textBlock to a model each time it is created.
 # This will create a model scoped list of text block.
@@ -82,6 +89,25 @@
 # See ModelElement.textBlocks to define the list
 # See model.resolve for the resolution.
 # Removing ModelElement.textBlocks should be enough.
+#
+# Text on a post-it:
+#     self.textLine.textBlock.container.model
+# and self.astNode
+
+#TODO:3 add the nothion of acronym
+
+#TODO:3 check best way to use coloring
+#   Using glossary is much better when using GEdit integration
+#   since `ok`!  and `ko`? are displayed. Otherwise in colored
+#   terminal.
+
+#TODO:2 add TextBlock/TextReference metrics in all model
+# this will help testing that all testBlock have been processed
+# and that how many references have been resolved or not.
+# This should be available in all modules and therefore based on
+# a generic way of registering TextBlock
+
+
 
 #TODO:2 add sequential 'package X' syntax
 # Currently packages are supported but only via an
@@ -329,24 +355,43 @@
 #   This could require quite some work and adjustment.
 
 #================================================================
-#   User Model
+#   Participant Model
 #================================================================
 
+#TODO:3 create metamodel
+
+#TODO:3 migrate Usecase actor to participant metamodel
+#   One option is to have declaration only in participant model
+#   or better (may be) to have both (useful?)
+
+#TODO:3 migrate Personage/actor instance to participant metamodel
+#   This goes
+#   One option is to have declaration only in participant model
+#   or better (may be) to have both (useful?)
 
 
 #================================================================
 #   Task Model
 #================================================================
 
-#TODO:3 add ConceptExpression
+#TODO:3 make sure KMade import is ok
 
-#TODO:3 add KMade printer
 
 #================================================================
 #   AUI Model
 #================================================================
 
-#TODO:3 Add Concept+Link
+#TODO:3 Add Concept reference
+#   This could be a real concepts (Class/Assoc/Att/Role=
+#   or an arbitrary id, just in case
+
+#TODO:3 Add link/back link/label
+#   Check what shoulf be in the language
+
+#TODO:3 Add "transformation" / "rules"
+#   it should be possible to explain from where the space comes
+#   from. See the "relation" model for examples of transformation
+#   Here space comes from tasks rather than concepts.
 
 #TODO:3 Check what works
 
@@ -364,16 +409,15 @@
 #   Relational class model / relation model
 #================================================================
 
-#TODO:3  relational class model checks
-# - pas d'association n-n
-# - pas de classes associatives
-# - pas de composition avec 0..1 du coté du composite
-# - pas d'aggregation
-# - pas de generalisation
-# - pas de classe abstraite
+#TODO:3 metamodel to be continued
+#   a few elements (relations, columns) seems to exist
+#   but their content have to be checked.
+#   In particular type, constraints,
 
-#TODO:3 add support for code generation/transformation
-
+#TODO:3 add semantics
+#   a few elements (relations, columns) seems to exist
+#   but their content have to be checked.
+#   In particular type, constraints,
 
 #================================================================
 #   Misc
