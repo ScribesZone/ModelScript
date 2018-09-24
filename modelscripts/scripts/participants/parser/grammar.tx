@@ -1,0 +1,46 @@
+ParticipantModel:
+    megamodelPart = MegamodelPart
+    declarations *= Declaration
+;
+
+Declaration:
+      ActorDeclaration
+    | PersonageDeclaration
+    | RoleDeclaration
+    | ParticipantDeclaration
+;
+
+ActorDeclaration:
+    'actor' name=ID ( '<' superActors *= ID ['<'] ) ?
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+PersonageDeclaration:
+    'personage' name=ID ':' actors *= ID [',']
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+RoleDeclaration:
+    'role' name=ID ( '<' superRoles *= ID ['<'] ) ?
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+ParticipantDeclaration:
+    'participant' name=ID  ':' roles *= ID [',']
+    (o_
+        (
+        textBlock=TextBlock
+        'trigram' ':' trigram=ID X
+        )#
+    _o)?
+    X
+;
