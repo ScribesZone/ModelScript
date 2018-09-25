@@ -1,6 +1,10 @@
 # coding=utf-8
 
 """
+Metamodel for relation models. These models contains relations.
+Each relation contains columns and contraints.
+Constraints can be key constraits, dependency constraints,
+domain constraints and foreign key constraints.
 """
 
 
@@ -37,7 +41,8 @@ __all__=(
     'Relation',
     'Column',
     'Constraint',
-    'Key'
+    'Key',
+
 )
 
 
@@ -171,6 +176,9 @@ class Column(SourceModelElement, Member):
         return '%s.%s' % (self.relation.label, self.name)
 
 class Constraint(SourceModelElement):
+    pass
+
+class Key(SourceModelElement):
     pass
 
 METAMODEL = Metamodel(

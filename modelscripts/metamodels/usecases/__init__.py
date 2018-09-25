@@ -82,8 +82,6 @@ class UsecaseModel(Model):
         return ms
 
 
-
-
 class System(SourceModelElement):
 
     META_COMPOSITIONS = [
@@ -119,26 +117,10 @@ class System(SourceModelElement):
     def usecases(self):
         return self.usecaseNamed.values()
 
-    # def check(self):
-    #     # if not Symbol.is_CamlCase(self.name):
-    #     #     ModelElementIssue(
-    #     #         modelElement=self,
-    #     #         level=Levels.Warning,
-    #     #         message=(
-    #     #             '"%s" should be in CamlCase.'
-    #     #             % self.name))
-    #     if len(self.usecases)==0:
-    #         Issue(
-    #             origin=self.usecaseModel,
-    #             level=Levels.Warning,
-    #             message=('No usecases defined in system "%s".' %
-    #                      self.name)
-    #         )
-    #     else:
-    #         for u in self.usecases:
-    #             u.check()
 
-
+#TODO:3 it could make sense to have superSubject for superActor
+# A super actor should logically be a super subject
+# This imply adding superSubjects
 class Actor(SourceModelElement, Subject):
     def __init__(self,
                  usecaseModel,
@@ -173,22 +155,6 @@ class Actor(SourceModelElement, Subject):
             actor.subActors.append(self)
             self.superActors.append(actor)
 
-    # def check(self):
-        # if not Symbol.is_CamlCase(self.name):
-        #     ModelElementIssue(
-        #         modelElement=self,
-        #         level=Levels.Warning,
-        #         message=(
-        #             '"%s" should be in CamlCase.'
-        #             % self.name))
-        # if len(self.usecases)==0:
-        #     ModelElementIssue(
-        #         modelElement=self,
-        #         level=Levels.Warning,
-        #         message='"%s" does not perform any usecase.' %
-        #             self.name
-        #     )
-
 
 class Usecase(SourceModelElement, Subject):
     def __init__(self,
@@ -216,23 +182,6 @@ class Usecase(SourceModelElement, Subject):
         else:
             actor.usecases.append(self)
             self.actors.append(actor)
-
-    # def check(self):
-    #     if not Symbol.is_CamlCase(self.name):
-    #         ModelElementIssue(
-    #             modelElement=self,
-    #             level=Levels.Warning,
-    #             message=(
-    #                 '"%s" should be in CamlCase.'
-    #                 % self.name))
-    #     if len(self.actors)==0:
-    #         ModelElementIssue(
-    #             modelElement=self,
-    #             level=Levels.Warning,
-    #             message='No actor performs "%s".' %
-    #                     self.name
-    #         )
-
 
 
 METAMODEL = Metamodel(

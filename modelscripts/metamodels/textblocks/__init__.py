@@ -1,9 +1,9 @@
 # coding=utf-8
 """
-Metamodel a texts made of textLines with possibily some references to
-a entries in a glossary.
+Metamodel a TextBlocks made of TextLines possibly some References
+to Entries in Glossaries.
 
-The structure of the meta elemens
+The structure of the meta elements ::
 
     TextBlock
         <>--* TextLine
@@ -15,17 +15,15 @@ The structure of the meta elemens
 from __future__ import print_function
 from abc import ABCMeta
 from typing import (
-    Text, Optional, List, Any
-)
-from modelscripts.megamodels.elements import (
-    SourceModelElement,
-    ModelElement
-)
+    Text, Optional, List, Any)
 from abc import ABCMeta, abstractmethod
 from modelscripts.base.metrics import Metrics
+from modelscripts.megamodels.elements import (
+    SourceModelElement,
+    ModelElement)
 
 __all__ = (
-    'WithTextBlocks'
+    'WithTextBlocks',
     'TextBlock',
     'TextLine',
     'TextToken',
@@ -33,12 +31,26 @@ __all__ = (
     'TextReference',
 )
 
-DEBUG=1
+DEBUG=2
+
+ISSUES={
+    'TERM_NOT_FOUND': 'txt.TermNotFound',
+}
+
+def icode(ilabel):
+    return ISSUES[ilabel]
 
 class WithTextBlocks(object):
+    """
+    Mixin for Models. Used to extend the "Model" class.
+    As a result all models can contain some texte block.
+    """
 
     @property
     def glossaryList(self):
+        """
+        The list of glossaries contected to the model.
+        """
         # TODO:- improve the framework to simplify the code below
         #   When using an importBox one can write this
         #       return self.importBox.models('gl')
@@ -59,6 +71,9 @@ class WithTextBlocks(object):
 
     @property
     def textBlocks(self):
+        """
+        The list of all text blocks in the model.
+        """
         _=[]
         return _
 
@@ -66,12 +81,11 @@ GlossaryModel='GlossaryModel'
 Entry='Entry'
 
 
-
-
-
-
 class TextBlock(SourceModelElement):
-    """ A text block embedded into a SourceModelElement """
+    """
+    A TextBlock included into a SourceModelElement.
+    A TextBlock is made of a list of TextLine
+    """
 
     def __init__(self,
                  container,
@@ -84,7 +98,7 @@ class TextBlock(SourceModelElement):
 
         self.container=container
         # Could be for instance a Usecase, Actor, but also
-        # a model etc. At the end the model containing with this
+        # a model, etc. At the end the model containing this
         # model element must have an attribute  glossaryModelUsed
         # (this model being a GlossaryDependent)
         if self.container is not None:
@@ -124,7 +138,12 @@ class TextBlock(SourceModelElement):
         ))
         return ms
 
+
 class TextLine(SourceModelElement):
+    """
+    TextLine containing TextTokens. Each textLines is part
+    of a TextBlock.
+    """
 
     def __init__(self,
                  textBlock,
@@ -195,6 +214,10 @@ class TextLine(SourceModelElement):
 
 
 class TextToken(SourceModelElement):
+    """
+    A TextToken is part of a TextLine. Either
+    a PlainText or a Reference.
+    """
     __metaclass__ = ABCMeta
 
     def __init__(self,
@@ -273,14 +296,27 @@ class TextReference(TextToken):
             entry_or_none=glossary.findEntry(self.text)
             if entry_or_none is not None:
                 if DEBUG >= 2:
-                    print('TXT: found' % glossary)
+                    print('TXT: found in %s' % glossary)
                 self._isBroken=False
                 self.entry=entry_or_none
                 self.entry.occurrences.append(self)
                 self.isResolved=True
                 break
         else:
+            if DEBUG >= 2:
+                print('TXT: not found')
             self._isBroken = True
+            from modelscripts.base.grammars import (
+                ASTNodeSourceIssue)
+            from modelscripts.base.issues import (
+                Levels)
+            ASTNodeSourceIssue(
+                code=icode('TERM_NOT_FOUND'),
+                astNode=self.astNode,
+                level=Levels.Warning,
+                message=(
+                        'Undefined term `%s`.' % self.text))
+
         self.isResolved = True
 
 

@@ -30,7 +30,7 @@ from modelscripts.metamodels.textblocks import (
 
 __all__=(
     'AUIModel',
-    'Space'
+    #TODO:3 Add 'Space', 'Link' and 'Concept'
 )
 
 
@@ -88,40 +88,6 @@ class AUIModel(Model):
     def metamodel(self):
         #type: () -> Metamodel
         return METAMODEL
-
-
-
-class Space(SourceModelElement):
-
-    META_COMPOSITIONS = [
-        'columns',
-    ]
-
-    def __init__(self, name, model,
-                 astNode=None, lineNo=None, description=None):
-        super(Space, self).__init__(
-            name=name,
-            model=model,
-            astNode=astNode,
-            lineNo=lineNo,
-            description=description)
-        self.model.relationNamed[name] = self
-        self.columnNamed = OrderedDict()
-
-
-    @property
-    def columns(self):
-        return self.columnNamed.values()
-
-    def column(self, name):
-        if name in self.columnNamed:
-            return self.columnNamed[name]
-        else:
-            return None
-
-    @property
-    def columnNames(self):
-        return self.columnNames.keys()
 
 
 METAMODEL = Metamodel(

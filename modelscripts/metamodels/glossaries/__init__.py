@@ -4,7 +4,8 @@
 Glossary metamodel.
 
     GlossaryModel
-        <>--* Entry
+        <>--* Package
+            <>--* Entry (indexed by name)
 """
 from __future__ import print_function
 
@@ -35,7 +36,8 @@ from modelscripts.megamodels.models import Model
 # GlossaryDependent must be first !
 class GlossaryModel(Model):
     """
-    Collection of named packages.
+    Collection of named packages. Glossaries allows
+    to seach entry by name.
     """
 
     def __init__(self):
@@ -71,6 +73,9 @@ class GlossaryModel(Model):
 
 
     def findEntry(self, term):
+        """
+        Find an entry given a string (the term to be found)/
+        """
         #type: (Text) -> Optional[Entry]
 
         # search first as the main term
@@ -92,9 +97,6 @@ class GlossaryModel(Model):
 
         return None
 
-    # def resolve(self):
-    #     self.resolveTextBlocks()
-
     @property
     def metrics(self):
         #type: () -> Metrics
@@ -109,7 +111,8 @@ class GlossaryModel(Model):
 
 class Package(SourceModelElement):
     """
-    A collection of entry indexed by the main term.
+    A collection of entry indexed by the (main) term.
+    A package is named and is a part of a glossary.
     """
 
     def __init__(self, glossaryModel, name, astNode=None):
@@ -138,7 +141,6 @@ class Package(SourceModelElement):
         for p in self.entries:
             _.extend(p.textBlocks)
         return _
-
 
 
 class Entry(SourceModelElement):
@@ -195,6 +197,7 @@ class Entry(SourceModelElement):
         if self.description is not None:
             _.append(self.description)
         return _
+
 
 METAMODEL = Metamodel(
     id='gl',
