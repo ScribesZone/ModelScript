@@ -216,15 +216,26 @@ class _SourceFileRegistry(object):
         if origins is None:
             origins=cls.sourceFiles()
         visited=[]
+        output=[]
+
+        # def visit(source_file):
+        #     if source_file not in visited:
+        #         visited.insert(0, source_file)
+        #         for x in source_file.usedSourceFiles:
+        #             if x not in visited:
+        #                 visit(x)
+        # for x in origins:
+        #     visit(x)
 
         def visit(source_file):
             if source_file not in visited:
                 visited.append(source_file)
-                if source_file not in visited:
-                    for x in source_file.usedSourceFiles:
-                        if not x in visited:
-                            visit(x)
-        for x in origins:
+                for x in source_file.usedSourceFiles:
+                    if x not in visited:
+                        visit(x)
+                output.append(source_file)
+
+        for x in list(origins):
             visit(x)
 
-        return visited
+        return output
