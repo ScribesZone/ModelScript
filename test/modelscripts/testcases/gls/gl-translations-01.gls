@@ -1,0 +1,10 @@
+glossary model Medium
+
+Un
+
+Two
+    | Some definition
+    translations
+        en: "deux"
+        es: "dos"
+        xy: "morizavh"

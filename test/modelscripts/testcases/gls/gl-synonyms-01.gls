@@ -1,0 +1,9 @@
+glossary model Medium
+    | abc`Un`s
+    | `Deux`
+
+Un
+
+Two
+    | `Un` `Dos`
+    synonyms: Deux Dos

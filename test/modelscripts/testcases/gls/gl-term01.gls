@@ -1,0 +1,8 @@
+glossary model A
+    | `Un` abc `Un`
+    | `Un` `Deux`
+    |  abc `Un`
+Un
+    | `Un` abc `Un`
+Deux
+    | `Un` abc `Deux`

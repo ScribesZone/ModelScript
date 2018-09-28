@@ -1,0 +1,5 @@
+scenario model Sc_main01
+    | `Un` chiffre sur `Deux`
+    | and various lines
+    | and with `Nothing`
+

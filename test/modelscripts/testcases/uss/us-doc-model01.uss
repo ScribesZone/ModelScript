@@ -1,0 +1,12 @@
+    #@Issue txt.TermNotFound 2
+
+    #@Issue cck.UsecaseModel.ActorLimitsChecker 1
+    #@Issue cck.System.UsecaseLimitsChecker 1
+    #@Issue level *
+
+usecase model Us_doc01
+    | `Un` chiffre sur `Deux`
+    | and various lines
+    | and with `Nothing`
+
+import glossary model from 'g01.gls'

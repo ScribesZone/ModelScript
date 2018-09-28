@@ -1,0 +1,19 @@
+glossary model Medium
+    | abc`Un`s
+    | `Deux`
+
+InDefault
+
+package p1
+
+Un
+
+Deux
+    | `Un` `Dos`
+
+package p2
+
+One
+Two
+
+

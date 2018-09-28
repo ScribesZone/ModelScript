@@ -1,0 +1,13 @@
+    #@Issue txt.TermNotFound 1
+    #@Issue cck.Actor.LazyActorChecker 2
+    #@Issue cck.System.UsecaseLimitsChecker 1
+    #@Issue level *
+
+usecase model Us_actor02
+import glossary model from 'g01.gls'
+
+actor Employee
+    | `Un` chiffre sur `Deux`
+    | and various lines
+    | and with `Nothing`
+actor Chairman

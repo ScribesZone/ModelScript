@@ -1,0 +1,7 @@
+    #@Issue src.syn 1
+    #@Issue else *
+
+glossary model A
+    | un  `abc
+Un
+Deux

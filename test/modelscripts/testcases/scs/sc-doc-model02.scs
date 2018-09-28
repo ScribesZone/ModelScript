@@ -1,0 +1,9 @@
+    #@Issue txt.TermNotFound 1
+    #@Issue else *
+
+scenario model Sc_main01
+    | `Un` chiffre sur `Deux`
+    | and various lines
+    | and with `Nothing`
+    
+import glossary model from 'g01.gls'

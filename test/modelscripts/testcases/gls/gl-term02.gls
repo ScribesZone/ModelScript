@@ -1,0 +1,8 @@
+glossary model A
+    | `Nothing` abc `Un`
+    | `Nothing`
+    |  abc `Nothing`
+Un
+    | `Un` abc `Nothing`
+Deux
+    | `Nothing` abc `Deux`
