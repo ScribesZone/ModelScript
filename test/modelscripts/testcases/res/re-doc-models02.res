@@ -1,7 +1,7 @@
-    #@Issue txt.TermNotFound 1
+    #@Issue txt.TermNotFound 2
     #@Issue else *
 
-scenario model Sc_main01
+relation model M
     | `Un` chiffre sur `Deux`
     | and various lines
     | and with `Nothing`

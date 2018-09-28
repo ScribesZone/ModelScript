@@ -1,19 +1,22 @@
 glossary model Medium
-    | abc`Un`s
-    | `Deux`
 
-InDefault
+DefaultTerm
+    | This term goes to the default package
 
 package p1
 
 Un
+    | `Un` 'Deux`
+    | `One` 'Two`
 
 Deux
-    | `Un` `Dos`
 
 package p2
 
 One
+    | `Un` 'Deux`
+    | `One` 'Two`
+
 Two
 
 

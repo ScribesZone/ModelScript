@@ -1,10 +1,17 @@
     #@Issue txt.TermNotFound 1
     #@Issue else *
 
-scenario model Sc_main01
+glossary model Medium
+
+package p1
+    | This is the documentation of the package
     | `Un` chiffre sur `Deux`
     | and various lines
     | and with `Nothing`
 
-import glossary model from 'g01.gls'
+Un
+Deux
+
+package p2
+
 

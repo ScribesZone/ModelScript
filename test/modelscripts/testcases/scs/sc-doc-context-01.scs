@@ -2,9 +2,10 @@
     #@Issue else *
 
 scenario model Sc_main01
-    | `Un` chiffre sur `Deux`
-    | and various lines
-    | and with `Nothing`
 
 import glossary model from 'g01.gls'
 
+context
+    | `Un` chiffre sur `Deux`
+    | and various lines
+    | and with `Nothing`

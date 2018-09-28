@@ -1,0 +1,18 @@
+    #@Issue txt.TermNotFound 2
+    #@Issue else *
+
+scenario model S
+
+import glossary model from 'g01.gls'
+import usecase model from '../uss/us-main-CyberCompany01.uss'
+import class model from '../cls/cl-main-cybercompany-a.cls'
+
+scenario
+    | `Un` chiffre sur `Deux`
+    | and various lines
+    | and with `Nothing`
+        create djamel : Employee
+    | `Un` chiffre sur `Deux`
+    | and various lines
+    | and with `Nothing`
+        create aline : Employee

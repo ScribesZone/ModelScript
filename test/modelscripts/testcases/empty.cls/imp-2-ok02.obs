@@ -1,3 +1,0 @@
-object model L
-import class model from 'imp-2-ok02.cls'
-import glossary model from 'imp-2-ok02.gls'

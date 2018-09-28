@@ -1,0 +1,6 @@
+glossary model Medium
+
+Un
+    | `Un` wrong quotes before Deux here 'Deux`
+    | `One` 'Two`
+

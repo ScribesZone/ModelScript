@@ -1,0 +1,19 @@
+    #@Issue txt.TermNotFound 2
+    #@Issue else *
+
+object model Ob_main_turbo
+
+
+import class model from '../cls/cl-main-cybercompany-a.cls'
+import glossary model from 'g01.gls'
+
+zoe is an Employee.
+| `Un` chiffre sur `Deux`
+| and various lines
+| and with `Nothing`
+    The name of zoe is 'Zoe Zarwin'.
+| `Un` chiffre sur `Deux`
+| and various lines
+| and with `Nothing`
+    The salary of zoe is 3500.
+
