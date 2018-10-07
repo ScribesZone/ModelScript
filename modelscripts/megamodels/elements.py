@@ -96,31 +96,6 @@ class ModelElement(object):
         for child in self.children:
             child.check()
 
-    @property
-    def textBlocks(self):
-        """
-        The list of text blocks in the element.
-        Should be overidden if there is a text block to be resolved.
-        """
-        return []
-
-    # @abstractproperty
-    # def parent(self):
-    #     #type: () -> Optional[ModelElement]
-    #     raise NotImplementedError('no parent for ' % type(self).__name__)
-    #
-    # @property
-    # # type: () -> List[ModelElement]
-    # def children(self):
-    #     return []
-    #
-    # @property
-    # # type: () -> List[ModelElement]
-    # def descendents(self):
-    #     all=[d
-    #          for c in self.children
-    #             for d in c.children]
-    #     return all
 
 
 class SourceModelElement(ModelElement, SourceElement):
