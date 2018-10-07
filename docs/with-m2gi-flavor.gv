@@ -1,0 +1,83 @@
+    digraph G {
+      graph [
+        rankdir = BT,
+        compound = true ]
+      node [fillcolor=grey90, style="filled" , shape=box] ;
+
+      subgraph clusterRequirements {
+          requirements ;
+          documents ;
+          meetings ;
+          requirements -> documents ;
+          requirements -> meetings ;
+      }
+      subgraph clusterModels {
+      gl [fillcolor=lightgreen, label="gls\nGlossaries", penwidth=2] ;
+      cl [fillcolor=green1, label="cls\nClasses\n\"use -c\"", penwidth=5] ;
+      ob [fillcolor=green1, label="sts\nStates\n\"use -qv\"",  penwidth=2] ;
+      sc [fillcolor=green1, label="scs\nScenarios\n\"use -c\"",  penwidth=4] ;
+      us [fillcolor=lightgreen, label="uss\nUsecases", penwidth=2] ;
+      pe [fillcolor=lightgreen, label="pes\nPermissions", penwidth=2] ;
+      re [fillcolor=grey90, label="res\nRelations", penwidth=2] ;
+      ta [fillcolor=grey90, label="tas\nTasks", penwidth=2] ;
+      pr [fillcolor=grey90, label="prs\nProjects", penwidth=2] ;
+      qu [fillcolor=grey90, label="qus\nQualities", penwidth=2] ;
+      pa [fillcolor=grey90, label="pas\nParticipants", penwidth=1] ;
+      au [fillcolor=grey90, label="aus\nAUIs", penwidth=2] ;
+      is [fillcolor=lightgreen, label="iss\nIssues", penwidth=1] ;
+      cl -> gl ;
+      ob -> gl ;
+      ob -> cl [penwidth=6, label="\"use -qv\""];
+      re -> ob ;
+      re -> cl ;
+      pa -> gl ;
+      us -> gl ;
+      us -> pa ;
+      ta -> pa ;
+      ta -> gl ;
+      is -> gl ;
+      ta -> us ;
+      au -> ta ;
+      au -> gl ;
+      au -> cl ;
+      pe -> gl ;
+      pe -> re ;
+      pe -> cl ;
+      pe -> ta ;
+      pe -> us ;
+      pe -> pa ;
+      pe -> au ;
+      sc -> cl [penwidth=6, label="\"use -qv\""] ;
+      sc -> re ;
+      sc -> ob ;
+      sc -> pa ;
+      sc -> us ;
+      sc -> ta ;
+      sc -> pe ;
+      qu -> gl ;
+      pr -> gl ;
+      pr -> pa ;
+      pr -> qu ;
+      /*
+      sql -> re ;
+      java -> cl ;
+      java -> sql ;
+      html -> au ;
+    */
+     }
+     subgraph clusterImplementation {
+         java ;
+         sql ;
+         html ;
+         js ;
+         jsp ;
+         css ;
+
+     }
+      // requirements [width=2, color=white, fontcolor=grey28, fillcolor=grey90] ;
+
+      gl -> requirements [ltail=clusterModels, lhead=clusterRequirements];
+      js -> sc [ltail=clusterImplementation, lhead=clusterModels];
+
+    }
+
