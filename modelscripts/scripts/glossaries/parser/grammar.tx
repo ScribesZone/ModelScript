@@ -1,6 +1,6 @@
 GlossaryModel:
     megamodelPart = MegamodelPart
-    entries *= Entry
+    declarations *= Declaration
 ;
 
 ModelStatus:
@@ -8,12 +8,24 @@ ModelStatus:
     | 'consolidated'
 ;
 
+Declaration:
+      TopLevelPackageDeclaration
+    | Entry
+;
+
+TopLevelPackageDeclaration:
+    'package' name = ID
+    (o_
+        textBlock=TextBlock
+    _o)? X
+;
+
 Entry:
     term=ID
     (o_
-        ( textBlock=TextBlock )?
         (
-            (package = Package) ?
+            (textBlock = TextBlock) ?
+            (inlinePackage = InlinePackage) ?
             (synonymPart = SynonymPart) ?
             (inflectionPart = InflectionPart) ?
             (label = Label) ?
@@ -23,9 +35,10 @@ Entry:
     _o)? X
 ;
 
-Package:
+InlinePackage:
     'package' ':' name=ID X
 ;
+
 
 SynonymPart:
     'synonyms' ':' synonyms *= ID
