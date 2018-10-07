@@ -32,7 +32,7 @@ __all__=(
     'Model',
     'ModelElement',
 )
-DEBUG=0
+DEBUG=2
 
 
 
