@@ -36,8 +36,10 @@ from modelscripts.megamodels.models import Model
 # GlossaryDependent must be first !
 class GlossaryModel(Model):
     """
-    Collection of named packages. Glossaries allows
-    to seach entry by name.
+    Collection of named packages.
+    Glossaries allows to seach entry by name.
+    Package are namespace, that is terms with the same name may exists
+    in different packages.
     """
 
     def __init__(self):
@@ -115,16 +117,24 @@ class Package(SourceModelElement):
     A package is named and is a part of a glossary.
     """
 
-    def __init__(self, glossaryModel, name, astNode=None):
+    def __init__(self,
+                 glossaryModel,
+                 name,
+                 description=None,
+                 astNode=None):
         super(Package, self).__init__(
             model=glossaryModel,
             name=name,
             astNode=astNode
         )
         self.isResolved=False
+
         self.glossaryModel=glossaryModel
+
         self.glossaryModel.packageNamed[name]=self
-        self.impliciteDeclaration = True
+
+        self.description=description
+
         self.entryNamed=collections.OrderedDict()
         # type: Dict[Text, Entry]
         # Entries indexed by main term name
