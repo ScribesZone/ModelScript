@@ -72,7 +72,7 @@ class AUIModelSource(ASTBasedModelSourceFile):
         pass
 
     def resolve(self):
-        pass
+        super(AUIModelSource, self).resolve()
 
 
 

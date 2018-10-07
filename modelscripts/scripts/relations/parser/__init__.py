@@ -79,7 +79,7 @@ class RelationModelSource(ASTBasedModelSourceFile):
         pass
 
     def resolve(self):
-        pass
+        super(RelationModelSource, self).resolve()
 
 
 

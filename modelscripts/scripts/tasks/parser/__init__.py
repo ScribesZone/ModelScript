@@ -262,7 +262,8 @@ class TaskModelSource(ASTBasedModelSourceFile):
         self.taskModel.rootTask=root
 
     def resolve(self):
-        pass
+        super(TaskModelSource, self).resolve()
+
 
 
 

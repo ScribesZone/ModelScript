@@ -66,7 +66,7 @@ class ParticipantModelSource(ASTBasedModelSourceFile):
         pass
 
     def resolve(self):
-        pass
+        super(ParticipantModelSource, self).resolve()
 
 
 
