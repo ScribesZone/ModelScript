@@ -411,6 +411,7 @@ class ScenarioModelSource(ASTBasedModelSourceFile):
 
     def resolve(self):
 
+        super(ScenarioModelSource, self).resolve()
 
         def resolve_scenario(scenario):
             """

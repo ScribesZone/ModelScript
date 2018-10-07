@@ -108,6 +108,8 @@ class ObjectModelSource(ASTBasedModelSourceFile):
 
     def resolve(self):
 
+        super(ObjectModelSource, self).resolve()
+
         #---- (1) Evaluate the story to get the object model
         evaluator=StoryEvaluator(
             initialState=self.objectModel,
