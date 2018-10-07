@@ -1,0 +1,21 @@
+glossary model s1
+
+Un
+    | Documentation
+    package: technical
+    synonyms: Uno One
+    inflections: unite uns
+    label: "un"
+    translations
+        en: ""
+        es: ""
+
+Deux
+    package: technical
+    translations
+        en: ""
+        es: ""
+    synonyms: Uno One
+    | Documentation
+    inflections: unite uns
+    label: "un"

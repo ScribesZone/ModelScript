@@ -1,3 +1,7 @@
+    #@Issue src.syn 1
+    #@Issue else *
+
+
 glossary model A
     | un  ` 123` abc
 Un

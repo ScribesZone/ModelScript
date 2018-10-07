@@ -1,0 +1,11 @@
+    #@Issue gl.syn.entry.twice 1
+    #@Issue else *
+
+glossary model Medium
+
+package p1
+
+X
+
+X
+    package: p1

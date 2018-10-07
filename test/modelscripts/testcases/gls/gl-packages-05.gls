@@ -1,0 +1,21 @@
+    #@Metric "text block" 1
+    #@Metric "text line" 1
+    #@Metric "text token" 1
+    #@Metric "text reference" 0
+    #@Metric "broken text reference" 0
+    #@Metric "text occurrences" 0
+    #@Metric "package" 2
+    #@Metric "entry" 3
+
+glossary model Medium
+
+TermToDefault
+    | This term goes to the default package
+
+package frenchy
+
+Un
+
+package frenchy
+
+Deux

@@ -1,0 +1,17 @@
+    #@Issue gl.syn.entry.twice 2
+    #@Issue else *
+
+glossary model Medium
+
+TermToDefault
+    | This term goes to the default package
+
+package frenchy
+
+Un
+Deux
+
+package frenchy
+
+Un
+Deux

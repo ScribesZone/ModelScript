@@ -1,3 +1,6 @@
+    #@Issue txt.TermNotFound 18
+    #@Issue else *
+
 glossary model Medium
     | ceci `est` la description de `un` élément
     | dans `un` contexte `uno` et `deux`
@@ -16,7 +19,7 @@ Trois
 
 Reference
     |
-    | `une` `référence` est un peu plus que
+    | `une` `reference` est un peu plus que
     | `deux` mot. Attention à l'`indentation`
     | qui doit être toujours de `huit` espaces.
     synonyms : a b c

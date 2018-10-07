@@ -1,0 +1,9 @@
+    #@Issue src.syn 1
+    #@Issue else *
+
+glossary model s2
+
+Un
+    | Documentation 1
+    package: technical
+    | Documentation 1
