@@ -64,23 +64,6 @@
 #   Glossary Model
 #================================================================
 
-#TODO:1 add tests of TextBlock for glossary/class/object
-# Add TextBlock in all possible places in these models
-# and check that a unresolved reference raise an error.
-# The test could be created at anytime (without having result),
-# without any other means implemented to check if it works or not.
-
-#TODO:1 add tests with/without "import glossary"
-# Depending on the case, this should raise a warning or not
-# for unresolved references.
-# This could be tested in all kind if models
-
-#TODO:1 glossary: check what works or not
-
-#FIXME:1 resolveTextBlocks() is called twice
-# see for instance test gls/medium1
-# This also explain double warning generated
-
 #TODO:1 change the way to find TextBlocks -> generic
 # The best option is to use astTextBlockToTextBlock to
 # register textBlock to a model each time it is created.
@@ -93,6 +76,18 @@
 # Text on a post-it:
 #     self.textLine.textBlock.container.model
 # and self.astNode
+
+#TODO:1 pass tests of TextBlock for glossary/class/object/...
+# The test xx_doc-xxx check that error are raide for TextBlocks
+# Implement the correspodning code.
+
+#TODO:1 glossary: check what works or not
+
+#FIXME:1 resolveTextBlocks() is called twice
+# see for instance test gls/medium1
+# This also explain double warning generated
+
+
 
 #TODO:3 add the nothion of acronym
 
