@@ -45,7 +45,7 @@ class Model(
     """
     The root class for all models.
 
-    Basically a model have:
+    Basically a model has:
     - a name,
     - possibly a source file if the model is the result
       of parsing this file,
@@ -77,6 +77,7 @@ class Model(
 
         ModelElement.__init__(self, self)
 
+        WithTextBlocks.__init__(self)
 
         self.kind='' #type: Text
         # Set later.
@@ -153,15 +154,10 @@ class Model(
         method do is metamodel dependent. All sub methods have to call
         this method. This method solve references in text blocks.
         """
-
-        def resolveTextBlocks():
-            for block in self.textBlocks:
-                block.resolve()
-
         if DEBUG>=1:
             _=(' RESOLVE MODEL'+self.label+' ').center(70, '.')
             print('MOD: '+_)
-        resolveTextBlocks()
+        self.resolveTextBlocks()
 
     def finalize(self):
         if DEBUG>=1:
