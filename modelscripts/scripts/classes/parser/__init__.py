@@ -605,6 +605,8 @@ class ClassModelSource(ASTBasedModelSourceFile):
         # so they will be processed twice. First as classes and
         # then as associations.
 
+        super(ClassModelSource, self).resolve()
+
         def resolve_invariant_content(invariant):
             pass # TODO:2 Resolve invariant part of class
 
