@@ -46,6 +46,9 @@ class WithTextBlocks(object):
     As a result all models can contain some texte block.
     """
 
+    def __init__(self):
+        self._textBlocks=[]
+
     @property
     def glossaryList(self):
         """
@@ -74,8 +77,19 @@ class WithTextBlocks(object):
         """
         The list of all text blocks in the model.
         """
-        _=[]
-        return _
+        return self._textBlocks
+
+    def addTextBlock(self, textBlock):
+        """
+        called by the TextBlock constructor to add
+        each text block to the model it is contained in.
+        """
+        self._textBlocks.append(textBlock)
+
+    def resolveTextBlocks(self):
+        if len(self.glossaryList)!=0:
+            for block in self.textBlocks:
+                block.resolve()
 
 GlossaryModel='GlossaryModel'
 Entry='Entry'
@@ -90,19 +104,21 @@ class TextBlock(SourceModelElement):
     def __init__(self,
                  container,
                  astTextBlock=None):
-        #type: (SourceModelElement, Optional[GlossaryModel],Optional['grammar.TextBlock'] ) -> None
+        #type: (SourceModelElement, Optional['grammar.TextBlock'] ) -> None
 
-        super(TextBlock, self).__init__(
+        SourceModelElement.__init__(
+            self,
             model=container.model,
+            name=None,
             astNode=astTextBlock)
 
         self.container=container
         # Could be for instance a Usecase, Actor, but also
-        # a model, etc. At the end the model containing this
-        # model element must have an attribute  glossaryModelUsed
-        # (this model being a GlossaryDependent)
+        # a model, etc.
+        assert(self.container is not None)
         if self.container is not None:
             assert isinstance(container, ModelElement)
+            self.container.model.addTextBlock(self)
 
         self.textLines=[]
         # type: List[TextLine]
