@@ -64,61 +64,20 @@
 #   Glossary Model
 #================================================================
 
-#TODO:1 change the way to find TextBlocks -> generic
-# The best option is to use astTextBlockToTextBlock to
-# register textBlock to a model each time it is created.
-# This will create a model scoped list of text block.
-# Currently there is a list for each model element.
-# See ModelElement.textBlocks to define the list
-# See model.resolve for the resolution.
-# Removing ModelElement.textBlocks should be enough.
-#
-# Text on a post-it:
-#     self.textLine.textBlock.container.model
-# and self.astNode
-
-#TODO:1 pass tests of TextBlock for glossary/class/object/...
-# The test xx_doc-xxx check that error are raide for TextBlocks
-# Implement the correspodning code.
-
-#TODO:1 glossary: check what works or not
-
-#FIXME:1 resolveTextBlocks() is called twice
-# see for instance test gls/medium1
-# This also explain double warning generated
-
-
-
-#TODO:3 add the nothion of acronym
+#TODO:4 add the nothion of acronym
 
 #TODO:3 check best way to use coloring
 #   Using glossary is much better when using GEdit integration
 #   since `ok`!  and `ko`? are displayed. Otherwise in colored
 #   terminal.
 
-#TODO:2 add TextBlock/TextReference metrics in all model
-# this will help testing that all testBlock have been processed
+#TODO:3 add TextBlock/TextReference metrics in all model
+# this could help testing that all testBlock have been processed
 # and that how many references have been resolved or not.
 # This should be available in all modules and therefore based on
 # a generic way of registering TextBlock
 
-
-
-#TODO:2 add sequential 'package X' syntax
-# Currently packages are supported but only via an
-# attribute package in each term.
-# It would be better to have the same syntax as class model.
-
-#TODO:2 add management of errors
-
-#TODO:2 generalize astTextBlock2TextBlock to collect block
-#   Somewhere (usecases?) a little framework has been defined
-#   so that source element can define which textblock it owns.
-#   A method should be added. This is cumbersome. It might be
-#   better to use astTextBlock2TextBlock to collect easily all
-#   TextBlock. To be checked.
-
-#TODO:3 add some memoization or store some stuff
+#TODO:4 add some memoization or store some stuff
 
 
 #================================================================
