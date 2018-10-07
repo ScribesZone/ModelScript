@@ -15,6 +15,6 @@ actor Employee
     | Yet another `Nothing` and `Two`
 
 usecase IncreaseSalary
-    | Text for the `Ǹothing`
+    | Text for the `Nothing`
     | With a second line.
 
