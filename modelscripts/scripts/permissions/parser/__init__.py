@@ -143,11 +143,12 @@ class PermissionModelSource(ASTBasedModelSourceFile):
                     'declaration of %s not implemented' % type_)
 
     def resolve(self):
-        pass
+        super(PermissionModelSource, self).resolve()
+
 
 
 def _find_subject(usecaseModel, name, astNode):
-    #type: (usecaseModel, Text, 'ASTNode')->Subject
+    #type: ('usecaseModel', Text, 'ASTNode')->Subject
     """
     Search the name in usecases or actors.
     Return the subject or raise a fatal issue otherwise.
