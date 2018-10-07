@@ -56,15 +56,6 @@ class GlossaryModel(Model):
         return _
 
     @property
-    def textBlocks(self):
-        _=super(GlossaryModel, self).textBlocks
-        if self.description is not None:
-            _.append(self.description)
-        for p in self.packages:
-            _.extend(p.textBlocks)
-        return _
-
-    @property
     def packages(self):
         return list(self.packageNamed.values())
 
@@ -143,15 +134,6 @@ class Package(SourceModelElement):
     def entries(self):
         return self.entryNamed.values()
 
-    @property
-    def textBlocks(self):
-        _=[]
-        if self.description is not None:
-            _.append(self.description)
-        for p in self.entries:
-            _.extend(p.textBlocks)
-        return _
-
 
 class Entry(SourceModelElement):
     """
@@ -200,13 +182,6 @@ class Entry(SourceModelElement):
         """ Occurrences that refer to this entry """
 
         self.isResolved=False
-
-    @property
-    def textBlocks(self):
-        _=[]
-        if self.description is not None:
-            _.append(self.description)
-        return _
 
 
 METAMODEL = Metamodel(
