@@ -157,13 +157,13 @@ class StoryPrinter(AbstractPrinter):
         else:
             action=''
         self.outLine(
-            '%s%s%s%s %s %s' % (
+            u'%s%s%s%s %s %s' % (
                 self.kwd(action),
                 step.objectName,
                 self.kwd('.'),
                 step.attributeName,
                 self.kwd('='),
-                str(step.simpleValue)),
+                unicode(step.simpleValue)),
             indent=indent)
         return self.output
 
