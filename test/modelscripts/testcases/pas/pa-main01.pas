@@ -8,7 +8,10 @@
 --         Personage
 --         Personae
 
+
+
 participant model Demo
+
 
 actor Cashier
     | The documentation of the user
