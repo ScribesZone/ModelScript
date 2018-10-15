@@ -8,7 +8,7 @@
 #================================================================
 
 
-#TODO:1 Deal with Unexpected exception
+#TODO:2 Deal with Unexpected exception
 #   when in source "except FatalError" -> FatalError exception
 #   globally as well
 #   generate a file with diagnosis ?
@@ -17,7 +17,7 @@
 #TODO:2 review print statement
 #   remove space in command line output
 
-#TODO:1 add a parameter in modelc for issue selection
+#TODO:2 add a parameter in modelc for issue selection
 #   the default should be ignoring hint.info (i.e. for info check)
 
 #TODO:3 check issue reporting in Printers
@@ -64,7 +64,7 @@
 #   Glossary Model
 #================================================================
 
-#TODO:4 add the nothion of acronym
+#TODO:4 add the notion of acronym
 
 #TODO:3 check best way to use coloring
 #   Using glossary is much better when using GEdit integration
