@@ -1,4 +1,4 @@
-    #@Issue txt.TermNotFound 2
+    #@Issue txt.TermNotFound 1
     #@Issue else *
 
 relation model M

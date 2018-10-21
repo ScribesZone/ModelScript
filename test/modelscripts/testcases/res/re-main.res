@@ -14,7 +14,7 @@ R1(_a, _b, c, d, e)
         dom(d)=Real?
         R1[d] <= R2[d1]
 
-R2(_d1:Real, db)
+R2(_d1:Real, dba)
     constraints
         dom(d2)=Real
 
@@ -23,8 +23,11 @@ relation R3
     columns
         _a : String
         _b : Integer
-        c : Integer
+        c : Integer?
         d : Real
+        e : {1,3,2}
+        f : {"a", 'b', "e"}
+        g : {12.3, 1.5} ?
     constraints
         key a,b
         key b,c

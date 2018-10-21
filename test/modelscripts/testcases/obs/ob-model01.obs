@@ -1,4 +1,2 @@
 object model Ob_model01
-    | This state represents all 'Elements' in
-    | the city of New York
-import class model from '../cls/cl-main-cybercompany-a.cls'
+    | This is a message

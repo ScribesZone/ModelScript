@@ -1,4 +1,4 @@
-    # misc
+    # misc: operation, local invariants, permissions
 
 class model Cl_main
     | this is the documentation of the class
