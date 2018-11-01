@@ -8,23 +8,26 @@ Declaration:
 ;
 
 Space:
-    'space' name=ID
+    'space' name = ID
+    (label = STRING) ?
     (o_
-        textBlock=TextBlock
-        (conceptsDepartment = ConceptsDepartment) ?
-        (linksDepartment = LinksDepartment) ?
+        textBlock=TextBlock ?
+        (conceptsSection = ConceptsSection) ?
+        (linksSection = LinksSection) ?
+        (transformationSection = TransformationSection) ?
     _o)?
     X
 ;
 
-ConceptsDepartment:
-    'concepts' (o_
+ConceptsSection:
+    'concepts'
+    (o_
         concepts *= Concept
     _o)
     X
 ;
 
-LinksDepartment:
+LinksSection:
     'links' (o_
         links *= Link
     _o)
@@ -32,13 +35,50 @@ LinksDepartment:
 ;
 
 Concept:
-    name=ID ('.' subname=ID) ? X
+    ConceptName
+    (label = STRING) ?
+    X
+;
+
+ConceptName:
+      name=ID ('.' subname=ID) ?
+    | name=STRING
 ;
 
 Link:
-    back ?= BackTo name=ID X
+    back ?= BackTo name=ID
+    (label = STRING) ?
+    X
 ;
 
 BackTo:
     'back' 'to'
+;
+
+TransformationSection:
+    'transformation'
+    (o_
+        fromSection = FromSection
+        rules *= Rule
+        textBlock=TextBlock ?
+    _o) ?
+    X
+;
+
+Rule:
+    'rule' rule = ID
+    X
+;
+
+FromSection:
+    'from'
+    (o_
+        tasks *= Task
+    _o) ?
+    X
+;
+
+Task:
+    name=ID
+    X
 ;
