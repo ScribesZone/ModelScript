@@ -93,7 +93,7 @@ class ObjectModelPrinter(ModelPrinter):
 
     def doObjectDefinition(self, o, indent=0):
         class_name=(
-            str(o.class_)
+            unicode(o.class_)
                 if isinstance(o.class_, Placeholder)
             else o.class_.name)
         self.outLine('%s %s %s' % (
@@ -111,19 +111,19 @@ class ObjectModelPrinter(ModelPrinter):
 
     def doNestedSlot(self, slot, indent=0):
         attribute_name=(
-            str(slot.attribute)
+            unicode(slot.attribute)
             if isinstance(slot.attribute, Placeholder)
             else slot.attribute.name)
         self.outLine('%s %s %s' % (
                     attribute_name,
                     self.kwd('='),
-                    str(slot.value)),
+                    unicode(slot.value)),
                 indent=indent)
         return self.output
 
     def doSlotDefinition(self, slot, indent=0):
         attribute_name=(
-            str(slot.attribute)
+            unicode(slot.attribute)
             if isinstance(slot.attribute, Placeholder)
             else slot.attribute.name)
         self.outLine('%s%s%s %s %s' % (
@@ -131,13 +131,13 @@ class ObjectModelPrinter(ModelPrinter):
                 self.kwd('.'),
                 attribute_name,
                 self.kwd('='),
-                str(slot.value)),
+                unicode(slot.value)),
             indent=indent)
         return self.output
 
     def doLinkDefinition(self, l, indent=0):
         association_name=(
-            str(l.association)
+            unicode(l.association)
                 if isinstance(l.association, Placeholder)
             else l.association.name)
         self.outLine('%s%s%s %s%s %s%s' % (

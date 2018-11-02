@@ -74,7 +74,7 @@ def getModelDefinitionStatement(modelSourceFile, astModelDefinition):
         astTextBlock=astModelDefinition.textBlock)
     if DEBUG>=3:
         print('MEG: Defining %s %s model %s' %
-              (str(model_kinds), metamodel_label, modelName))
+              (unicode(model_kinds), metamodel_label, modelName))
 
     # get the actual metamodel based on the metamodel label
     try:
@@ -87,7 +87,7 @@ def getModelDefinitionStatement(modelSourceFile, astModelDefinition):
             code=icode('DEFINITION_EXCEPTION'),
             astNode=astModelDefinition,
             level=Levels.Fatal, # could be error with some work
-            message=str(e))
+            message=unicode(e))
 
     # check that model_kinds are all available with the metamodel
     # noinspection PyUnboundLocalVariable
@@ -102,7 +102,7 @@ def getModelDefinitionStatement(modelSourceFile, astModelDefinition):
                     ' Choose one of %s.' % (
                         metamodel_label,
                         model_kind,
-                        str(metamodel.modelKinds))))
+                        unicode(metamodel.modelKinds))))
 
     if CHECK_FILENAMES_AND_MODELS:
 
@@ -155,7 +155,7 @@ def getModelImportStatement(modelSourceFile, astModelImport):
             code=icode('IMPORT_EXCEPTION'),
             astNode=astModelImport,
             level=Levels.Fatal,  # could be error with some work
-            message=str(e))
+            message=unicode(e))
 
     # Check that metamodel dependency is allowed
     target_mms = source_metamodel.outMetamodels

@@ -224,7 +224,7 @@ class ClassModelPrinter(ModelPrinter):
                 visibility,
                 attribute.name,
                 self.kwd(':'),
-                str(attribute.type),
+                unicode(attribute.type),
                 optional,
                 stereotypes,
                 tags]))
@@ -292,16 +292,16 @@ class ClassModelPrinter(ModelPrinter):
                     else role.navigability
         cardinalities=''.join([
             self.kwd('['),
-            str(role.cardinalityMin),
+            unicode(role.cardinalityMin),
             self.kwd('..'),
             '*' if role.cardinalityMax is None
-                else str(role.cardinalityMax),
+                else unicode(role.cardinalityMax),
             self.kwd(']')])
         _=' '.join(filter(None,[
             navigabilty,
             role.name,
             self.kwd(':'),
-            str(role.type),
+            unicode(role.type),
             cardinalities,
             stereotypes,
             tags]))

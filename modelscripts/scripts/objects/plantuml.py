@@ -2,6 +2,8 @@
 
 import os
 import logging
+import codecs
+
 from modelscripts.metamodels.objects import (
     METAMODEL
 )
@@ -25,7 +27,7 @@ class ObjectPlantUMLPrinter(object):
         self.output = ''
         self.genState()
         if outputFile:
-            with open(outputFile, 'w') as f:
+            with codecs.open(outputFile, 'w', "utf-8") as f:
                 f.write(self.output)
         return self.output
 
@@ -62,7 +64,7 @@ class ObjectPlantUMLPrinter(object):
             for slot_name in o.slotNames:
                 self.out('    %s = %s\n' % (
                     slot_name,
-                    str(o.slot(slot_name).simpleValue)))
+                    unicode(o.slot(slot_name).simpleValue)))
             self.out('}\n\n')
         else:
             self.out('object %s\n' % _header)

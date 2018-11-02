@@ -184,10 +184,10 @@ class UseClassPrinter(AbstractPrinter):
         role_line=self._putElement(role)
         cardinalities=''.join([
             '[',
-            str(role.cardinalityMin),
+            unicode(role.cardinalityMin),
             '..',
             '*' if role.cardinalityMax is None
-                else str(role.cardinalityMax),
+                else unicode(role.cardinalityMax),
             ']'])
         self.outLine('%s%s role %s --<<< %i' % (
                      role.type.name,
