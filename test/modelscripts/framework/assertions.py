@@ -89,12 +89,12 @@ def assertIssueBox(
         if issueBox.hasIssues:
             print('TST: ACTUAL ISSUE SUMMARY:')
             for code in issueBox.summaryCodeMap:
-                print('    #@Issue %s %i' % (
+                print('    //@Issue %s %i' % (
                     code, issueBox.summaryCodeMap[code]))
-            print('    #@Issue else *')
+            print('    //@Issue else *')
             print('')
             for level in issueBox.summaryLevelMap:
-                print('    #@Issue %s %i' % (
+                print('    //@Issue %s %i' % (
                     level.code, issueBox.summaryLevelMap[level]))
 
     # if not specified the "else" value is 0
@@ -213,7 +213,7 @@ def assertMetrics(
     def printActualSummary():
         print('TST: ACTUAL METRICS:')
         for metric in metrics.all:
-            print('    #@Metric "%s" %i' %(
+            print('    //@Metric "%s" %i' %(
                 metric.label,
                 metric.n
             ))
@@ -232,13 +232,13 @@ def assertMetrics(
 
     assert not unexpected, 'Unexpected metrics'
 
-RE_ISSUE_HEADER=r'^ *# *@ *Issue'
+RE_ISSUE_HEADER=r'^ *// *@ *Issue'
 RE_ISSUE_LABEL=r'(?P<label>[\w.]+)'
 RE_ISSUE_COUNT=r'(?P<count>([\d]+|\*))'
 RE_ISSUE_SPEC='%s +%s +%s' % (
     RE_ISSUE_HEADER, RE_ISSUE_LABEL, RE_ISSUE_COUNT)
 
-RE_METRIC_HEADER=r'^ *# *@ *Metric'
+RE_METRIC_HEADER=r'^ *// *@ *Metric'
 RE_METRIC_LABEL=r'"(?P<label>[^"]+)"'
 RE_METRIC_COUNT=r'(?P<count>([\d]+|\*))'
 RE_METRIC_SPEC='%s +%s +%s' % (
