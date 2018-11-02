@@ -4,43 +4,171 @@ ParticipantModel:
 ;
 
 Declaration:
-      ActorDeclaration
-    | PersonageDeclaration
-    | RoleDeclaration
-    | ParticipantDeclaration
+      ParticipantClassDeclaration
+    | ParticipantInstanceDeclaration
 ;
 
-ActorDeclaration:
-    'actor' name=ID ( '<' superActors *= ID ['<'] ) ?
-    (o_
-        textBlock=TextBlock
-    _o)?
+
+//------------- participant classes --------------------------------
+
+ParticipantClassDeclaration:
+    kind=ParticipantClassKind
+    name=ID
+    ( '<' superClasses += ID [','] ) ?
+    attributes = ParticipantAttributes
     X
 ;
 
-PersonageDeclaration:
-    'personage' name=ID ':' actors *= ID [',']
-    (o_
-        textBlock=TextBlock
-    _o)?
+ParticipantClassKind:
+      'actor'
+    | 'stakeholder'
+    | 'team' 'role'
+;
+
+
+
+//------------- participant instances ------------------------------
+
+ParticipantInstanceDeclaration:
+    kind=ParticipantInstanceKind
+    name=ID
+    ( ':' classes += ID [','] )
+    attributes = ParticipantAttributes
     X
 ;
 
-RoleDeclaration:
-    'role' name=ID ( '<' superRoles *= ID ['<'] ) ?
-    (o_
-        textBlock=TextBlock
-    _o)?
-    X
+
+ParticipantInstanceKind:
+      'adhoc' 'persona'  // order matter for all these rules
+    | 'persona'
+    | 'person'
 ;
 
-ParticipantDeclaration:
-    'participant' name=ID  ':' roles *= ID [',']
+
+
+//--------------- participant attributes --------------------
+
+ParticipantAttributes:
     (o_
         (
-        textBlock=TextBlock
-        'trigram' ':' trigram=ID X
-        )#
-    _o)?
+            ('name' ':' name=STRING X) ?
+            ('trigram' ':' trigram=ID X) ?
+            ('portrait' ':' portrait=STRING X) ?
+            (attitudes = AttitudesDescription) ?
+            (aptitudes = AptitudesDescription) ?
+            (motivations = MotivationsDescription) ?
+            (skills = SkillsDescription) ?
+            (textBlock = TextBlock) ?
+        ) #
+    _o) ?
+;
+
+AttitudesDescription:
+    'attitudes'
+    (o_
+        textBlock = TextBlock
+    _o) ?
     X
+;
+
+AptitudesDescription:
+    "aptitudes"
+    (o_
+        (
+            ('education' education = StringOrNestedTextBlock) ?
+            ('languages' languages = StringOrNestedTextBlock) ?
+            ('age' ':' age = INT X) ?
+            ('disabilities' disabilities = StringOrNestedTextBlock) ?
+            ('learning' 'ability' ':' learningAbility = LevelL2H X) ?
+            (textBlock = TextBlock) ?
+        ) #
+    _o) ?
+    X
+;
+
+MotivationsDescription:
+    "motivations"
+    (o_
+        (
+            (why = MotivationWhy) ?
+            ('level' ':' level = LevelL2H X) ?
+            ('kind' ':' kind = MotivationKind X) ?
+            (textBlock = TextBlock) ?
+        ) #
+    _o) ?
+    X
+;
+
+MotivationWhy:
+    'why'
+    (o_
+        textBlock = TextBlock
+    _o) ?
+    X
+;
+
+MotivationKind:
+      'obliged'
+    | 'voluntary'
+;
+
+SkillsDescription:
+    "skills"
+    (o_
+        (
+            ('level' ':' level = SkillsLevel X) ?
+            ('culture' culture = StringOrNestedTextBlock) ?
+            (modalities = Modalities) ?
+            (environments = Environments) ?
+            (textBlock = TextBlock) ?
+        ) #
+    _o) ?
+    X
+;
+
+Modalities:
+   'modalities'
+   (o_
+        modalities *= Modality
+   _o) ?
+   X
+;
+
+Modality:
+    name=STRING
+    ':'
+    level=SkillsLevel
+    X
+;
+
+Environments:
+   'environments'
+   (o_
+        enviroments *= Environment
+   _o) ?
+   X
+;
+
+Environment:
+    name=STRING
+    ':'
+    level=SkillsLevel
+    X
+;
+
+StringOrNestedTextBlock:
+      ':' string=STRING X
+    | (o_ text=TextBlock _o) X
+;
+
+SkillsLevel:
+      'novice'
+    | 'intermediate'
+    | 'expert'
+;
+
+LevelL2H:
+      'low'
+    | 'medium'
+    | 'high'
 ;
