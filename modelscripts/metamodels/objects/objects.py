@@ -52,7 +52,7 @@ class _ClassPrint(object):
                 if s is None:
                     self.attVal[att.name]=UNSPECIFIED
                 else:
-                    self.attVal[att.name]=str(s.simpleValue)
+                    self.attVal[att.name]=unicode(s.simpleValue)
 
     def equals(self, classPrint2):
         """
@@ -80,10 +80,10 @@ class _ClassPrint(object):
         if len(self.attVal)==0:
             return ()
         elif len(self.attVal)==1:
-            return str(self.attVal[self.attVal.keys()[0]])
+            return unicode(self.attVal[self.attVal.keys()[0]])
         else:
             return '(%s)' % (','.join([
-                '%s=%s' % (att, str(val))
+                '%s=%s' % (att, unicode(val))
                 for (att, val) in self.attVal.items()
             ]))
 
@@ -253,5 +253,5 @@ class Slot(ElementFromOptionalStep, Member):
         return '%s.%s=%s' % (
             self.object.name,
             self.attribute.name,
-            str(self.simpleValue)
+            unicode(self.simpleValue)
         )

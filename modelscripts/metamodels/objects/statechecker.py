@@ -127,7 +127,7 @@ class LinkRoleTypeViolation(ConformityViolation):
             'The %s of the link %s is of type "%s"'
             + ' instead of "%s".') % (
                     self.linkRole.position,
-                    str(self.linkRole.link),
+                    unicode(self.linkRole.link),
                     self.linkRole.objectType.name,
                     self.linkRole.roleType.name)
 
@@ -625,7 +625,7 @@ class StateCheck(object):
                     role.name,
                     object.cardinality(role)))
                 for link_role in object._link_roles_per_role[role]:
-                    print('GG'*20,' '*10, str(link_role), link_role.object)
+                    print('GG'*20,' '*10, unicode(link_role), link_role.object)
 
 
     @property
