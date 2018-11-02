@@ -376,12 +376,13 @@ class ClassModel(Model):
             return False
 
 
-    # def entity(self, name):  # TODO:4 check what it is for
-    #     e=self.class_(name)
-    #     if e is not None:
-    #         return e
-    #     else:
-    #         return self.association(name)
+    def entity(self, name):
+        # This is used for permission, to search for an entity by name
+        e=self.class_(name)
+        if e is not None:
+            return e
+        else:
+            return self.association(name)
 
     @property
     def metrics(self):
