@@ -144,7 +144,7 @@ class UseStoryPrinter(AbstractPrinter):
             '! %s.%s := %s' % (
                 step.objectName,
                 step.attributeName,
-                str(step.simpleValue)),
+                unicode(step.simpleValue)),
             indent=indent)
         return self.output
 
