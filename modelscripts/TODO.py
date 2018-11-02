@@ -7,6 +7,22 @@
 #   General
 #================================================================
 
+#TODO:1 deployment: check how to deploy modelscript
+#   should it be with ScribesInfra ?
+#   a python package ?
+#   check if it works at uni
+
+#TODO:1 add first documentation
+#   This could at least be one page per language
+#   with objectives / examples / concepts / current states
+
+#TODO:1 finish coloring scheme for GEdit
+#   create the style for each language
+#   check how to deploy the styles at uni
+
+#TODO:1 cl/ob/sc launch USE from modelc
+
+#TODO:1 add an option to just launch syntax parsing
 
 #TODO:2 Deal with Unexpected exception
 #   when in source "except FatalError" -> FatalError exception
@@ -17,8 +33,13 @@
 #TODO:2 review print statement
 #   remove space in command line output
 
-#TODO:2 add a parameter in modelc for issue selection
+#TODO:2 add a parameter in modelc to select issue level
 #   the default should be ignoring hint.info (i.e. for info check)
+
+#TODO:2 allow model to have no name
+#   if the model comes from a source then it will take the name of the file
+#   otherwise it will be set according to the type of the model.
+#   For instances "classes" for class model. See in megamodel.
 
 #TODO:3 check issue reporting in Printers
 #   see us-import03 04
@@ -26,29 +47,17 @@
 #   cause problems for understanding Printer display
 #   Only "serious issue(s)" is displayed in the child context
 
-#TODO:2 deployment: check how to deploy modelscript
-#   should it be with ScribesInfra ?
-#   a python package ?
-#   check if it works at uni
-
-#TODO:2 add first documentation
-#   This could at least be one page per language
-#   with objectives / examples / concepts / current states
-
-
-#TODO:2 the list of source in testFinalMegamodel is not accurate
+#TODO:3 the list of source in testFinalMegamodel is not accurate
 #   see the end of the tests
-#   This problem might have been solved with sourceList algo
+#   This problem might have been solved with sourceList algorithm
 
-#TODO:2 finish coloring scheme for GEdit
-#   check how to deploy the styles at uni
 
 #TODO:3 restore/finalize modela
 #   check how to configure it at uni
 
 #TODO:3 fix strange printing for models
 
-#TODO:2 metamodel uniquness in graph
+#TODO:3 metamodel uniquness in graph should be implemented
 #   see test imp-2-oksep01.cls
 #   check how a dag based uniqueness can be implemented
 #   uniqueness attrib has been added to class Metamodel
@@ -56,9 +65,22 @@
 #   a method allUsedMetamodels  has been added
 #   all metamodel.uniqueness has to be changed
 
+#TODO:3 fix bug "modelc imports/imp-2-oksep01.obs"
+#   fix bug "modelc imports/imp-2-oksep01.obs"
+#   see modelc test
+#   Two different glossaries are included in the same
+#   graph. This should be an error but not error is raised.
+
 #TODO:4 check what happen with cyclic import structure
 #   at the moment this case is not relevant since
 #   the metamodel types make it impossible
+
+#TODO:3 Replace comment # to //
+#   At the same time, deal with end of line //
+#   This imply changing all tests cases and test driiver with #something
+#   This will be nicer for # as protected in clas model
+#   Could be used as well for # as foreign key in relation
+
 
 #================================================================
 #   Glossary Model
@@ -66,7 +88,7 @@
 
 #TODO:4 add the notion of acronym
 
-#TODO:3 check best way to use coloring
+#TODO:2 check best way to use coloring for `ok`! and `ok`?
 #   Using glossary is much better when using GEdit integration
 #   since `ok`!  and `ko`? are displayed. Otherwise in colored
 #   terminal.
@@ -79,7 +101,6 @@
 
 #TODO:4 add some memoization or store some stuff
 
-
 #================================================================
 #   Class model
 #================================================================
@@ -89,10 +110,10 @@
 # the number of issue box is strange
 # the child/parent relationship is strange
 
-#TODO:1 add inheritance of oppositeRoles/playedRoles
+#TODO:2 add inheritance of oppositeRoles/playedRoles
 #   => add_inherited_attached_roles
 
-#TODO:1 add/test link-object
+#TODO:2 add/test link-object
 #   ??? on a postit "link object copy"
 #   -> check syntax in class model
 #   -> check syntax in story model
@@ -138,6 +159,10 @@
 
 
 #TODO:2 add [0..1] constraint   not self.x->isUndefined
+#   Add optional attributes
+#       syntax is OK
+#       fillModel is OK
+#       metamodel is OK
 
 # TODO:3 restore the ability to call USE
 #   this could be
@@ -295,11 +320,43 @@
 
 #TODO:2 usecase: check what works or not
 
+#TODO:2 add import of participant model with actors imported
+#   Add first the dependency in metamodel to participant model
+#   Then add error "actor" already imported in participant model
+#   Then add search of actor in participant/local model
+
+#TODO:1 add syntax for usecase description
+#   (primary) actor ? : Actor
+#   (secondary) actors : Actor
+#   personae Bob
+#       | text
+#       volume ?
+#       frequency ?
+#   description ?
+#   goal? : Text
+#   precondition* : Text
+#   trigger* : Text
+#   postcondition* : Text
+#   priority?  must should could wont | low medium high
+#   risk? low medium high
+#   frequency ? : Text
+#   volume ? : Text
+#   flow?
+#      1. xxx
+#         xxx
+#   extension name at 2
+#       when: condition !
+#       flow: ?
+#       usecase X ?
+
+#TODO:2
+
+
+
 #TODO:3 add a user model (projet d'integration)
 #   Usecase model can define actors and import more
 #   Task model can define actors and import more
 #   Scenario model can define actors/personas and import more
-
 
 #================================================================
 #   Permission model
@@ -312,16 +369,20 @@
 #   Participant Model
 #================================================================
 
-#TODO:3 create metamodel
+# STATUS
+    # The parser seems to be OK and synchronized with Sybille wishes.
+    # No metamodel, no checking of any sort apart from syntax errors.
+    # Should be enough anyway.
+
+#TODO:3 add actors/persona in metamodel to be reused from usecase
 
 #TODO:3 migrate Usecase actor to participant metamodel
 #   One option is to have declaration only in participant model
 #   or better (may be) to have both (useful?)
 
-#TODO:3 migrate Personage/actor instance to participant metamodel
-#   This goes
-#   One option is to have declaration only in participant model
-#   or better (may be) to have both (useful?)
+#TODO:3 xheck if "communication plan" would make sense
+#   https://opentextbc.ca/projectmanagement/chapter/chapter-15-communication-planning-project-management/
+#   https://www.teamgantt.com/blog/project-management-communication-plan
 
 
 #================================================================
@@ -329,7 +390,6 @@
 #================================================================
 
 #TODO:3 make sure KMade import is ok
-
 
 #================================================================
 #   AUI Model
@@ -349,29 +409,53 @@
 
 #TODO:3 Check what works
 
+#================================================================
+#   Relational class model / relation model
+#================================================================
+
+#TODO:2 add _, # dependencies, form (cf re-main.res)
+
+#TODO:3 generate a ER diagram form model
+
+#TODO:3 check if '#' for foreign key is ok
+#   this requires # to be not a comment
+
+#TODO:3 metamodel to be continued / add semantics
+#   a few elements (relations, columns) seems to exist
+#   but their content have to be checked.
+#   In particular type, constraints
+#   This should enable res/TO DO tests
 
 #================================================================
 #   Quality Model
 #================================================================
 
-#TODO:3  Add a simple quality assurance model (qa?)
+#TODO:2  design a simple qa/qc model
 #   => voir le model
 #   with rule, enforce rule
 #   control in quality control (qc) model
 
 #================================================================
-#   Relational class model / relation model
+#   Project Model
 #================================================================
 
-#TODO:3 metamodel to be continued
-#   a few elements (relations, columns) seems to exist
-#   but their content have to be checked.
-#   In particular type, constraints,
+#TODO:2  design a simple project model
 
-#TODO:3 add semantics
-#   a few elements (relations, columns) seems to exist
-#   but their content have to be checked.
-#   In particular type, constraints,
+#TODO:3 communication plan in project model ?
+#   see TO DO in participant model
+#   check if should go to participant model or project
+
+#================================================================
+#  Time Tracking Model
+#================================================================
+
+#TODO:2  design a simple Time Tracking model
+
+#================================================================
+#  Issue Model
+#================================================================
+
+#TODO:2  create issue model from CyberBibliotheque
 
 #================================================================
 #   Misc
