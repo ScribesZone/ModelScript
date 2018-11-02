@@ -7,6 +7,7 @@ from __future__ import unicode_literals, print_function, absolute_import, divisi
 from abc import ABCMeta, abstractmethod
 
 from typing import Text, Optional
+import codecs
 
 from modelscripts.base.styles import Styles
 from modelscripts.base.exceptions import (
@@ -213,7 +214,7 @@ class AbstractPrinter(object):
         print(text, end='')
 
     def save(self, output):
-        with open(output, "w") as f:
+        with codecs.open(output, "w", "utf-8") as f:
             f.write(self.output)
 
 

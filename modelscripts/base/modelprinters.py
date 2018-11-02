@@ -226,7 +226,7 @@ class ModelSourcePrinter(ContentPrinter):
         super(ModelSourcePrinter, self).doSummary()
         self.out(
             Styles.comment.do(
-                str(self.theSource.fullMetrics),
+                unicode(self.theSource.fullMetrics),
                 self.config.styled)
         )
         return self.output

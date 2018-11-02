@@ -21,7 +21,7 @@ class Metric(object):
             return ('1', self.label)
         else:
             return (
-                str(self.n),
+                unicode(self.n),
                 self.plural if self.plural is not None
                             else self.label+'s')
 
@@ -99,7 +99,7 @@ class Metrics(object):
 
     def __str__(self):
         return ''.join(
-            [str(m)+'\n' for m in self.all])
+            [unicode(m)+'\n' for m in self.all])
 
     def __repr__(self):
         return 'Metrics(%s)' % \
