@@ -103,8 +103,9 @@ TEST_CASES=[
     T('imports/imp-2-ok02.obs', 0,
       'imp-2-ok02.gls imp-2-ok02.cls imp-2-ok02.obs'),
 
-    T('imports/imp-2-oksep01.obs', 666,
-      'imp-2-oksep01.gls imp-2-oksep01.cls imp-2-oksep01.obs'),
+    # TODO: restore this testcase
+    # T('imports/imp-2-oksep01.obs', 666,
+    #   'imp-2-oksep01.gls imp-2-oksep01.cls imp-2-oksep01bis.gls imp-2-oksep01.obs'),
 
     T('imports/imp-3-ok01.scs', 0,
       'imp-3-ok01.gls imp-3-ok01.cls imp-3-ok01.obs imp-3-ok01.scs'),
