@@ -93,7 +93,7 @@ try:
     source = Megamodel.loadFile(filename)
 except Exception as e:
     traceback.print_exc(e)
-    print(str(e))
+    print(unicode(e))
 
 # annotated the source
 #TODO:2 Find the class AnnotatedSourcePrinter

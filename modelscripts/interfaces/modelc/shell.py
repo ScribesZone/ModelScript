@@ -26,7 +26,7 @@ try:
 except Exception as ex:
     title = ' SYSTEM ERROR in %s '
     cprint(title.center(80, '!'), 'red')
-    cprint(str(ex), 'red')
+    cprint(unicode(ex), 'red')
     traceback.print_exc(ex)
     cprint('!' * 80, 'red')
 
