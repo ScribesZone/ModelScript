@@ -95,7 +95,7 @@ class AttributeType(object):
 
     def __str__(self):
         return (
-              str(self.simpleType)
+              unicode(self.simpleType)
             + ('[0..1]' if self.isOptional else '')
         )
 

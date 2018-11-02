@@ -249,12 +249,12 @@ class Role(SourceModelElement, Member):
         if self.cardinalityMin is None and self.cardinalityMax is None:
             return None
         if self.cardinalityMin == self.cardinalityMax:
-            return str(self.cardinalityMin)
+            return unicode(self.cardinalityMin)
         if self.cardinalityMin == 0 and self.cardinalityMax is None:
             return '*'
         return ('%s..%s' % (
-            str(self.cardinalityMin),
-            '*' if self.cardinalityMax is None else str(
+            unicode(self.cardinalityMin),
+            '*' if self.cardinalityMax is None else unicode(
                 self.cardinalityMax)
 
         ))
