@@ -28,7 +28,7 @@ class TestObjectModel(object):
     def testSlot(self):
         o=self.model.object('zoe')
         assert len(o.slots)==2
-        assert str(o.slot('name').simpleValue)=="'Zoe Zarwin'"
+        assert unicode(o.slot('name').simpleValue)=="'Zoe Zarwin'"
         assert o.slot('name').simpleValue.stringRepr=="'Zoe Zarwin'"
         assert o.slot('name').simpleValue.value=="Zoe Zarwin"
         assert o.slot('name').attribute.name=='name'

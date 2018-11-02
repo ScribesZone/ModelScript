@@ -18,7 +18,7 @@ def test_display_megamodel():
 
     print('  Metamodels by id')
     for (id,mm) in Megamodel._metamodelById.items():
-        print('    %s -> %s' % (id, str(mm)))
+        print('    %s -> %s' % (id, unicode(mm)))
 
     print('  Via metamodels()')
     for mm in Megamodel.metamodels():
