@@ -62,7 +62,7 @@ ISSUES={
     'BAD_VALUE':'st.syn.Value.Bad',
     'NO_ENUM':'st.syn.Value.NoEnum',
     'NO_LITERAL':'st.syn.Value.NoLiteral',
-    'ADD_CHECK':'st.syn.Stpry.AddCheck',
+    'ADD_CHECK':'st.syn.Story.AddCheck',
 }
 def icode(ilabel):
     return ISSUES[ilabel]
@@ -136,6 +136,8 @@ class StoryFiller():
 
         self.infoIfCheckAdded=infoIfCheckAdded
         #type: bool
+        # Indicates if an "info" issue must be created each time
+        # an implicit check is added. See also noInfoForScenario.
 
         self.allowDefinition=allowDefinition
         #type: bool
@@ -587,13 +589,16 @@ class StoryFiller():
                 astNode=astNode
             )
             self.checkSteps.append(cs)
-            if self.infoIfCheckAdded:
+            #FIXME:1 remove location!='scenario' added just to temporailty
+            #  decrease error message
+            if self.infoIfCheckAdded and location!='scenario':
+                print('QQ'*20, kind, location)
                 ASTNodeSourceIssue(
                     code=icode('ADD_CHECK'),
                     astNode=astNode,
                     level=Levels.Info,
                     position=kind,
-                    message='Implicit "check" added %s %s.'
+                    message='Implicit "check" added %s %s (for evaluation).'
                             % (kind, location))
 
         self._is_check_needed=False
