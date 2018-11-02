@@ -81,16 +81,18 @@ persona marco : Cashier, Client
         | Marco is kind to learn but he also knows already
         | very much.
     motivations
+        why
+            | Marco is really reluctant to use the system.
+            | Her boss, anna, told him that he will be fired
+            | if he do not get good results.
         level : low
         kind : obliged
-        | Marco is really reluctant to use the system.
-        | Her boss, anna, told him that he will be fired
-        | if he do not get good results.
+        | Some additional remark or documentation
     skills
         | Marco is an expert in playing with the mouse.
         level : novice
         culture
-            | marco has a good culture about theature.
+            | occidental
         modalities
             "labtop" : expert
             "smartphone" : novice
