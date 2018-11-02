@@ -39,9 +39,9 @@ class SourceLocation(Location):
         if self.fileName is not None:
             _.append(self.fileName)
         if self.line is not None:
-            _.append(str(self.line))
+            _.append(unicode(self.line))
         if self.column is not None and self.line is not None:
-            _.append(str(self.line))
+            _.append(unicode(self.line))
         return ':'.join(_)
 
     def __str__(self):
