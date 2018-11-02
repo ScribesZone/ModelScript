@@ -157,7 +157,7 @@ class UCPermissionModel(PermissionModel):
                         rule.permissions.append(p)
 
     def __str__(self):
-        return '\n'.join([str(r) for r in self.rules])
+        return '\n'.join([unicode(r) for r in self.rules])
 
 
 METAMODEL=Metamodel(
