@@ -1,12 +1,33 @@
+#-------------------------------------------------------
+# pi1617g02 enhanced
+#-------------------------------------------------------
+
 aui model Demo
 
 space EntrerLesInformations
+    | Some documentation
     concepts
         email
         numerotel
     links
         ChoisirTypeReservation
         EntrerLesInformations
+
+
+space EntrerLesInformations "Réservation"
+    concepts
+        email "email"
+        numerotel "numéro de téléphone"
+    links
+        ChoisirTypeReservation "type"
+        EntrerLesInformations "détail"
+        back to EntrerLesInformations "précédent"
+    transformation
+        from
+            Informer
+        rule R1
+        rule R2
+        | Some explaination
 
 space ChoisirTypeReservation
     links
