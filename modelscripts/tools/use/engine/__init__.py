@@ -508,7 +508,7 @@ def displayFileContent(filename, prefix='    ', length=5):
 
     print(prefix+'%i line(s) in %s :' % (len(lines), filename))
     prefixed_lines=[
-        prefix+str(n+1)+' | ' +l
+        prefix+unicode(n+1)+' | ' +l
         for (n,l) in enumerate(lines[:length])]
     print('\n'.join(prefixed_lines))
     if len(lines)>length:

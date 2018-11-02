@@ -204,8 +204,8 @@ class KmadeReader(object):
             name,
             modality,
             executant,
-            str(optional),
-            str(interruptible),
+            unicode(optional),
+            unicode(interruptible),
             '(#%s)' % str()
         ])
         print(_)
