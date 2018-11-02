@@ -122,6 +122,15 @@ class ObjectModel(Model):
         return self._classModel
 
     @property
+    def hasClassModel(self):
+        #type: () -> bool
+        try:
+            self.classModel
+            return True
+        except ValueError:
+            return False
+
+    @property
     def plainObjects(self):
         return self._plainObjectNamed.values()
 
