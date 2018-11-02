@@ -10,11 +10,14 @@ Declaration:
 RelationDeclaration:
     'relation' ? name=ID (signature=Signature) ?
     (o_
-        textBlock=TextBlock ?
-        columnsBlock=ColumnsBlock ?
-        constraintsBlock=ConstraintsBlock ?
-        transformationsBlock=TransformationsBlock ?
-    _o)? X
+        (
+            textBlock=TextBlock ?
+            columnsBlock=ColumnsBlock ?
+            constraintsBlock=ConstraintsBlock ?
+            transformationsBlock=TransformationsBlock ?
+        ) #
+    _o)?
+    X
 ;
 
 Signature:
@@ -24,33 +27,46 @@ Signature:
 ;
 
 Column:
-    foreignKey ?='#'
-    name=ID
+    key ?= '_'
+    foreignKey ?='#'  // not used yet, since # is comment
+    name=/[A-Za-z][A-Za-z0-9_]*/
     (':' typeSpecification=TypeSpecification) ?
 ;
 
 TypeSpecification:
-    name=ID
+    domain=DomainSpecification
     isOptional ?= '?'
-    // TODO: add in {x, y, z}
+;
+
+DomainSpecification:
+        name = ID
+    | '{' integers += INT [','] '}'
+    | '{' strings += STRING [','] '}'
+    | '{' reals += FLOAT [','] '}'
 ;
 
 ColumnLine:
-    Column X
+    Column
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
 ;
 
 ColumnsBlock:
     'columns'
     (o_
         columns *= ColumnLine
-    _o)? X
+    _o)?
+    X
 ;
 
 ConstraintsBlock:
     'constraints'
     (o_
         constraints *= Constraint
-    _o)? X
+    _o)?
+    X
 ;
 
 
