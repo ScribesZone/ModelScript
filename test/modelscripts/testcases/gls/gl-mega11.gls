@@ -1,5 +1,5 @@
-    #@Issue mgm.sem.Import.Allowed 1
-    #@Issue else *
+    //@Issue mgm.sem.Import.Allowed 1
+    //@Issue else *
 
 glossary model GL_Mega11
 import glossary model from "gl-import00.gls"

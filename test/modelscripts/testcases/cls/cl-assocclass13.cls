@@ -1,13 +1,13 @@
-    #@Issue cl.syn.Association.AttRole 1
-    #@Issue else *
+        //@Issue cl.syn.Association.AttRole 1
+        //@Issue else *
 
-    #@Metric "class" 6
-    #@Metric "plain class" 5
-    #@Metric "association" 1
-    #@Metric "plain association" 0
-    #@Metric "association class" 1
-    #@Metric "attribute" 1
-    #@Metric "role" 2
+    //@Metric "class" 6
+    //@Metric "plain class" 5
+    //@Metric "association" 1
+    //@Metric "plain association" 0
+    //@Metric "association class" 1
+    //@Metric "attribute" 1
+    //@Metric "role" 2
 
 
 class model Cl_association01

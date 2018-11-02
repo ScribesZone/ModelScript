@@ -1,7 +1,7 @@
 
-    #@Issue cl.fin.Attribute.InhVertical 4
-    #@Issue cl.fin.Attribute.InhHorizontal 2
-    #@Issue else *
+    //@Issue cl.fin.Attribute.InhVertical 4
+    //@Issue cl.fin.Attribute.InhHorizontal 2
+    //@Issue else *
 
 class model Cl_inhatt
 

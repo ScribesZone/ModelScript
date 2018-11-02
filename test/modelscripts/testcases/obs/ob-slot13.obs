@@ -1,5 +1,5 @@
-    #@Issue st.syn.Value.Bad 1
-    #@Issue else *
+    //@Issue st.syn.Value.Bad 1
+    //@Issue else *
 
 
 object model A

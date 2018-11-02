@@ -1,7 +1,7 @@
-    #@Issue cl.res.Attribute.NoType 1
-    #@Issue level *
+    //@Issue cl.res.Attribute.NoType 1
+    //@Issue level *
 
-    #@Metric "attribute" 2
+        //@Metric "attribute" 2
 
 class model Cl_class03
 

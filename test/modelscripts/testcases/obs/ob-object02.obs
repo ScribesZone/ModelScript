@@ -1,5 +1,5 @@
-    #@Issue st.eval.ObjectCreation.Twice 1
-    #@Issue else *
+    //@Issue st.eval.ObjectCreation.Twice 1
+    //@Issue else *
 
 
 object model A

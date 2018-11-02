@@ -1,6 +1,6 @@
-    #@Issue cck.Actor.LazyActorChecker 1
-    #@Issue cck.Usecase.UnusedUsecaseChecker 1
-    #@Issue level *
+    //@Issue cck.Actor.LazyActorChecker 1
+    //@Issue cck.Usecase.UnusedUsecaseChecker 1
+    //@Issue level *
 
 usecase model Us_interactions03
 

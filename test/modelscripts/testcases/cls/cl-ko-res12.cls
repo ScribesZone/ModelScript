@@ -1,5 +1,5 @@
-    #@Issue cl.res.Attribute.NoType 1
-    #@Issue else *
+    //@Issue cl.res.Attribute.NoType 1
+    //@Issue else *
 
 class model Simple
 

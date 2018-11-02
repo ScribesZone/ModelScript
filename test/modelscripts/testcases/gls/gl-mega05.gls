@@ -1,5 +1,5 @@
-    #@Issue mgm.sem.Definition.Exception 1
-    #@Issue level *
+    //@Issue mgm.sem.Definition.Exception 1
+    //@Issue level *
 
 unexisting model
 

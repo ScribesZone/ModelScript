@@ -1,5 +1,5 @@
-    #@Issue cl.syn.Cardinality.Error 1
-    #@Issue else *
+    //@Issue cl.syn.Cardinality.Error 1
+    //@Issue else *
 
 class model Simple
 

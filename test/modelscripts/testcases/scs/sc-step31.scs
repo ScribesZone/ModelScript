@@ -1,6 +1,6 @@
-    # class not found
-    #@Issue st.syn.ObjectCreation.NoClass 1
-    #@Issue else *
+    // class not found
+    //@Issue st.syn.ObjectCreation.NoClass 1
+    //@Issue else *
 
 scenario model Sc_step30
 

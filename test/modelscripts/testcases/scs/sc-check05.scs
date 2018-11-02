@@ -1,6 +1,6 @@
-    #@Issue ob.ana.Slot.Missing 4
-    #@Issue ob.ana.Link.WrongType 1
-    #@Issue else *
+    //@Issue ob.ana.Slot.Missing 4
+    //@Issue ob.ana.Link.WrongType 1
+    //@Issue else *
 
 
 scenario model Sc_check01

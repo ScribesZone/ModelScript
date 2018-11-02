@@ -1,4 +1,4 @@
-# no issues since no glossary is included
+// no issues since no glossary is included
 
 relation model M
     | `Un` chiffre sur `Deux`

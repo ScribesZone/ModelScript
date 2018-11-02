@@ -1,11 +1,11 @@
-# Participant
-#     ParticipantClass
-#         Actor
-#         Stakeholder
-#         TeamRole
-#     ParticipantInstance
-#         Person
-#         Persona
+// Participant
+//     ParticipantClass
+//         Actor
+//         Stakeholder
+//         TeamRole
+//     ParticipantInstance
+//         Person
+//         Persona
 
 
 

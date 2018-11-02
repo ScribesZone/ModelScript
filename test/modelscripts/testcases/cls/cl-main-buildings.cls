@@ -1,8 +1,8 @@
 class model Building
 
-#---------------------------------------------------------------------
+//---------------------------------------------------------------------
 package buildings
-#---------------------------------------------------------------------
+//---------------------------------------------------------------------
 
 enumeration Category
     economy
@@ -38,7 +38,7 @@ class Bedroom < Room
         isNonSmoking    : Boolean
         / nbOfUnits     : Integer
 
-# TODO: composition ContainsRooms
+// TODO: composition ContainsRooms
 association ContainsRooms
     roles
         residence : Residence[1]
@@ -50,9 +50,9 @@ association IsInBedroom
         bedroom : Bedroom[0..1]
 
 
-#---------------------------------------------------------------------
+//---------------------------------------------------------------------
 package residents
-#---------------------------------------------------------------------
+//---------------------------------------------------------------------
 
 enumeration Gender
     male
@@ -87,9 +87,9 @@ association IsOccupiedBy
         occupiedRoom : Bedroom[1]
         occupants : Resident[*]
 
-#---------------------------------------------------------------------
+//---------------------------------------------------------------------
 package rates
-#---------------------------------------------------------------------
+//---------------------------------------------------------------------
 
 
 class Discount
@@ -105,16 +105,16 @@ association class Rent
         / discount : Real
         / rate     : Real
 
-#TODO: composition HasDiscounts
+//TODO: composition HasDiscounts
 association HasDiscounts
     roles
         rent : Rent[1]
         discounts : Discount[0..*]
 
 
-#=======================================================================
-#                        constraints
-#=======================================================================
+//=======================================================================
+//                        constraints
+//=======================================================================
 
 
 invariant floorOrder
@@ -225,85 +225,85 @@ invariant allPrestigeBathrooms
 
 
 
-#
-#
-#-- Same number if private.
-#-- Easy. Use 'implies'.
-#context self : Bathroom inv sameNumberIfPrivate :
-#    -- All bathrooms that are not on the landing, that is that are private to a bedroom, have the same number of room as this bedroom.
-#    not self.isOnTheLanding implies
-#    self.number = self.bedroom.number
-#
-#-- Out of order bathroom implications if prestige.
-#-- Medium. Use 'implies'
-#context self : Bathroom inv oooIfPrestige :
-#    -- In prestige residences, it is not acceptable to rent bedrooms with bathrooms that are out of order. So if a bathroom is marked as out of order, the corresponding bedroom is also marked as out of order.
-#    (       self.residence.category = #prestige
-#    and  self.isOutOfOrder
-#    and  self.bedroom->notEmpty())
-#          implies
-#                self.bedroom.isOutOfOrder
-#
-#-- At least one bed for useful bedrooms.
-#-- Easy. Use implies.
-#context self : Bedroom inv atLeastABed :
-#    -- Bedrooms that are not out of order must have at least one bed.
-#    not self.isOutOfOrder implies
-#        self.nbOfSingleBeds + self.nbOfDoubleBeds >= 1
-#
-#-- At least as many bathrooms than beds for prestige residence.
-#-- Easy. Use implies.
-#context self : Bedroom inv enoughBathroomsInPrestige :
-#    -- In a prestige residence, the number of private bathrooms is at least the same as the number of beds in each bedroom.
-#    self.residence.category = #prestige implies
-#        self.bathrooms->size() >= self.nbOfSingleBeds+self.nbOfDoubleBeds
-#
-#-- Derivation of nbOfUnits attribute.
-#-- Easy
-#context self : Bedroom inv deriveNbOfUnits :
-#    -- The number of units of a bedroom is the maximum number of people that can fit within the bedroom assuming that all places in all beds are full.
-#    nbOfUnits = self.nbOfSingleBeds + 2*self.nbOfDoubleBeds
+//
+//
+//-- Same number if private.
+//-- Easy. Use 'implies'.
+//context self : Bathroom inv sameNumberIfPrivate :
+//    -- All bathrooms that are not on the landing, that is that are private to a bedroom, have the same number of room as this bedroom.
+//    not self.isOnTheLanding implies
+//    self.number = self.bedroom.number
+//
+//-- Out of order bathroom implications if prestige.
+//-- Medium. Use 'implies'
+//context self : Bathroom inv oooIfPrestige :
+//    -- In prestige residences, it is not acceptable to rent bedrooms with bathrooms that are out of order. So if a bathroom is marked as out of order, the corresponding bedroom is also marked as out of order.
+//    (       self.residence.category = #prestige
+//    and  self.isOutOfOrder
+//    and  self.bedroom->notEmpty())
+//          implies
+//                self.bedroom.isOutOfOrder
+//
+//-- At least one bed for useful bedrooms.
+//-- Easy. Use implies.
+//context self : Bedroom inv atLeastABed :
+//    -- Bedrooms that are not out of order must have at least one bed.
+//    not self.isOutOfOrder implies
+//        self.nbOfSingleBeds + self.nbOfDoubleBeds >= 1
+//
+//-- At least as many bathrooms than beds for prestige residence.
+//-- Easy. Use implies.
+//context self : Bedroom inv enoughBathroomsInPrestige :
+//    -- In a prestige residence, the number of private bathrooms is at least the same as the number of beds in each bedroom.
+//    self.residence.category = #prestige implies
+//        self.bathrooms->size() >= self.nbOfSingleBeds+self.nbOfDoubleBeds
+//
+//-- Derivation of nbOfUnits attribute.
+//-- Easy
+//context self : Bedroom inv deriveNbOfUnits :
+//    -- The number of units of a bedroom is the maximum number of people that can fit within the bedroom assuming that all places in all beds are full.
+//    nbOfUnits = self.nbOfSingleBeds + 2*self.nbOfDoubleBeds
 
-#-- No smoking is prestige.
-#-- Easy
-#context self : Bedroom inv smokingPrestigePolicy :
-#    -- There are no smoking rooms at all in residence of prestige.
-#    self.residence.category = #prestige implies
-#        self.isNonSmoking
+//-- No smoking is prestige.
+//-- Easy
+//context self : Bedroom inv smokingPrestigePolicy :
+//    -- There are no smoking rooms at all in residence of prestige.
+//    self.residence.category = #prestige implies
+//        self.isNonSmoking
 
 
 
-#---------------------------------------------------------------------
-#-- Rented bedrooms not empty.
-#-- Easy. Use 'implies'
-#context self : Bedroom inv noEmptyRentedBedrooms :
-#    -- All rented bedrooms are occupied by at least one occupant.
-#    self.tenant->notEmpty() implies self.occupants->notEmpty()
-#
-#-- At least one adult per room.
-#-- Easy. Use 'implies'
-#context self : Bedroom inv atLeastOneAdult :
-#    -- At least one adult must be presented in all occupied rooms.
-#    self.occupants->notEmpty() implies
-#        self.occupants->exists(age>=18)
-#
-#-- Nobody in rooms not rented.
-#-- Easy. Use 'implies'
-#context self : Bedroom inv noSquaters :
-#    -- Occupants must be exclusively in rooms that are rented by somebody.
-#    self.tenant->isEmpty() implies
-#        self.occupants->isEmpty()
-#
-#-- No bedroom overloaded.
-#-- Medium
-#context self : Bedroom inv noBedroomOverload :
-#    -- There must be no more people in a bedroom that the number of units of this bedroom. Children up to 3 years old are not counted in this rule.
-#    self.occupants->select(age>3)
-#        ->size() <= self.nbOfUnits
-#
-#-- No rental of Out Of Order bedrooms.
-#-- Easy
-#context self : Bedroom inv oooBedroomsNotRented :
-#    -- Bedrooms that are out of order cannot be rented.
-#    self.isOutOfOrder implies self.tenant->isEmpty()
-#
+//---------------------------------------------------------------------
+//-- Rented bedrooms not empty.
+//-- Easy. Use 'implies'
+//context self : Bedroom inv noEmptyRentedBedrooms :
+//    -- All rented bedrooms are occupied by at least one occupant.
+//    self.tenant->notEmpty() implies self.occupants->notEmpty()
+//
+//-- At least one adult per room.
+//-- Easy. Use 'implies'
+//context self : Bedroom inv atLeastOneAdult :
+//    -- At least one adult must be presented in all occupied rooms.
+//    self.occupants->notEmpty() implies
+//        self.occupants->exists(age>=18)
+//
+//-- Nobody in rooms not rented.
+//-- Easy. Use 'implies'
+//context self : Bedroom inv noSquaters :
+//    -- Occupants must be exclusively in rooms that are rented by somebody.
+//    self.tenant->isEmpty() implies
+//        self.occupants->isEmpty()
+//
+//-- No bedroom overloaded.
+//-- Medium
+//context self : Bedroom inv noBedroomOverload :
+//    -- There must be no more people in a bedroom that the number of units of this bedroom. Children up to 3 years old are not counted in this rule.
+//    self.occupants->select(age>3)
+//        ->size() <= self.nbOfUnits
+//
+//-- No rental of Out Of Order bedrooms.
+//-- Easy
+//context self : Bedroom inv oooBedroomsNotRented :
+//    -- Bedrooms that are out of order cannot be rented.
+//    self.isOutOfOrder implies self.tenant->isEmpty()
+//

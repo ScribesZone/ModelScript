@@ -1,5 +1,5 @@
-    #@Issue st.eval.ObjectDeletion.NoObject 1
-    #@Issue else *
+    //@Issue st.eval.ObjectDeletion.NoObject 1
+    //@Issue else *
 
 scenario model Sc_step30
 

@@ -1,6 +1,6 @@
-    #@Metric "actor instance" 0
-    #@Metric "scenario" 0
-    #@Metric "context" 1
+        //@Metric "actor instance" 0
+        //@Metric "scenario" 0
+        //@Metric "context" 1
 
 
 scenario model Sc_main01

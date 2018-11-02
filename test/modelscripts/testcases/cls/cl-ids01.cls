@@ -1,7 +1,7 @@
 class model Cl_uds01
 
 
-# No id -> no errors
+// No id -> no errors
 class Food
     attributes
         yummy : Boolean
@@ -14,12 +14,12 @@ class Employee
         age : Integer {id}
         country : String
 
-# All attributes ids
+// All attributes ids
 class Country
     attributes
         name : String {id}
 
-# All attributes ids
+// All attributes ids
 class Number
     attributes
         name : String {id}

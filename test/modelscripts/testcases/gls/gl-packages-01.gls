@@ -1,11 +1,11 @@
-    #@Metric "text block" 2
-    #@Metric "text line" 4
-    #@Metric "text token" 16
-    #@Metric "text reference" 8
-    #@Metric "broken text reference" 0
-    #@Metric "text occurrences" 8
-    #@Metric "package" 3
-    #@Metric "entry" 4
+        //@Metric "text block" 2
+        //@Metric "text line" 4
+        //@Metric "text token" 16
+        //@Metric "text reference" 8
+        //@Metric "broken text reference" 0
+        //@Metric "text occurrences" 8
+        //@Metric "package" 3
+        //@Metric "entry" 4
 
 glossary model Medium
 

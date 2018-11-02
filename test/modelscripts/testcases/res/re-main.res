@@ -21,8 +21,8 @@ R2(_d1:Real, dba)
 relation R3(_a,_b,c,d,e,f,g)
     | documentation
     columns
-        #TODO: _ a : String
-        #TODO: #a : String
+        //TODO: _ a : String
+        //TODO: #a : String
         _b : Integer
         c : Integer?
         d : Real
@@ -32,19 +32,19 @@ relation R3(_a,_b,c,d,e,f,g)
     constraints
         key a,b
         key b,c
-        # TODO prime a
-        # TODO prime b
-        # TODO non prime f
+        // TODO prime a
+        // TODO prime b
+        // TODO non prime f
         a,b -> c,d
         b,c -> a,d
-        # TODO a /> c
-        # TODO ffd c -> d
-        # TODO non ffd z->e
-        # TODO 1NF, 2NF, 3NF, BCNF, 4NF
-        # TODO {a}+ = {a,b,c}
+        // TODO a /> c
+        // TODO ffd c -> d
+        // TODO non ffd z->e
+        // TODO 1NF, 2NF, 3NF, BCNF, 4NF
+        // TODO {a}+ = {a,b,c}
         R1[d] <= R2[d1]
-    #TODO: dependencies + idem
-    #TODO: form: 1NF, 2NF, ...
+    //TODO: dependencies + idem
+    //TODO: form: 1NF, 2NF, ...
     transformation
         | this is the explaination of the
         | transformation

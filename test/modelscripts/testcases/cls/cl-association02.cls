@@ -1,5 +1,5 @@
-    #@Issue cl.syn.Association.NoAbstract 1
-    #@Issue else *
+        //@Issue cl.syn.Association.NoAbstract 1
+        //@Issue else *
 
 class model Cl_association01
 

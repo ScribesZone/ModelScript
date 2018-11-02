@@ -1,7 +1,7 @@
-    # check OK actor instances
+    // check OK actor instances
 
-    #@Issue sc.syn.ActorInstance.NoActor 1
-    #@Issue else *
+    //@Issue sc.syn.ActorInstance.NoActor 1
+    //@Issue else *
 
 scenario model Sc_main01
 

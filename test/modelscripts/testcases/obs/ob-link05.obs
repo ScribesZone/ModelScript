@@ -1,5 +1,5 @@
-    #@Issue st.syn.LinkOperation.NoAssoc 1
-    #@Issue else *
+    //@Issue st.syn.LinkOperation.NoAssoc 1
+    //@Issue else *
 
 object model A
 import class model from '../cls/cl-main-cybercompany-01.cls'

@@ -1,5 +1,5 @@
-    #@Issue ob.ana.Object.BadId 1
-    #@Issue else *
+    //@Issue ob.ana.Object.BadId 1
+    //@Issue else *
 
 object model A
 import class model from '../cls/cl-ids01.cls'

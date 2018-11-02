@@ -1,6 +1,6 @@
-    # Only one object
-    #@Issue ob.ana.Slot.Missing 2
-    #@Issue else *
+    // Only one object
+    //@Issue ob.ana.Slot.Missing 2
+    //@Issue else *
 
 object model A
 import class model from '../cls/cl-ids01.cls'
@@ -8,5 +8,5 @@ import class model from '../cls/cl-ids01.cls'
 paul1 : Employee
 paul1.firstName="Paul"
 paul1.lastName="Zarwin"
-# missing age
-# missing country
+// missing age
+// missing country

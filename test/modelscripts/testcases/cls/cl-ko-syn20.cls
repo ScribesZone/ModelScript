@@ -1,5 +1,5 @@
-    #@Issue cl.syn.Attribute.Defined 1
-    #@Issue else *
+        //@Issue cl.syn.Attribute.Defined 1
+        //@Issue else *
 
 class model Simple
 

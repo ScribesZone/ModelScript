@@ -1,8 +1,8 @@
-    # Issues when bad reverse link
+    // Issues when bad reverse link
 
-    #@Issue ob.ana.Link.WrongType 2
-    #@Issue ob.ana.Link.BadCardinality 1
-    #@Issue else *
+    //@Issue ob.ana.Link.WrongType 2
+    //@Issue ob.ana.Link.BadCardinality 1
+    //@Issue else *
 
 
 object model A

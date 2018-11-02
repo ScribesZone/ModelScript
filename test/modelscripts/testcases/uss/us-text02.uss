@@ -1,9 +1,9 @@
-    #@Issue txt.TermNotFound 4
+    //@Issue txt.TermNotFound 4
 
-    #@Issue cck.Actor.LazyActorChecker 2
-    #@Issue cck.System.UsecaseLimitsChecker 1
-    #@Issue cck.Usecase.UnusedUsecaseChecker 1
-    #@Issue level *
+    //@Issue cck.Actor.LazyActorChecker 2
+    //@Issue cck.System.UsecaseLimitsChecker 1
+    //@Issue cck.Usecase.UnusedUsecaseChecker 1
+    //@Issue level *
 
 usecase model Us_text01
     | This is a description with

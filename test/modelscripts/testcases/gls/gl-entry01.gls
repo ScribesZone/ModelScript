@@ -1,8 +1,8 @@
-    #@Issue gl.syn.entry.twice 1
-    #@Issue level *
-    #@Metric "source line" 10
-    #@Metric "package" 1
-    #@Metric "entry" 1
+    //@Issue gl.syn.entry.twice 1
+    //@Issue level *
+        //@Metric "source line" 10
+        //@Metric "package" 1
+        //@Metric "entry" 1
 
 glossary model Gl_reference01
 

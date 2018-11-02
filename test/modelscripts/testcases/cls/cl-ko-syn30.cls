@@ -1,5 +1,5 @@
-    #@Issue cl.syn.Role.Defined 1
-    #@Issue else *
+    //@Issue cl.syn.Role.Defined 1
+    //@Issue else *
 
 class model Simple
 

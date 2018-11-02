@@ -1,6 +1,6 @@
-    # FIXME: is seems that there is two class models in memory
-    # This could explain the following message
-    # **** S:ERROR:sc-composite02.scs:13:The target of the link (xuon,WorksIn,computing) is of type "Department" instead of "Department".
+    // FIXME: is seems that there is two class models in memory
+    // This could explain the following message
+    // **** S:ERROR:sc-composite02.scs:13:The target of the link (xuon,WorksIn,computing) is of type "Department" instead of "Department".
 
 scenario model Sc_main01
 import usecase model from '../uss/us-main-CyberCompany01.uss'

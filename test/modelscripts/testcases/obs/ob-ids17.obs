@@ -1,7 +1,7 @@
-    # Missing values but for non-id attributes
-    #@Issue ob.ana.Object.BadId 1
-    #@Issue ob.ana.Slot.Missing 4
-    #@Issue else *
+    // Missing values but for non-id attributes
+    //@Issue ob.ana.Object.BadId 1
+    //@Issue ob.ana.Slot.Missing 4
+    //@Issue else *
 
 object model A
 import class model from '../cls/cl-ids01.cls'
@@ -10,7 +10,7 @@ paul1 : Employee
 paul1.firstName="Paul"
 paul1.lastName="Zarwin"
 paul1.age=21
-# missing country
+// missing country
 
 paolo : Employee
 paolo.firstName="Paulo"
@@ -22,17 +22,17 @@ paul2 : Employee
 paul2.firstName="Paul"
 paul2.lastName="Zarwin"
 paul2.age=21
-# missing country
+// missing country
 
 
 
-# both attributes are ids
+// both attributes are ids
 
 uno : Number
 uno.name='uno'
-# missing value
+// missing value
 
 dos2 : Number
 dos2.name='dos'
-# missing value
+// missing value
 

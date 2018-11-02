@@ -1,5 +1,5 @@
-    #@Issue ob.ana.Slot.BadType 8
-    #@Issue else *
+    //@Issue ob.ana.Slot.BadType 8
+    //@Issue else *
 
 
 object model A

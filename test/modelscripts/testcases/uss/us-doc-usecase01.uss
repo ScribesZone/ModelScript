@@ -1,9 +1,9 @@
-    #@Issue txt.TermNotFound 1
+    //@Issue txt.TermNotFound 1
 
-    #@Issue cck.UsecaseModel.ActorLimitsChecker 1
-    #@Issue cck.System.UsecaseLimitsChecker 1
-    #@Issue cck.Usecase.UnusedUsecaseChecker 1
-    #@Issue level *
+    //@Issue cck.UsecaseModel.ActorLimitsChecker 1
+    //@Issue cck.System.UsecaseLimitsChecker 1
+    //@Issue cck.Usecase.UnusedUsecaseChecker 1
+    //@Issue level *
 
 usecase model Us_usecase02
 import glossary model from 'g01.gls'

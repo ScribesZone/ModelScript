@@ -1,5 +1,5 @@
-    #@Issue txt.TermNotFound 1
-    #@Issue else *
+    //@Issue txt.TermNotFound 1
+    //@Issue else *
 
 class model C
     | `Un` chiffre sur `Deux`

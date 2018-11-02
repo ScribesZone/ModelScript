@@ -1,5 +1,5 @@
-    #@Issue ob.ana.Slot.Missing 3
-    #@Issue else *
+    //@Issue ob.ana.Slot.Missing 3
+    //@Issue else *
 
 scenario model Sc_check01
 

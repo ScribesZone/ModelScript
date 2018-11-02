@@ -1,10 +1,10 @@
-    # duplicated intention
+    // duplicated intention
 
-    #@Issue sc.syn.Descriptor.Twice 1
-    #@Issue else *
+    //@Issue sc.syn.Descriptor.Twice 1
+    //@Issue else *
 
-    #@Metric "model descriptor" 1
-    #@Metric "actor instance" 0
+        //@Metric "model descriptor" 1
+        //@Metric "actor instance" 0
 
 
 scenario model Sc_main01

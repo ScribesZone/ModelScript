@@ -1,6 +1,6 @@
-    #@Issue cck.Actor.LazyActorChecker 2
-    #@Issue cck.System.UsecaseLimitsChecker 1
-    #@Issue level *
+    //@Issue cck.Actor.LazyActorChecker 2
+    //@Issue cck.System.UsecaseLimitsChecker 1
+    //@Issue level *
 
 usecase model Us_actor02
 

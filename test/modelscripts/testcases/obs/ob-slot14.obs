@@ -1,5 +1,5 @@
-    #@Issue st.syn.Value.NoEnum 1
-    #@Issue else *
+    //@Issue st.syn.Value.NoEnum 1
+    //@Issue else *
 
 object model A
 import class model from '../cls/cl-datatype10.cls'

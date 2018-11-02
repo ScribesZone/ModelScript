@@ -1,5 +1,5 @@
-    #@Metric "enumeration" 2
-    #@Metric "enumeration literal" 3
+        //@Metric "enumeration" 2
+        //@Metric "enumeration literal" 3
 
 class model Cl_enum01
 

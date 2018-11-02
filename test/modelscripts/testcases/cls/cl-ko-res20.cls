@@ -1,5 +1,5 @@
-    #@Issue cl.res.Role.NoClass 1
-    #@Issue else *
+    //@Issue cl.res.Role.NoClass 1
+    //@Issue else *
 
 class model Simple
 

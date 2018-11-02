@@ -1,7 +1,7 @@
-    # name conflict
+    // name conflict
 
-    #@Issue cl.fin.Attribute.InhVertical 1
-    #@Issue else *
+    //@Issue cl.fin.Attribute.InhVertical 1
+    //@Issue else *
 
 
 class model Cl_inhatt

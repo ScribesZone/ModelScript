@@ -1,5 +1,5 @@
-    #@Issue cl.fin.Attribute.InhHorizontal 1
-    #@Issue else *
+    //@Issue cl.fin.Attribute.InhHorizontal 1
+    //@Issue else *
 
 class model Cl_inhatt
 

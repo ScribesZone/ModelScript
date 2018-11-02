@@ -1,8 +1,8 @@
-    #@Issue txt.TermNotFound 1
+    //@Issue txt.TermNotFound 1
 
-    #@Issue cck.UsecaseModel.ActorLimitsChecker 1
-    #@Issue cck.System.UsecaseLimitsChecker 1
-    #@Issue level *
+    //@Issue cck.UsecaseModel.ActorLimitsChecker 1
+    //@Issue cck.System.UsecaseLimitsChecker 1
+    //@Issue level *
 
 usecase model Us_doc01
     | `Un` chiffre sur `Deux`

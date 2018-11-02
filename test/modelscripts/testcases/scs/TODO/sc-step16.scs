@@ -1,7 +1,7 @@
-    # usecase does not exist
+    // usecase does not exist
 
-    #@Issue sc.syn.Story.NoUsecase 1
-    #@Issue else *
+    //@Issue sc.syn.Story.NoUsecase 1
+    //@Issue else *
 
 scenario model Sc_step02
 

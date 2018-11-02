@@ -1,5 +1,5 @@
-    #@Issue mgm.sem.Import.Allowed 1
-    #@Issue level *
+    //@Issue mgm.sem.Import.Allowed 1
+    //@Issue level *
 
 glossary model GL_Mega07
 import permission model from "a.t"

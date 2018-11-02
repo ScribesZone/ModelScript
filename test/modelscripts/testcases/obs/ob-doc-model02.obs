@@ -1,5 +1,5 @@
-    #@Issue txt.TermNotFound 1
-    #@Issue else *
+    //@Issue txt.TermNotFound 1
+    //@Issue else *
 
 object model Ob_main_turbo
     | `Un` chiffre sur `Deux`

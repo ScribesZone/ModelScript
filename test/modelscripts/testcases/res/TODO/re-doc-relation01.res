@@ -1,10 +1,10 @@
-# fillModel should be implemented in order to have this
-# the detection of TermNotFound. This relies on
-# the creation of text models.
+// fillModel should be implemented in order to have this
+// the detection of TermNotFound. This relies on
+// the creation of text models.
 
 
-    #@Issue txt.TermNotFound 1
-    #@Issue else *
+    //@Issue txt.TermNotFound 1
+    //@Issue else *
 
 relation model M
 import glossary model from 'g01.gls'

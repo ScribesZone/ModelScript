@@ -1,6 +1,6 @@
-    #@Issue ob.ana.Object.UnknownedId 1
-    #@Issue ob.ana.Slot.Missing 1
-    #@Issue else *
+    //@Issue ob.ana.Object.UnknownedId 1
+    //@Issue ob.ana.Slot.Missing 1
+    //@Issue else *
 
 object model A
 import class model from '../cls/cl-ids01.cls'

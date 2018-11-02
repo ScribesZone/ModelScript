@@ -1,7 +1,7 @@
-    # computing overriding object in object model
+    // computing overriding object in object model
 
-    #@Issue st.eval.ObjectCreation.Twice 1
-    #@Issue else *
+    //@Issue st.eval.ObjectCreation.Twice 1
+    //@Issue else *
 
 
 scenario model Sc_main01

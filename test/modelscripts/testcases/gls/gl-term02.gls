@@ -1,5 +1,5 @@
-    #@Issue txt.TermNotFound 5
-    #@Issue else *
+    //@Issue txt.TermNotFound 5
+    //@Issue else *
 
 glossary model A
     | `Nothing` abc `Un`

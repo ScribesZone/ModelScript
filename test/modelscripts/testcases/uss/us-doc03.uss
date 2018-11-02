@@ -1,7 +1,7 @@
-    # two text blocks
+    // two text blocks
 
-    #@Issue src.syn 1
-    #@Issue level *
+    //@Issue src.syn 1
+    //@Issue level *
 
 
 usecase model Us_doc03

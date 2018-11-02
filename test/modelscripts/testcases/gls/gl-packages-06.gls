@@ -1,5 +1,5 @@
-    #@Issue gl.syn.entry.twice 2
-    #@Issue else *
+    //@Issue gl.syn.entry.twice 2
+    //@Issue else *
 
 glossary model Medium
 

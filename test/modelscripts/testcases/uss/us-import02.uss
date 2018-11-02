@@ -1,5 +1,5 @@
-    #@Issue mgm.sem.Import.Allowed 1
-    #@Issue level *
+    //@Issue mgm.sem.Import.Allowed 1
+    //@Issue level *
 
 usecase model Us_import02
 import usecase model from "us-comment01.uss"

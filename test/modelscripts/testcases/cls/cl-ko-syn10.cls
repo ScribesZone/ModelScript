@@ -1,5 +1,5 @@
-    #@Issue cl.syn.EnumLit.Twice 1
-    #@Issue else *
+    //@Issue cl.syn.EnumLit.Twice 1
+    //@Issue else *
 
 
 class model Simple

@@ -1,7 +1,7 @@
-    # check OK actor instances
+    // check OK actor instances
 
-    #@Metric "model descriptor" 0
-    #@Metric "actor instance" 3
+        //@Metric "model descriptor" 0
+        //@Metric "actor instance" 3
 
 scenario model Sc_main01
 

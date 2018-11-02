@@ -1,5 +1,5 @@
-    #@Issue cl.syn.Association.NoCompo 11
-    #@Issue else *
+    //@Issue cl.syn.Association.NoCompo 11
+    //@Issue else *
 
 
 class model ModelScribes
@@ -10,21 +10,21 @@ datatype TextBlock
 datatype SimpleValue
 datatype Metrics_
 
-#---- metamodel objectModel ------------------------------------
+//---- metamodel objectModel ------------------------------------
 
 package objects
 
 class ObjectModel
 
 class Object < ElementFromStep
-# --> class_
+// --> class_
 
 class Link < ElementFromStep
 
 class Slot < ElementFromStep
     attributes
         attribute_name:String
-        #--> attributes
+        //--> attributes
         simpleValue : SimpleValue
 
 class ElementFromStep
@@ -54,7 +54,7 @@ association IsTargetOf
         targetObject : Object[1]
         sourceLinks : Link[*]
 
-#---- metamodel stories ----------------------------------------
+//---- metamodel stories ----------------------------------------
 
 package stories
 
@@ -113,8 +113,8 @@ class LinkDeletionStep < UpdateOperationStep
         targetObjectName : String
         association : Association_
 
-# class LinkObjectCreationStep < UpdateOperationStep
-#v    attrib
+// class LinkObjectCreationStep < UpdateOperationStep
+//v    attrib
 
 class CheckStep < ConsultOperationStep
     attributes
@@ -129,7 +129,7 @@ association Contains
         steps : Step[*]
 
 
-#---- metamodel stories.evaluations ------------------------------
+//---- metamodel stories.evaluations ------------------------------
 
 package stories.evaluations
 
@@ -189,15 +189,15 @@ association ComesFrom
         __element : ElementFromStep[*]
         step : Step[0..1]
 
-#------ accesses ----
+//------ accesses ----
 
 class Access
 
-#------ Issue ----
+//------ Issue ----
 
 class Issue
 
-#---- metamodel classes ------------------------------------
+//---- metamodel classes ------------------------------------
 
 package classes
 

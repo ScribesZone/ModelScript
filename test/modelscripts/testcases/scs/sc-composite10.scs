@@ -1,7 +1,7 @@
-    # create in scenario overriding object in object model
+    // create in scenario overriding object in object model
 
-    #@Issue st.eval.ObjectCreation.Twice 1
-    #@Issue else *
+    //@Issue st.eval.ObjectCreation.Twice 1
+    //@Issue else *
 
 
 

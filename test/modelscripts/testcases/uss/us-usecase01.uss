@@ -1,6 +1,6 @@
-    #@Issue cck.UsecaseModel.ActorLimitsChecker 1
-    #@Issue cck.Usecase.UnusedUsecaseChecker 3
-    #@Issue level *
+    //@Issue cck.UsecaseModel.ActorLimitsChecker 1
+    //@Issue cck.Usecase.UnusedUsecaseChecker 3
+    //@Issue level *
 
 usecase model Us_usecase01
 

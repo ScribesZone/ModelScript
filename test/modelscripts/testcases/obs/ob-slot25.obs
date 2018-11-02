@@ -1,5 +1,5 @@
-    #@Issue ob.ana.Slot.BadType 1
-    #@Issue else *
+    //@Issue ob.ana.Slot.BadType 1
+    //@Issue else *
 
 object model A
 import class model from '../cls/cl-datatype10.cls'

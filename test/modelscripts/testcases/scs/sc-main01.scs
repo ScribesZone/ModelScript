@@ -72,7 +72,7 @@ scenario
             create (sophie, WorksIn, computing)
             create (sophie, Supervise, sophie)
 
-    # assert 2+3*5=3
+    // assert 2+3*5=3
 
     | test
     | A new project is created, the Maxi turbo project
@@ -82,8 +82,8 @@ scenario
         set turbo.name = 'Maxi turbo project'
         set turbo.budget = 5000
         create (computing, Controls, turbo)
-        #create c1 : Control between (computing, turbo)
-        #set c1.frequence =15
+        //create c1 : Control between (computing, turbo)
+        //set c1.frequence =15
 
     | text
         create memphis : Project

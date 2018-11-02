@@ -1,9 +1,9 @@
-    #@Metric "object" 2
-    #@Metric "link" 2
-    #@Metric "plain object" 2
-    #@Metric "plain link" 2
-    #@Metric "link object" 0
-    #@Metric "slot" 5
+        //@Metric "object" 2
+        //@Metric "link" 2
+        //@Metric "plain object" 2
+        //@Metric "plain link" 2
+        //@Metric "link object" 0
+        //@Metric "slot" 5
 
 object model A
 import class model from '../cls/cl-main-cybercompany-a.cls'

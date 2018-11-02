@@ -1,6 +1,6 @@
-    # Error Assoc not found
-    #@Issue sc.syn.LinkOperation.NoAssoc 1
-    #@Issue else *
+    // Error Assoc not found
+    //@Issue sc.syn.LinkOperation.NoAssoc 1
+    //@Issue else *
 
 scenario model Sc_step30
 

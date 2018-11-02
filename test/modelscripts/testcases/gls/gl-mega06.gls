@@ -1,5 +1,5 @@
-    #@Issue mgm.env.Import.Exception 1
-    #@Issue level *
+    //@Issue mgm.env.Import.Exception 1
+    //@Issue level *
 
 glossary model GL_Mega06
 import unexisting model from "a.t"

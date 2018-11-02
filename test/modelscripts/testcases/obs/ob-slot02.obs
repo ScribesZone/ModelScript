@@ -1,7 +1,7 @@
-    # attribute that does not exist
+    // attribute that does not exist
 
-    #@Issue st.eval.Slot.NoAtt 1
-    #@Issue else *
+    //@Issue st.eval.Slot.NoAtt 1
+    //@Issue else *
 
 object model Ob_slot02
 import class model from '../cls/cl-main-cybercompany-a.cls'
