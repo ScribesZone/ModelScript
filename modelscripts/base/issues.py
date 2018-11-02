@@ -326,7 +326,7 @@ class LocalizedSourceIssue(Issue):
             origin=self.location.sourceFile.basename,
             level=self.level.str(),
             kind=self.kind,
-            line=str(self.location.line),
+            line=unicode(self.location.line),
             message=self.message
         )
         return self.level.style.do(
