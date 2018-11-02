@@ -28,7 +28,7 @@ PlainText:
 ;
 
 Comment:
-    /#.*$/
+    /\/\/.*$/
 ;
 
 o_:
