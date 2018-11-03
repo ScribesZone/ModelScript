@@ -10,25 +10,65 @@ Declaration:
 RelationDeclaration:
     'relation' ? name=ID (signature=Signature) ?
     (o_
-        (
-            textBlock=TextBlock ?
-            columnsBlock=ColumnsBlock ?
-            constraintsBlock=ConstraintsBlock ?
-            transformationsBlock=TransformationsBlock ?
-        ) #
+        body = BlockBasedBody
     _o)?
     X
 ;
 
+BlockBasedBody:
+    (
+        textBlock=TextBlock ?
+        columnsBlock=ColumnsBlock ?
+        constraintsBlock=ConstraintsBlock ?
+        transformationsBlock=TransformationsBlock ?
+        propertiesBlock=PropertiesBlock ?
+        entity *= Entity
+    ) #
+;
+
+UniLevelBody:
+    (
+        textBlock=TextBlock ?
+        entity *= Entity
+    ) #
+;
+
 Signature:
     '('
-    columns *= Column [',']
+    columns *= ColumnSpec [',']
     ')'
 ;
 
+
+Entity:
+    Column
+  | Constraint
+  | Property
+;
+
+//-------------------------------------------------------------------------
+// Columns
+//-------------------------------------------------------------------------
+
+ColumnsBlock:
+    'columns'
+    (o_
+        columns *= Column
+    _o)?
+    X
+;
+
 Column:
+    spec=ColumnSpec
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+ColumnSpec:
     key ?= '_'
-    foreignKey ?='#'  // not used yet, since # is comment
+    foreignKey ?='#'
     name=/[A-Za-z][A-Za-z0-9_]*/
     (':' typeSpecification=TypeSpecification) ?
 ;
@@ -45,21 +85,10 @@ DomainSpecification:
     | '{' reals += FLOAT [','] '}'
 ;
 
-ColumnLine:
-    Column
-    (o_
-        textBlock=TextBlock
-    _o)?
-    X
-;
 
-ColumnsBlock:
-    'columns'
-    (o_
-        columns *= ColumnLine
-    _o)?
-    X
-;
+//-------------------------------------------------------------------------
+// Constraints
+//-------------------------------------------------------------------------
 
 ConstraintsBlock:
     'constraints'
@@ -72,7 +101,7 @@ ConstraintsBlock:
 
 Constraint:
       KeyConstraint
-    | DependenceConstraint
+    | DependencyConstraint
     | DomainConstraint
     | ForeignKeyConstraint
 ;
@@ -83,11 +112,18 @@ KeyConstraint:
     X
 ;
 
-DependenceConstraint:
+DependencyConstraint:
     sources += ID [',']
-    '->'
+    kind=DependencyKind
     targets += ID [',']
     X
+;
+
+DependencyKind:
+      label='->'
+    | label='-/>'
+    | label='-ffd>'
+    | label='-/ffd>'
 ;
 
 DomainConstraint:
@@ -107,20 +143,78 @@ ForeignKeyConstraint:
     operator=Operator
     targetProjection=Projection
     X
-    ;
+;
 
 Projection:
     relationName=ID
     '['
     attributeNames *= ID [',']
     ']'
-    ;
+;
 
 Operator:
       '<='
     | '='
     | '<'
-    ;
+;
+
+
+
+//-------------------------------------------------------------------------
+// Properties
+//-------------------------------------------------------------------------
+
+PropertiesBlock:
+    'properties'
+    (o_
+        properties *= Property
+    _o)?
+    X
+;
+
+Property:
+      property = PrimeProperty
+    | property = ClosureProperty
+    | property = FormProperty
+    | property = DependencyConstraint
+;
+
+PrimeProperty:
+    non ?= '/' 'prime' name=ID
+    X
+;
+
+ClosureProperty:
+    '{'
+    lhs +=ID [',']
+    '}' '+'
+    '='
+    '{'
+    rhs +=ID [',']
+    '}'
+    X
+;
+
+FormProperty:
+    FormId
+    X
+;
+
+FormId:
+      '1NF'
+    | '2NF'
+    | '3NF'
+    | 'BCNF'
+    | '4NF'
+
+;
+
+
+
+
+//-------------------------------------------------------------------------
+// Transformations
+//-------------------------------------------------------------------------
 
 TransformationsBlock:
     'transformation'
@@ -128,7 +222,8 @@ TransformationsBlock:
         textBlock=TextBlock ?
         rules *= Rule
         conceptsBlock=ConceptsBlock ?
-    _o)? X
+    _o)?
+    X
 ;
 
 Rule:
@@ -139,9 +234,12 @@ ConceptsBlock:
     'concepts'
     (o_
         concepts *= Concept
-    _o)? X
+    _o)?
+    X
 ;
 
 Concept:
-    name=ID ('.' subname=ID) ? X
+    name=ID ('.' subname=ID) ?
+    X
 ;
+
