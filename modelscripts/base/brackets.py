@@ -97,7 +97,6 @@ class BracketedScript(object):
         # take all lines + a extra virtual line to close everything
         for (index, line) in enumerate(self.lines):
             if not self._is_blank_line(index):
-                print('EE'*10, '...', line)
                 indent=self._line_indent(index)
                 delta=indent-lnbl_indent
                 if self._is_doc_line(index):
@@ -115,8 +114,6 @@ class BracketedScript(object):
                         self.bracketedLines[lnbl_index] += self._suffix(delta)
                 lnbl_index=index
                 lnbl_indent=indent
-            else:
-                print('EE'*10, '// ', line)
 
         # close the last line if any
         if lnbl_index!=-1:
