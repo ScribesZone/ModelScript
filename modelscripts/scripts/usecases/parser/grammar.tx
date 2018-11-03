@@ -9,6 +9,12 @@ Declaration:
     | Interactions
 ;
 
+
+//=========================================================================
+// Actor
+//=========================================================================
+
+
 Actor:
     (kind=ActorKind) ?
     'actor' name=ID
@@ -23,12 +29,202 @@ ActorKind:
     'human' | 'system'
 ;
 
+//=========================================================================
+// Usecases
+//=========================================================================
+
 Usecase:
     'usecase' name=ID
     (o_
-        textBlock=TextBlock
-    _o)? X
+        (
+            textBlock = TextBlock ?
+            actorBlock = ActorBlock ?
+            personaBlock = PersonaBlock ?
+            descriptionBlock = DescriptionBlock ?
+            goalBlock = GoalBlock ?
+            preconditionBlock = PreconditionBlock ?
+            triggerBlock = TriggerBlock ?
+            postconditionBlock = PostconditionBlock ?
+            riskBlock = RiskBlock ?
+            frequencyBlock = FrequencyBlock ?
+            volumeBlock = VolumeBlock ?
+            flowBlock = FlowBlock ?
+            extensionBlock = ExtensionBlock ?
+        ) #
+    _o)?
+    X
 ;
+
+//---- actors -------------------------------------------------------------
+
+ActorBlock:
+    actors *= UsecaseActor
+;
+
+UsecaseActor:
+    (kind = UsecaseActorKind) ?
+    'actor'
+    name = ID
+    X
+;
+
+UsecaseActorKind:
+      'primary'
+    | 'secondary'
+;
+
+
+//---- personae -----------------------------------------------------------
+
+PersonaBlock:
+    personas *= Persona
+;
+
+Persona:
+    'persona' name=ID
+    (o_
+        (
+            textBlock=TextBlock ?
+            volumeBlock=VolumeBlock ?
+            frequencyBlock=FrequencyBlock ?
+        ) #
+    _o)?
+    X
+;
+
+VolumeBlock:
+    'volume'
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+FrequencyBlock:
+    'frequency'
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+
+//---- description/goal/precondition ... ----------------------------------
+
+DescriptionBlock:
+    'description'
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+GoalBlock:
+    'goal'
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+PreconditionBlock:
+    'precondition'
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+TriggerBlock:
+    'trigger'
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+PostconditionBlock:
+    'postcondition'
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+RiskBlock:
+    'risk' (':' level=RiskLevel) ?
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+RiskLevel:
+      'low'
+    | 'medium'
+    | 'high'
+;
+
+FrequencyBlock:
+    'frequency'
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+VolumeBlock:
+    'volume'
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+FlowBlock:
+    'flow'
+    (o_
+        textBlock=TextBlock
+    _o)?
+    X
+;
+
+//---- extension ----------------------------------------------------------
+
+ExtensionBlock:
+    'extension' name=ID 'at' step=INT
+    (o_
+        when = ExtensionWhen
+        flow = ExtensionFlow ?
+        usecase = ExtensionUsecase ?
+    _o)?
+    X
+;
+
+ExtensionWhen:
+    'when'
+    (o_
+        when=TextBlock
+    _o)
+    X
+;
+
+ExtensionFlow:
+    'flow'
+    (o_
+        flow=TextBlock
+    _o)
+    X
+;
+
+ExtensionUsecase:
+    'usecase' name=ID
+    X
+;
+
+//=========================================================================
+// Interactions
+//=========================================================================
 
 
 Interactions:

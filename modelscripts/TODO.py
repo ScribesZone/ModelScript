@@ -325,34 +325,6 @@
 #   Then add error "actor" already imported in participant model
 #   Then add search of actor in participant/local model
 
-#TODO:1 add syntax for usecase description
-#   (primary) actor ? : Actor
-#   (secondary) actors : Actor
-#   personae Bob
-#       | text
-#       volume ?
-#       frequency ?
-#   description ?
-#   goal? : Text
-#   precondition* : Text
-#   trigger* : Text
-#   postcondition* : Text
-#   priority?  must should could wont | low medium high
-#   risk? low medium high
-#   frequency ? : Text
-#   volume ? : Text
-#   flow?
-#      1. xxx
-#         xxx
-#   extension name at 2
-#       when: condition !
-#       flow: ?
-#       usecase X ?
-
-#TODO:2
-
-
-
 #TODO:3 add a user model (projet d'integration)
 #   Usecase model can define actors and import more
 #   Task model can define actors and import more
@@ -413,12 +385,8 @@
 #   Relational class model / relation model
 #================================================================
 
-#TODO:2 add _, # dependencies, form (cf re-main.res)
 
 #TODO:3 generate a ER diagram form model
-
-#TODO:3 check if '#' for foreign key is ok
-#   this requires # to be not a comment
 
 #TODO:3 metamodel to be continued / add semantics
 #   a few elements (relations, columns) seems to exist
