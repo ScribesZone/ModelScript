@@ -13,7 +13,7 @@ class A
     attributes
         /  a : Integer {id}
         / - b : Integer {id}
-        % c : Integer {id,readOnly}
+        # c : Integer {id,readOnly}
         - d : Integer
         + e : Integer
         ~ f : Integer

@@ -11,7 +11,7 @@ class A
         / b : Boolean
         / +c : Integer
         / -d : Integer
-        / %e : Integer
+        / #e : Integer
         / ~f : Integer
         g : Integer {tag1, tag2}
         h : Integer{tag1, id}
