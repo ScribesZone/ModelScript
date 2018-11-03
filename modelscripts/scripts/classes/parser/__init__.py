@@ -285,7 +285,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                         None:'public',
                         '+':'public',
                         '-':'private',
-                        '%':'protected',
+                        '#':'protected',
                         '~':'package' } [deco.visibility]
                     is_derived=deco.isDerived is not None
                 if ast_attribute.metaPart is None:

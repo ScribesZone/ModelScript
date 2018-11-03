@@ -218,7 +218,7 @@ Multiplicity:
 Visibility:
       '-'
     | '+'
-    | '%'
+    | '#'
     | '~'
 ;
 
