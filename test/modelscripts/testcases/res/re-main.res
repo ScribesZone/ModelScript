@@ -1,5 +1,14 @@
 relation model Re_model01
 
+R3(_a,_b,c,d)
+    1NF
+    a,b -> c,d
+    c->d
+    dom(a)=String
+    dom(b)=dom(c)=Integer
+    dom(d)=Real?
+    R1[d] <= R2[d1]
+
 R1(_a, _b, c, d, e)
     | (a,b,c,d) e R1 <=> Le R dont l'identifiant (a,b) a pour
     | attribute c, d et e.
@@ -18,11 +27,35 @@ R2(_d1:Real, dba)
     constraints
         dom(d2)=Real
 
+R2(a,b,c,d)
+    | documentation
+    key a,b
+    key b,c
+    a,b -> c,d,e
+    b,c -> a,d,e
+    c -> d
+    dom(a)=String
+    dom(b)=dom(c)=Integer
+    dom(d)=Real?
+    R1[d] <= R2[d1]
+    prime a
+    prime b
+    /prime f
+    a -/> c
+    c -ffd> d
+    z-/ffd>e
+    1NF
+    2NF
+    3NF
+    BCNF
+    4NF
+    {a}+ = {a,b,c}
+
 relation R3(_a,_b,c,d,e,f,g)
     | documentation
     columns
-        //TODO: _ a : String
-        //TODO: #a : String
+        _ a : String
+        #a : String
         _b : Integer
         c : Integer?
         d : Real
@@ -32,19 +65,22 @@ relation R3(_a,_b,c,d,e,f,g)
     constraints
         key a,b
         key b,c
-        // TODO prime a
-        // TODO prime b
-        // TODO non prime f
         a,b -> c,d
         b,c -> a,d
-        // TODO a /> c
-        // TODO ffd c -> d
-        // TODO non ffd z->e
-        // TODO 1NF, 2NF, 3NF, BCNF, 4NF
-        // TODO {a}+ = {a,b,c}
         R1[d] <= R2[d1]
-    //TODO: dependencies + idem
-    //TODO: form: 1NF, 2NF, ...
+    properties
+        prime a
+        prime b
+        /prime f
+        a -/> c
+        c -ffd> d
+        z-/ffd>e
+        1NF
+        2NF
+        3NF
+        BCNF
+        4NF
+        {a}+ = {a,b,c}
     transformation
         | this is the explaination of the
         | transformation
