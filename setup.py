@@ -2,7 +2,7 @@
 #
 # inspired from http://www.jeffknupp.com/blog/2013/08/16/open-sourcing-a-python-project-the-right-way/
 from __future__ import print_function
-from setuptools import setup, find_packages
+import setuptools
 # from setuptools.command.test import test as TestCommand
 import io
 import os
@@ -21,10 +21,17 @@ def read(file):
     return '\n'.join(buf)
 
 def getLongDescription():
+    """
+    get long description from README.rst
+    :return:
+    """
     return read('README.rst')
 
-#-- get the version ------------------------------------------------
 def getVersion():
+    """
+    get the version by extracting :version: label from CHANGES.txt
+    :return:
+    """
     version_file = read('CHANGES.rst')
     version_match = re.search(r"^:version: *([^\s]+)",
                                   version_file, re.M)
@@ -35,42 +42,47 @@ def getVersion():
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 
-#-- get the requirements from 'requirements.txt' ---------------
 def getRequirements():
+    """
+    get the requirements from 'requirements.txt'
+    :return:
+    """
     from pip.req import parse_requirements
     #install_requirements = parse_requirements('requirements.txt')
     #requirements = [str(ir.req) for ir in install_requirements]
     return [] #  requirements
 
-setup(
+setuptools.setup(
     name = name,
     version=getVersion(),
+    url='https://github.com/ScribesZone/modelscripts/',
+    license='MIT',
     author='escribis',
-    license='',
-    description='Python wrapper and utilities for the USE OCL environment.',
+    author_email='someone@somewhere.org',  #TODO: add proper email
+    description='A Textual Modeling Environment for learning purposes.',
     long_description=getLongDescription(),
-    url='https://github.com/PythonZone/modelscript/',
-    keywords = ['OCL','constraint','UML','validation','query language'],
+    long_description_content_type='text/x-rst',
+    keywords = 'model uml modeling dsl metamodel',
 
     platforms='any',
     classifiers=[
         'Programming Language::Python:: 2.7',
-        'Programming Language::Jython:: 2.7',
         'Development Status :: 4 - Beta',
         'Natural Language :: English',
-        'Intended Audience :: Developers',
+        'Natural Language :: French',
         'Intended Audience :: Education',
         'Operating System :: OS Independent',
+        'License :: OSI Approved :: MIT License',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Software Development :: Libraries :: Application Frameworks',
     ],
-
-
+    python_requires='>=2.7',
     #------ packages-----------------------------------------------------------
     #
-    packages=[
-        'modelscript',
-        ],
+    packages=setuptools.find_packages(),
+    # packages=[
+    #     'modelscripts',
+    #     ],
 
     install_requires=getRequirements(),
     # extras_require={
