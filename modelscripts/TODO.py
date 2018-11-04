@@ -403,6 +403,10 @@
 #   with rule, enforce rule
 #   control in quality control (qc) model
 
+#TODO:3 add norm for python versionning
+#   see https://www.python.org/dev/peps/pep-0440/
+#   https://packaging.python.org/guides/distributing-packages-using-setuptools/#choosing-a-versioning-scheme
+
 #================================================================
 #   Project Model
 #================================================================
