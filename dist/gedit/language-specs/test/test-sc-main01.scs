@@ -1,0 +1,14 @@
+ISS: New issue box for Megamodel -> _:mg()
+ISS: New issue box for ScenarioModel -> _:sc()
+ISS: New issue box for ScenarioModelSource -> sc-main01.scs
+ISS: Add parent "_:sc()" -> "sc-main01.scs"
+ISS: ****NEW LocalizedSourceIssue:src.syn IN sc-main01.scs **** -> **** S:FATAL ERROR:sc-main01.scs:1:Syntax error. (1:4): expecting Not, 'model', ID
+
+
+from modelscripts.base.exceptions import (
+    UnexpectedCase
+    MethodNotDefined,
+
+    UnexpectedChoice)
+
+    UnexpectedState

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language id="cls" _name="cls" version="2.0" _section="Source">
+    <metadata>
+        <property name="globs">*.cls</property>
+    </metadata>
+    <styles>
+        <style id="keyword" _name="Keyword" map-to="modelscripts:keyword"/>
+        <style id="basictype" _name="Basic Type"/>
+    </styles>
+    <definitions>
+        <context id="cls-specifics">
+            <include>
+                <context id="keywords" style-ref="keyword">
+                    <keyword>package</keyword>
+                    <keyword>enumeration</keyword>
+                    <keyword>datatype</keyword>
+                    <keyword>class</keyword>
+                    <keyword>attributes</keyword>
+                    <keyword>association</keyword>
+                    <keyword>composition</keyword>
+                    <keyword>aggregation</keyword>
+                    <keyword>roles</keyword>
+                    <keyword>invariant</keyword>
+                    <keyword>scope</keyword>
+                    <keyword>derive</keyword>
+                    <keyword>ocl</keyword>
+                </context>
+                <context id="types" style-ref="basictype">
+                    <keyword>Boolean</keyword>
+                    <keyword>Integer</keyword>
+                    <keyword>Real</keyword>
+                    <keyword>String</keyword>
+                </context>
+            </include>
+        </context>
+        <context id="cls">
+            <include>
+                <context ref="cls-specifics"/>
+                <context ref="modelscripts:modelscripts"/>
+            </include>
+        </context>
+    </definitions>
+</language>

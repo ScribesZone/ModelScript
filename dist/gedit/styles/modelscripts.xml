@@ -1,0 +1,55 @@
+<style-scheme name="ModelScripts" id="modelscripts" version="1.0">
+  <author>escribis</author>
+  <description>Classic color scheme</description>
+
+
+  <style name="cls:basictype"	foreground="#22ABDD" />
+  <style name="scs:word"	foreground="#4422DD" bold="true"/>
+  <style name="modelscripts:doc"	foreground="#4400AA" italic="true"/>
+
+
+
+  <!--  regular editor stuff --------------------------------------------->
+  <style name="current-line"	background="#44ee0c" />
+  <style name="current-line-number"	background="#ee00ec" />
+  <style name="draw-spaces"	foreground="#babdb6" />
+  <style name="background-pattern"	background="#f3f3f3" />
+  <style name="bracket-match"	foreground="#FFFFFF" background="#BEBEBE" bold="true" />
+  <style name="bracket-mismatch"	foreground="#FFFFFF" background="#FF0000" bold="true" />
+  <style name="right-margin"	foreground="#000000" background="#000000" />
+  <style name="search-match"	background="#FFFF00" />
+
+
+
+  <style name="def:comment"	foreground="#0000FF" />
+  <style name="def:shebang"	foreground="#0000FF" bold="true" />
+  <style name="def:doc-comment-element"	italic="true" />
+  <style name="def:constant"	foreground="#FF00FF" />
+  <style name="def:special-char"	foreground="#6A5ACD" />
+  <style name="def:identifier"	foreground="#008A8C" />
+  <style name="def:statement"	foreground="#A52A2A" bold="true" />
+  <style name="def:type"	foreground="#2E8B57" bold="true" />
+  <style name="def:preprocessor"	foreground="#A020F0" />
+  <style name="def:error"	background="#FF0000" bold="true" />
+  <style name="def:warning"	background="#FF3F00" />
+  <style name="def:note"	foreground="#0000FF" background="#FFFF00" bold="true" />
+  <style name="def:underlined"	italic="true" underline="true" />
+  <style name="diff:added-line"	foreground="#008B8B" />
+  <style name="diff:removed-line"	foreground="#6A5ACD" />
+  <style name="diff:changed-line"	foreground="#A020F0" />
+  <style name="diff:special-case"	foreground="#FF00FF" />
+  <style name="diff:location"	foreground="#A52A2A" bold="true" />
+  <style name="diff:diff-file"	foreground="#2E8B57" bold="true" />
+  <style name="xml:tags"	foreground="#008A8C" />
+  <style name="xml:attribute-name"	foreground="#6A5ACD" />
+  <style name="xml:namespace"	foreground="#2E8B57" bold="true" />
+  <style name="js:object"	foreground="#2E8B57" bold="true" />
+  <style name="js:constructors"	foreground="#008B8B" />
+  <style name="latex:display-math"	foreground="#6A5ACD" />
+  <style name="latex:command"	foreground="#2E8B57" bold="true" />
+  <style name="latex:include"	foreground="#A020F0" />
+  <style name="sh:variable"	foreground="#6A5ACD" />
+  <style name="Others"	foreground="#2E8B57" bold="true" />
+  <style name="Others 2"	foreground="#008B8B" />
+  <style name="Others 3"	foreground="#6A5ACD" />
+</style-scheme>

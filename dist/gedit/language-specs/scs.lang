@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language id="scs" _name="scs" version="2.0" _section="Source">
+    <metadata>
+        <property name="globs">*.scs</property>
+    </metadata>
+    <styles>
+        <style id="keyword" _name="Keyword" map-to="modelscripts:keyword"/>
+        <style id="word" _name="Word"/>
+    </styles>
+    <definitions>
+        <context id="scs-specifics">
+            <include>
+                <context id="keywords" style-ref="keyword">
+                    <keyword>scenario</keyword>
+                    <keyword>glossary</keyword>
+                    <keyword>class</keyword>
+                    <keyword>usecase</keyword>
+
+                    <keyword>intention</keyword>
+                    <keyword>summary</keyword>
+                    <keyword>actor</keyword>
+                    <keyword>instances</keyword>
+                    <keyword>context</keyword>
+                    <keyword>do</keyword>
+                </context>
+                <context id="words" style-ref="word">
+                    <keyword>create</keyword>
+                    <keyword>set</keyword>
+                    <keyword>init</keyword>
+                    <keyword>delete</keyword>
+                    <keyword>update</keyword>
+                    <keyword>read</keyword>
+                    <keyword>assert</keyword>
+                    <keyword>check</keyword>
+                </context>
+            </include>
+        </context>
+        <context id="scs">
+            <include>
+                <context ref="scs-specifics"/>
+                <context ref="modelscripts:modelscripts"/>
+            </include>
+        </context>
+    </definitions>
+</language>
