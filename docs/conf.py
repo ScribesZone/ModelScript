@@ -4,7 +4,6 @@
 import sys
 import os
 
-
 #--------------------------------------------------------------------------
 # >+JFE
 #--------------------------------------------------------------------------
@@ -55,22 +54,22 @@ import os
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.napoleon',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.viewcode',
+    # 'sphinx.ext.autodoc',
+    # 'sphinx.ext.napoleon',
+    # 'sphinx.ext.autosummary',
+    # 'sphinx.ext.viewcode',
      # 'sphinx.ext.doctest',
     # 'sphinx.ext.intersphinx',
-    'sphinx.ext.todo',
+    # 'sphinx.ext.todo',
     # 'sphinx.ext.coverage',
     # 'sphinx.ext.ifconfig',
 ]
 
-autodoc_member_order = 'bysource'
-autoclass_content = 'both'
-autodoc_default_flags = ['undoc-members']
-autosummary_generate = True
-napoleon_use_param = True
+# autodoc_member_order = 'bysource'
+# autoclass_content = 'both'
+# autodoc_default_flags = ['undoc-members']
+# autosummary_generate = True
+# napoleon_use_param = True
 
 
 
@@ -324,3 +323,267 @@ texinfo_documents = [
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'http://docs.python.org/': None}
 
+# from pygments.lexer import RegexLexer
+from pygments import lexer
+from pygments import token
+from sphinx.highlighting import lexers
+import re
+
+"""
+Comment
+    Multiline
+    Special
+"""
+
+class ModelScriptLexer(lexer.RegexLexer):
+    # see http://pygments.org/docs/lexerdevelopment/
+    flags=re.MULTILINE | re.UNICODE
+    # keywords is added. not in the pygment framework.
+    keywords=\
+        """
+        model
+        import
+        """.split()
+    tokens = {
+        'root': [
+
+            ('^(\w+)( +)(model)( *)(\w*)',
+             lexer.bygroups(
+                 token.Keyword,
+                 lexer.Text,
+                 token.Keyword,
+                 lexer.Text,
+                 token.Name.Class
+             )),
+
+            # ('Alpha',token.Name.Class),
+            # ('One',token.Name.Attribute),
+
+            (r' *\|', token.Comment.Multiline, 'comment'),
+            (r'//.*\n', token.Comment.Special),
+            (r'--.*\n', token.Comment.Special),
+            (r'".*"', token.Literal.String),
+            (r'\'.*\'', token.Literal.String),
+            (r'\-?[0-9]+(\.[0-9]+)?', token.Literal.Number),
+            (r' ', token.Text),
+            (r'[.,{}:;<>()=+\-*\[\]]', token.Text)
+
+        ],
+        'comment': [
+            ('`\w+`', token.Name.Function),   # Name.Entity
+            ('.', token.Comment)
+        ]
+    }
+
+#--------------------------------------------------------------------------
+#  GlossaryScript Lexer
+#--------------------------------------------------------------------------
+
+GlossaryScriptKeywords= """
+    synonyms
+    inflections
+    translations
+    package
+    """.split()
+
+class GlossaryScriptLexer(ModelScriptLexer):
+    name = 'GlossaryScript'
+    # flags = re.MULTILINE | re.UNICODE
+    tokens = {
+        'root': [
+            lexer.inherit,
+            ('(package)( +)(\w+)',
+             lexer.bygroups(
+                 token.Keyword,
+                 lexer.Text,
+                 token.Name.Class)),
+            (lexer.words(GlossaryScriptKeywords, suffix=r'\b'), token.Keyword),
+            ('^\w+', token.Name.Class),
+            (r'\w+', token.Name),
+        ]
+    }
+
+lexers['GlossaryScript'] = GlossaryScriptLexer(
+    startinline=True,
+    encoding = 'utf-8')
+
+
+
+
+#--------------------------------------------------------------------------
+#  ClassScript Lexer
+#--------------------------------------------------------------------------
+
+ClassScriptKeywords= """
+    enum
+    abstract
+    class
+    end
+    attributes
+    operations
+    
+    derived
+    init
+    
+    Set
+    Bag
+    OrderedSet
+    Sequence
+    
+    association
+    between
+    role
+    associationclass
+    $
+    inv
+    pre 
+    post
+    begin
+    new
+    declare
+    
+    """.split()
+
+class ClassScriptLexer(ModelScriptLexer):
+    name = 'ClassScript'
+    # flags = re.MULTILINE | re.UNICODE
+    tokens = {
+        'root': [
+            lexer.inherit,
+            ('(enum|class|association|associationclass)( +)(\w+)',
+                lexer.bygroups(
+                    token.Keyword,
+                    lexer.Text,
+                    token.Name.Class)),
+            (lexer.words(ClassScriptKeywords, suffix=r'\b'), token.Keyword),
+            (r'\w+', token.Name),
+        ]
+    }
+
+lexers['ClassScript'] = ClassScriptLexer(
+    startinline=True,
+    encoding = 'utf-8')
+
+
+
+
+# --------------------------------------------------------------------------
+#  ObjectScript Lexer
+# --------------------------------------------------------------------------
+
+ObjectScriptKeywords = """
+    create
+    new
+    insert
+    into
+    between
+    """.split()
+
+
+class ObjectScriptLexer(ModelScriptLexer):
+    name = 'ObjectScript'
+    # flags = re.MULTILINE | re.UNICODE
+    tokens = {
+        'root': [
+            lexer.inherit,
+            (lexer.words(ObjectScriptKeywords, suffix=r'\b'), token.Keyword),
+            (r'\w+', token.Name),
+        ]
+    }
+
+
+lexers['ObjectScript'] = ObjectScriptLexer(
+    startinline=True,
+    encoding='utf-8')
+
+
+
+
+# --------------------------------------------------------------------------
+#  UsecaseScript Lexer
+# --------------------------------------------------------------------------
+
+UsecaseScriptKeywords = """
+    
+    interactions
+    a
+    an
+    can 
+    
+    actor
+    
+    usecase
+    primary
+    secondary
+    adhoc
+    persona
+    volume
+    frequency
+    description
+    goal
+    precondition
+    trigger
+    postcondition
+    risk
+    low
+    high
+    medium
+    flow
+    extension
+    at
+    when
+    """.split()
+
+
+class UsecaseScriptLexer(ModelScriptLexer):
+    name = 'UsecaseScript'
+    # flags = re.MULTILINE | re.UNICODE
+    tokens = {
+        'root': [
+            lexer.inherit,
+            ('^(usecase)( +)(\w+)',
+             lexer.bygroups(token.Keyword, lexer.Text, token.Name.Class)),
+            ('(extension)( +)(\w+)',
+             lexer.bygroups(token.Keyword, lexer.Text, token.Name.Class)),
+            (lexer.words(UsecaseScriptKeywords, suffix=r'\b'), token.Keyword),
+            (r'\w+', token.Name),
+        ]
+    }
+
+
+lexers['UsecaseScript'] = UsecaseScriptLexer(
+    startinline=True,
+    encoding='utf-8')
+
+
+
+# --------------------------------------------------------------------------
+#  AUIScript Lexer
+# --------------------------------------------------------------------------
+
+AUIScriptKeywords = """
+    
+    aui
+    space
+    concepts
+    links
+    back
+    to
+    """.split()
+
+
+class AUIScriptLexer(ModelScriptLexer):
+    name = 'AUIScript'
+    # flags = re.MULTILINE | re.UNICODE
+    tokens = {
+        'root': [
+            lexer.inherit,
+            (lexer.words(AUIScriptKeywords, suffix=r'\b'), token.Keyword),
+            (r'\w+', token.Name),
+        ]
+    }
+
+
+lexers['AUIScript'] = AUIScriptLexer(
+    startinline=True,
+    encoding='utf-8')
