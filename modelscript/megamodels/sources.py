@@ -80,7 +80,7 @@ class ASTBasedModelSourceFile(SourceFile):
         #----- (0) create an empty model ---------
 
         # Create an empty model
-        # Not to be moved after super
+        # Not to be moved after super(...)
         # This should be done in all case so that
         # the model attribute always exist even if there
         # are some error in reading the file
