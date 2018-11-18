@@ -16,7 +16,7 @@ ClassScript
 -----------
 
 CLassScript is a textual notation for UML `class diagrams`_.
-In the current version of ModelScripts, called ModelScriptsX, the
+In the current version of ModelScript, called ModelScript1, the
 ``ClassScript`` language is a subset of the `USE OCL`_ language.
 ClassScript different very slightly:
 * some annotations are added inside USE OCL comments (,

@@ -9,7 +9,7 @@ import os
 import sys
 import re
 
-name = 'modelscripts'
+name = 'modelscript'
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -55,7 +55,7 @@ def getRequirements():
 setuptools.setup(
     name = name,
     version=getVersion(),
-    url='https://github.com/ScribesZone/modelscripts/',
+    url='https://github.com/ScribesZone/modelscript/',
     license='MIT',
     author='escribis',
     author_email='someone@somewhere.org',  #TODO: add proper email
@@ -81,7 +81,7 @@ setuptools.setup(
     #
     packages=setuptools.find_packages(),
     # packages=[
-    #     'modelscripts',
+    #     'modelscript',
     #     ],
 
     install_requires=getRequirements(),

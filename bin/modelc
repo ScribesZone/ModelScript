@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 source $THISDIR/../.venv/bin/activate
-python $THISDIR/../modelscripts/interfaces/modelc/shell.py $*
+python $THISDIR/../modelscript/interfaces/modelc/shell.py $*

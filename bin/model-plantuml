@@ -6,12 +6,12 @@ PLANTUML_FILE=$1
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PYTHONPATH=$THISDIR/..
 
-PYTHON_SCRIPT=$THISDIR/../modelscripts/tools/plantuml/engine/__init__.py
+PYTHON_SCRIPT=$THISDIR/../modelscript/tools/plantuml/engine/__init__.py
 #if [ "${SCRIPT?}" == "" ]
 #then
 #    SCRIPT_FILE=""
 #else
-#    SCRIPT_FILE=$THISDIR/../test/modelscripts/testcases/${SCRIPT?}
+#    SCRIPT_FILE=$THISDIR/../test/modelscript/testcases/${SCRIPT?}
 #fi
 PYTHONPATH=$PYTHONPATH \
     python \

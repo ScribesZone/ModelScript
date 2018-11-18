@@ -4,7 +4,7 @@
         <property name="globs">*.scs</property>
     </metadata>
     <styles>
-        <style id="keyword" _name="Keyword" map-to="modelscripts:keywords"/>
+        <style id="keyword" _name="Keyword" map-to="modelscript:keywords"/>
         <style id="word" _name="Word"/>
     </styles>
     <definitions>
@@ -38,7 +38,7 @@
         <context id="scs">
             <include>
                 <context ref="scs-specifics"/>
-                <context ref="modelscripts:modelscripts"/>
+                <context ref="modelscript:modelscript"/>
             </include>
         </context>
     </definitions>

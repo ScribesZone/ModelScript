@@ -1,11 +1,11 @@
-<style-scheme name="ModelScripts" id="modelscripts" version="1.0">
+<style-scheme name="ModelScript" id="modelscript" version="1.0">
   <author>escribis</author>
   <description>Classic color scheme</description>
 
 
   <style name="cls:basictype"	foreground="#22ABDD" />
   <style name="scs:word"	foreground="#4422DD" bold="true"/>
-  <style name="modelscripts:doc"	foreground="#4400AA" italic="true"/>
+  <style name="modelscript:doc"	foreground="#4400AA" italic="true"/>
 
 
 

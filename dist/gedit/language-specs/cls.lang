@@ -8,7 +8,7 @@
         <property name="globs">*.cls</property>
     </metadata>
     <styles>
-        <style id="keyword" _name="Keyword" map-to="modelscripts:keyword"/>
+        <style id="keyword" _name="Keyword" map-to="modelscript:keyword"/>
         <style id="basictype" _name="Basic Type"/>
     </styles>
     <definitions>
@@ -40,7 +40,7 @@
         <context id="cls">
             <include>
                 <context ref="cls-specifics"/>
-                <context ref="modelscripts:modelscripts"/>
+                <context ref="modelscript:modelscript"/>
             </include>
         </context>
     </definitions>

@@ -16,13 +16,13 @@ SCRIPT=$2
 
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 PYTHONPATH=$THISDIR/..
-PYTHON_SCRIPT=$THISDIR/../modelscripts/base/grammars.py
-GRAMMAR_FILE=$THISDIR/../modelscripts/scripts/${LANGUAGE?}/parser/grammar.tx
+PYTHON_SCRIPT=$THISDIR/../modelscript/base/grammars.py
+GRAMMAR_FILE=$THISDIR/../modelscript/scripts/${LANGUAGE?}/parser/grammar.tx
 if [ "${SCRIPT?}" == "" ]
 then
     SCRIPT_FILE=""
 else
-    SCRIPT_FILE=$THISDIR/../test/modelscripts/testcases/${SCRIPT?}
+    SCRIPT_FILE=$THISDIR/../test/modelscript/testcases/${SCRIPT?}
 fi
 PYTHONPATH=$PYTHONPATH \
     python \

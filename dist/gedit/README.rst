@@ -2,7 +2,7 @@ GEdit - Syntax Highligting
 ==========================
 
 This directory contains resources to add Syntax Highlighting for
-ModelScripts languages.
+ModelScript languages.
 
 Language specification
 ----------------------

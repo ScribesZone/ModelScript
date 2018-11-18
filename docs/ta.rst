@@ -14,7 +14,7 @@ available to *task models*.
 
 For more information about Kmade_ see the `Kmade user manual`_.
 
-Note that the integration between Kmade_ and ModelScripts is achieved via
+Note that the integration between Kmade_ and ModelScript is achieved via
 the XML representation of Kmade_ model.
 
 ..  _Kmade: https://forge.lias-lab.fr/projects/kmade

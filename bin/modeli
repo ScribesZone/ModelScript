@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-# ipython --no-banner --ipython-dir /D2/ScribesZone/ModelScripts/modelscripts/res/ipython
-ipython --no-banner -i ${THISDIR}/../modelscripts/interfaces/modeli.py $*
+# ipython --no-banner --ipython-dir /D2/ScribesZone/ModelScript/modelscript/res/ipython
+ipython --no-banner -i ${THISDIR}/../modelscript/interfaces/modeli.py $*
