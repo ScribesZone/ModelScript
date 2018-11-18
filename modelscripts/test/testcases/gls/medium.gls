@@ -5,6 +5,7 @@ glossary model Medium
     | ceci `est` la description de `un` élément
     | dans `un` contexte `uno` et `deux`
     | `un` `test`
+    language: fr
 
 Trois
     | a
@@ -23,8 +24,6 @@ Reference
     | `deux` mot. Attention à l'`indentation`
     | qui doit être toujours de `huit` espaces.
     synonyms : a b c
-    package : a
-
 
 Deux
     | ceci est la description de `un` élément
