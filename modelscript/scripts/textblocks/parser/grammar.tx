@@ -28,7 +28,11 @@ PlainText:
 ;
 
 Comment:
-    /\/\/.*$/
+    /(\/\/.*$)|(--.*$)/
+
+    // ModelScript1:
+    //      for some very strange reason it is not possible to replace
+    //      . with [^@\|]
 ;
 
 o_:

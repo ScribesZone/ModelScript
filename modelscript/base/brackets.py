@@ -15,18 +15,34 @@ class BracketError(Exception):
 
 class BracketedScript(object):
 
+
+    #-- input parameters ------------------------------------------
+
     SPACE_INDENT=4
-    # OPENING_BRACKET='{_'
-    OPENING_BRACKET='\000{'
-    # CLOSING_BRACKET='}_'
-    CLOSING_BRACKET='\000}'
-    #EOL=';_'
-    EOL='\000;'
-    IS_BLANK_LINE='^ *(//.*)?$'
+
+    IS_BLANK_LINE='^ *((--[^@\|]*)|(\/\/.*))?$'
+    # In brackets comments are just ignored for indentation purposes
+    # but they still go to regular parsing
+    # Comment definition is also implemented in the
+    # grammar textblocks/parser/grammar.tx
+    #
+    # ModelScript1:
+    #      added [^@\|] so that --@ and --| are not treated as comment
+
     IS_DOC_LINE_REGEX='^ *\|'
-    # CLOSING_DOC_LINE='|_'
+
+
+
+    #-- output parameters -----------------------------------------
+
+    OPENING_BRACKET='\000{'
+
+    CLOSING_BRACKET='\000}'
+
+    EOL='\000;'
+
     CLOSING_DOC_LINE='\000|'
-    # DOC_LINE_CONTENT=' *\| ?(?P<content>.*)\|_;_(}_;_)*$'
+
     DOC_LINE_CONTENT=' *\| ?(?P<content>.*)\000\|\000;(\000}\000;)*$'
 
 
