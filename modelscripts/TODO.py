@@ -386,6 +386,7 @@
 #================================================================
 
 
+#TODO:2 add mario notation (see todo in re-main)
 #TODO:3 generate a ER diagram form model
 
 #TODO:3 metamodel to be continued / add semantics
