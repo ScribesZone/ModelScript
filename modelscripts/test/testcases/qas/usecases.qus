@@ -28,15 +28,3 @@ ignore rule SystemNaming
     | The name of the system is not important in the
     | context as it is not used anyway
 
-ActorLimits check #1
-    person KIJ
-    date: 2012-10-23
-    result: OK
-    | sdkfjsldf dkfj ldkfkjsdf
-
-ActorLimits check #2
-    person KIJ
-    date 2012-10-23
-    result KO
-    comment
-        kfk sdkfjsldf dkfj ldkfkjsdf
