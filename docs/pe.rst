@@ -1,5 +1,21 @@
 .. .. coding=utf-8
 
-pr - Permission models
-======================
+pr - Permissions
+================
+
+Subject
+-------
+
+Action
+------
+
+Permission
+----------
+
+Resource
+--------
+
+
+
+
 

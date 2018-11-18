@@ -1,98 +1,157 @@
 .. .. coding=utf-8
 
-cl - CLass models
-=================
+.. highlight:: ClassScript
+   :linenothreshold: 0
 
-Examples
---------
+cl - CLasses
+============
 
-::
-
-    class model
-        | This model describes
-
-
-    enum MyEnum:
-        | comment for the enum
-        a
-            | text for this value
-        b
-        v
+Class models, as implemented here, are subsets of UML class models. A class
+model is defined through a series of *classes*, *associations* and
+*enumerations*.
 
 
-    abstract class A < B:
-        { abstract }
-        | The site could be temporarily unavailable or too busy.
-        | Try again in a few moments. If you are unable to load any
-        | pages, check your computer’s network connection.
-        | If your computer or network is protected by a firewall
-        | or proxy, make sure that Firefox is permitted to access the
-        | Web.
-        attributes:
-            "init" x : String {unique} {id}
-                {x=3}
-                | The site could be temporarily unavailable or too busy.
-                | Try again in a few moments. If you are unable to
-                | load any check your computer’s network connection.
-                permissions:
-                    Employee, Student can R
-                    Prendre can RU
-            r : Integer[0..1]
 
-            hasItems : Boolean
+ClassScript
+-----------
 
-            /isBlocked : Boolean
-                def: Z
+CLassScript is a textual notation for UML `class diagrams`_.
+In the current version of ModelScripts, called ModelScriptsX, the
+``ClassScript`` language is a subset of the `USE OCL`_ language.
+ClassScript different very slightly:
+* some annotations are added inside USE OCL comments (,
+* only
+Class script is a (very slightly) augmented version of the
+class language. While in the context of USE the
+``.use`` extension is used, ``.cls`` is the extension of class scripts.
 
-        operations:
-            op(p1:X):Set(X):
-                | The site could be temporarily unavailable or too busy.
-                def: x+3*6*(
-                    +c)
-                pre a1:
-                    True
-                post a2:
+Enumerations
+------------
 
-            op2
-        invariants
-            inv1 :
-                true
-        permissions:
-            actor Employee : CRUD
-            actor Student : R
-            usecase RetirerA : CUD
+..  code-block:: ClassScript
 
-    association X:
-        roles:
-            A : B[*]
-            B : A[0..1]
+    enum Season {
+        --| Documentation of the enumeration
+        --| Explains what is a season.
+        winter,
+            --| Documentation of the
+            --| winter value
+        autumn,
+            --| Documentation of the autumn value
+        spring,
+        summer
+    }
 
-    associationclass R < C:
-        roles:
-            A : B[*]
-            B : A[0..1]
-        attributes:
-            x : String
-            c : Photo
-        operations:
-            op()
-            op2
-
-
-    invariant A:
-        | a
-        location:
-        python:
-            dfjgldskfsgjdlfg
-        ocl:
-            True and
-            False
 
 Classes
 -------
 
+UML class diagram:
+
+..  image:: media/USEOCLClasses.png
+    :align: center
+
+
+ClassScript (USE OCL):
+
+..  code-block:: ClassScript
+
+    class Yellow
+        --| Documentation of the
+        --| yellow class
+    end
+
+    abstract class Something
+        --| Something is an abstract class
+    end
+
+    abstract class Fruit < Something
+        --| Fruits are particular cases of Something
+    end
+
+    class Banana < Fruit, Yellow
+        --| Bananas are both fruits and
+        --| yellow things.
+    end
+
+
+Attributes
+----------
+
+ClassScript (USE OCL):
+
+..  code-block:: ClassScript
+
+    class Banana
+        --| A Banana is a nice Fruit that growths
+        --| in the forest.
+        attributes
+            _name : String --@ {id} {derived} {optional}
+                --| A banana always have nice names.
+            length : Integer
+                --| The length of the banana
+                --| is between 5 and 40
+            size : Real
+            frozen : Boolean
+            expirationDate: String --@ {date}
+            growthTime : Season
+            remainingDays : Integer
+    end
+
 Associations
 ------------
 
-Invariants
-----------
+UML class diagram:
+
+..  image:: media/USEOCLAssociationUSE.png
+    :align: center
+
+ClassScript (USE OCL):
+
+..  code-block:: ClassScript
+
+    association Owns
+        --| A person owns some cars if he or she *
+        --| bought it and didn't sell it.
+        between
+            Person [1] role owner
+            Car[*] role properties
+                --| A person can have several
+                --| properties if he or she's lucky
+    end
+
+Note that the roles order is important. In the example above the
+association reads "(an) owner Owns (some) ownedCars": the first
+role is the subject of the verb, the second role is the complement.
+The role order is also when creating links in object diagrams.
+
+Association Classes
+-------------------
+
+UML Diagram:
+
+..  image:: media/USEOCLAssociationClassUSE.png
+    :align: center
+
+Class Script (USE OCL):
+
+
+..  code-block:: ClassScript
+
+    associationclass Hate
+        --| Some monkeys hate some snakes.
+        --| That's life. Life in the jungle.
+        between
+            Monkey [*] role monkeys
+            Snake [*] role snakes
+        attributes
+            reason : String
+            intensity : Integer
+    end
+
+
+
+
+..  _`USE OCL`: http://sourceforge.net/projects/useocl/
+
+.. _`class diagrams`: https://www.uml-diagrams.org/class-diagrams-overview.html

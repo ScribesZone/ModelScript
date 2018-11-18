@@ -1,3 +1,5 @@
+GEdit support
+=============
 
 Class model specification::
 

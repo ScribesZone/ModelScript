@@ -359,17 +359,17 @@ class ModelScriptLexer(lexer.RegexLexer):
             # ('Alpha',token.Name.Class),
             # ('One',token.Name.Attribute),
 
-            (r' *\|', token.Comment.Multiline, 'comment'),
+            (r' *\|', token.Comment.Multiline, 'doc'),
             (r'//.*\n', token.Comment.Special),
             (r'--.*\n', token.Comment.Special),
             (r'".*"', token.Literal.String),
             (r'\'.*\'', token.Literal.String),
             (r'\-?[0-9]+(\.[0-9]+)?', token.Literal.Number),
             (r' ', token.Text),
-            (r'[.,{}:;<>()=+\-*\[\]]', token.Text)
+            (r'[.,{}:;<>()=+\-*\[\]!]', token.Text)
 
         ],
-        'comment': [
+        'doc': [
             ('`\w+`', token.Name.Function),   # Name.Entity
             ('.', token.Comment)
         ]
@@ -449,7 +449,11 @@ class ClassScriptLexer(ModelScriptLexer):
     # flags = re.MULTILINE | re.UNICODE
     tokens = {
         'root': [
+            (r'^ *--\|', token.Comment.Multiline, 'doc'),
+            (r'--@.*\n', token.Comment.Multiline),
+
             lexer.inherit,
+
             ('(enum|class|association|associationclass)( +)(\w+)',
                 lexer.bygroups(
                     token.Keyword,
@@ -485,7 +489,11 @@ class ObjectScriptLexer(ModelScriptLexer):
     # flags = re.MULTILINE | re.UNICODE
     tokens = {
         'root': [
+            (r'^ *--\|', token.Comment.Multiline, 'doc'),
+            (r'--@.*\n', token.Comment.Multiline),
+
             lexer.inherit,
+
             (lexer.words(ObjectScriptKeywords, suffix=r'\b'), token.Keyword),
             (r'\w+', token.Name),
         ]
@@ -569,6 +577,9 @@ AUIScriptKeywords = """
     links
     back
     to
+    transformation
+    from
+    rule
     """.split()
 
 
@@ -585,5 +596,44 @@ class AUIScriptLexer(ModelScriptLexer):
 
 
 lexers['AUIScript'] = AUIScriptLexer(
+    startinline=True,
+    encoding='utf-8')
+
+
+
+
+# --------------------------------------------------------------------------
+#  ScenarioScript Lexer
+# --------------------------------------------------------------------------
+
+ScenarioScriptKeywords = """
+    create
+    new
+    insert
+    into
+    between
+    open
+    """.split()
+
+
+class ScenarioScriptLexer(ModelScriptLexer):
+    name = 'ScenarioScript'
+    # flags = re.MULTILINE | re.UNICODE
+    tokens = {
+        'root': [
+            (r'^ *--\|', token.Comment.Multiline, 'doc'),
+            (r'--@ *usecase.*\n', token.Comment.Special),
+            (r'--@ *context.*\n', token.Comment.Special),
+            (r'--@.*\n', token.Generic.Deleted),
+
+            lexer.inherit,
+
+            (lexer.words(ScenarioScriptKeywords, suffix=r'\b'), token.Keyword),
+            (r'\w+', token.Name),
+        ]
+    }
+
+
+lexers['ScenarioScript'] = ScenarioScriptLexer(
     startinline=True,
     encoding='utf-8')
