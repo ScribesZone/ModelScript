@@ -1,18 +1,18 @@
 usecase model Simple
 
 interactions
-    a CEO can CreateDepartment
-    a Secretary can CreateDepartment
-    a CEO can BrowseBudget
-    a Manager can SetBudget
-    an Employee can BrowseDepartment
+    a CEO can CreateADepartment
+    a Secretary can CreateADepartment
+    a CEO can BrowseTheBudget
+    a Manager can SetTheBudget
+    an Employee can BrowseADepartment
 
 actor CEO
 actor Employee
 actor Manager
 actor Secretary
 
-usecase CreateDepartment
+usecase CreateADepartment
     | résumé du usecase
     primary actor CEO
     secondary actor Secretary
