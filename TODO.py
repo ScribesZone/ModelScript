@@ -9,15 +9,7 @@
 #   a python package ?
 #   check if it works at uni
 
-#TODO:1 add first documentation
-#   This could at least be one page per language
-#   with objectives / examples / concepts / current states
-
-#TODO:1 finish coloring scheme for GEdit
-#   create the style for each language
-#   check how to deploy the styles at uni
-
-#TODO:1 cl/ob/sc launch USE from modelc
+#TODO:1 create cl1/ob1/sc1 script
 
 #TODO:1 add an option to just launch syntax parsing
 
@@ -85,7 +77,31 @@
 
 #TODO:4 add the notion of acronym
 
-#TODO:2 check best way to use coloring for `ok`! and `ok`?
+#TODO:2 rename label/translation to text
+#   this could be
+#
+#        text: "Bibliotheque"
+#   or
+#        texts
+#            fr: "Bibliotheque"
+#            en: "Library"
+#
+
+#TODO:3 add default text language
+#
+#   glossary model X
+#       | This glossary define ...
+#       default language: fr
+#
+# This requires changing the megamodel part to add the
+# attribute "default language" after the definition of "glossary model".
+
+
+#TODO:2 replace `ok`? by `ok?`
+#   This solution is better. Needs should be taken to add ? after letters.
+#
+
+#TODO:2 check best way to use coloring for `ok?` and `ok!`
 #   Using glossary is much better when using GEdit integration
 #   since `ok`!  and `ko`? are displayed. Otherwise in colored
 #   terminal.
