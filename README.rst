@@ -1,6 +1,6 @@
 ModelScript
 ===========
 
-ModelScript is a textual modeling environment to be used in learing
+ModelScript is a textual modeling environment to be used in learning
 context. ModelScript is based on a dozen of textual modeling languages
 some being textual forms of UML, some other being textual DSLs.
