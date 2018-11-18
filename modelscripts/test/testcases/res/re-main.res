@@ -8,6 +8,10 @@ R3(_a,_b,c,d)
     dom(b)=dom(c)=Integer
     dom(d)=Real?
     R1[d] <= R2[d1]
+    R1[d1,d1] <= R2[d1,d2]
+    // TODO:1 R[X] u R[z] = {}
+    // TODO:1 R[X] n R[z] = Persons[X]
+    // TODO:1 R[b,m] not null
 
 R1(_a, _b, c, d, e)
     | (a,b,c,d) e R1 <=> Le R dont l'identifiant (a,b) a pour
