@@ -4,7 +4,7 @@
         <property name="globs">*.scs</property>
     </metadata>
     <styles>
-        <style id="keyword" _name="Keyword" map-to="modelscripts:keyword"/>
+        <style id="keyword" _name="Keyword" map-to="modelscripts:keywords"/>
         <style id="word" _name="Word"/>
     </styles>
     <definitions>

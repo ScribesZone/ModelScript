@@ -4,66 +4,66 @@ Common language definitions for all modelscripts languages
 -->
 <language
         id="modelscripts"
-        _name="ModelScripts"
-        version="2018.0"
+        _name="modelscripts"
+        version="2.0"
         _section="Source">
 
 
-<styles>
-    <style id="keyword"           _name="Keyword"       map-to="def:keyword"/>
-    <style id="comment"           _name="Comment"       map-to="def:comment"/>
-    <style id="doc"               _name="Documentation"/>
-    <style id="annotation"        _name="Annotation"    map-to="def:warning"/>
-    <style id="termok"            _name="Term OK"       map-to="def:identifier"/>
-    <style id="termko"            _name="Term KO"       map-to="def:string"/>
-    <style id="term"              _name="Term"          map-to="def:comment"/>
-</styles>
+    <styles>
+        <style id="keyword"           _name="Keyword"       map-to="def:keyword"/>
+        <style id="comment"           _name="Comment"       map-to="def:comment"/>
+        <style id="doc"               _name="Documentation"/>
+        <style id="annotation"        _name="Annotation"    map-to="def:warning"/>
+        <style id="termok"            _name="Term OK"       map-to="def:identifier"/>
+        <style id="termko"            _name="Term KO"       map-to="def:string"/>
+        <style id="term"              _name="Term"          map-to="def:comment"/>
+    </styles>
 
 
-<definitions>
+    <definitions>
 
-    <context id="annotation" end-at-line-end="true" style-ref="annotation">
-        <start>\*\*</start>
-    </context>
+        <context id="annotation" end-at-line-end="true" style-ref="annotation">
+            <start>\*\*</start>
+        </context>
 
-    <context id="comment" style-ref="comment" end-at-line-end="true">
-        <start>//</start>
-    </context>
+        <context id="comment" style-ref="comment" end-at-line-end="true">
+            <start>//</start>
+        </context>
 
-    <context id="doc" style-ref="doc" end-at-line-end="true">
-        <start>\|</start>
-        <include>
+        <context id="doc" style-ref="doc" end-at-line-end="true">
+            <start>\|</start>
+            <include>
 
-            <context id="termok" style-ref="termok">
-                <match>`\w+`!</match>
-            </context>
+                <context id="termok" style-ref="termok">
+                    <match>`\w+`!</match>
+                </context>
 
-            <context id="termko" style-ref="termko">
-                <match>`\w+`\?</match>
-            </context>
+                <context id="termko" style-ref="termko">
+                    <match>`\w+`\?</match>
+                </context>
 
-            <context id="term" style-ref="term">
-                <match>`\w+`</match>
-            </context>
+                <context id="term" style-ref="term">
+                    <match>`\w+`</match>
+                </context>
 
 
-        </include>
-    </context>
+            </include>
+        </context>
 
-    <context id="keywords" style-ref="keyword">
-        <keyword>model</keyword>
-        <keyword>import</keyword>
-        <keyword>from</keyword>
-    </context>
+        <context id="keywords" style-ref="keyword">
+            <keyword>model</keyword>
+            <keyword>import</keyword>
+            <keyword>from</keyword>
+        </context>
 
-    <context id="modelscripts" class="no-spell-check">
-        <include>
-            <context ref="annotation"/>
-            <context ref="comment"/>
-            <context ref="doc"/>
-            <context ref="keywords"/>
-        </include>
-    </context>
+        <context id="modelscripts" class="no-spell-check">
+            <include>
+                <context ref="annotation"/>
+                <context ref="comment"/>
+                <context ref="doc"/>
+                <context ref="keywords"/>
+            </include>
+        </context>
 
   </definitions>
 </language>

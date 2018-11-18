@@ -9,7 +9,7 @@
 
 
 
-  <!--  regular editor stuff --------------------------------------------->
+  <!--  regular editor stuff -->
   <style name="current-line"	background="#44ee0c" />
   <style name="current-line-number"	background="#ee00ec" />
   <style name="draw-spaces"	foreground="#babdb6" />
