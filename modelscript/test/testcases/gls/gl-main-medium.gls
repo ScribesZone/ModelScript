@@ -5,7 +5,7 @@ glossary model Medium
     | ceci `est` la description de `un` élément
     | dans `un` contexte `uno` et `deux`
     | `un` `test`
-    language: fr
+    -- TODO:2 default language: fr
 
 Trois
     | a
