@@ -1,27 +1,6 @@
+    //@Issue cck.UsecaseModel.ActorLimitsChecker 1
+    //@Issue cck.System.UsecaseLimitsChecker 1
+    //@Issue else *
 
-
-// this is a useless comment
+-- this is a comment
 usecase model Us_comment01
-    | some doc comment
-    | with various lines
-    | and more ...
-    // this is yet another useless comment
-  // but with two lines
-
-human actor Employee
-    | some doc comment
-    | with various lines
-    | and more ...
-
-usecase IncreaseSalary
-    | some doc comment
-    | with various lines
-    | and more ...
-
-usecase DecreaseSalary
-usecase FreezeSalary
-
-interactions
-    Employee IncreaseSalary
-    Employee DecreaseSalary
-    Employee FreezeSalary

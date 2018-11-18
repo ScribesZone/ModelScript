@@ -1,0 +1,5 @@
+    //@Issue src.syn 1
+    //@Issue else *
+
+# this is not a comment
+usecase model Us_comment01

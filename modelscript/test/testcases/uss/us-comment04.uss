@@ -1,0 +1,28 @@
+
+
+-- this is a useless comment
+usecase model Us_comment01
+    | some doc comment
+    | with various lines
+    | and more ...
+    // this is yet another useless comment
+  -- but with three lines
+        -- and using -- instead of //
+
+human actor Employee
+    | some doc comment
+    | with various lines
+    | and more ...
+
+usecase IncreaseSalary
+    | some doc comment
+    | with various lines
+    | and more ...
+
+usecase DecreaseSalary
+usecase FreezeSalary
+
+interactions
+    Employee IncreaseSalary
+    Employee DecreaseSalary
+    Employee FreezeSalary
