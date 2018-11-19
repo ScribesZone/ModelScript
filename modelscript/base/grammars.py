@@ -21,7 +21,7 @@ from modelscript.base.issues import (
     Level,
     LocalizedSourceIssue,
     Levels)
-from modelscript.megamodels.sources import ASTBasedModelSourceFile
+# from modelscript.megamodels.sources import ASTBasedModelSourceFile
 from modelscript.base.exceptions import (
     MethodToBeDefined,
     UnexpectedCase)
@@ -30,7 +30,7 @@ __all__= (
     'Grammar',
     'AST',
     'ModelSourceAST',
-    'ASTBasedModelSourceFile',
+    # 'ASTBasedModelSourceFile',
     'ASTNodeSourceIssue'
 )
 
@@ -237,40 +237,40 @@ class ModelSourceAST(AST):
         )
 
 
-class ASTBasedModelSourceFile(ASTBasedModelSourceFile):
-    """
-    Source file with a model produced via an AST.
-    """
-    def __init__(self, fileName, grammarFile):
-        #type: (Text, Text) -> None
-
-        # self.grammar=Grammar(grammarFile)
-        # #type:
-
-        # self.ast=None  #type: Optional[ModelSourceAST]
-
-        # filled just below
-        # type: Optional[ModelSourceAST]
-        # self.ast=ModelSourceAST(self.grammar, self, fileName)
-
-
-        super(ASTBasedModelSourceFile, self).__init__(
-            fileName,
-            grammarFile)
-        # self.ast=ModelSourceAST(self.grammar, self, fileName)
-
-    def fillModel(self):
-        # self.ast=ModelSourceAST(self.grammar, self)
-        self.model.description = astTextBlockToTextBlock(
-            container=self.model,
-            astTextBlock=(
-                self.ast.model.megamodelPart.modelDefinition.textBlock))
-        self.parseMainBody()
-
-    @abstractmethod
-    def parseMainBody(self):
-        raise MethodToBeDefined( #raise:TODO:4
-            'parseMainBody mist be redefined')
+# class ASTBasedModelSourceFile(ASTBasedModelSourceFile):
+#     """
+#     Source file with a model produced via an AST.
+#     """
+#     def __init__(self, fileName, grammarFile):
+#         #type: (Text, Text) -> None
+#
+#         # self.grammar=Grammar(grammarFile)
+#         # #type:
+#
+#         # self.ast=None  #type: Optional[ModelSourceAST]
+#
+#         # filled just below
+#         # type: Optional[ModelSourceAST]
+#         # self.ast=ModelSourceAST(self.grammar, self, fileName)
+#
+#
+#         super(ASTBasedModelSourceFile, self).__init__(
+#             fileName,
+#             grammarFile)
+#         # self.ast=ModelSourceAST(self.grammar, self, fileName)
+#
+#     def fillModel(self):
+#         # self.ast=ModelSourceAST(self.grammar, self)
+#         self.model.description = astTextBlockToTextBlock(
+#             container=self.model,
+#             astTextBlock=(
+#                 self.ast.model.megamodelPart.modelDefinition.textBlock))
+#         self.parseMainBody()
+#
+#     @abstractmethod
+#     def parseMainBody(self):
+#         raise MethodToBeDefined( #raise:TODO:4
+#             'parseMainBody mist be redefined')
 
 
 class ASTNodeSourceIssue(LocalizedSourceIssue):
