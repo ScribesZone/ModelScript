@@ -1,5 +1,10 @@
 typing
-nose
 textX==1.6.1
-ipython==5.0
+
+#------ optional packages -----------------------
 graphviz
+nose                 # for testing
+sphinx               # for generating docs/.build
+sphinx_rtd_theme     # for generating docs/.build
+
+ipython==5.0         # for use in pycharm for instance
