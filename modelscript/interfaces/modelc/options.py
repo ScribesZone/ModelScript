@@ -6,7 +6,7 @@ __all__=(
     'getOptions',
 )
 
-FULL_INTEFACE=False
+FULL_INTERFACE=False
 
 OPTIONS=[
     ('Dimp','realtimeImportPrint'),
@@ -24,7 +24,7 @@ def _argParser():
     parser = argparse.ArgumentParser(
         prog='modelc',
         description='Compile the given sources.')
-    if FULL_INTEFACE:
+    if FULL_INTERFACE:
         for (parameter,label) in OPTIONS:
             parser.add_argument(
                 '--'+parameter,
@@ -85,10 +85,16 @@ def _argParser():
             type = str,
             nargs = '?')
     parser.add_argument(
+        '--version', '-V',
+        dest='version',
+        action='store_true',
+        help='display modelscript version.',
+        default=False)
+    parser.add_argument(
         'sources',
         metavar='source',
         nargs='*',
-        help='A source file for a model.')
+        help='A model source file or a directory.')
     return parser
 
 def _updateConfig(options):
@@ -102,6 +108,6 @@ def _updateConfig(options):
 def getOptions(args):
     parser = _argParser()
     options = parser.parse_args(args)
-    if FULL_INTEFACE:
+    if FULL_INTERFACE:
         _updateConfig(options)
     return options
