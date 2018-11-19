@@ -8,6 +8,7 @@ from collections import OrderedDict
 
 # initialize the megamodel with metamodels and scripts
 
+from modelscript.base.files import filesInTree
 from modelscript.libs.termcolor import cprint
 from modelscript.base.modelprinters import ModelPrinterConfig
 from modelscript.interfaces.modelc.options import getOptions
@@ -19,23 +20,52 @@ class BuildContext(WithIssueList):
 
     def __init__(self, args):
         super(BuildContext, self).__init__()
+
         self.args=args
+        # The list of command line arguments
+
         self.options=getOptions(args)
-        self.hasManySourceFiles=len(self.options.sources)>=2
+        # The options derived from args
+
+        # self.hasManySourceFiles=len(self.options.sources)>=2
+
         self.sourceMap=OrderedDict()
+        #type: Dict[Text, Optional['SourceFile']]
+        # For each source file name, the corresponding SourceFile
+        # or None if there was an error
+
         self._build()
+
         self.issueBoxList=OrderedIssueBoxList(
             self.allSourceFileList
             +[self])
-        #type: Dict[Text, Optional['SourceFile']]
-        # for each source file name, the corresponding SourceFile
-        # or None if there was an error
+
+    def _displayVersion(self):
+        print('ModelScript - version %s' % Megamodel.model.version)
+
+    def _processSource(self, path):
+        if os.path.isdir(path):
+            extensions=Megamodel.model.metamodelExtensions()
+            filenames=filesInTree(path, suffix=extensions)
+            if self.options.verbose:
+                print('%s/  %i model files found.'
+                      % (path, len(filenames)))
+                print('    '+'\n    '.join(filenames))
+            for filename in filenames:
+                self._processSource(filename)
+        else:
+            source = Megamodel.loadFile(path, self)
+            self.sourceMap[path]=source
 
     def _build(self):
-        for filename in self.options.sources:
-            source = Megamodel.loadFile(filename, self)
-            self.sourceMap[filename]=source
 
+        #--- deal with --version ------------------------------------------
+        if self.options.version:
+            self._displayVersion()
+
+        #--- deal with source files or source dir
+        for path in self.options.sources:
+            self._processSource(path)
 
     @property
     def validSourceFiles(self):

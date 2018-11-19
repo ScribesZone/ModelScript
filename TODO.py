@@ -9,9 +9,13 @@
 #   a python package ?
 #   check if it works at uni
 
-#TODO:1 create cl1/ob1/sc1 script
+#TODO:1 create cl1/ob1/sc1 scripts
 
 #TODO:1 add an option to just launch syntax parsing
+
+#TODO:3 add a warning in modelc for useless directory
+#   If a directory is on the command line
+#   and it does contains any model files then issue a warning
 
 #TODO:2 Deal with Unexpected exception
 #   when in source "except FatalError" -> FatalError exception
