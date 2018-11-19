@@ -46,18 +46,6 @@ def _argParser():
             action='store_true',
             default=False)
         parser.add_argument(
-            '--verbose', '-v',
-            dest='verbose',
-            action='store_true',
-            default=False,
-            help='make output verbose.')
-        parser.add_argument(
-            '--quiet', '-q',
-            dest='quiet',
-            action='store_true',
-            help='create minimal amount of output.',
-            default=False)
-        parser.add_argument(
             '--issues', '-i',
             dest='issues',
             const='top',
@@ -84,6 +72,18 @@ def _argParser():
             choices=['no', 'top', 'bottom'],
             type = str,
             nargs = '?')
+    parser.add_argument(
+        '--verbose', '-v',
+        dest='verbose',
+        action='store_true',
+        default=False,
+        help='make output verbose.')
+    parser.add_argument(
+        '--quiet', '-q',
+        dest='quiet',
+        action='store_true',
+        help='create minimal amount of output.',
+        default=False)
     parser.add_argument(
         '--version', '-V',
         dest='version',
