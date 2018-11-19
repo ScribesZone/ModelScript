@@ -1,10 +1,15 @@
 .. .. coding=utf-8
 
-.. highlight:: none
-   :linenothreshold: 0
+.. highlight:: ObjectScript1
 
-ob - Objects
-============
+.. index::  ! .obs, ! ObjectScript1
+    pair: Script ; ObjectScript1
+
+.. _ObjectScript1:
+
+
+ObjectScript1
+=============
 
 OB Script (OBS) is a textual notation for UML `object diagrams`_.
 Object script is a restricted version of the `USE OCL`_
@@ -13,10 +18,11 @@ SOIL language. While in the context of USE the
 object scripts.
 
 
+
 Enumerations
 ------------
 
-..  code-block:: ObjectScript
+..  code-block:: ObjectScript1
 
     Season::winter
 
@@ -25,7 +31,7 @@ Objects
 
 ObjectScript (USE OCL):
 
-..  code-block:: ObjectScript
+..  code-block:: ObjectScript1
 
     ! create bob : Person
     ! bob.nom := 'bob'
@@ -36,7 +42,7 @@ Links
 
 ObjectScript (USE OCL):
 
-..  code-block:: ObjectScript
+..  code-block:: ObjectScript1
 
 
     ! insert(tian,c232) into Owns
@@ -52,7 +58,7 @@ Link objects
 
 Object Script (USE OCL):
 
-..  code-block:: ObjectScript
+..  code-block:: ObjectScript1
 
     ! c := new Hate between (chita,kaa)
     ! c.reason := "kaa is really mean"
@@ -61,7 +67,7 @@ Object Script (USE OCL):
 Annotated object models
 -----------------------
 
-..  code-block:: ObjectScript
+..  code-block:: ObjectScript1
 
     --| Bob was born  ow
         ! create bob : Personne

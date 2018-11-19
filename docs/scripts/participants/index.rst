@@ -1,6 +1,13 @@
 .. .. coding=utf-8
 
-pa - Participants
+.. highlight:: ParticipantScript
+
+.. index::  ! .pas, ! ParticipantScript
+    pair: Script ; ParticipantScript
+
+.. _ParticipantScript:
+
+ParticipantScript
 =================
 
 The participant model aims to define all kind of participants involved

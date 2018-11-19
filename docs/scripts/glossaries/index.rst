@@ -1,25 +1,31 @@
 .. .. coding=utf-8
 
+.. highlight:: GlossaryScript
+
+.. index::  ! .gls, ! GlossaryScript
+    pair: Script ; GlossaryScript
+
+.. _GlossaryScript:
+
+GlossaryScript
+==============
+
+The ``GlossaryScript`` language, as defined below, allows to express
+*glossaries*. In practice there is only one glossary for a given project
+(although packages can be used to split a glossary in multiple part).
+Glossary scripts are to be saved with the ``.gls`` extension.
+
 .. index:: ! Glossary
 
-gl - Glossaries
-===============
+
+Concepts
+--------
+
+
 
 A *glossary* is a collection of *entries* optionally organized into
 *packages*. The goal of a *glossary* is to define all *terms* used in the
 context of a given project.
-
-
-.. index::  ! .gls, ! GlossaryScript
-    single: Script ; GlossaryScript
-
-GlossaryScript
---------------
-
-The ``GlossaryScript`` language, as defined below, allows to express
-glossaries. In practice there is only one glossary for a given project
-(although packages can be used to split a glossary in multiple part).
-Glossary scripts are to be saved with the ``.gls`` extension.
 
 In essence a *glossary* is:
 

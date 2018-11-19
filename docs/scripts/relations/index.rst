@@ -1,6 +1,15 @@
 .. .. coding=utf-8
 
-re - Relations
+..  .. highlight:: RelationScript
+
+.. index::  ! .res, ! RelationScript
+    pair: Script ; RelationScript
+
+.. _RelationScript:
+
+
+
+RelationScript
 ==============
 
 Relations

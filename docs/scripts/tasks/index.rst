@@ -1,6 +1,13 @@
 .. .. coding=utf-8
 
-ta - Tasks
+.. highlight:: TaskScript
+
+.. index::  ! TaskScript
+    pair: Script ; TaskScript
+
+.. _TaskScript:
+
+TaskScript
 ==========
 
 *Tasks models* exist in the form of *task diagrams* created and managed using

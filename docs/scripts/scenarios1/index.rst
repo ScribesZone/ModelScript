@@ -1,9 +1,17 @@
 .. .. coding=utf-8
 
-sc - Scenarios
-==============
+.. highlight:: ScenarioScript1
 
-..  code-block:: ScenarioScript
+.. index::  ! .sc1, ! ScenarioScript1
+    pair: Script ; ScenarioScript1
+
+.. _ScenarioScript1:
+
+
+ScenarioScript1
+===============
+
+..  code-block:: ScenarioScript1
    :linenos:
 
     --@ scenario model SC1

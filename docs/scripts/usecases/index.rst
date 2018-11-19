@@ -1,6 +1,13 @@
 .. .. coding=utf-8
 
-us - Usecases
+.. highlight:: UsecaseScript
+
+.. index::  ! .uss, ! UsecaseScript
+    pair: Script ; UsecaseScript
+
+.. _UsecaseScript:
+
+UsecaseScript
 =============
 
 

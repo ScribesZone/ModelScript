@@ -1,9 +1,13 @@
 .. .. coding=utf-8
 
 .. highlight:: ClassScript
-   :linenothreshold: 0
 
-cl - CLasses
+.. index:: ! .cl1, ! ClassScript1
+   single: Script ; ClassScript1
+
+.. _ClassScript1:
+
+ClassScript1
 ============
 
 Class models, as implemented here, are subsets of UML class models. A class
@@ -12,13 +16,13 @@ model is defined through a series of *classes*, *associations* and
 
 
 
-ClassScript
------------
+ClassScript1
+------------
 
 CLassScript is a textual notation for UML `class diagrams`_.
 In the current version of ModelScript, called ModelScript1, the
-``ClassScript`` language is a subset of the `USE OCL`_ language.
-ClassScript different very slightly:
+``ClassScript1`` language is a subset of the `USE OCL`_ language.
+ClassScript1 different very slightly:
 * some annotations are added inside USE OCL comments (,
 * only
 Class script is a (very slightly) augmented version of the
@@ -28,7 +32,7 @@ class language. While in the context of USE the
 Enumerations
 ------------
 
-..  code-block:: ClassScript
+..  code-block:: ClassScript1
 
     enum Season {
         --| Documentation of the enumeration
@@ -54,7 +58,7 @@ UML class diagram:
 
 ClassScript (USE OCL):
 
-..  code-block:: ClassScript
+..  code-block:: ClassScript1
 
     class Yellow
         --| Documentation of the
@@ -80,7 +84,7 @@ Attributes
 
 ClassScript (USE OCL):
 
-..  code-block:: ClassScript
+..  code-block:: ClassScript1
 
     class Banana
         --| A Banana is a nice Fruit that growths
@@ -108,7 +112,7 @@ UML class diagram:
 
 ClassScript (USE OCL):
 
-..  code-block:: ClassScript
+..  code-block:: ClassScript1
 
     association Owns
         --| A person owns some cars if he or she *
@@ -136,7 +140,7 @@ UML Diagram:
 Class Script (USE OCL):
 
 
-..  code-block:: ClassScript
+..  code-block:: ClassScript1
 
     associationclass Hate
         --| Some monkeys hate some snakes.

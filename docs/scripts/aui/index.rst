@@ -1,7 +1,17 @@
 .. .. coding=utf-8
 
-au - AUIs
+.. highlight:: AUIScript
+
+.. index:: ! .aus, ! AUIScript
+   single: Script ; AUIScript
+
+.. _AUIScript:
+
+AUIScript
 =========
+
+.. index:: ! AbstractSpace, ! Space
+   pair: AUIScript ; Space
 
 Abstract space
 --------------
