@@ -86,8 +86,8 @@ templates_path = ['templates']
 master_doc = 'index'
 
 # General information about the projects.
-project = u'PyUseOCL'
-copyright = u'2015, escribis'
+project = u'ModelScript'
+copyright = u'2018, escribis'
 
 # The version info for the projects you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -411,10 +411,10 @@ lexers['GlossaryScript'] = GlossaryScriptLexer(
 
 
 #--------------------------------------------------------------------------
-#  ClassScript Lexer
+#  ClassScript1 Lexer
 #--------------------------------------------------------------------------
 
-ClassScriptKeywords= """
+ClassScript1Keywords= """
     enum
     abstract
     class
@@ -444,8 +444,8 @@ ClassScriptKeywords= """
     
     """.split()
 
-class ClassScriptLexer(ModelScriptLexer):
-    name = 'ClassScript'
+class ClassScript1Lexer(ModelScriptLexer):
+    name = 'ClassScript1'
     # flags = re.MULTILINE | re.UNICODE
     tokens = {
         'root': [
@@ -459,12 +459,12 @@ class ClassScriptLexer(ModelScriptLexer):
                     token.Keyword,
                     lexer.Text,
                     token.Name.Class)),
-            (lexer.words(ClassScriptKeywords, suffix=r'\b'), token.Keyword),
+            (lexer.words(ClassScript1Keywords, suffix=r'\b'), token.Keyword),
             (r'\w+', token.Name),
         ]
     }
 
-lexers['ClassScript'] = ClassScriptLexer(
+lexers['ClassScript1'] = ClassScript1Lexer(
     startinline=True,
     encoding = 'utf-8')
 
@@ -472,10 +472,10 @@ lexers['ClassScript'] = ClassScriptLexer(
 
 
 # --------------------------------------------------------------------------
-#  ObjectScript Lexer
+#  ObjectScript1 Lexer
 # --------------------------------------------------------------------------
 
-ObjectScriptKeywords = """
+ObjectScript1Keywords = """
     create
     new
     insert
@@ -484,8 +484,8 @@ ObjectScriptKeywords = """
     """.split()
 
 
-class ObjectScriptLexer(ModelScriptLexer):
-    name = 'ObjectScript'
+class ObjectScript1Lexer(ModelScriptLexer):
+    name = 'ObjectScript1'
     # flags = re.MULTILINE | re.UNICODE
     tokens = {
         'root': [
@@ -494,13 +494,13 @@ class ObjectScriptLexer(ModelScriptLexer):
 
             lexer.inherit,
 
-            (lexer.words(ObjectScriptKeywords, suffix=r'\b'), token.Keyword),
+            (lexer.words(ObjectScript1Keywords, suffix=r'\b'), token.Keyword),
             (r'\w+', token.Name),
         ]
     }
 
 
-lexers['ObjectScript'] = ObjectScriptLexer(
+lexers['ObjectScript1'] = ObjectScript1Lexer(
     startinline=True,
     encoding='utf-8')
 
@@ -606,7 +606,7 @@ lexers['AUIScript'] = AUIScriptLexer(
 #  ScenarioScript Lexer
 # --------------------------------------------------------------------------
 
-ScenarioScriptKeywords = """
+ScenarioScript1Keywords = """
     create
     new
     insert
@@ -616,8 +616,8 @@ ScenarioScriptKeywords = """
     """.split()
 
 
-class ScenarioScriptLexer(ModelScriptLexer):
-    name = 'ScenarioScript'
+class ScenarioScript1Lexer(ModelScriptLexer):
+    name = 'ScenarioScript1'
     # flags = re.MULTILINE | re.UNICODE
     tokens = {
         'root': [
@@ -628,12 +628,12 @@ class ScenarioScriptLexer(ModelScriptLexer):
 
             lexer.inherit,
 
-            (lexer.words(ScenarioScriptKeywords, suffix=r'\b'), token.Keyword),
+            (lexer.words(ScenarioScript1Keywords, suffix=r'\b'), token.Keyword),
             (r'\w+', token.Name),
         ]
     }
 
 
-lexers['ScenarioScript'] = ScenarioScriptLexer(
+lexers['ScenarioScript1'] = ScenarioScript1Lexer(
     startinline=True,
     encoding='utf-8')
