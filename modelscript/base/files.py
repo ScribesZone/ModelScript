@@ -131,5 +131,3 @@ def filesInTree(directory, suffix):
                     break
     return _
 
-
-print('#'*20)
