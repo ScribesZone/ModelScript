@@ -105,3 +105,31 @@ def writeFileLines(
         filename=filename,
         issueOrigin=issueOrigin,
         message=message)
+
+
+
+
+
+def filesInTree(directory, suffix):
+    """
+    Search for all filenames ending with the suffix(es)
+    :param directory: the directory where to search
+    :param suffix: a string or a list of string serving as suffixes
+    :return: the lst of filenames ending with the suffix(es)
+    """
+    if isinstance(suffix,basestring):
+        suffixes=[suffix]
+    else:
+        suffixes=suffix
+    _=[]
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            for s in suffixes:
+                if file.endswith(s):
+                    path=os.path.join(root, file)
+                    _.append(path)
+                    break
+    return _
+
+
+print('#'*20)
