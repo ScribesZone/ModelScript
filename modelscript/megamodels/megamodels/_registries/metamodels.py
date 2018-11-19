@@ -76,6 +76,14 @@ class _MetamodelRegistry(object):
         return cls._metamodelById.values()
 
     @classmethod
+    def metamodelExtensions(cls):
+        #type: () -> List[Text]
+        """
+        List all registered extensions.
+        """
+        return cls._metamodelByExtension.keys()
+
+    @classmethod
     def theMetamodel(cls, id=None, label=None, ext=None):
         #type: () -> Metamodel
         """
