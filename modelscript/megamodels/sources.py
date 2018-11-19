@@ -51,9 +51,9 @@ class ASTBasedModelSourceFile(SourceFile):
     """
     A source file with a model, and an AST.
 
-    * a fileName (inherited)
-    * sourceLines (inherited)
-    * issueBox (inherited)
+    * a fileName (inherited from SourceFile)
+    * sourceLines (inherited from SourceFile)
+    * issueBox (inherited from SourceFile)
     * a model,
     * an importBox and
     * an AST
@@ -77,30 +77,33 @@ class ASTBasedModelSourceFile(SourceFile):
         stored in the importBox.
         """
 
-        #----- (0) create an empty model ---------
+        #----- (0) create an empty model -------------------------------
 
         # Create an empty model
         # Not to be moved after super(...)
-        # This should be done in all case so that
+        # This should be done in all cases so that
         # the model attribute always exist even if there
-        # are some error in reading the file
-        self.model = self.emptyModel()  # type: Model
+        # are some errors in reading the file.
+        self.model = self.emptyModel()
+        #type: Model
 
 
-        #----- (1) read the file ------------------
+        #----- (1) read the file ---------------------------------------
         # Call the super class. Basically read the file.
         try:
             # This can raise an exception for instance if
-            # there is a problem reading the file
+            # there is a problem reading the file.
             super(ASTBasedModelSourceFile, self).__init__(
-                fileName=fileName
-            )
+                fileName=fileName)
         except FatalError:
-            pass   # an error as already been registered
-        super(ASTBasedModelSourceFile, self).__init__(
-            fileName=fileName)
+            # An issue as already been registered.
+            # So there is nothing to do here.
+            pass
+        # super(ASTBasedModelSourceFile, self).__init__(
+        #     fileName=fileName) #CHECK232
 
-        #----- (2) register/link models/sources/issues----
+
+        #----- (2) register/link models/sources/issues------------------
 
         from modelscript.megamodels import Megamodel
         Megamodel.registerSourceFile(self)
@@ -115,7 +118,8 @@ class ASTBasedModelSourceFile(SourceFile):
         # Source to ModelElement Mapping
         self._modelMapping=_ModelSourceMapping()
 
-        #----- (2) syntactic parsing, create the ast
+
+        #----- (3) syntactic parsing, create the ast -------------------
         self.grammarFile=grammarFile
         #type: Text
 
