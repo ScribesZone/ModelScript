@@ -4,7 +4,8 @@ Implement a megamodel as a singleton.
 """
 from typing import Text, Optional
 import os
-
+import io
+import re
 from modelscript.megamodels.models import Model
 from modelscript.megamodels.dependencies import Dependency
 
@@ -50,7 +51,7 @@ class Megamodel(
     Model,
     # All the classes below make it possible to define related
     # methods in separated modules. This avoid having a huge class
-    # with unhundreds of methods.
+    # with hundreds of methods.
     _MetamodelRegistry,
     _ModelRegistry,
     _SourceFileRegistry,
@@ -66,6 +67,7 @@ class Megamodel(
     # This cannot be done now as this creates a
     # circular dependency between Megamodel and MegamodelModel
 
+
     """
     Static class containing a global registry of metamodels
     and models and corresponding dependencies.
@@ -73,6 +75,34 @@ class Megamodel(
 
     def __init__(self):
         Model.__init__(self)
+
+    @property
+    def homeDirectory(self):
+        return os.path.realpath(
+            os.path.join(
+                os.path.dirname(os.path.realpath(__file__)),
+                '..', '..'))
+    @property
+    def version(self):
+        """
+        get the version by extracting :version: label from CHANGES.rst
+        """
+        VERSION_FILE='CHANGES.rst'
+        def read(file):
+            encoding = 'utf-8'
+            buf = []
+            with io.open(file, encoding=encoding) as f:
+                buf.append(f.read())
+            return '\n'.join(buf)
+
+        file=os.path.join(self.homeDirectory, VERSION_FILE)
+        content = read(file)
+        version_match = re.search(r"^:version: *([^\s]+)",
+                                  content, re.M)
+        if version_match:
+            return version_match.group(1)
+        raise RuntimeError(
+            "Unable to find version string from file '%s.'" % VERSION_FILE)
 
     @property
     def metamodel(self):
