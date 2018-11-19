@@ -31,7 +31,7 @@ __all__ = (
     'TextReference',
 )
 
-DEBUG=2
+DEBUG=1
 
 ISSUES={
     'TERM_NOT_FOUND': 'txt.TermNotFound',
