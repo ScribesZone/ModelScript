@@ -12,10 +12,14 @@
 #TODO:1 create cl1/ob1/sc1 scripts
 
 #TODO:1 add an option to just launch syntax parsing
+#   This should go to megamodels/sources.py
+#   Add attribute in Megamodel for the type of models
+#   (1) syntax, (2) dependencies, (3) full
 
 #TODO:3 add a warning in modelc for useless directory
 #   If a directory is on the command line
 #   and it does contains any model files then issue a warning
+
 
 #TODO:2 Deal with Unexpected exception
 #   when in source "except FatalError" -> FatalError exception
