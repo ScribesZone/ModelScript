@@ -73,6 +73,21 @@ class Megamodel(
     and models and corresponding dependencies.
     """
 
+    analysisLevel='full'
+    """
+    The analysisLevel attribute can take the following values:
+    *  "justAST": source files are just parsed independently from each 
+       others. The "import" statement are not followed.
+    *  "justASTDep": source files are parsed and "import" statements are
+       followed.
+    *  "full": the source files are fully analyzed.
+    The model of each source files are empty when using "justAST" or 
+    "justASTDep".
+    The attribute default is "full", but a program can change this
+    value before all analysis start, so that the analysis level is
+    consistent.
+    """
+
     def __init__(self):
         Model.__init__(self)
 

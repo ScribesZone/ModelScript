@@ -129,13 +129,16 @@ class ASTBasedModelSourceFile(SourceFile):
         # Then fill it by reading megamodel statements,
         # unless specified.
 
+        mode=Megamodel.analysisLevel
         # removed this code
         try:
             self.fillAST()
-            fillDependencies(self)
-            self.fillModel()
-            self.resolve()
-            self.finalize()
+            if mode != 'justAST':
+                fillDependencies(self)
+                if mode != 'justASTDep':
+                    self.fillModel()
+                    self.resolve()
+                    self.finalize()
         except FatalError:
             pass  # nothing to do, the issue has been registered
 

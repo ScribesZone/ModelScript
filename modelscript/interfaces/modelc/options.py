@@ -73,6 +73,15 @@ def _argParser():
             type = str,
             nargs = '?')
     parser.add_argument(
+        '-mode', '-m',
+        dest='mode',
+        const='full',
+        default='full',
+        help='choose the checking level.',
+        choices=['justAST', 'justASTDep', 'full'],
+        type=str,
+        nargs='?')
+    parser.add_argument(
         '--verbose', '-v',
         dest='verbose',
         action='store_true',

@@ -63,6 +63,14 @@ class BuildContext(WithIssueList):
         if self.options.version:
             self._displayVersion()
 
+        #--- deal with --mode ---------------------------------------------
+        print(
+            {'justAST':'Checking syntax',
+             'justASTDep':'Checking syntax and dependencies',
+             'full':'Checking models'}
+            [self.options.mode] )
+        Megamodel.analysisLevel=self.options.mode
+
         #--- deal with source files or source dir
         for path in self.options.sources:
             self._processSource(path)
