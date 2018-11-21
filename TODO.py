@@ -339,6 +339,7 @@
 #   Usecase model
 #================================================================
 
+#TODO:2 add "can be used to / peut etre utilisé pour"
 #TODO:2 usecase: check what works or not
 
 #TODO:2 add import of participant model with actors imported
