@@ -57,7 +57,7 @@ if USE_SYSTEM_INSTALLED_USE:
 else:
     USE_OCL_COMMAND=os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
-        'res','use-4.1.1','bin', 'model-use')
+        'res','use-4.1.1','bin', 'modelscript-use')
 
 
 class USEEngine(object):
