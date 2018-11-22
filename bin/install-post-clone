@@ -2,8 +2,14 @@
 
 # First set the $MODELSCRIPT_HOME to the future installation directory.
 # Something like MODELSCRIPT_HOME=~/mytdir/ModelScript (ends with ModelScript).
-# Then git clone https://github.com/ScribesZone/ModelScript
-
+#
+#   cd ~/MyDir/
+#   git clone https://github.com/ScribesZone/ModelScript
+#   cd ModelScript
+#   chmod +x bin/*
+#   bin/install-post-clone
+#
+#
 if [ "$MODELSCRIPT_HOME" = "" ]
 then
     echo "$MODELSCRIPT_HOME must be set."
