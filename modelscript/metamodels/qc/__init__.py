@@ -7,18 +7,18 @@ from modelscript.megamodels.dependencies.metamodels import (
     MetamodelDependency)
 
 
-class QualityModel(Model):
+class QCModel(Model):
     pass
 
 METAMODEL = Metamodel(
-    id='qu',
-    label='quality',
-    extension='.qus',
-    modelClass=QualityModel,
+    id='qc',
+    label='qc',
+    extension='.qcs',
+    modelClass=QCModel,
     modelKinds=()
 )
 MetamodelDependency(
-    sourceId='qu',
+    sourceId='qc',
     targetId='gl',
     optional=True,
     multiple=True,

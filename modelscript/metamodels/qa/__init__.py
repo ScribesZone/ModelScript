@@ -7,31 +7,20 @@ from modelscript.megamodels.dependencies.metamodels import (
     MetamodelDependency)
 
 
-class ProjectModel(Model):
+class QAModel(Model):
     pass
 
 METAMODEL = Metamodel(
-    id='pr',
-    label='project',
-    extension='.prs',
-    modelClass=ProjectModel,
+    id='qa',
+    label='qa',
+    extension='.qas',
+    modelClass=QAModel,
     modelKinds=()
 )
 MetamodelDependency(
-    sourceId='pr',
+    sourceId='qa',
     targetId='gl',
     optional=True,
     multiple=True,
 )
-MetamodelDependency(
-    sourceId='pr',
-    targetId='qa',
-    optional=True,
-    multiple=True,
-)
-MetamodelDependency(
-    sourceId='pr',
-    targetId='qc',
-    optional=True,
-    multiple=True,
-)
+

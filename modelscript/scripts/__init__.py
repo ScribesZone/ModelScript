@@ -9,7 +9,8 @@ import modelscript.scripts.objects.all
 import modelscript.scripts.participants.all
 import modelscript.scripts.permissions.all
 import modelscript.scripts.projects.all
-import modelscript.scripts.qualities.all
+import modelscript.scripts.qa.all
+import modelscript.scripts.qc.all
 import modelscript.scripts.relations.all
 import modelscript.scripts.scenarios.all
 import modelscript.scripts.stories.all
