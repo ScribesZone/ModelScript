@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 PATH=$MODELSCRIPT_HOME/bin:$PATH
-PATH=$MODELSCRIPT_HOME/modelscript/use/engine/res/use-4.1.1/bin:$PATH
+PATH=$MODELSCRIPT_HOME/modelscript/tools/use/engine/res/use-4.1.1/bin:$PATH
 source $MODELSCRIPT_HOME/.venv/bin/activate
