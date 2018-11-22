@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# First set the $MODELSCRIPT_HOME to the future installation directory.
+# Something like MODELSCRIPT_HOME=~/mytdir/ModelScript (ends with ModelScript).
+# Then git clone https://github.com/ScribesZone/ModelScript $MODELSCRIPT_HOME/..
+
+if [ "$MODELSCRIPT_HOME" = "" ]
+then
+    echo "$MODELSCRIPT_HOME must be set."
+fi
+chmod +x $MODELSCRIPT_HOME/bin/*
+chmod +x $MODELSCRIPT_HOME/modelscript/use/engine/res/use-4.1.1/bin/modelscript-use
+cd $MODELSCRIPT_HOME
+virtualenv .env
+source .venv/bin/activate
+pip install -r requirements.txt
+
