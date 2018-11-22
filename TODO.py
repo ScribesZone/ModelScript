@@ -457,10 +457,6 @@
 #================================================================
 
 
-#TODO:3 Installation procedure.
-#       chmod +x for internal model-use
-#       chmox +x for bin/*
-
 #TODO:2 Solve file naming problem
 #   Two related problems:
 #   - Naming model /suppressing it. e.g.  class model
