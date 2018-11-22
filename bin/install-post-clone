@@ -11,7 +11,7 @@ fi
 chmod +x $MODELSCRIPT_HOME/bin/*
 chmod +x $MODELSCRIPT_HOME/modelscript/tools/use/engine/res/use-4.1.1/bin/modelscript-use
 cd $MODELSCRIPT_HOME
-virtualenv .env
+virtualenv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 
