@@ -15,6 +15,20 @@ The ``GlossaryScript`` language, as defined below, allows to express
 (although packages can be used to split a glossary in multiple part).
 Glossary scripts are to be saved with the ``.gls`` extension.
 
+Dependencies
+------------
+
+The graph below show all language depdencies. As it can be seen the
+glossary depend on all requirement documents. This is due to the fact
+that the glossary is extracted from these documents. On the opposite
+direction it is worth noticing that all artefacts depends on the glossary.
+This is due to the fact that all scripts/artefacts may contain
+documentations based on the glossary terms as well as identifiers.
+
+..  image:: media/language-graph-gls.png
+    :align: center
+
+
 .. index:: ! Glossary
 
 

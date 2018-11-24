@@ -15,6 +15,14 @@ model is defined through a series of *classes*, *associations* and
 *enumerations*.
 
 
+Dependencies
+------------
+
+The graph below show all language dependencies.
+
+..  image:: media/language-graph-cls.png
+    :align: center
+
 
 ClassScript1
 ------------

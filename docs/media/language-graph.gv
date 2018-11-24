@@ -1,0 +1,78 @@
+    digraph G {
+      graph [
+        rankdir = BT,
+        compound = true ]
+      node [fillcolor=wheat, style="filled" , shape=box] ;
+
+      subgraph clusterRequirements {
+          meetings ;
+          moreDoc [label="...", fillcolor=white, color=white]
+          documents ;
+
+      }
+      subgraph clusterModels {
+      gl [fillcolor=lightgreen, label=".gls\nglossaries", penwidth=1] ;
+      cl [fillcolor=lightgreen, label=".cl1\nclasses1", penwidth=1] ;
+      ob [fillcolor=lightgreen, label=".ob1\nobjects1",  penwidth=1] ;
+      sc [fillcolor=lightgreen, label=".sc1\nscenarios1",  penwidth=1] ;
+      us [fillcolor=lightgreen, label=".uss\nusecases", penwidth=1] ;
+      pe [fillcolor=lightgreen, label=".pes\npermissions", penwidth=1] ;
+      re [fillcolor=lightgreen, label=".res\nrelations", penwidth=1] ;
+      ta [fillcolor=lightgreen, label=".tas\ntasks", penwidth=1] ;
+      pa [fillcolor=lightgreen, label=".pas\nparticipants", penwidth=1] ;
+      au [fillcolor=lightgreen, label=".aus\naui", penwidth=1] ;
+      cl -> gl [penwidth=1, color=grey];
+      ob -> gl [penwidth=1, color=grey];
+      ob -> cl [penwidth=2];
+      re -> ob [penwidth=1];
+      re -> cl [penwidth=1];
+      re -> gl ;
+      pa -> gl [penwidth=1, color=grey];
+      us -> gl [penwidth=1, color=grey];
+      us -> pa ;
+      ta -> pa ;
+      ta -> gl [penwidth=1, color=grey];
+      ta -> us ;
+      au -> ta ;
+      au -> gl [penwidth=1, color=grey];
+      au -> cl ;
+      pe -> gl [penwidth=1, color=grey];
+      pe -> re ;
+      pe -> cl ;
+      pe -> ta ;
+      pe -> us ;
+      pe -> pa ;
+      pe -> au ;
+      sc -> cl [penwidth=2] ;
+      sc -> re ;
+      sc -> ob [penwidth=2] ;
+      sc -> pa ;
+      sc -> us [penwidth=1] ;
+      sc -> ta [penwidth=1] ;
+      sc -> pe [penwidth=1] ;
+      sc -> gl ;
+
+      /*
+      sql -> re ;
+      java -> cl ;
+      java -> sql ;
+      html -> au ;
+    */
+     }
+     subgraph clusterImplementation {
+         java ;
+         sql ;
+         html ;
+         moreImpl [label="...", fillcolor=white, color=white] ;
+         js ;
+         jsp ;
+         css ;
+
+     }
+      // requirements [width=2, color=white, fontcolor=grey28, fillcolor=grey90] ;
+
+      gl -> moreDoc [ltail=clusterModels, lhead=clusterRequirements];
+      moreImpl -> sc [ltail=clusterImplementation, lhead=clusterModels];
+
+    }
+
