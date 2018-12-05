@@ -11,6 +11,18 @@
 ScenarioScript1
 ===============
 
+
+Dependencies
+------------
+
+The graph below show all language depdencies.
+
+..  image:: media/language-graph-scs.png
+    :align: center
+
+Examples
+--------
+
 ..  code-block:: ScenarioScript1
    :linenos:
 

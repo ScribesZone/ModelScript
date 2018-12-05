@@ -11,6 +11,19 @@ UsecaseScript
 =============
 
 
+
+Dependencies
+------------
+
+The graph below show all language depdencies.
+
+..  image:: media/language-graph-uss.png
+    :align: center
+
+
+Concepts
+--------
+
 .. index:: UsecaseScript
     single: Script; UsecaseScript
 

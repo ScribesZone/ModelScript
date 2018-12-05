@@ -14,6 +14,18 @@ The participant model aims to define all kind of participants involved
 somehow in the software project. This could be either because they
 will *use* the system or because they are implicated in its design.
 
+Dependencies
+------------
+
+The graph below show all language depdencies.
+
+..  image:: media/language-graph-pas.png
+    :align: center
+
+
+Concepts
+--------
+
 * actors
 * stakeholders
 * team role

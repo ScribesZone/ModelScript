@@ -18,6 +18,17 @@ SOIL language. While in the context of USE the
 object scripts.
 
 
+Dependencies
+------------
+
+The graph below show all language depdencies.
+
+..  image:: media/language-graph-obs.png
+    :align: center
+
+Concepts
+--------
+
 
 Enumerations
 ------------
