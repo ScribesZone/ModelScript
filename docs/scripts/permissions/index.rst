@@ -17,7 +17,7 @@ Concepts
 Dependencies
 ------------
 
-The graph below show all language depdencies.
+The graph below shows all language dependencies.
 
 ..  image:: media/language-graph-pes.png
     :align: center
