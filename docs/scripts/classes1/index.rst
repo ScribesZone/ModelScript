@@ -10,10 +10,28 @@
 ClassScript1
 ============
 
-Class models, as implemented here, are subsets of UML class models. A class
-model is defined through a series of *classes*, *associations* and
-*enumerations*.
+*ClassScript* is a textual notation for UML `class diagrams`_.
+In the current version of ModelScript, the``ClassScript1`` language is
+actually a "augmented subset" of the `USE OCL`_ language.
 
+ClassScript1 differs very slightly for `USE OCL`_:
+
+* extensions: a few annotations are added inside USE OCL comments (``--``),
+* restrictions: ClassScript1 does not support qualified associations.
+
+While in the context of `USE OCL`_ the ``.use`` extension is used,
+``.cl1`` is the extension of ClassScripts1 scripts.
+
+Concepts
+--------
+
+A class model is based on the following concepts:
+
+* classes,
+* attributes,
+* enumerations,
+* associations,
+* association classes
 
 Dependencies
 ------------
@@ -22,20 +40,6 @@ The graph below show all language dependencies.
 
 ..  image:: media/language-graph-cls.png
     :align: center
-
-
-ClassScript1
-------------
-
-CLassScript is a textual notation for UML `class diagrams`_.
-In the current version of ModelScript, called ModelScript1, the
-``ClassScript1`` language is a subset of the `USE OCL`_ language.
-ClassScript1 different very slightly:
-* some annotations are added inside USE OCL comments (,
-* only
-Class script is a (very slightly) augmented version of the
-class language. While in the context of USE the
-``.use`` extension is used, ``.cls`` is the extension of class scripts.
 
 Enumerations
 ------------
