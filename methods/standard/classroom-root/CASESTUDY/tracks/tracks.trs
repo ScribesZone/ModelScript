@@ -1,0 +1,12 @@
+//=========================================================================
+//                      Track model
+//-------------------------------------------------------------------------
+// This glossary model is expressed in TrackScript
+// See https://modelscript.rtfd.io/en/latest/scripts/tracks/index.html
+//=========================================================================
+
+track model CyberBibliotheque
+import glossary model from "../glossaries/glossary.gls"
+
+
+

@@ -1,0 +1,32 @@
+usecase model CyberBibliotheque
+import glossary model from "../glossaries/glossary.gls"
+import participant model from "../participants/participants.pas"
+
+# Les acteurs sont définis dans le mmodèle de participants.
+
+
+# TODO: si nécessaire ajouter des acteurs dans le modele de participants
+
+usecase ModifierSonMotDePasse
+    # En pratique chaque usecase devrait être décrit.
+    # Mais il n'est pas nécessaire de la faire ici.
+
+usecase CreerUnAtelier
+
+usecase ProlongerUnEmprunt
+
+#TODO: ajouter des cas d'utilisation si nécessaire
+
+
+interactions
+    Membre ModifierSonMotDePasse
+    Enseignant CreerUnAtelier
+    Bibliothecaire ProlongerUnEmprunt
+
+#TODO: compléter les interactions
+
+
+
+
+
+

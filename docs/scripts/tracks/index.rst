@@ -8,6 +8,8 @@ TrackScript
 Examples
 --------
 
+::
+
     question Q1: Catalogue des oeuvres
         | Il est fait mention des `Oeuvres` et de leurs `Auteurs` mais
         | le moyen de créer/maintenir ces informations n'est pas précisé.
@@ -62,6 +64,23 @@ Examples
         date: 2019-05-21
         who: ADZ NZW PGI ZSE
 
+Usage
+-----
+
+Un projet le modèle de suivi peut par exemple être utilisé dans deux
+contextes :
+
+*   **ordres du jour** de réunions. Le client n'étant pas disponible
+    en permanence, les questions et hypothèses doivent être consignées
+    et sérialisée pour pouvoir soulever ces élements de suivi lors
+    d'une prochaine réunion avec le "client". Un tel modèle peut être
+    utilisé pour établir l'ordre du jour d'une réunion future.
+
+*   **compte rendus**. Il est également possible de définir des
+    "décisions" dans le modèle de suivi. Bon nombre de décisions
+    sont prises lors de réunions, et ces décisions peuvent être
+    référencées dans les comptes rendus de réunions.
+
 Concepts
 --------
 
@@ -69,7 +88,7 @@ The track model aims to track information about other models, namely
 **questions**, **hypothesis**, **decisions**. These items are tracked in
 order :
 
-+ (1) to prepare the agenda of future meetings and
+* (1) to prepare the agenda of future meetings and
 * (2) to estabish minute meetings afterward.
 
 This also allow to track who was involved in which question/hypothesis/decision.
@@ -100,7 +119,7 @@ Rules
 * Chaque question/hypothèse/décision doit être identifiée de
   manière unique. Par exemple D3, Q3 et H12.
 
-* Réferencer ces identificateurs (e.g. ``[H12] ``) dans le(s)
+* Réferencer ces identificateurs (e.g. ``[H12]``) dans le(s)
   modèle(s) impactés. En commentaire ou autre selon les
   langages.
 

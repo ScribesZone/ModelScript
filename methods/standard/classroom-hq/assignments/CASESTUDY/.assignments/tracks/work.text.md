@@ -1,5 +1,4 @@
-[CyberBibliotheque] Suivi
-=========================
+# [CASESTUDY] Suivi
 
 L'objectif de cette tâche est de s'assurer que le modèle de suivi
 est compris. Avec le modèles de suivi il s'agit d'augmenter les 
@@ -32,6 +31,7 @@ ________
 - [ ] (030) Ajout d'autres questions/hypothèses/décisions si nécessaire.
     - M ``tracks/tracks.trs``
 - [ ] (100) Vérification des règles liées au modèle de suivi.
-- [ ] (900) Ecriture du bilan.
+- [ ] (900) Ecriture du status final.
+    - M ``classes/status.md``
 
     

@@ -42,6 +42,7 @@ play/
 
 _ARCHIVES/
 .venv/
+*.old
 
 # Python / Jython
 

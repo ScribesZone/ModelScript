@@ -67,11 +67,11 @@ Column:
 ;
 
 ColumnSpec:
-    key ?= '_'
     foreignKey ?='#'
-    name=/[A-Za-z][A-Za-z0-9_]*/
+    name=/[A-Za-z0-9_]+/
     (':' typeSpecification=TypeSpecification) ?
 ;
+
 
 TypeSpecification:
     domain=DomainSpecification
@@ -153,9 +153,9 @@ Projection:
 ;
 
 Operator:
-      '<='
+      'C='
     | '='
-    | '<'
+    | 'C'
 ;
 
 

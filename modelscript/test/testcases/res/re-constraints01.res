@@ -20,4 +20,4 @@ relation R2
         x
         y : String
     constraints
-        R2[y] <= R1[a]
+        R2[y] C= R1[a]

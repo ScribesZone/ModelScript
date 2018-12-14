@@ -83,14 +83,14 @@
 #   Glossary Model
 #================================================================
 
-#TODO:4 add the notion of acronym
+#TODO:1 add acronym, expansion, abbreviation
 
-#TODO:2 rename label/translation to text
+#TODO:1 rename label/translation to representation
 #   this could be
 #
-#        text: "Bibliotheque"
+#        representation: "Bibliotheque"
 #   or
-#        texts
+#        representations
 #            fr: "Bibliotheque"
 #            en: "Library"
 #
@@ -101,8 +101,8 @@
 #       | This glossary define ...
 #       default language: fr
 #
-# This requires changing the megamodel part to add the
-# attribute "default language" after the definition of "glossary model".
+#   This requires changing the megamodel part to add the
+#   attribute "default language" after the definition of "glossary model".
 
 
 #TODO:2 replace `ok`? by `ok?`
@@ -408,7 +408,7 @@
 #================================================================
 
 
-#TODO:2 add mario notation (see todo in re-main)
+#TODO:2 add new notations (see todo in re-main)
 #TODO:3 generate a ER diagram form model
 
 #TODO:3 metamodel to be continued / add semantics

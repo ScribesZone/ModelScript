@@ -1,0 +1,16 @@
+--=========================================================================
+--                          Class Model
+---------------------------------------------------------------------------
+-- This glossary model is expressed in GlossaryScript.
+-- See https://modelscript.readthedocs.io/en/latest/scripts/classes1/index.html
+-- ClassScript1 is an annotated version of USE OCL.
+-- Annotations are in comments and start with
+--    "@" for statement annotations
+--    "|" for documentation annotations
+--=========================================================================
+--
+--@ glossary model CASESTUDY
+--@ import glossary model from "../glossaries/glossaries.gls"
+
+model CASESTUDY
+

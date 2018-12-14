@@ -1,17 +1,27 @@
 relation model Re_model01
 
+// TODO:1 R8(u,v,t,x)
+// TODO:1     | R8 elements
+// TODO:1     intention
+// TODO:1         (u,v,t,x) in R8 <=>
+// TODO:1         | the person u is ... with v ... and x ...
+// TODO:1     examples
+// TODO:1         (19, 30, "noe")
+// TODO:1         (24, -5, "marie")
+
+
 R3(_a,_b,c,d)
+
     1NF
     a,b -> c,d
     c->d
     dom(a)=String
     dom(b)=dom(c)=Integer
     dom(d)=Real?
-    R1[d] <= R2[d1]
-    R1[d1,d1] <= R2[d1,d2]
+    R1[d] C= R2[d1]
+    R1[d1,d1] C= R2[d1,d2]
     // TODO:1 R[X] u R[z] = {}
     // TODO:1 R[X] n R[z] = Persons[X]
-    // TODO:1 R[b,m] not null
 
 R1(_a, _b, c, d, e)
     | (a,b,c,d) e R1 <=> Le R dont l'identifiant (a,b) a pour
@@ -25,7 +35,7 @@ R1(_a, _b, c, d, e)
         dom(a)=String
         dom(b)=dom(c)=Integer
         dom(d)=Real?
-        R1[d] <= R2[d1]
+        R1[d] C= R2[d1]
 
 R2(_d1:Real, dba)
     constraints
@@ -41,7 +51,7 @@ R2(a,b,c,d)
     dom(a)=String
     dom(b)=dom(c)=Integer
     dom(d)=Real?
-    R1[d] <= R2[d1]
+    R1[d] C= R2[d1]
     prime a
     prime b
     /prime f
@@ -58,7 +68,7 @@ R2(a,b,c,d)
 relation R3(_a,_b,c,d,e,f,g)
     | documentation
     columns
-        _ a : String
+        _a_ : String
         #a : String
         _b : Integer
         c : Integer?
@@ -71,7 +81,7 @@ relation R3(_a,_b,c,d,e,f,g)
         key b,c
         a,b -> c,d
         b,c -> a,d
-        R1[d] <= R2[d1]
+        R1[d] C= R2[d1]
     properties
         prime a
         prime b
@@ -95,5 +105,5 @@ relation R3(_a,_b,c,d,e,f,g)
             B.c
 
 
-relation R4(a,b,c)
+relation R4(_a_,_b_,c)
 
