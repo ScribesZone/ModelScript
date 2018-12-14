@@ -17,9 +17,9 @@ RelationScript allows to express "schemas_" in the sense of the
 
 .. note::
     Note that the term "relation model" should not
-    be confused with "relational data model". A "relation model" defines
-    relations, just like "usecase models" defines usecases, "class models"
-    defines classes, "object models" defines objects, and so on.
+    be confused with "relational data model". A relation model defines
+    relations, just like usecase models defines usecases, class models
+    defines classes, object models defines objects, and so on.
 
 Concepts
 --------
@@ -59,7 +59,10 @@ are here enclosed in underscores such as ``_a_``).
 
     R3(_a_,_b_,c,d)
 
-In the example above the column ``a`` and ``b`` are partipants in a key.
+In the example above the column ``a`` and ``b`` are key participants.
+This means that there are part of some key, but there is no indication
+of what are the keys. This could be a key (a,b), or two keys (a) and (b).
+If necessary the body of the relation will define what are the keys.
 
 Relation intention
 ------------------
@@ -90,7 +93,8 @@ Examples
     R5(u,v,t,x)
         | (u,v,t,x) <=> ...
         intention
-            (a,c,d,x) in R5 <=> the person a is ... with c ... and d ...
+            (a,c,d,x) in R5 <=>
+            | the person a is ... with c ... and d ...
         examples
             (19, 30, "noe")
             (24, -5, "marie")
@@ -127,15 +131,14 @@ an ascii-based notation for set operators and relational algebra:
 
 ::
 
-    R1[d] <= R2[d1]
-    R1[d1,d1] <= R2[d1,d2]
+    R1[d] C= R2[d1]
+    R1[d1,d1] C= R2[d1,d2]
     R[X] u R[z] = {}
     R[X] n R[z] = Persons[X]
-    R[b,m] not null
 
 The "ascii" notations are
 
-*   ``<=`` and ``<`` stand for set inclusion,
+*   ``C=`` and ``C`` stand for set inclusion,
 *   ``u`` and ``n`` stand for set intersection and union,
 *   ``R[x,y]`` stand for relation projection (as defined in relational
     algebra),
@@ -174,7 +177,7 @@ Transformation
 
 ::
 
-    import quality model Database from `../quality/Database`
+    import quality model Database from `../quality/database.qas`
 
     R(a,b,c,d)
         transformation
