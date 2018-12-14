@@ -102,7 +102,7 @@ ClassScript (USE OCL):
         --| A Banana is a nice Fruit that growths
         --| in the forest.
         attributes
-            _name : String --@ {id} {derived} {optional}
+            _name_ : String --@ {id} {derived} {optional}
                 --| A banana always have nice names.
             length : Integer
                 --| The length of the banana
