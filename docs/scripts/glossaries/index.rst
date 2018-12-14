@@ -15,18 +15,51 @@ The ``GlossaryScript`` language, as defined below, allows to express
 (although packages can be used to split a glossary in multiple part).
 Glossary scripts are to be saved with the ``.gls`` extension.
 
-Dependencies
-------------
+Examples
+--------
 
-The graph below show all language depdencies. As it can be seen the
-glossary depend on all requirement documents. This is due to the fact
-that the glossary is extracted from these documents. On the opposite
-direction it is worth noticing that all artefacts depends on the glossary.
-This is due to the fact that all scripts/artefacts may contain
-documentations based on the glossary terms as well as identifiers.
+A complete, yet meaningless, example of glossary is given below.
 
-..  image:: media/language-graph-gls.png
-    :align: center
+..  code-block:: GlossaryScript
+
+    glossary model Medium
+        | `Description` de `un` élément
+        | dans `un` contexte `uno` et `deux`
+        | `un` `test`
+
+    FilDeDiscussion:
+        | suite ordonnée de `Messages`
+        package: domain
+        synonyms: Uno One
+        inflections: unite uns
+        texts:
+            fr: "Fil de discussion"
+            en: "Thread"
+
+
+    Reference
+        | mot ou suite de mots faisant référence à
+        | un `Concept` déjà défini. Attention à l'`Indentation`
+        | qui doit être toujours de `huit` espaces.
+        synonyms : a b c
+        package : a
+
+
+    Deux
+        | ceci est la description de `un` élément
+        | dans `un` contexte `uno` et `deux`
+        | `un` `test`
+        | trois
+        package: a
+
+    ZIO
+        | packaef
+        package: b
+
+    ODK
+        | Order Designed Kant
+        package: a
+
 
 
 .. index:: ! Glossary
@@ -35,17 +68,16 @@ documentations based on the glossary terms as well as identifiers.
 Concepts
 --------
 
+A **glossary** is a collection of **entries** optionally organized into
+**packages**. The goal of a **glossary** is to define all **terms**
+used in the context of a given project.
 
+In essence a **glossary** is:
 
-A *glossary* is a collection of *entries* optionally organized into
-*packages*. The goal of a *glossary* is to define all *terms* used in the
-context of a given project.
+*   a set of **entries** composed by a **main term** and
+    **alternative terms** (**synonyms**, **abbreviations**, etc.)
 
-In essence a *glossary* is:
-
-* a set of *entries* composed by a *main term* and *alternative terms*.
-* the definition of relationships between all these terms,
-
+*   the definition of relationships between all these **terms**,
 
 .. index:: ! Entry
     single: Term
@@ -54,17 +86,17 @@ In essence a *glossary* is:
 Entries
 -------
 
-An entry is basically:
+An **entry** is basically:
 
-* a selected *main term* (e.g. ``Fil`` in the example below)
-* a set of *alternative terms* (*synonyms*, inflections*,...),
-* a *definition* that fits for all the terms,
-* some optional *translations*.
+* a selected **main term** (e.g. ``Fil`` in the example below)
+* a set of **alternative terms** (**synonyms**, **abbreviations**, etc.),
+* a **definition** that fits for all the **terms**,
+* some optional textual représentation **translations**.
 
 ..  code-block:: GlossaryScript
 
     Fil
-        | Séquence de messages en réponse à un `Initial`. Un fil
+        | Séquence de `Messages` en réponse à un `Initial`. Un fil
         | peut être `Bloque` ou `Ouvert` et est identifié par
         | un `Theme` et un ensemble de `Cles`.
         synonyms: Discussion, FilDeDiscussion
@@ -75,7 +107,7 @@ An entry is basically:
             es: "conversacion"
     ...
 
-The main term (``Fil`` here) is the one that is expected to be
+The **main term** (``Fil`` here) is the one that is expected to be
 referenced in technical texts.
 
 .. index::
@@ -174,17 +206,9 @@ and a "TechnicalGlossary".
     package GlossaireDuDomaine
 
     Forum
-        | Outil de commnication asynchrone basé sur l'utilisation
-        | par des `Abonnes` de `Messages` organisés en `Fils`.
-
+        ...
     Fil
-        | Séquence de messages en réponse à un `Initial`. Un fil
-        | peut être `Bloque` ou `Ouvert` et est identifié par
-        | un `Theme` et un ensemble de `Cles`.
-        translations
-            fr: "fil de discussion"
-            en: "thread"
-            es: "conversacion"
+        ...
     ...
 
     //------------------------------------------------------------
@@ -196,8 +220,6 @@ and a "TechnicalGlossary".
     MVC
         | Patron de conception utilisé lors de la définition
         | d'interface homme machine.
-
-
 
     ...
 
@@ -225,51 +247,86 @@ example the entry One is in package ``Numbers``:
 
     Beta
 
+Rules
+-----
 
-Examples
---------
+Les règles suivantes doivent être appliquées dans l'élaboration
+des glossaires.
 
-A complete, yet meaningless, example of glossary is given below.
+*   Dans les définitions, les références à d'autres termes du
+    glossaire doivent être entre backquotes (p.e. `Backquote`).
+    Ces termes doivent être définis.
 
-..  code-block:: GlossaryScript
+*   Les définitions doivent commencer par une forme nominale ;
+    tout comme dans un dictionnaire. La définition
+    *"Singe : Animal ..."* est adaptée. Le premier terme ("Animal" ici)
+    peut faire partie du glossaire entre backquotes ou être un terme
+    d'usage courant (sans backquotes).
 
-    glossary model Medium
-        | ceci `est` la description de `un` élément
-        | dans `un` contexte `uno` et `deux`
-        | `un` `test`
+*   Toutes les définitions doivent correspondre au contexte
+    particulier du projet. Omettre les définitions générales.
+    Par exemple "Personne : Etre humain" n'apporte rien si le terme
+    "Personne" n'a pas de signification différente de "personne" d'usage
+    courant. Mettre "Personne" dans le glossaire s'il s'agit d'un
+    terme spécifique au projet.
 
-    Trois
-        | a
-        package: technical
-        synonyms: Uno One
-        inflections: unite uns
-        label: "un"
-        translations
-            en: ""
-            es: ""
+Rewriting texts
+---------------
 
+Au fur et à mesure qu'un glossaire est défini, il faut réécrire les
+texte utilisant "informellement" le glossaire. En pratique pour chaque
+terme appraissant dans un texte il faut déterminer s'il s'agit :
 
-    Reference
-        |
-        | `une` `reference` est un peu plus que
-        | `deux` mot. Attention à l'`indentation`
-        | qui doit être toujours de `huit` espaces.
-        synonyms : a b c
-        package : a
+*   d'un terme d'usage général : aucune action n'est nécessaire.
 
+*   d'un terme du domaine mais non défini : l'ajouter au glossaire.
 
-    Deux
-        | ceci est la description de `un` élément
-        | dans `un` contexte `uno` et `deux`
-        | `un` `test`
-        | trois
-        package: a
+*   d'un terme déjà défini comme terme principal dans le glossaire.
+    il faut alors créer une référence (entre backquotes) vers ce terme.
 
-    ZIO
-        | packaef
-        package: b
+*   d'un synonyme déjà défini : il faut le remplacer par le terme
+    principal.
 
-    ODK
-        | Order Designed Kant
-        package: a
+Ce travail de réécriture / définition du glossaire est bien évidemment
+itératif. L'objectif final est d'obtenir des textes les moins ambigüs
+et plus cohérents possible avec le glossaire.
 
+Rewriting identifiers
+---------------------
+
+La plupart des identificateurs (UML, Class, Java, SQL, etc.) devraient
+faire référence à un ou plusieurs terme d'un glossaire du domaine
+et/ou technique. C'est le cas par exemple pour l'identificateur suivant:
+
+    getCartLayout
+
+Le term ``Cart`` provient sans doute du glossaire du domaine alors que
+``Layout`` peut provenir d'un domaine technique correpondant à un
+framework utilisé.
+
+Dans certains cas des abbréviations sont utilisés pour obtenir des
+identificateurs plus cours. Celles-ci doivent être ajoutées dans le
+glossaire technique (e.g. ``DAO``) ou dans le glossaire de domaine
+(``num`` pour ``numero``). Le glossaire doit assurer l'usage des termes
+de manière homogéne est consistante dans tous les modèles et dans tous
+le code.
+
+Un identificateurs qui ne fait référence ni au domaine ni aux
+aspects techniques, est sujet a suspiscion.
+
+Dans tous les cas il est fondamental lorsque les glossaires chanqent
+ou lorsque de nouveaux indentificateurs sont définis, de s'assurer de
+l'alignement entre glossaire et autre artefacts.
+
+Dependencies
+------------
+
+The graph below show all language depdencies. As it can be seen the
+glossary depend on all requirement documents. This is due to the fact
+that the glossary is extracted from these documents. On the opposite
+direction it is worth noticing that all artefacts depends on the glossary.
+This is due to the fact that all scripts/artefacts may contain
+documentations based on the glossary terms as well as identifiers.
+
+..  image:: media/language-graph-gls.png
+    :align: center
