@@ -2,23 +2,26 @@
 ===============================
 
 Le modèle de cas d'utilisation à compléter se trouve dans le fichier
-``usecases/usecases.us1``.
+``usecases/usecases.uss``. Il doit être écrit en UsecaseScript.
+Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/usescases/index.html) lorsque nécessaire.
 
-Le modèle de participants doit être écrit en ParticipantScript.
-Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/participants/index.html) lorsque nécessaire.
+### Modèle préliminaire 
 
-### Tâche à réaliser 
+Compléter le modèle de cas d'utilisation. Dans un premier temps
+ne pas détailler les cas d'utilisation mais au contraire tenter
+de donner une vision globale du système et de ses différentes 
+intéractions.
 
-Compléter le modèle de cas d'utilisation en ajoutant/complétant
-a minima les cas d'utilisation couverts par le(s) scénario(s).
-Pour cela voir la tache "Scenarios Sequences". Il s'agit en
+Ajouter/compléter a minima les cas d'utilisation couverts par 
+le(s) scénario(s). Il s'agit en
 effet d'aligner le modèle de cas d'utilisation et les différents
 scénarios. Par la suite il s'agira d'aligner les cas d'utilisation
-et le modèle de permissions.
+et le modèle de permissions, puis à d'autres modèles.
 
-Avant de clore ce ticket faire un très bref bilan
-(sous la forme d'un message dans le ticket) sur ce qui a été
-fait, est à faire, doit être corrigé/amélioré, etc.
+### Modèle détaillé
+
+Une fois le modèle préliminaire défini, décrire de manière détaillée
+le où les cas d'utilisations les plus prioritaires.
 
 ### Questions et hypothèses
 
@@ -33,9 +36,11 @@ Avant de clore ce ticket définir le status courant pour ce travail. Lire et app
 
 ________
 
-- [ ] (030) Ajout/modification de cas d'utilisation.
+- [ ] (100) Ajout/modification de cas d'utilisation.
     - M ``usecases/usecases.ucs``
-- [ ] (100) Alignement entre cas d'utilisation et scénarios
+- [ ] (200) Vérification de l'alignement avec les scénarios.
+- [ ] (300) Description détaillée d'un cas d'utilisation prioritaire.
+    - M ``usecases/usecases.ucs``
 - [ ] (900) Ecriture du status final.
     - M ``classes/status.md``
 
