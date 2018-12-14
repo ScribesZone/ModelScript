@@ -73,4 +73,5 @@ ________
 - [ ] (030) Création d'un diagramme de classes global.
     - M ``classes/diagrams/classes.cld.clt``
     - M ``classes/diagrams/classes.cld.png``
-- [ ] (100) Ecriture du bilan.
+- [ ] (100) Ecriture du status final.
+    - M ``classes/status.md``

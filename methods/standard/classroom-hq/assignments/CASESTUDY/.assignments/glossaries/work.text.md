@@ -55,3 +55,4 @@ ________
 - [ ] (900) Ecriture des éventuelles questions et hypothèses.
     - M ``tracks/tracks.trs``
 - [ ] (950) Ecriture du status.
+    - M `glossaries/status.trs``
