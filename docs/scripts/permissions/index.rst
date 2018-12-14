@@ -1,6 +1,6 @@
 .. .. coding=utf-8
 
-.. highlight:: PermissionScript
+.. .. highlight:: PermissionScript
 
 .. index::  ! .pes, ! PermissionScript
     pair: Script ; PermissionScript
@@ -42,6 +42,7 @@ Examples
     The example below is based on a legacy syntax.
 
 ::
+
 
     permission model A2
     import usecase model from 'a.uss'
