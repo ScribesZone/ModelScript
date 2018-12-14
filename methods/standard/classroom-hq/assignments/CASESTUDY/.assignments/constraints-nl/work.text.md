@@ -86,3 +86,5 @@ Définition des contraintes portant :
     - M ``classes/classes.cls``
 - [ ] (040) sur plusieurs associations
     - M ``classes/classes.cls``
+- [ ] (900) Ecriture du status final.
+    - M ``classes/status.md``

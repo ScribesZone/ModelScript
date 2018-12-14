@@ -1,4 +1,4 @@
-# [CASESTUDY] Objects
+# [CASESTUDY] Objets
 
 Les modèles d'objets à compléter se trouvent dans les fichiers
 ``objects/o<N>/objects<n>.ob1`` (où <N> est un entier).
@@ -76,8 +76,8 @@ ________
 - [ ] (030) Production du diagramme d'objets.
     - M ``objects/o1/diagrams/objects.obd.olt``
     - M ``objects/o1/diagrams/objects.obd.png``
-- [ ] (900) Ecriture du status.
-    - M ``glossaries/status.trs``
+- [ ] (900) Ecriture du status final.
+    - M ``objects/status.md``
 
     
 

@@ -52,7 +52,5 @@ ________
 - [ ] (500) Réécriture du textes modèles de scénarios.
     - M ``scenarios/*``
 - [ ] (600) Vérification de l'alignement avec les autres modèles.
-- [ ] (900) Ecriture des éventuelles questions et hypothèses.
-    - M ``tracks/tracks.trs``
-- [ ] (950) Ecriture du status.
-    - M `glossaries/status.trs``
+- [ ] (900) Ecriture du status final.
+    - M ``glossaries/status.md``
