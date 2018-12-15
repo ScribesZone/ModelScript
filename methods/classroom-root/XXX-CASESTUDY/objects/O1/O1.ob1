@@ -9,7 +9,7 @@
 --    "|" for documentation annotations
 --=========================================================================
 --
---@ object model CASESTUDY
+--@ object model O1
 --@ import glossary model from "../../glossaries/glossaries.gls"
---@ import class model from "../../classes/classes.cls"
+--@ import class model from "../../classes/classes.cl1"
 
