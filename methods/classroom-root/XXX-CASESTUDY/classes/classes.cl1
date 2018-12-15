@@ -9,8 +9,8 @@
 --    "|" for documentation annotations
 --=========================================================================
 --
---@ glossary model CASESTUDY
+--@ class model XXX-CASESTUDY
 --@ import glossary model from "../glossaries/glossaries.gls"
 
-model CASESTUDY
+model XXX-CASESTUDY
 

@@ -5,8 +5,8 @@
 // See https://modelscript.rtfd.io/en/latest/scripts/tracks/index.html
 //=========================================================================
 
-track model CyberBibliotheque
-import glossary model from "../glossaries/glossary.gls"
+track model XXX-CASESTUDY
+import glossary model from "../glossaries/glossaries.gls"
 
 
 

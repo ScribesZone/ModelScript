@@ -1,0 +1,16 @@
+--=========================================================================
+--                          Scenario Model
+---------------------------------------------------------------------------
+-- This object model is expressed in ScenarioScript1.
+-- See https://modelscript.readthedocs.io/en/latest/scripts/scenarios1/index.html
+-- ScenarioScript1 is an annotated version of USE OCL.
+-- Annotations are in comments and start with
+--    "@" for statement annotations
+--    "|" for documentation annotations
+--=========================================================================
+--
+--@ scenario model S1
+--@ import glossary model from "../../glossaries/glossaries.gls"
+--@ import class model from "../../classes/classes.cl1"
+--@ import participant model from "../../participants.pas"
+--@ import usecase model from "../../usecases/usecases.uss"
