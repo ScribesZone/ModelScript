@@ -1,7 +1,7 @@
 # [XXX-CASESTUDY] Scenarios (plats)
 
-Les modèles de scénarios à compléter se trouvent dans le répertoire
-``scenarios/``.
+Les modèles de scénarios à compléter se trouvent dans les fichiers
+``scenarios/S<N>/S<N>.ob1`` (où <N> est un entier).
 
 Les modèles de scénarios doivent être écrits en ScenarioScript1.
 Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/scenarios1/index.html) lorsque nécessaire.
@@ -20,7 +20,7 @@ scénarios dans une suite d'instructions ``!`` *à plat", comme pour
 les modèles d'objets.
 
 
-**NOTE 1**: Si le fichier ``scenario.sc1``  n'est pas vide ignorer 
+**NOTE 1**: Si le fichier ``S<N>.sc1``  n'est pas vide ignorer 
 les éventuelles instructions comme ci-dessous :
 
     --@ context 
@@ -50,11 +50,11 @@ là où elles interviennent. Lire et appliquer les [règles associées au suivi]
 Avant de clore ce ticket définir le status courant pour ce travail. Lire et appliquer les [règles associées aux status](https://modelscript.readthedocs.io/en/latest/methods/status/index.html#rules).
 ________
 
-- [ ] (010) Traduction du scenarios/n en langage soil.
-    - M ``scenarios/n/scenario.scs``
+- [ ] (010) Traduction du scenario/S<N> en langage soil.
+    - M ``scenarios/S<N>/S<N>.scs``
 - [ ] (020) Vérification de l'alignement du scenario/n avec le modèle de classes.
 - [ ] (030) Création du diagramme d'état final pour le scenarios/n.
-    - M ``scenarios/n/diagrams/scenario-end.scd.olt``
-    - M ``scenarios/n/diagrams/scenario-end.scd.png``
+    - M ``scenarios/S<N>/diagrams/S<N>.scd.olt``
+    - M ``scenarios/S<N>/diagrams/S<N>.scd.png``
 - [ ] (900) Ecriture du status final.
     - M ``scenarios/status.md``
