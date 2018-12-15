@@ -1,12 +1,12 @@
-# [CASESTUDY] Suivi
+# [XXX-CASESTUDY] Suivi
 
 L'objectif de cette tâche est de s'assurer que le modèle de suivi
-est compris. Avec le modèles de suivi il s'agit d'augmenter les 
+est compris. Avec le modèle de suivi il s'agit d'augmenter les 
 modèles existants avec les questions/hypothèses/décisions qui y sont
 associées.
 
 A l'examen final ce modèle sera utilisé pour annoter
-les éléments fournis (e.g. besoins clients, modèles de classes, etc), 
+les éléments fournis (modèles de classes, etc), 
 et donc compléter les réponses.
 
 ### Tâche à réaliser
@@ -32,6 +32,6 @@ ________
     - M ``tracks/tracks.trs``
 - [ ] (100) Vérification des règles liées au modèle de suivi.
 - [ ] (900) Ecriture du status final.
-    - M ``classes/status.md``
+    - M ``tracks/status.md``
 
     

@@ -1,4 +1,4 @@
-# [CASESTUDY] Glossaire
+# [XXX-CASESTUDY] Glossaire
 
 Le glossaire à compléter se trouve dans le fichier
 ``glossaries/glossaries.gls``.

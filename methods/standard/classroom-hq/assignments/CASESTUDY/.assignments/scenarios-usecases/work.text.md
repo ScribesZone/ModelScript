@@ -1,5 +1,10 @@
-# [CASESTUDY] Scenarios cas d'utilisation
+# [XXX-CASESTUDY] Scenarios cas d'utilisation
 
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxx Le modèle de cas d'utilisation à compléter se trouve dans le fichier
+``usecases/usecases.uss``.
+
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLe modèle de cas d'utilisation doit être écrit en UsecaseScript.
+Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/classes1/index.html) lorsque nécessaire.
 
 Les scénarios réalisés jusque là étaient caractérisés
 par l'état qu'ils généraient à la fin de leur exécution. Il
