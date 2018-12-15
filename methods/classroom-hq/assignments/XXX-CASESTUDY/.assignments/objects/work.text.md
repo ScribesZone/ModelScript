@@ -70,12 +70,13 @@ là où elles interviennent. Lire et appliquer les [règles associées au suivi]
 Avant de clore ce ticket définir le status courant pour ce travail. Lire et appliquer les [règles associées aux status](https://modelscript.readthedocs.io/en/latest/methods/status/index.html#rules).
 ________
 
+Pour chaque modèle d'objet O<N> (où N est un entier):
 - [ ] (010) Traduction de l'état en langage soil.
-    - M ``objects/1/objects.obs``
+    - M ``objects/O<N>/O<N>.obs``
 - [ ] (020) Vérification de l'alignement avec le modèle de classes.
 - [ ] (030) Production du diagramme d'objets.
-    - M ``objects/o1/diagrams/objects.obd.olt``
-    - M ``objects/o1/diagrams/objects.obd.png``
+    - M ``objects/O<N>/diagrams/O<N>.obd.olt``
+    - M ``objects/O<N>/diagrams/O<N>.obd.png``
 - [ ] (900) Ecriture du status final.
     - M ``objects/status.md``
 

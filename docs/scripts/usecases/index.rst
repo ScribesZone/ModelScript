@@ -11,85 +11,6 @@ UsecaseScript
 =============
 
 
-
-Dependencies
-------------
-
-The graph below show all language depdencies.
-
-..  image:: media/language-graph-uss.png
-    :align: center
-
-
-Concepts
---------
-
-.. index:: UsecaseScript
-    single: Script; UsecaseScript
-
-UsecaseScript
--------------
-
-
-.. index:: Actor
-    single: Usecase; Actor (Usecase)
-
-Actors
-------
-
-
-.. index:: ! Usecase
-
-Usecases
---------
-
-
-.. index:: Actor
-    single: Usecase; Actor (Usecase)
-
-Usecase actors
-''''''''''''''
-
-.. index:: Persona
-    single: Persona ; Activity (Persona)
-
-Persona activities
-''''''''''''''''''
-
-.. index::
-    single: Usecase ; Summary (Usecase)
-    single: Usecase ; Description (Usecase)
-
-Summary and description
-'''''''''''''''''''''''
-
-Goal
-''''
-
-Precondition
-''''''''''''
-
-Trigger
-'''''''
-
-Postcondition
-'''''''''''''
-
-Risk
-''''
-
-Frequency / Volume
-''''''''''''''''''
-
-Flow
-''''
-
-Extensions
-''''''''''
-
-Interactions
-------------
-
 Examples
 --------
 
@@ -161,3 +82,86 @@ Examples
                 | 1. Une demande du mutation est créée
                 | 2.Retour à CreateDepartment.4
             usecase RetirerUnEmploye
+
+Concepts
+--------
+
+Usecase models are based on the following concepts:
+
+* **actors**
+* **usecases**
+* **interactions**
+* **systems**
+
+.. index:: UsecaseScript
+    single: Script; UsecaseScript
+
+
+.. index:: Actor
+    single: Usecase; Actor (Usecase)
+
+Actors
+------
+
+
+.. index:: ! Usecase
+
+Usecases
+--------
+
+
+.. index:: Actor
+    single: Usecase; Actor (Usecase)
+
+Usecase actors
+''''''''''''''
+
+.. index:: Persona
+    single: Persona ; Activity (Persona)
+
+Persona activities
+''''''''''''''''''
+
+.. index::
+    single: Usecase ; Summary (Usecase)
+    single: Usecase ; Description (Usecase)
+
+Summary and description
+'''''''''''''''''''''''
+
+Goal
+''''
+
+Precondition
+''''''''''''
+
+Trigger
+'''''''
+
+Postcondition
+'''''''''''''
+
+Risk
+''''
+
+Frequency / Volume
+''''''''''''''''''
+
+Flow
+''''
+
+Extensions
+''''''''''
+
+Interactions
+------------
+
+
+
+Dependencies
+------------
+
+The graph below show all language depdencies.
+
+..  image:: media/language-graph-uss.png
+    :align: center
