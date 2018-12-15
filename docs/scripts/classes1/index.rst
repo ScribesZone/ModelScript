@@ -10,17 +10,6 @@
 ClassScript1
 ============
 
-*ClassScript* is a textual notation for UML `class diagrams`_.
-In the current version of ModelScript, the``ClassScript1`` language is
-actually a "augmented subset" of the `USE OCL`_ language.
-ClassScript1 differs only very slightly for `USE OCL`_:
-
-* extensions: a few annotations are added inside USE OCL comments (``--``),
-* restrictions: ClassScript1 does not support qualified associations.
-
-While in the context of `USE OCL`_ the ``.use`` extension is used,
-``.cl1`` is the extension of ClassScripts1 scripts.
-
 Examples
 --------
 
@@ -38,7 +27,6 @@ Examples
     enum Season {
         winter,
         autumn,
-            --| Documentation of the autumn value
         spring,
         summer
     }
@@ -55,7 +43,7 @@ Examples
             length : Integer
             size : Real
             frozen : Boolean
-            expirationDate: String --@ {date}
+            expirationDate: String --@ {Date}
             growthTime : Season
             remainingDays : Integer
     end
@@ -98,6 +86,24 @@ Examples
     --@     | Si un emprunt concerne un atelier alors cet
     --@     | emprunt a eu lieu dans la période correspondant à l'atelier.
 
+ClassScript1
+------------
+
+*ClassScript* is a textual notation for UML `class diagrams`_.
+In the current version of ModelScript, the``ClassScript1`` language is
+actually a "augmented subset" of the `USE OCL`_ language.
+ClassScript1 differs only very slightly from `USE OCL`_:
+
+*   annotations. Two kinds of annotations are added as comments:
+
+    *   ``--|`` stands for a ModelScript documentation.
+    *   ``--@`` are for other ModelScript code.
+
+*   restrictions: ClassScript1 does not support qualified associations,
+    and other features such as post-conditions or pre-conditions.
+
+While in the context of `USE OCL`_ the ``.use`` extension is used,
+``.cl1`` is the extension of ClassScripts1 scripts.
 
 Concepts
 --------
@@ -108,8 +114,8 @@ A class model is based on the following concepts:
 * classes,
 * attributes,
 * associations,
-* association classes
-* constraints
+* association classes,
+* constraints.
 
 Enumerations
 ------------
@@ -138,7 +144,7 @@ UML class diagram:
     :align: center
 
 
-ClassScript (USE OCL):
+ClassScript1 (based on USE OCL):
 
 ..  code-block:: ClassScript1
 
@@ -179,10 +185,35 @@ ClassScript (USE OCL):
                 --| is between 5 and 40
             size : Real
             frozen : Boolean
-            expirationDate: String --@ {date}
+            expirationDate: String --@ {Date}
             growthTime : Season
             remainingDays : Integer
     end
+
+:Attribute types:
+
+    Attributes can have only one of those type:
+    *   an enumerations,
+    *   ``Boolean``,
+    *   ``Integer``,
+    *   ``Real``,
+    *   ``String``,
+    *   ``Date``,
+    *   ``DateTme``,
+    *   ``Time``.
+
+:Dates:
+
+    Natively there is no ``Date``, ``DateTime`` or ``Time`` data types in
+    `USE OCL`_.
+    Attributes have to be defined as ``String`` and an
+    ``{Date}``, ``{DateTime}`` or ``{Time}`` annotation has to be added
+    as shown in the example above.
+    Attribute values (in object models for instance) have then to be
+    represented in the following format:
+    ``2020/12/23`` for Date, ``2020/12/23-23:50:59`` for DateTime,
+    and ``23:00`` for Time. This format allows date comparisons although
+    no other computation is available.
 
 Associations
 ------------

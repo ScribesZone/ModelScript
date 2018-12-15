@@ -10,34 +10,13 @@
 AUIScript
 =========
 
-.. index:: ! AbstractSpace, ! Space
-   pair: AUIScript ; Space
-
-
-Concepts
---------
-
-* spaces
-* links
-* transformations
-
-Dependencies
-------------
-
-The graph below show all language depdencies.
-
-..  image:: media/language-graph-aui.png
-    :align: center
-
-
-Spaces
-------
-
-Links
------
-
-Transformation
---------------
+..  warning::
+    At the time being abstract user interfaces (AUI) are currently
+    to be described only informally using a "paper and pencil" method.
+    This page present a candidate language to represent AUI more formally.
+    It is **not** to be used in current projects. It is shown here just
+    to shown how abstract user interface modeling could be integrated
+    in ModelScript.
 
 Examples
 --------
@@ -69,7 +48,7 @@ Examples
                 Informer
             rule R1
             rule R2
-            | Some explaination
+            | Some explainations
 
     space ChoisirTypeReservation
         links
@@ -110,3 +89,31 @@ Examples
     space PreciserCriteresDeRecherche
         links
             EntrerLesInformations
+
+.. index:: ! AbstractSpace, ! Space
+   pair: AUIScript ; Space
+
+Concepts
+--------
+
+* spaces
+* links
+* transformations
+
+Dependencies
+------------
+
+The graph below show all language depdencies.
+
+..  image:: media/language-graph-aui.png
+    :align: center
+
+
+Spaces
+------
+
+Links
+-----
+
+Transformation
+--------------
