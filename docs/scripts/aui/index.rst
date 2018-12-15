@@ -11,12 +11,13 @@ AUIScript
 =========
 
 ..  warning::
-    At the time being abstract user interfaces (AUI) are currently
-    to be described only informally using a "paper and pencil" method.
+    **At the time being abstract user interfaces (AUI) are currently**
+    **to be described only informally using a "paper and pencil" method.**
     This page present a candidate language to represent AUI more formally.
     It is **not** to be used in current projects. It is shown here just
     to shown how abstract user interface modeling could be integrated
-    in ModelScript.
+    in ModelScript. The language is presented as-is without any guarantee
+    that it fit expert needs.
 
 Examples
 --------
@@ -97,6 +98,7 @@ Concepts
 --------
 
 * spaces
+* concepts
 * links
 * transformations
 
@@ -112,8 +114,50 @@ The graph below show all language depdencies.
 Spaces
 ------
 
+..  code-block:: AUIScript
+
+    space EntrerLesInformations "Réservation"
+        | Some documentation
+
+In the example above it is specified that "Réservation" can be used
+in the concrete user interface.
+
+The space Space can contains concepts, links and transformations.
+
+Concepts
+--------
+
+..  code-block:: AUIScript
+
+    space EntrerLesInformations "Réservation"
+        concepts
+            email "email"
+            numerotel "numéro de téléphone"
+
 Links
 -----
 
+..  code-block:: AUIScript
+
+    space ReservationSansPayer
+        links
+            back to ChoisirTypeReservation
+            PreciserCriteresDeRecherche "Filtrer"
+
+
 Transformation
 --------------
+
+..  code-block:: AUIScript
+
+    space EntrerLesInformations "Réservation"
+        transformation
+            from
+                Informer
+            rule R1
+            rule R2
+            | Some explanations
+
+It is possible to document from which tasks a given space comes
+from. Applied rules can be specified and additional explanations
+can be added.
