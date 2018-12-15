@@ -1,7 +1,7 @@
 # [XXX-CASESTUDY] Objets
 
 Les modèles d'objets à compléter se trouvent dans les fichiers
-``objects/o<N>/objects<n>.ob1`` (où <N> est un entier).
+``objects/O<N>/O<N>.ob1`` (où <N> est un entier).
 
 Les modèles d'objets doivent être écrits en ObjectScript1.
 Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/objects1/index.html) lorsque nécessaire.
@@ -15,7 +15,7 @@ dans le répertoire ``objects``.
 
 ### Traduire des états en langage ObjectScript
 
-Le fichier ``objects/o<N>/objects.ob1`` (où <N> est un entier) 
+Le fichier ``objects/O<N>/O<N>.ob1`` (où <N> est un entier) 
 contient un  modèle d'objets décrit en langue naturelle.
 Dans un étape précédante, ce texte a du être rephrasé pour l'aligner avec
 le glossaire. Il s'agit maintenant de le remanier pour établir
