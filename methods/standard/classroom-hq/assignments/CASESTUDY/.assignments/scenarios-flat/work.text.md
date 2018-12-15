@@ -1,4 +1,4 @@
-# [CASESTUDY] Scenarios plats
+# [CASESTUDY] Scenarios (plats)
 
 Les modèles de scénarios à compléter se trouvent dans le répertoire
 ``scenarios/``.

@@ -1,12 +1,12 @@
-[CyberBibliotheque] Contraintes en langage naturel
-==================================================
+[CASESTUDY] Contraintes (LN)
+============================
 
 Les contraintes à ajouter doivent être intégrées au modèle de classes 
 (``classes/classes.cl1``).
 
 ### Tâche à réaliser
 
-Dans cette tâche les contraintes sont décrites en langue naturelle.
+Dans cette tâche les contraintes sont décrites en Langue Naturelle (LN).
 Par la suite ces contraintes pourront être traduites en langage OCL,
 mais ce n'est pas l'objectif de cette tâche. 
 On se limite également aux invariants que doivent vérifier chaque état
