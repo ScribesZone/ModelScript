@@ -10,15 +10,11 @@
 GlossaryScript
 ==============
 
-The ``GlossaryScript`` language, as defined below, allows to express
-*glossaries*. In practice there is only one glossary for a given project
-(although packages can be used to split a glossary in multiple part).
-Glossary scripts are to be saved with the ``.gls`` extension.
-
 Examples
 --------
 
-A complete, yet meaningless, example of glossary is given below.
+A complete, yet meaningless, example of glossary is given below. Note
+that many terms should be defined as they are referenced in definitions.
 
 ..  code-block:: GlossaryScript
 
@@ -27,40 +23,47 @@ A complete, yet meaningless, example of glossary is given below.
         | dans `un` contexte `uno` et `deux`
         | `un` `test`
 
-    FilDeDiscussion:
-        | suite ordonnée de `Messages`
-        package: domain
+
+    //------------------------------------------------------------
+    //   Glossaire du domaine
+    //------------------------------------------------------------
+
+    package GlossaireDuDomaine
+
+    FilDeDiscussion
+        | Suite ordonnée de `Messages`
         synonyms: Uno One
         inflections: unite uns
         texts:
             fr: "Fil de discussion"
             en: "Thread"
 
-
     Reference
-        | mot ou suite de mots faisant référence à
+        | Mot ou suite de mots faisant référence à
         | un `Concept` déjà défini. Attention à l'`Indentation`
         | qui doit être toujours de `huit` espaces.
         synonyms : a b c
-        package : a
 
+    //------------------------------------------------------------
+    //   Glossaire technique
+    //------------------------------------------------------------
 
-    Deux
-        | ceci est la description de `un` élément
-        | dans `un` contexte `uno` et `deux`
-        | `un` `test`
-        | trois
-        package: a
+    package GlossaireTechnique
 
-    ZIO
-        | packaef
-        package: b
+    MVC
+        | Patron de conception utilisé lors de la définition
+        | d'interface homme machine.
+        | Voir https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller
+        | In the context of this project ...
 
-    ODK
-        | Order Designed Kant
-        package: a
+GlossaryScript
+--------------
 
-
+The ``GlossaryScript`` language, as defined below, allows to express
+*glossaries*. Various glossaries can be defined (for instance
+a domain glossary and a technical glossary) but all glossaries
+are defined in the same file. Packages can be used to split this file.
+Glossary scripts are to be save with the ``.gls`` extension.
 
 .. index:: ! Glossary
 
