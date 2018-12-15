@@ -1,3 +1,4 @@
+.mdl/tmp/*
 build/
 .build/
 tmp/
