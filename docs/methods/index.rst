@@ -1,21 +1,19 @@
-Methods
-=======
+ModelScript Method
+==================
 
-ModelScript supports different "methods" with different learning
-objectives. Each method on a project layout, with
+ModelScript comes with a simple method, the "ModelScript Method".
+This method is decomposed in steps and artefacts to be used/produced
+at each step. The method is modular in the sense that only a
+few artefacts and/or steps can be used.
 
-*   a **directory layout** defining name of each directory as well as the
-    content of these directories, including in most cases the name
-    of the file.
-
-*   a series of tasks to be performed in a sequential order or in an
-    iterative way. Each tasks define what todo, input artefacts and
-    output artefacts.
-
+The method is based on a project layout for modeling *artefacts*.
+It also relies on a set of tasks to be performed for the *process*.
+Each tasks have to be concluded by an status file, a file which is not
+currently written as a script.
 
 ..  toctree::
     :maxdepth: 3
 
-    CO
-    UHD
+    artefacts
+    process
     status
