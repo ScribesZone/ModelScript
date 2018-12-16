@@ -7,10 +7,40 @@
 
 .. _RelationScript:
 
-
-
 RelationScript
 ==============
+
+Examples
+--------
+
+::
+
+    TheEmployees(_u_,v,e,r)
+        | Employees and their roles and properties
+        intention
+            (u,v,e,r) in TheEmployees <=>
+            | the employee e is ... with u ... v ... and
+            | has role r within the company.
+        examples
+            (19, 30, 'noe', 'gardener')
+            (24, -5, 'marie', 'manager')
+        constraints
+            key u
+            dom(u) = dom(v) = Integer
+            dom(e) = dom(c) = Date
+            dom(d) = Real ?
+            3NF
+        transformation
+            from C1
+            from C2
+            rules R1
+            | Columns C1.u and Columns C2.v
+            | have been "merged" as following ...
+
+    TheEmployees[v] C= TheOffices[v]
+
+RelationScript
+--------------
 
 RelationScript allows to express "schemas_" in the sense of the
 `relational data model`_.
@@ -33,19 +63,6 @@ RelationScript is based on the following concepts:
 * constraints on domains,
 * functional dependencies.
 * normal forms,
-
-Dependencies
-------------
-
-The graph below show all language dependencies ;
-from the top to the bottom:
-
-* a relational model
-
-..  image:: media/language-graph-res.png
-    :align: center
-
-A rela
 
 Relations
 ---------
@@ -85,19 +102,7 @@ It can also be defined for "formally" in the intention section.
         intention
             (a,c,d) <=> the person a is ... with c ... and d ...
 
-Examples
---------
 
-::
-
-    R5(u,v,t,x)
-        | (u,v,t,x) <=> ...
-        intention
-            (a,c,d,x) in R5 <=>
-            | the person a is ... with c ... and d ...
-        examples
-            (19, 30, "noe")
-            (24, -5, "marie")
 
 Constraints on domain
 ---------------------
@@ -111,6 +116,9 @@ The domain of the attributes can be defined as following.
         dom(b) = dom(c) = Date
         dom(d) = Real ?
 
+A basic type followed by '?' means that this domain is extended
+with the ``null value`` ; the corresponding attribute is optional.
+
 Basic type includes:
 * ``String``,
 * ``Real``,
@@ -118,9 +126,8 @@ Basic type includes:
 * ``Integer``,
 * ``Date``,
 * ``DateTime``
+* ``Time``.
 
-A basic type followed by '?' means that this domain is extended
-with the ``null value`` ; the corresponding attribute is optional.
 
 Integrity constraints
 ---------------------
@@ -187,13 +194,14 @@ Transformation
             | Columns C1.c and Columns C2.c
             | have been "merged" as following ...
 
+Dependencies
+------------
 
-Exemples
---------
+The graph below show all language dependencies:
 
-Short form
+..  image:: media/language-graph-res.png
+    :align: center
 
-Long form
 
 ..  _schemas:
     https://en.wikipedia.org/wiki/Database_schema
