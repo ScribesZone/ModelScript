@@ -7,29 +7,31 @@ Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/s
 
 ### Ecriture du glossaire
 
-Compléter le glossaire en respectant impérativement les [règles associées aux glossaire](https://modelscript.readthedocs.io/en/latest/scripts/glossaries/index.html#rules).
+Compléter le glossaire en respectant impérativement les [règles associées aux glossaires oi](https://modelscript.readthedocs.io/en/latest/scripts/glossaries/index.html#rules).
     
 ### Alignement avec le texte des scénarios et des objets
 
 Le glossaire doit être aligné avec les termes utilisés par le client.
 En particulier il s'agit de "réécrire" les différents textes fournis
-par celui-ci. Dans le contexte de cette tâche il est demandé plus
-précisemment de réécrire les textes associés aux modèles d'objets et 
+par celui-ci ou élaborer en collaboration avec celui-ci. Dans 
+le contexte de cette tâche il est demandé plus précisemment de 
+réécrire les textes associés aux modèles d'objets et 
 de scénarios.
 
-En principe tous les autres 
-textes devraient être réécrits, mais ce n'est pas demandé. 
-Se concentrer sur les modèles de scénarios et objets.
+En principe tous les autres  textes devraient être réécrits, 
+mais pour simplifier ce n'est pas demandé : se concentrer 
+sur les modèles de scénarios et objets.
 
 Pour la réécriture suivre les [règles associées à la réécriture de textes](https://modelscript.readthedocs.io/en/latest/scripts/glossaries/index.html#rewriting-texts).
      
 ### Alignement les autres modèles
 
-Tout au long du projet il sera nécessaire de s'assurer en permance de 
+Tout au long du projet il sera nécessaire de s'assurer en permanence de 
 l'alignement avec le glossaire de tous les modèles mais aussi 
-du code (SQL, Java, etc.). Cela implique entre autre d'aligner non
+du code (SQL, Java, etc.). Cela impliquera entre autre d'aligner non
 seulement les textes, mais aussi les identificateurs.
-Lire et appliquer les [règles associées à la réécriture d'identificateurs](https://modelscript.readthedocs.io/en/latest/scripts/glossaries/index.html#rewriting-identifiers).
+Lire les [règles associées à la réécriture d'identificateurs](https://modelscript.readthedocs.io/en/latest/scripts/glossaries/index.html#rewriting-identifiers). Les appliquer au fur et à mesure du
+développement du projet.
 
 ### Questions et hypothèses
 
