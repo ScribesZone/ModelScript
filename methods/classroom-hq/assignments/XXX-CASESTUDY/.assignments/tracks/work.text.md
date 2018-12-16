@@ -13,8 +13,8 @@ et donc compléter les réponses.
 ### Tâche à réaliser
 
 Le modèle de suivi va être utilisé tout au long du projet.
-Consulter si nécessaire la section faisant référence à 
-[l'utilisation du modèle de suivi](https://modelscript.readthedocs.io/en/latest/methods/tracks/index.html#usage).
+Consulter si nécessaire la section faisant référence aux 
+[règles associées au modèle de suivi](https://modelscript.readthedocs.io/en/latest/scripts/tracks/index.html#rules).
 
 Concrètement dans cette tâche il est demandé d'écrire au moins une question
 et une hypothèse, concernant les documents fourni par/élaboré avec 
@@ -23,7 +23,7 @@ questions/hypothèses/décisions en fonction des besoins.
 
 ### Status final
 
-Avant de clore ce ticket définir le status courant pour ce travail. Lire et appliquer les [règles associées aux status](https://modelscript.readthedocs.io/en/latest/methods/status/index.html#rules).
+Avant de clore ce ticket définir le status courant pour ce travail. Lire et appliquer les [règles associées aux status](https://modelscript.readthedocs.io/en/latest/methods/status.html#rules).
 ________
 
 - [ ] (010) Ecriture d'une question.
