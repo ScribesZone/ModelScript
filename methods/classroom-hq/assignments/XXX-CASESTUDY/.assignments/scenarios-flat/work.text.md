@@ -9,16 +9,16 @@ Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/s
 L'objectif de cette tâche est de traduire dans un premier temps
 les textes en scénarios "plats", c'est à dire une simple suite 
 d'instructions ``!``. Les fichiers de scénarios obtenus seront 
-modifiés par la suite pour leur ajouter de la structure.
+modifiés par la suite pour leur ajouter une structure.
 
 Les tâches ci-dessous doivent être répétées pour chaque scénario.
 
 ### Tâche à réaliser
 
-En pratique il s'agit dans cette tâche simplement de traduire le texte des
-scénarios dans une suite d'instructions ``!`` *à plat", comme pour 
-les modèles d'objets.
-
+En pratique, comme dans les modèles d'objets, il s'agit dans 
+cette tâche simplement de traduire le texte des scénarios 
+en une suite d'instructions ``!`` *à plat". Voir la tâche
+concernant les modèles d'objets pour plus de détail.
 
 **NOTE 1**: Si le fichier ``S<N>.sc1``  n'est pas vide ignorer 
 les éventuelles instructions comme ci-dessous :
@@ -30,13 +30,7 @@ les éventuelles instructions comme ci-dessous :
         ...
     --@ end
 
-Ignorer également les emboîtements correspondants.
-
-**NOTE 2** Tout comme pour les modèles d'objets,  il peut être utile de remanier le
-texte pour éliminer les phrases qui n'apportent rien au 
-scénario. Certaines phrases expliquant le contexte peuvent cependant 
-être gardées. Le scénario doit rester compréhensible par le client, tout
-en ne comportant pas d'éléments superflus.
+Ignorer également les emboîtements correspondants, s'ils sont présents.
 
 ### Questions et hypothèses
 
