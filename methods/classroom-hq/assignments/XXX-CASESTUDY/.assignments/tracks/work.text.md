@@ -1,5 +1,6 @@
 # [XXX-CASESTUDY] Suivi
 
+
 L'objectif de cette tâche est de s'assurer que le modèle de suivi
 est compris. Avec le modèle de suivi il s'agit d'augmenter les 
 modèles existants avec les questions/hypothèses/décisions qui y sont
@@ -16,7 +17,8 @@ Consulter si nécessaire la section faisant référence à
 [l'utilisation du modèle de suivi](https://modelscript.readthedocs.io/en/latest/methods/tracks/index.html#usage).
 
 Concrètement dans cette tâche il est demandé d'écrire au moins une question
-et une hypothèse, et ensuite au cours de la modèlisation d'ajouter
+et une hypothèse, concernant les documents fourni par/élaboré avec 
+le client. Ensuite au cours de la modèlisation et du développement d'ajouter
 questions/hypothèses/décisions en fonction des besoins.
 
 ### Status final
@@ -34,4 +36,3 @@ ________
 - [ ] (900) Ecriture du status final.
     - M ``tracks/status.md``
 
-    
