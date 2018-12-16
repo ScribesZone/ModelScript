@@ -83,6 +83,11 @@ Examples
                 | 2.Retour à CreateDepartment.4
             usecase RetirerUnEmploye
 
+UsecaseScript
+-------------
+
+UsecaseScript makes it possible to represent usecase models.
+
 Concepts
 --------
 
