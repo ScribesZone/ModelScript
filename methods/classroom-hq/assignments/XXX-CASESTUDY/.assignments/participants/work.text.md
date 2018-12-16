@@ -1,4 +1,5 @@
-# [XXX-CASESTUDY] Participants
+[XXX-CASESTUDY] Participants
+===========================================================
 
 Le modèle de participants à compléter se trouve dans le fichier
 ``participants/participants.pas``.

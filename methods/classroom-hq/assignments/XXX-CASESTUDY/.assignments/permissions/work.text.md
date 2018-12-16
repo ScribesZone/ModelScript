@@ -1,4 +1,5 @@
-# [XXX-CASESTUDY] Permissions
+[XXX-CASESTUDY] Permissions
+===========================================================
 
 Après avoir défini un modèle de classes et un modèle de cas d'utilisation 
 il est possible de définir le modèle de permissions. Ce modèle

@@ -1,4 +1,5 @@
-# [XXX-CASESTUDY] Scenarios (plats)
+[XXX-CASESTUDY] Scenarios (plats)
+===========================================================
 
 Les modèles de scénarios à compléter se trouvent dans les fichiers
 ``scenarios/S<N>/S<N>.ob1`` (où <N> est un entier).

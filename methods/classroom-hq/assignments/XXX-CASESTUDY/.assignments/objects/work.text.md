@@ -1,4 +1,5 @@
-# [XXX-CASESTUDY] Objets
+[XXX-CASESTUDY] Objets
+===========================================================
 
 Les modèles d'objets à compléter se trouvent dans les fichiers
 ``objects/O<N>/O<N>.ob1`` (où <N> est un entier).

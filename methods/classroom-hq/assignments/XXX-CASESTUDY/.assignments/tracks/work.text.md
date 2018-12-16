@@ -1,4 +1,5 @@
-# [XXX-CASESTUDY] Suivi
+[XXX-CASESTUDY] Suivi
+===========================================================
 
 
 L'objectif de cette tâche est de s'assurer que le modèle de suivi

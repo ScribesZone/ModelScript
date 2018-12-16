@@ -1,6 +1,30 @@
-# [XXX-CASESTUDY] Scenarios cas d'utilisation
+[XXX-CASESTUDY] Scenarios ()cas d'utilisation)
+===========================================================
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXxxx Le modèle de cas d'utilisation à compléter se trouve dans le fichier
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+XXXXXXXXXXXXXXXXXXXXXXXLe modèle de cas d'utilisation à compléter se trouve dans le fichier
 ``usecases/usecases.uss``.
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLe modèle de cas d'utilisation doit être écrit en UsecaseScript.

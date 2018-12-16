@@ -1,4 +1,5 @@
-# [XXX-CASESTUDY] Classes
+[XXX-CASESTUDY] Classes
+===========================================================
 
 Le modèle de classes à compléter se trouve dans le fichier
 ``classes/classes.cl1``.
