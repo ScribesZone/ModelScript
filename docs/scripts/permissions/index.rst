@@ -14,14 +14,11 @@ PermissionScript
 Concepts
 --------
 
-Dependencies
-------------
-
-The graph below shows all language dependencies.
-
-..  image:: media/language-graph-pes.png
-    :align: center
-
+Permission models are based on the following concepts:
+* subjects
+* actions
+* permissions
+* resources
 
 Subject
 -------
@@ -59,4 +56,12 @@ Examples
     U1  can R   S.sa
 
 
+
+Dependencies
+------------
+
+The graph below shows all language dependencies.
+
+..  image:: media/language-graph-pes.png
+    :align: center
 
