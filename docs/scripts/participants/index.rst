@@ -1,6 +1,6 @@
 .. .. coding=utf-8
 
-.. highlight:: ParticipantScript
+.. .. highlight:: ParticipantScript
 
 .. index::  ! .pas, ! ParticipantScript
     pair: Script ; ParticipantScript
@@ -12,6 +12,8 @@ ParticipantScript
 
 Examples
 --------
+
+::
 
     participant model Demo
 
