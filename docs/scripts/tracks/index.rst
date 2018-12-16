@@ -64,8 +64,8 @@ Examples
         date: 2019-05-21
         who: ADZ NZW PGI ZSE
 
-Usage
------
+TaskScript
+----------
 
 Un projet le modèle de suivi peut par exemple être utilisé dans deux
 contextes :
@@ -93,8 +93,8 @@ order :
 
 This also allow to track who was involved in which question/hypothesis/decision.
 
-Question
---------
+Questions
+---------
 
 **Questions** are interrogations that the members of the team have about
 some part of the project. By contrast to **hypothesis**, a **question** is
