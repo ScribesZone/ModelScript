@@ -47,8 +47,8 @@ Répéter ces operations jusqu'à ce que le modèle soit satisfaisant.
 ### Alignement avec le glossaire
 
 Vérifier que les termes importants apparaissant dans les noms de classes,
-d'associations, d'attributs ou de rôle sont bien dans le glossaire. Par 
-le il peut être important de définir ce qu'est la "DateDeRetour" dans le
+d'associations, d'attributs ou de rôle sont bien dans le glossaire. 
+Par exemple ilpeut être important de définir ce qu'est la "DateDeRetour" dans le
 contexte d'un bibliothèque. Ce terme fait partie du domaine. Il est sans 
 doute nécessaire de l'expliquer s'il ne correspond pas à une définition
 de sens commun. D'ailleurs le terme à définir est peut être "Retour". 
