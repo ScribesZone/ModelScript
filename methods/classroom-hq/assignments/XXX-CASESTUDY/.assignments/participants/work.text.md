@@ -30,7 +30,7 @@ là où elles interviennent. Lire et appliquer les [règles associées au suivi]
  
 ### Status final
 
-Avant de clore ce ticket définir le status courant pour ce travail. Lire et appliquer les [règles associées aux status](https://modelscript.readthedocs.io/en/latest/methods/status/index.html#rules).
+Avant de clore ce ticket définir le status courant pour ce travail. Lire et appliquer les [règles associées aux status](https://modelscript.readthedocs.io/en/latest/methods/status.html#rules).
 ________
 
 - [ ] (030) Ajout/modification d'acteurs pour les cas d'utilisation.
