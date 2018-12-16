@@ -1,7 +1,9 @@
-:version: 2018.0.7.1
+:version: 2018.0.7.2
 
 Change History
 ==============
 
+:2018.0.7.2:
+    Add documentation + method files
 :2018.0.7.0:
     First test version on mandelbrot.
