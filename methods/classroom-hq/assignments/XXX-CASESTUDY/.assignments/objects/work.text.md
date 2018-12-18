@@ -39,7 +39,7 @@ des tests et en particulier des tests de recette.
 Vérifier que l'état est aligné avec le modèle de classes.
 Pour cela utiliser la commande suivante à partir du répertoire principal :
 ```
-    use -qv classes/classes.cl1 objects/O<N>/objects.ob1
+    use -qv classes/classes.cl1 objects/O<N>/O<N>.ob1
 ```
 L'interpreteur affichera les éventuelles erreurs de syntaxe
 ainsi que les erreurs de types ou de cardinalités. Si rien ne s'affiche
