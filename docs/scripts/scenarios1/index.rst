@@ -54,6 +54,24 @@ Examples
 ScenarioScript1
 ---------------
 
+Tooling
+-------
+
+Analyzing models
+''''''''''''''''
+
+The conformity of scenario models with class models can be checked with
+the `USE OCL`_ tool. Analyzing scenario models is just like
+:ref:`analyzing object models<AnalyzingObjectModels>`.
+
+Generating models
+'''''''''''''''''
+
+It is possible to generate an object diagram representing the state at
+the end of the scenario. Creating such object diagrams is possible.
+Check how to :ref:`generate object diagram<GeneratingObjectDiagrams>`.
+
+
 Concepts
 --------
 
@@ -70,3 +88,4 @@ The graph below show all language depdencies.
 ..  image:: media/language-graph-scs.png
     :align: center
 
+..  _`USE OCL`: http://sourceforge.net/projects/useocl/

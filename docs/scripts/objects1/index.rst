@@ -54,11 +54,66 @@ The following code shows an annotated object model.
 ObjectScript1
 -------------
 
-OB Script (OBS) is a textual notation for UML `object diagrams`_.
+"ObjectScript1" is a textual notation for UML `object diagrams`_.
 Object script is a restricted version of the `USE OCL`_
-SOIL language. While in the context of USE the
-``.soil`` extension is used, ``.obs`` is the extension of
-object scripts.
+SOIL language. In the context of `USE OCL`_ the
+``.soil`` extension is usually  used, but here the ``.ob1`` is used
+for object scripts.
+
+Tooling
+-------
+
+.. _AnalyzingObjectModels:
+
+Analyzing models
+''''''''''''''''
+
+The conformity of object models with class models can be checked with
+the `USE OCL`_ tool.
+When using the :ref:`ModelScript Method<ModelScriptMethod>`
+enter the following command line in a terminal (assuming that the current
+directory is the root directory of the modeling project and that
+the name of the object model is O<N> where <N> is an integer):
+
+..  code-block:: none
+
+    use -qv classes/classes.cl1 objects/O<N>/O<N>.ob1
+
+The analyser check that there is no syntax errors,  no type errors,
+no cardinality errors, etc.
+If no errors are displayed, then both models are correct
+and they are aligned.
+
+The location of errors are not always displayed. It this is the case it
+might be useful to use the following command:
+
+..  code-block:: none
+
+    use -nogui classes/classes.cl1 objects/O<N>/O<N>.ob1
+
+This will launch the interpreter. To quit use the ``quit`` command :
+
+..  code-block:: none
+
+    use> quit
+
+.. _GeneratingObjectDiagrams:
+
+Generating diagrams
+'''''''''''''''''''
+
+Creating UML object diagrams is possible using the `USE OCL`_ tool:
+
+..  code-block:: none
+
+    use -nr classes/classes.cl1 objects/O<N>/O<N>.ob1
+
+Refer to the page "`creating UML object diagrams`_" for more information.
+
+When using the :ref:`ModelScript Method<ModelScriptMethod>` the
+layout of the object diagram have to be saved in the file
+``objects/O<N>/diagrams/O<N>.obd.clt``. The diagram has to be
+saved in the file ``objects/O<N>/diagrams/O<N>.obd.png``.
 
 Concepts
 --------
@@ -151,3 +206,5 @@ The graph below show all language depdencies.
 ..  _`USE OCL`: http://sourceforge.net/projects/useocl/
 
 ..  _`object diagrams`: https://www.uml-diagrams.org/class-diagrams-overview.html#object-diagram
+
+.. _`creating UML object diagrams`: https://scribestools.readthedocs.io/en/latest/useocl/index.html#creating-diagrams

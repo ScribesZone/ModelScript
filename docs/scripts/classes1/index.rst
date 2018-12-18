@@ -1,6 +1,6 @@
 .. .. coding=utf-8
 
-.. highlight:: ClassScript
+.. highlight:: ClassScript1
 
 .. index:: ! .cl1, ! ClassScript1
    single: Script ; ClassScript1
@@ -104,6 +104,43 @@ ClassScript1 differs only very slightly from `USE OCL`_:
 
 While in the context of `USE OCL`_ the ``.use`` extension is used,
 ``.cl1`` is the extension of ClassScripts1 scripts.
+
+Tooling
+-------
+
+Analyzing models
+''''''''''''''''
+
+ClassScript1 models can be analyzed with the `USE OCL`_ tool.
+When using the :ref:`ModelScript Method<ModelScriptMethod>`
+the following command line should be entered in a terminal
+(assuming that the current
+directory is the root directory of the modeling project):
+
+..  code-block:: none
+
+       use -c classes/classes.cl1
+
+The interpreter check that there is no errors such as
+syntax errors and type errors.
+If no errors are displayed, then the class model is correct.
+
+Generating diagrams
+'''''''''''''''''''
+
+Creating UML class diagrams is possible using the `USE OCL`_ tool:
+
+..  code-block:: none
+
+    use -nr classes/classes.cl1
+
+Refer to the page "`creating UML class diagrams`_" for more
+information.
+
+When using the :ref:`ModelScript Method<ModelScriptMethod>` the
+layout of the class diagram have to be saved in the file
+``classes/diagrams/classes.cld.clt``. The diagram has to be
+saved in the file ``classes/diagrams/classes.cld.png``.
 
 Concepts
 --------
@@ -366,6 +403,8 @@ The graph below show all language dependencies.
     :align: center
 
 
-..  _`USE OCL`: http://sourceforge.net/projects/useocl/
+..  _`USE OCL`: https://scribestools.readthedocs.io/en/latest/useocl/index.html
 
 .. _`class diagrams`: https://www.uml-diagrams.org/class-diagrams-overview.html
+
+.. _`creating UML class diagrams`: http://scribetools.readthedocs.io/en/latest/useocl/index.html#creating-diagrams
