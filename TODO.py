@@ -4,12 +4,12 @@
 #   General
 #================================================================
 
-#TODO:1 deployment: check how to deploy modelscript
+#TODO:4 deployment: check how to deploy modelscript
 #   should it be with ScribesInfra ?
 #   a python package ?
 #   check if it works at uni
 
-#TODO:1 create cl1/ob1/sc1 scripts
+#TODO:2 create cl1/ob1/sc1 scripts
 
 #TODO:1 add an option to just launch syntax parsing
 #   This should go to megamodels/sources.py
@@ -20,6 +20,7 @@
 #   If a directory is on the command line
 #   and it does contains any model files then issue a warning
 
+#TODO:2 add TrackScript
 
 #TODO:2 Deal with Unexpected exception
 #   when in source "except FatalError" -> FatalError exception
@@ -80,7 +81,7 @@
 
 
 #================================================================
-#   Glossary Model
+#   GlossaryScript
 #================================================================
 
 #TODO:1 add acronym, expansion, abbreviation
@@ -123,7 +124,7 @@
 #TODO:4 add some memoization or store some stuff
 
 #================================================================
-#   Class model
+#   ClassScript
 #================================================================
 
 #FIXME:1 Duplicated issue box
@@ -276,7 +277,7 @@
 
 
 #================================================================
-#   Scenarios/object model
+#   ScenarioScript/ObjectScript
 #================================================================
 
 #TODO:3 add a check for "context/fragment" unused
@@ -314,8 +315,9 @@
 #   better to send a, error message if there is more than one
 #   class model imported.
 
+
 #================================================================
-#   Object model
+#   ObjectScript
 #================================================================
 
 #TODO:3 avoid duplicate object state model
@@ -334,33 +336,28 @@
 #TODO:2 add inheritance in ObjectModel.classExtension()
 #   This is used at least to compute {id} properties
 
-
 #================================================================
-#   Usecase model
-#================================================================
-
-#TODO:2 add "can be used to / peut etre utilisé pour"
-#TODO:2 usecase: check what works or not
-
-#TODO:2 add import of participant model with actors imported
-#   Add first the dependency in metamodel to participant model
-#   Then add error "actor" already imported in participant model
-#   Then add search of actor in participant/local model
-
-#TODO:3 add a user model (projet d'integration)
-#   Usecase model can define actors and import more
-#   Task model can define actors and import more
-#   Scenario model can define actors/personas and import more
-
-#================================================================
-#   Permission model
+#   ScenarioScript
 #================================================================
 
-#TODO:3 permission model: check what works
-#   This could require quite some work and adjustment.
 
 #================================================================
-#   Participant Model
+#   RelationScript
+#================================================================
+
+
+#TODO:2 add new notations (see todo in re-main)
+#TODO:3 generate a ER diagram form model
+
+#TODO:3 metamodel to be continued / add semantics
+#   a few elements (relations, columns) seems to exist
+#   but their content have to be checked.
+#   In particular type, constraints
+#   This should enable res/TO DO tests
+
+
+#================================================================
+#   ParticipantScript
 #================================================================
 
 # STATUS
@@ -379,14 +376,41 @@
 #   https://www.teamgantt.com/blog/project-management-communication-plan
 
 
+
 #================================================================
-#   Task Model
+#   UsecaseScript
+#================================================================
+
+#TODO:2 add "can be used to / peut etre utilisé pour"
+#TODO:2 usecase: check what works or not
+
+#TODO:2 add import of participant model with actors imported
+#   Add first the dependency in metamodel to participant model
+#   Then add error "actor" already imported in participant model
+#   Then add search of actor in participant/local model
+
+#TODO:3 add a user model (projet d'integration)
+#   Usecase model can define actors and import more
+#   Task model can define actors and import more
+#   Scenario model can define actors/personas and import more
+
+
+#================================================================
+#   PermissionScript
+#================================================================
+
+#TODO:3 permission model: check what works
+#   This could require quite some work and adjustment.
+
+
+#================================================================
+#   TaskScript
 #================================================================
 
 #TODO:3 make sure KMade import is ok
 
 #================================================================
-#   AUI Model
+#   AUIScript
 #================================================================
 
 #TODO:3 Add Concept reference
@@ -403,19 +427,6 @@
 
 #TODO:3 Check what works
 
-#================================================================
-#   Relational class model / relation model
-#================================================================
-
-
-#TODO:2 add new notations (see todo in re-main)
-#TODO:3 generate a ER diagram form model
-
-#TODO:3 metamodel to be continued / add semantics
-#   a few elements (relations, columns) seems to exist
-#   but their content have to be checked.
-#   In particular type, constraints
-#   This should enable res/TO DO tests
 
 #================================================================
 #   Quality Model
@@ -431,7 +442,7 @@
 #   https://packaging.python.org/guides/distributing-packages-using-setuptools/#choosing-a-versioning-scheme
 
 #================================================================
-#   Project Model
+#   ProjectScript
 #================================================================
 
 #TODO:2  design a simple project model
@@ -447,7 +458,7 @@
 #TODO:2  design a simple Time Tracking model
 
 #================================================================
-#  Issue Model
+#  TrackScript
 #================================================================
 
 #TODO:2  create issue model from CyberBibliotheque

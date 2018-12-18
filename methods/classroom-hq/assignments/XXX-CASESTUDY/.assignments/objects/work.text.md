@@ -39,7 +39,7 @@ des tests et en particulier des tests de recette.
 Vérifier que l'état est aligné avec le modèle de classes.
 Pour cela utiliser la commande suivante à partir du répertoire principal :
 ```
-    use -qv classes/classes.cl1 objects/o<N>/objects.ob1
+    use -qv classes/classes.cl1 objects/O<N>/objects.ob1
 ```
 L'interpreteur affichera les éventuelles erreurs de syntaxe
 ainsi que les erreurs de types ou de cardinalités. Si rien ne s'affiche
@@ -47,7 +47,7 @@ cela signifie qu'aucune erreur n'a été trouvée.
 
 ## Dessiner un diagramme d'objets
 
-Produire un diagramme d'objets représentant le modèle d'objets ``objects/o<N>``.
+Produire un diagramme d'objets représentant le modèle d'objets ``objects/O<N>``.
 Pour cela utiliser la même technique que pour les diagrammes de classes.
 La disposition des objets doit autant que possible refléter
 la disposition du diagramme de classes. 
