@@ -1,3 +1,5 @@
+.. _ModelScriptMethod:
+
 ModelScript Method
 ==================
 
