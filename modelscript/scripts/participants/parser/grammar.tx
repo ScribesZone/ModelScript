@@ -21,7 +21,7 @@ ParticipantClassDeclaration:
 
 ParticipantClassKind:
       'actor'
-    | 'stakeholder'
+    | 'stakeholder' 'role'
     | 'team' 'role'
 ;
 
