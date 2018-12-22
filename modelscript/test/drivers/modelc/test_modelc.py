@@ -1,5 +1,6 @@
 # coding=utf-8
 import os
+import contextlib
 
 import modelscript
 from modelscript.scripts.megamodels.printer.megamodels import (
@@ -9,16 +10,28 @@ from modelscript.interfaces.modelc.build import (
 
 from modelscript.test.framework import TEST_CASES_DIRECTORY
 
-def f(lang, file):
-    return os.path.join(
-        TEST_CASES_DIRECTORY, lang, file)
 
+# def f(lang, file):
+#     return os.path.join(
+#         TEST_CASES_DIRECTORY, lang, file)
+
+# see https://stackoverflow.com/questions/6194499/pushd-through-os-system
+@contextlib.contextmanager
+def pushDirectory(new_dir):
+    previous_dir = os.getcwd()
+    os.chdir(new_dir)
+    yield
+    os.chdir(previous_dir)
 
 class T(object):
 
     def __init__(self, cmd, issueNb, sourceList):
         self.cmd=cmd
+        # arguments of the command separated by spaces
+
         self.issueNb=issueNb
+        # expected nb of issues
+
         self.sourceListStr=sourceList
 
         self.buildContext=None
@@ -122,11 +135,7 @@ TEST_CASES=[
 imports/imp-1-koko02.cls
 imports/imp-1-okko02.cls
 
-"""
 
-
-
-"""
 uss/us-import03.uss blavla uss/us-import04.uss badext.ext -i
 uss/us-import01.uss
 uss/us-import04.uss uss/badglossary.gls -i
@@ -147,22 +156,24 @@ def doModelc(cmd, testCase):
     # reload(modelscript)
     # the cmd arg
 
-    title=' modelc %s ' % cmd
-    print('='*80)
-    print('='*80)
-    if len(title)<=60:
-        print(title.center(80, '='))
-    for arg in testCase.args:
-        print('##  %s' % arg)
-    print('='*80)
-    print('='*80)
-    print('')
-    bc=BuildContext(testCase.args)
-    bc.display()
-    testCase.check(bc)
-    from modelscript.megamodels import Megamodel
-    m=Megamodel.model
-    print('\n'*4)
+    # enter the testcases directory and perform the test
+    with pushDirectory(TEST_CASES_DIRECTORY):
+        title=' modelc %s ' % cmd
+        print('='*80)
+        print('='*80)
+        if len(title)<=60:
+            print(title.center(80, '='))
+        for arg in testCase.args:
+            print('##  %s' % arg)
+        print('='*80)
+        print('='*80)
+        print('')
+        bc=BuildContext(testCase.args)
+        bc.display()
+        testCase.check(bc)
+        from modelscript.megamodels import Megamodel
+        m=Megamodel.model
+        print('\n'*4)
 
 
 def testFinalMegamodel():
