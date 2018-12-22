@@ -13,38 +13,54 @@ participant model Demo
 
 
 actor Cashier
-    | The documentation of the user
-    | using two lines
+    | Cashiers are employee of `Cinemas`. The role of `Cashiers`
+    | is to sell `Ticket` to `Spectators`. They also manage
+    | `Subscriptions`. To perform these tasks`Cashiers` should have a
+    | desktop application at their disposal.
 
-actor Client
+actor HighCashier < Cashier
+    | HighCashiers can cancel `Transactions` and launch
+    | `MoneyBack` operations.
 
-actor SpecialClient < Client
 
-stakeholder StoreManager
-    | StoreManagers want the cash machine to
-    | collect the exact amount of money and
-    | to store safely this money.
-
+stakeholder role Treasurer
+    | The role of the Treasurers in the process is to check
+    | that `FinancialTransaction` with be processed accurately
+    | in the system to be build.
 
 team role Developer
-    | A developer is responsible to develop and maintain
-    | some pecises of Code
+    | A developer is responsible to design, develop, test and
+    | maintain models and pieces of code.
 
 team role QualityManager
-    | The QualityManager is responsible to ensure that the
-    | quality of the product stay in line with quality
-    | requirements.
+    | The QualityManager is responsible to define, with other
+    | members of the development team, `QA` standard.
+    | She also monitors `QC` process although she can to delegate
+    | actual controls to other team members.
+    |
 
-team role CodeQualityManager < QualityManager
-    | A `CodeQualityManager` do something with code.
+team role QualityMaster < QualityManager
+    | A `QualityMaster` has all duties and privileges of
+    |`QualityManager` but she also has the power to change
+    | the content of `QA` and `QC` standard.
 
 team role ScrumMaster
-    | A scrum master is a facilitator in the context of
-    | a `ScrumTeam`
+    | The `ScrumMaster` is the team role responsible for
+    | ensuring the team lives agile values and principles and
+    | follows the processes and practices that the team
+    | agreed they would use.
+    | The responsibilities of this role include:
+    | * clearing obstacles,
+    | * Establishing an environment where the team can be effective
+    | * Addressing team dynamics
+    | * Ensuring a good relationship between the team and
+    |   product owner as well as others outside the team
+    | Protecting the team from outside interruptions and distractions.
 
 team role ProductOwner
-    motivations
-        level: low
+    | The `ProductOwner` responsibility is to have a vision of
+    | what she wishes to build, and convey that vision to the
+    | `ScrumTeam`.
 
 person marieDupont : Developer, QualityManager
     name : "Marie Dupont Laurent"
