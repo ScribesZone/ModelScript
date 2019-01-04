@@ -1,27 +1,19 @@
-[XXX-CASESTUDY] Cas d'utilisation
-===========================================================
+[XXX-CASESTUDY] Cas d'utilisation (modèle détaillé)
+=====================================================================
 
 Le modèle de cas d'utilisation à compléter se trouve dans le fichier
 ``usecases/usecases.uss``. Il doit être écrit en UsecaseScript.
-Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/usescases/index.html) lorsque nécessaire.
+Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/usecases/index.html) lorsque nécessaire.
 
-### Modèle préliminaire 
-
-Compléter le modèle de cas d'utilisation. Dans un premier temps
-ne pas détailler les cas d'utilisation mais au contraire tenter
-de donner une vision globale du système et de ses différentes 
-intéractions.
-
-Ajouter/compléter a minima les cas d'utilisation couverts par 
-le(s) scénario(s). Il s'agit en
-effet d'aligner le modèle de cas d'utilisation et les différents
-scénarios. Par la suite il s'agira d'aligner les cas d'utilisation
-et le modèle de permissions, puis à d'autres modèles.
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 ### Modèle détaillé
 
-Une fois le modèle préliminaire défini, décrire de manière détaillée
-le où les cas d'utilisations les plus prioritaires.
+Une fois le modèle préliminaire défini, décrire de manière plus détaillée
+le où les cas d'utilisation les plus prioritaires, si celui-ci est 
+défini. Se reporter à la documentation de [UsecaseScript](https://modelscript.readthedocs.io/en/latest/scripts/usecases/index.html)
+pour voir quels aspects peuvent être décrits.
 
 ### Questions et hypothèses
 

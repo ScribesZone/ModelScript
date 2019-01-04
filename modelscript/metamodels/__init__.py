@@ -12,6 +12,7 @@ META_PACKAGES=(
     'classes.core',
     'classes.invariants',
     'classes.types',
+    'classes1',
     'glossaries',
     'megamodels',
     'objects',

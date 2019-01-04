@@ -1,124 +1,119 @@
-[XXX-CASESTUDY] Scenarios ()cas d'utilisation)
+[XXX-CASESTUDY] Scenarios (cas d'utilisation)
 ===========================================================
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-XXXXXXXXXXXXXXXXXXXXXXXLe modèle de cas d'utilisation à compléter se trouve dans le fichier
-``usecases/usecases.uss``.
-
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXLe modèle de cas d'utilisation doit être écrit en UsecaseScript.
-Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/classes1/index.html) lorsque nécessaire.
-
 Les scénarios réalisés jusque là étaient caractérisés
-par l'état qu'ils généraient à la fin de leur exécution. Il
+par le modèle d'objet qu'ils généraient à la fin de leur exécution. Il
 s'agissait d'une liste "à plat" de création d'objets et de liens.
+Dans cette tâche les scénarios sont considérés comme un emboîtement
+d'instances de cas d'utilisation. 
 
-Dans cette tâche les scénarios sont considérés comme une **séquence**
-d'instance de cas d'utilisation. Il s'agit en fait d'aligner chaque 
-scénario avec le modèle de cas d'utilisation. Les étapes listées 
-ci-dessous permettent cet alignement. Elles ne peuvent cependant pas 
-être menées de manière puremment séquentielle.
+Les modèles de scénarios à raffiner/compléter se trouvent dans les fichiers
+``scenarios/S<N>/S<N>.ob1`` (où ``<N>`` est un entier). Se reporter à la 
+documentation de 
+[ScenarioScript1](https://modelscript.readthedocs.io/en/latest/scripts/scenarios1/index.html) lorsque nécessaire.
+
 
 ### Définition des personnages
 
-Les instances d'acteurs qui vont agir dans un scénarios sont doivent être 
-déclarés dans le modèle de participants sous la forme suivante. Ce sont des 
-personnages. 
+Dans un premier temps il s'agit de repérer dans les scénarios quels
+"personnages" interagissent **directement** avec le système. Ces
+personnages sont, par définition, des instances d'acteurs (à ajouter
+si nécessaire).
+
+A chaque fois qu'un personnage est identifié celui-ci doit être ajouté au
+modèle de participants (fichier ``participants/participants.pas``). 
+
+Dans l'exemple ci-dessous on suppose que le personnage ``marie`` joue le
+rôle de ``Bibliothecaire`` dans le scénario:
+
 ```
     persona marie : Bibliothecaire
 ```
 
+Dans un premier temps il n'est pas nécessaire de détailler les
+caractéristiques des personnages (voir la documentation 
+[ParticipantScript](https://modelscript.readthedocs.io/en/latest/scripts/participants/index.html)
+pour avoir des exemples relatifs à ces caractéristiques).
+
 ### Décomposition en instance de cas d'utilisation
 
-Il s'agit de décomposer la liste existante d'instructions en blocs, 
-chaque bloc correspondant à une instance de cas d'utilisation. 
-Par exemple l'exemple ci-dessous signifie que ``marie`` intéragit avec
-le système et que ces interactions modifient l'état du système. 
-```
-    -- @marie va RentrerUnLivre
-         ! stmt1
-         ! stmt2
-    -- @end
-``` 
-Naturellement les cas d'utilisation doivent être définis dans le modèle
-de cas d'utilisation.
-Voir l'exemple dans la section ci-dessous pour un exemple plus complet.
+Chaque scénario "à plat" doit ensuite être décomposé sous forme de
+(d'instance de) cas d'utilisation.
+Par exemple l'exemple ci-dessous signifie que le personnage ``marie`` 
+intéragit avec le système via (l'instance) de cas d'utilisation 
+``RentrerUnLivre``. Ces interactions modifient l'état du système via les 
+instructions ``stmt1`` et ``stmt2``. 
 
-### Extraction du contexte
-
-Certaines instructions ne correspondent pas au flôt normal du scénario
-mais au contraire à des objets et des associations qui font partie
-du "contexte" dans lequel est exécuté le scénario. Par exemple 
-l'instruction ``create r203 : Salle`` fait partie du contexte du cas 
-d'utilisation ``ReserverUneSalle``car la salle r203 pré-existe et n'est pas
-créée par le scénario. Ces instructions doivent être inclues dans un block 
-``context``. 
 ```
-    --@ context
-         ! create s203 : Salle
-         ...
+    --@ marie va RentrerUnLivre
+        ! stmt1
+        ! stmt2
     --@ end
 ``` 
 
+Naturellement les cas d'utilisation (``RentrerUnLivre`` ici) doivent être 
+définis dans le modèle de cas d'utilisation. 
+
+
+### Extraction du contexte
+
+Dans cette tâche il s'agit d'isoler les instructions qui font
+partie du "contexte" plutôt que du flôt normal du scénario. Par exemple 
+l'instruction ``create s203 : Salle`` ne fait pas partie du cas 
+d'utilisation ``ReserverUneSalle``car la salle ``s203`` pré-existe : la
+salle n'est pas créée par la réservation ! Les instructions 
+correspondant au contexte
+doivent être inclues dans un block (ou plusieurs) block(s) ``context``. 
+
+```
+    --@ context
+        ! create s203 : Salle
+         ...
+    --@ end
+    
+    ...
+    
+    --@ toufik va ReserverUneSalle
+        ! s203.reservee := true
+    --@ end
+    
+``` 
+
+Déplacer ces blocks en début de scénario et vérifier que cela ne 
+provoque aucune erreur dans la "compilation" du scénario.
 
 ### Exemple de transformation
 
-L'exemple ci-dessous montre le résultat du processus :
-* identification des instances de cas d'utilisation (``va``) 
-* extraction des instructions du contexte (``context``)
+L'exemple ci-dessous résume le processus global :
+* (1) définition des personnages (``persona x : A``),
+* (2) identification des instances de cas d'utilisation (``x va U``), 
+* (3) extraction des instructions du contexte (``context``).
 ```  
-    =========================== ===================================
-        AVANT: Scénario-état          APRES: Scénario-séquence 
-    =========================== ===================================
+    =========================== =========================================
+      AVANT: Scénario (plat)        APRES: Scénario (cas d'utilisation) 
+    =========================== =========================================
                                 --@ context
-                                    ! stmt1
-                                    ! stmt4 
-                                    ! stmt5 
-                                --@ end
-    ! stmt1                     --@ marie va ReserverUneSalle
-    ! stmt2                         ! stmt2 
-    ! stmt3                         ! stmt3
+    ! stmt1                         ! stmt1
+    ! stmt2                         ! stmt4 
+    ! stmt3                         ! stmt5 
     ! stmt4                     --@ end
-    ! stmt5                     --@ toufik va RentrerUnLivre
-    ! stmt6                         ! stmt6       
-    ! stmt7                         ! stmt7
+    ! stmt5                     --@ toufik va ReserverUneSalle
+    ! stmt6                         ! stmt2 
+    ! stmt7                         ! stmt3
                                 --@ end
-    =========================== ===================================
+                                --@ marie va RentrerUnLivre
+                                    ! stmt6       
+                                    ! stmt7
+                                --@ end
+    =========================== =========================================
 ```
 
 ### Alignement Scénarios / Cas d'utilisation
 
 Vérifier (manuellement) que le modèle de scénarios est bien aligné 
-avec le modèle de  cas d'utilisation (L'outil ``use`` ne prend pas 
-en compte la notion de cas d'utilisation et aucune vérification ne
-peut donc être faire avec cet outil). Il s'agit de vérifier 
-(manuellement) que les personnage et de l'instances de 
-cas d'utilisation ont bien leur contre partie. Vérifier également
-que les (instances) d'interactions définies dans le scénario sont
-compatibles avec celles définies dans le modèle de cas d'utilisation.
-Par exemple ``marie va ReserverUneSalle`` implique qu'une
-bibliothéquaire secrétaire peut réserver une salle.
+avec le modèle de  cas d'utilisation .
+Par exemple ``toufik va ReserverUneSalle`` implique qu'un
+ChefBibliothequaire peut réserver une salle.
 
 ### Alignement Scénarios / Modèle de classes
 
@@ -126,7 +121,7 @@ Vérifier que le scénario est encore aligné avec le modèle de classes.
 ```
     use -qv Classes/classes.cls Scenarios/n/scenario.scn
 ```
-Cette vérification a été faite précédemment avec le scénario-état
+Cette vérification a été faite précédemment avec le scénario plat
 mais il s'agit là de vérifier que la transformation ci-dessus n'a pas
 généré de problèmes supplémentaires. Ce peut être le cas si le
 réordonnancement des instructions n'est pas correct.
@@ -143,13 +138,14 @@ là où elles interviennent. Lire et appliquer les [règles associées au suivi]
 Avant de clore ce ticket définir le status courant pour ce travail. Lire et appliquer les [règles associées aux status](https://modelscript.readthedocs.io/en/latest/methods/status.html#rules).
 
 ________
+Pour chaque scénario S<N> (où ``<N>``<N> est un entier) :
 
 - [ ] (010) Définition des personnages nécessaires au scénario.
-    - M ``Participants/participants.scs``
-- [ ] (020) Définition des instances de cas d'utilisation.
-    - M ``Scenarios/n/scenario.scs``    
-- [ ] (030) Extraction du contexte.
-    - M ``Scenarios/n/scenario.scs``    
+    - M ``participants/participants.pas``
+- [ ] (020) Définition des instances de cas d'utilisation ("x va y").
+    - M ``scenarios/n/scenario.scs``    
+- [ ] (030) Extraction du contexte ("context").
+    - M ``scenarios/n/scenario.scs``    
 - [ ] (100) Vérification de l'alignement Scenario/Participants.
 - [ ] (200) Vérification de l'alignement Scenario/Cas d'utilisation.
 - [ ] (300) Vérification de l'alignement Scenario/Classes.

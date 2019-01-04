@@ -2,7 +2,7 @@
 ===========================================================
 
 Les modèles de scénarios à compléter se trouvent dans les fichiers
-``scenarios/S<N>/S<N>.ob1`` (où <N> est un entier).
+``scenarios/S<N>/S<N>.ob1`` (où ``<N>`` est un entier).
 
 Les modèles de scénarios doivent être écrits en ScenarioScript1.
 Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/scenarios1/index.html) lorsque nécessaire.
@@ -45,7 +45,7 @@ là où elles interviennent. Lire et appliquer les [règles associées au suivi]
 Avant de clore ce ticket définir le status courant pour ce travail. Lire et appliquer les [règles associées aux status](https://modelscript.readthedocs.io/en/latest/methods/status.html#rules).
 ________
 
-Pour chaque scénario S<N> (où <N> est un entier) :
+Pour chaque scénario S<N> (où ``<N>`` est un entier) :
 - [ ] (010) Traduction du scenario/S<N> en langage soil.
     - M ``scenarios/S<N>/S<N>.scs``
 - [ ] (020) Vérification de l'alignement du scenario N avec le modèle de classes.

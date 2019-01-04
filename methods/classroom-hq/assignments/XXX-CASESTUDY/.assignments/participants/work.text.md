@@ -9,18 +9,32 @@ Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/s
 
 ### Définition des acteurs
 
-Compléter le modèle de participants en ajoutant/complétant
-les acteurs pouvant intervenir dans le modèle de cas d'utilisation.
-
-Définir aussi les personnages qui seront utilisés dans les scénarios
-
-Les participants et les personnages pourront être définis "à la demande"
-lors des tâche "Usescases" et "Scenarios Sequences". 
-Il s'agit en effet d'aligner le modèle de participants aux modèles de
-cas d'utilisation et aux différents scénarios. Par la suite il s'agira 
-aussi d'aligner les participants au modèle le modèle de permissions.
+Définir tout d'abord les "acteurs" qui interviendont par la suite 
+dans le modèle  de cas d'utilisation. Donner pour chaque acteur un
+nom (``ResponsableDesAchats``) ainsi qu'une courte définition faisant
+référence aux éléments du glossaire.
 
 ### Définition des personnages
+
+Les "personnsages" sont des instances particulières d'acteurs. Ceux-ci 
+interviennent dans les modèles de scénarios. Repérer "qui", dans chaque
+scénario, existant ou à définir, joue le rôle d'un acteur Définir chaque
+personnage en donnant a minima son nom et son type. Par exemple
+``mario : ResponsableDesAchats``. 
+
+### Alignement
+
+Les participants et les personnages pourront être définis "à la demande"
+lors des tâche "Usescases" et "Scenarios Sequences". Par la suite  il 
+s'agira  aussi d'aligner les participants au modèle le modèle de 
+permissions.
+
+Infine le modèle de particiants doit être affiné/aligné avec les modèles
+suivants: 
+** le modèle de cas d'utilisation
+** les différents modèles de scénarios. 
+** le modèle de pemission.
+
 
 ### Questions et hypothèses
 

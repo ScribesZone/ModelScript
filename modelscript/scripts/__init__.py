@@ -2,6 +2,7 @@
 import modelscript.scripts.accesses.all
 import modelscript.scripts.aui.all
 import modelscript.scripts.classes.all
+import modelscript.scripts.classes1.all
 import modelscript.scripts.glossaries.all
 import modelscript.scripts.megamodels.all
 import modelscript.scripts.metamodels.all
