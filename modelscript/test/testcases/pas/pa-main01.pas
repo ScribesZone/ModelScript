@@ -11,22 +11,54 @@
 
 participant model Demo
 
+import glossary model from '../glossaries/glossaries.gls'
+
+//=========================================================================
+// "Class" level participants
+//-------------------------------------------------------------------------
+// "Actors" are defined by UML usecase model ; they represent (classes of) users.
+// "Stakeholders" have some interest in the system and/or its development.
+// "Team roles" collaborate to design and develop the system/
+//=========================================================================
+
+
+//--- actors --------------------------------------------------------------
 
 actor Cashier
     | Cashiers are employee of `Cinemas`. The role of `Cashiers`
     | is to sell `Ticket` to `Spectators`. They also manage
-    | `Subscriptions`. To perform these tasks`Cashiers` should have a
+    | `Subscriptions`. To perform these tasks `Cashiers` should have a
     | desktop application at their disposal.
 
 actor HighCashier < Cashier
     | HighCashiers can cancel `Transactions` and launch
     | `MoneyBack` operations.
 
+actor Client
+    | Clients are people that interact with the web interface
+    | of the system or that take their `Ticket` at a
+    | `VendingMaching`. Most of them do not know the system,
+    | or experienced have less than
+
+
+
+
+//--- stakeholders --------------------------------------------------------
 
 stakeholder role Treasurer
-    | The role of the Treasurers in the process is to check
-    | that `FinancialTransaction` with be processed accurately
-    | in the system to be build.
+    | The role of treasurers is to check that all `FinancialTransactionq`
+    | processed by the system are accurate.
+
+stakeholder role SecurityManager
+    | The role of the SecurityManager is to ensure the security in all
+    | `Cinemas` and in particular in all `Rooms`. It should be possible
+    | for example to inform SecurityManagers when an accident occur
+    | in some `Room` or when a `Cinema` is overcrowded.
+
+
+
+
+//--- team roles ----------------------------------------------------------
 
 team role Developer
     | A developer is responsible to design, develop, test and
@@ -38,7 +70,6 @@ team role QualityManager
     | She also monitors `QC` process although she can to delegate
     | actual controls to other team members.
     |
-
 team role QualityMaster < QualityManager
     | A `QualityMaster` has all duties and privileges of
     |`QualityManager` but she also has the power to change
@@ -62,21 +93,30 @@ team role ProductOwner
     | what she wishes to build, and convey that vision to the
     | `ScrumTeam`.
 
+
+
+
+
+//=========================================================================
+//   "Instance" level participants
+//-------------------------------------------------------------------------
+// Both personae and persons are at the instance level: they belong to
+// one of many participant class (actor, stakeholder or team role)
+// Personae are fictional characters that serve as instance of actors.
+// Persons are real-life people.
+//=========================================================================
+
+
 person marieDupont : Developer, QualityManager
     name : "Marie Dupont Laurent"
     trigram : MDL
     portrait : './mdupont.png'
-    attitudes
-    aptitudes
-        age : 12
-    skills
-    motivations
-    | trigram: MSI
-    | blabla blabla
+
 
 persona marco : Cashier, Client
     name : "Marco Gonzales"
     trigram : MGS
+    portrait : './mdupont.png'
     | Marco is 45 years old.
     | He is used to computers and phones.
     | Some more description about marco
