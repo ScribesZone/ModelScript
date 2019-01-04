@@ -1,6 +1,6 @@
 .. .. coding=utf-8
 
-.. .. highlight:: ParticipantScript
+.. highlight:: ParticipantScript
 
 .. index::  ! .pas, ! ParticipantScript
     pair: Script ; ParticipantScript
@@ -17,51 +17,109 @@ Examples
 
     participant model Demo
 
+    import glossary model from '../glossaries/glossaries.gls'
+
+    //=========================================================================
+    // "Class" level participants
+    //-------------------------------------------------------------------------
+    // "Actors" are defined by UML usecase model ; they represent (classes of) users.
+    // "Stakeholders" have some interest in the system and/or its development.
+    // "Team roles" collaborate to design and develop the system/
+    //=========================================================================
+
+
+    //--- actors --------------------------------------------------------------
+
     actor Cashier
-        | The documentation
+        | Cashiers are employee of `Cinemas`. The role of `Cashiers`
+        | is to sell `Ticket` to `Spectators`. They also manage
+        | `Subscriptions`. To perform these tasks `Cashiers` should have a
+        | desktop application at their disposal.
+
+    actor HighCashier < Cashier
+        | HighCashiers can cancel `Transactions` and launch
+        | `MoneyBack` operations.
 
     actor Client
+        | Clients are people that interact with the web interface
+        | of the system or that take their `Ticket` at a
+        | `VendingMaching`. Most of them do not know the system,
+        | or experienced have less than
 
-    actor SpecialClient < Client
 
-    stakeholder StoreManager
-        | StoreManagers want the cash machine to
-        | collect the exact amount of money and
-        | to store safely this money.
+
+
+    //--- stakeholders ----------------------------------------------------
+
+    stakeholder role Treasurer
+        | The role of treasurers is to check that all `FinancialTransactionq`
+        | processed by the system are accurate.
+
+    stakeholder role SecurityManager
+        | The role of the SecurityManager is to ensure the security in all
+        | `Cinemas` and in particular in all `Rooms`. It should be possible
+        | for example to inform SecurityManagers when an accident occur
+        | in some `Room` or when a `Cinema` is overcrowded.
+
+
+
+
+    //--- team roles ------------------------------------------------------
 
     team role Developer
-        | A developer is responsible to develop and maintain
-        | some software components.
+        | A developer is responsible to design, develop, test and
+        | maintain models and pieces of code.
 
     team role QualityManager
-        | The QualityManager is responsible to ensure that the
-        | quality of the product stays in line with quality
-        | requirements.
-
-    team role CodeQualityManager < QualityManager
-        | A CodeQualityManager do something with code.
+        | The QualityManager is responsible to define, with other
+        | members of the development team, `QA` standard.
+        | She also monitors `QC` process although she can to delegate
+        | actual controls to other team members.
+        |
+    team role QualityMaster < QualityManager
+        | A `QualityMaster` has all duties and privileges of
+        |`QualityManager` but she also has the power to change
+        | the content of `QA` and `QC` standard.
 
     team role ScrumMaster
-        | A scrum master is a facilitator in the context of
-        | a `ScrumTeam`.
+        | The `ScrumMaster` is the team role responsible for
+        | ensuring the team lives agile values and principles and
+        | follows the processes and practices that the team
+        | agreed they would use.
+        | The responsibilities of this role include:
+        | * clearing obstacles,
+        | * Establishing an environment where the team can be effective
+        | * Addressing team dynamics
+        | * Ensuring a good relationship between the team and
+        |   product owner as well as others outside the team
+        | Protecting the team from outside interruptions and distractions.
 
     team role ProductOwner
+        | The `ProductOwner` responsibility is to have a vision of
+        | what she wishes to build, and convey that vision to the
+        | `ScrumTeam`.
+
+
+    //=========================================================================
+    //   "Instance" level participants
+    //-------------------------------------------------------------------------
+    // Both personae and persons are at the instance level: they belong to
+    // one of many participant class (actor, stakeholder or team role)
+    // Personae are fictional characters that serve as instance of actors.
+    // Persons are real-life people.
+    //=========================================================================
+
 
     person marieDupont : Developer, QualityManager
         name : "Marie Dupont Laurent"
         trigram : MDL
         portrait : './mdupont.png'
-        attitudes
-        aptitudes
-            age : 12
-        skills
-        motivations
-        | trigram: MSI
-        | blabla blabla
+
 
     persona marco : Cashier, Client
         name : "Marco Gonzales"
         trigram : MGS
+        portrait : './mdupont.png'
         | Marco is 45 years old.
         | He is used to computers and phones.
         | Some more description about marco
@@ -106,7 +164,7 @@ Examples
 
     adhoc persona jean : Cashier, Client
         | Jean is 50 years old.
-        | He is used to computers and phones software.
+
 
 ParticipantScript
 -----------------
@@ -123,30 +181,6 @@ Concepts
 * team role
 * person
 * persona
-
-Actors
-------
-
-The notion of actor come directly from UML use case model.
-Simply put, an actor is basicaly a role played by a category of person
-or system. An actor is
-basic
-
-Stakeholder
------------
-
-
-Team role
----------
-
-
-
-Person
-------
-
-
-Persona
--------
 
 Dependencies
 ------------
