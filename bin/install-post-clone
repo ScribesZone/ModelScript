@@ -14,13 +14,14 @@ if [ "$MODELSCRIPT_HOME" = "" ]
 then
     echo "$MODELSCRIPT_HOME must be set."
 fi
+
 chmod +x $MODELSCRIPT_HOME/bin/*
 chmod +x $MODELSCRIPT_HOME/modelscript/tools/use/engine/res/use-4.1.1/bin/modelscript-use
-chmod +x $MODELSCRIPT_HOME/modelscript/test/drivers/test-mandelbrot.sh
+chmod +x $MODELSCRIPT_HOME/modelscript/test/drivers/*.sh
 cd $MODELSCRIPT_HOME
+
+
+#---- create the virtual environment --------------------------------------
 virtualenv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-
-test
--mandelbrot.sh
