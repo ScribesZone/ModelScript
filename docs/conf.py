@@ -335,18 +335,50 @@ Comment
     Special
 """
 
+#TODO:3 review the highlighting method belo
+#  in particular the inheritance mechanisms and the
+#  way to deal with  common keywords (import, from, model)
+
+# This list is important to deal with "import XXX model from"
+# where xxx is one of the keyword below.
+
+AllModelKeywords="""
+    glossary
+    track
+    class
+    object
+    relation
+    participant
+    usecase
+    aui
+    task
+    permission
+    scenario    
+""".split()
+
+ModelScriptKeywords="""
+    import
+    from
+    model
+""".split() + AllModelKeywords
+
 class ModelScriptLexer(lexer.RegexLexer):
     # see http://pygments.org/docs/lexerdevelopment/
     flags=re.MULTILINE | re.UNICODE
-    # keywords is added. not in the pygment framework.
-    keywords=\
-        """
-        model
-        import
-        """.split()
+    # "keywords is added. not in the pygment framework.
+    # keywords=\
+    #     """
+    #     mo XXX del
+    #     import
+    #     """.split()
+
     tokens = {
         'root': [
 
+            (lexer.words(ModelScriptKeywords, suffix=r'\b'),
+             token.Keyword),
+
+            # "class" token for what follows "model"
             ('^(\w+)( +)(model)( *)(\w*)',
              lexer.bygroups(
                  token.Keyword,
@@ -355,9 +387,6 @@ class ModelScriptLexer(lexer.RegexLexer):
                  lexer.Text,
                  token.Name.Class
              )),
-
-            # ('Alpha',token.Name.Class),
-            # ('One',token.Name.Attribute),
 
             (r' *\|', token.Comment.Multiline, 'doc'),
             (r'//.*\n', token.Comment.Special),
@@ -381,22 +410,27 @@ class ModelScriptLexer(lexer.RegexLexer):
 
 GlossaryScriptKeywords= """
     synonyms
+    synonym
     inflections
+    inflection
     translations
+    translation
+    expansion
     package
     """.split()
 
 class GlossaryScriptLexer(ModelScriptLexer):
     name = 'GlossaryScript'
+
     # flags = re.MULTILINE | re.UNICODE
     tokens = {
         'root': [
             lexer.inherit,
             ('(package)( +)(\w+)',
-             lexer.bygroups(
-                 token.Keyword,
-                 lexer.Text,
-                 token.Name.Class)),
+                lexer.bygroups(
+                    token.Keyword,
+                    lexer.Text,
+                    token.Name.Class)),
             (lexer.words(GlossaryScriptKeywords, suffix=r'\b'), token.Keyword),
             ('^\w+', token.Name.Class),
             (r'\w+', token.Name),
@@ -407,8 +441,48 @@ lexers['GlossaryScript'] = GlossaryScriptLexer(
     startinline=True,
     encoding = 'utf-8')
 
+# --------------------------------------------------------------------------
+#  ParticipantScript Lexer
+# --------------------------------------------------------------------------
+
+TrackScriptKeywords = """
+    track
+    
+    question
+    hypothesis
+    decision
+    
+    github
+    priority
+    status
+    date
+    who
+    conclusion
+    history
+    
+    """.split()
 
 
+class TrackScriptLexer(ModelScriptLexer):
+    name = 'TrackScript'
+    # flags = re.MULTILINE | re.UNICODE
+    tokens = {
+        'root': [
+            lexer.inherit,
+            ('^(Track)( +)(\w+)',
+             lexer.bygroups(token.Keyword, lexer.Text, token.Name.Class)),
+            ('(extension)( +)(\w+)',
+             lexer.bygroups(token.Keyword, lexer.Text, token.Name.Class)),
+            (lexer.words(TrackScriptKeywords, suffix=r'\b'),
+             token.Keyword),
+            (r'\w+', token.Name),
+        ]
+    }
+
+
+lexers['TrackScript'] = TrackScriptLexer(
+    startinline=True,
+    encoding='utf-8')
 
 #--------------------------------------------------------------------------
 #  ClassScript1 Lexer
@@ -563,7 +637,72 @@ lexers['UsecaseScript'] = UsecaseScriptLexer(
     startinline=True,
     encoding='utf-8')
 
+# --------------------------------------------------------------------------
+#  ParticipantScript Lexer
+# --------------------------------------------------------------------------
 
+ParticipantScriptKeywords = """
+    participant
+    
+    actor
+    stakeholder
+    role
+    team
+    person
+    persona
+    adhoc
+    
+    name
+    trigram
+    portrait
+    
+    attitudes
+    
+    aptitudes
+    education
+    languages
+    language
+    age
+    disabilities
+    skills
+    motivations
+    learning
+    ability
+    
+    motivations
+    why
+    level
+    kind
+    
+    skills
+    culture
+    modalities
+    environments
+    
+
+    """.split()
+
+
+class ParticipantScriptLexer(ModelScriptLexer):
+    name = 'ParticipantScript'
+    # flags = re.MULTILINE | re.UNICODE
+    tokens = {
+        'root': [
+            lexer.inherit,
+            ('^(Participant)( +)(\w+)',
+             lexer.bygroups(token.Keyword, lexer.Text, token.Name.Class)),
+            ('(extension)( +)(\w+)',
+             lexer.bygroups(token.Keyword, lexer.Text, token.Name.Class)),
+            (lexer.words(ParticipantScriptKeywords, suffix=r'\b'),
+             token.Keyword),
+            (r'\w+', token.Name),
+        ]
+    }
+
+
+lexers['ParticipantScript'] = ParticipantScriptLexer(
+    startinline=True,
+    encoding='utf-8')
 
 # --------------------------------------------------------------------------
 #  AUIScript Lexer
@@ -635,5 +774,87 @@ class ScenarioScript1Lexer(ModelScriptLexer):
 
 
 lexers['ScenarioScript1'] = ScenarioScript1Lexer(
+    startinline=True,
+    encoding='utf-8')
+
+
+
+
+# --------------------------------------------------------------------------
+#  RelationScript Lexer
+# --------------------------------------------------------------------------
+
+RelationScriptKeywords = """
+
+    relation
+    intention
+    examples
+    
+    
+    constraints
+    dom
+    String
+    Real
+    Boolean
+    Integer
+    Date
+    DateTime
+    Time
+    key
+    prime
+    ffd
+    1NF
+    2NF
+    3NF
+    BCNF
+     
+    transformation
+    from
+    rules
+    rule
+    
+    actor
+
+    relation
+    primary
+    secondary
+    adhoc
+    persona
+    volume
+    frequency
+    description
+    goal
+    precondition
+    trigger
+    postcondition
+    risk
+    low
+    high
+    medium
+    flow
+    extension
+    at
+    when
+    """.split()
+
+
+class RelationScriptLexer(ModelScriptLexer):
+    name = 'RelationScript'
+    # flags = re.MULTILINE | re.UNICODE
+    tokens = {
+        'root': [
+            lexer.inherit,
+            ('^(relation)( +)(\w+)',
+             lexer.bygroups(token.Keyword, lexer.Text, token.Name.Class)),
+            ('(extension)( +)(\w+)',
+             lexer.bygroups(token.Keyword, lexer.Text, token.Name.Class)),
+            (lexer.words(RelationScriptKeywords, suffix=r'\b'),
+             token.Keyword),
+            (r'\w+', token.Name),
+        ]
+    }
+
+
+lexers['RelationScript'] = RelationScriptLexer(
     startinline=True,
     encoding='utf-8')
