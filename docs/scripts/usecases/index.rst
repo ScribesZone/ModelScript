@@ -14,74 +14,130 @@ UsecaseScript
 Examples
 --------
 
+A **preliminary usecase model** might look like the following:
+
 ..  code-block:: UsecaseScript
 
-    usecase model Simple
+    usecase model CyberDepartment
+
+    import glossary model from '../gls/glossaries.gls'
+    import usecase model from '../uss/usecases.uss'
+
+                                // actors imported from the usecase model:
+                                //    CEO, Employee, Manager, Secretary
 
     interactions
         a CEO can CreateADepartment
         a Secretary can CreateADepartment
+        a Secretary can AddAnEmployee
         a CEO can BrowseTheBudget
         a Manager can SetTheBudget
         an Employee can BrowseADepartment
 
-    actor CEO
-    actor Employee
-    actor Manager
-    actor Secretary
+    usecase BrowseTheBudget
+        actor CEO
+        | The `CEO` want to see the performance of
+        | each `Department` and make sure that
+        | each `Budget` allocated is sufficient.
+
+    usecase AddAnEmployee
+        actor Secretary
+        | A `Secretary` add a new `Employee` into
+        | the system and assign this `Employee` to
+        | her `PrimaryDepartment` in order to
+        | sure that the `ProvisionalBudget`
+        | will be enough. The employee is validated
+        | only after `SetAnEmployee` is performed.
+
+    usecase SetAnEmployee
+        actor Manager
+        | A `Manager` can confirm the `Position`
+        | and `Salary` of an `Employee` already
+        | added in the system.
+
+    ...
+
+A **detailled usecase** might look like the following:
+
+
+..  code-block:: UsecaseScript
+
+    ...
 
     usecase CreateADepartment
-        | résumé du usecase
+        | Very short summary of the usecase.
         primary actor CEO
         secondary actor Secretary
-        persona Jean
-            | Jean crée des départements peut souvent
+        persona Toufik
+            | Toufik is responsible for most of the department creation.
+            | He perform this usecase without the help of anyone.
             volume
-                | quelque chose
+                | 3 days of work
+                | 100 units to define
             frequency
-                | 1 fois tout les deux ans
+                | more than 1 creation per year
         persona Celia
+            | Celia back up toufik when he is traveling or at the end
+            | of the year when he is very busy. She is
             frequency
-                | 3 fois par an
+                | less than 1 creation for 5 year
         description
-            | Ceci est une description plus longue que le
-            | résumé, et moins structurée que le "flot"
-            | qui détaille le déroulement du cas d'utilisation
-            | étape après étape.
+            | This description is longer than the summary,
+            | yet less structured than the "flow" of events.
+            | To be used where appropriate.
         goal
-            | L'acteur désire signaler au système l'existance
-            | d'un nouveau département et désire conserver
-            | les informations concernant ce département
-            | pour pouvoir entre autre les réutiliser los
-            | de réunions stratégique.
+            | This section describes the goals of the actor(s).
+            | What they try to acheive by performing the usecase.
+            | This section is useful to make sure that the usecase
+            | has a real business value. So-called "essential
+            | usecases" are based on this information.
         precondition
-            | L'entreprise est dans un état relativement
-            | stable.
+            | The condition that is necessary for the usecase to
+            | be performed. When the condition is satisfied the
+            | usecase could be executed, but only if the "trigger"
+            | (see below) is activated
         trigger
-            | L'acteur décide de mettre à jour le
-            | système d'information.
+            | The event that make the usecase start.
         postcondition
-            | Le système comporte l'ensemble des informations
-            | fournies.
+            | The condition that is satisfied at the end of the
+            | execution of the usecase.
         risk: low
-            | Haut. Les informations concernant la création
-            | d'un département ne sont pas claire actuellement.
+            | The risk associated with the implementation of the
+            | usecase.
         frequency
-            | Généralement 1 ou 2 fois par an
+            | The estimate about the usecase frequency.
+            | This could be for instance "twice a year", "10 per hour".
         volume
-            | Entre 10 et 100 employés à enregistrer.
+            | The estimate about the volume of data to be processed
+            | for example. This could be something like '100 units to
+            | be created in average".
         flow
-            | 1. première étape
-            | 2. deuxième étape
-            | 3. troisième étape
-            |    et la suite de la troisième étape
-        extension EmployeExistant at 2
+            | The flow of events describing the "nominal flow",
+            | that is the most important/common scenario.
+            | The flow should be defined as a sequence of step,
+            | each step being prefixed by a number between parenthesis.
+            | For instance:
+            |
+            | (1) first step.
+            | (2) second step. The description of this step does not fit
+            |     in one line so it is indented.
+            |     Yet another line in the description of step (2).
+            | (3) third step
+            | ...
+            |
+        extension EmployeeAlreadyDefined at step 2
             when
-                | L'employé sélectionné est déjà
+                | When this condition is satisfied in step 2 of the normal
+                | flow then this extension is executed.
             flow
-                | 1. Une demande du mutation est créée
-                | 2.Retour à CreateDepartment.4
-            usecase RetirerUnEmploye
+                | The alternate flow for this extension.
+                | (1) step 1 for this extension.
+                | ...
+                | (n) return to CreateDepartment.4
+            usecase RemoveAnEmployeeOccurrence
+
+
+    ...
 
 UsecaseScript
 -------------
@@ -93,10 +149,9 @@ Concepts
 
 Usecase models are based on the following concepts:
 
-* **actors**
+* **actors** (imported from the participants model)
 * **usecases**
 * **interactions**
-* **systems**
 
 .. index:: UsecaseScript
     single: Script; UsecaseScript
@@ -104,64 +159,6 @@ Usecase models are based on the following concepts:
 
 .. index:: Actor
     single: Usecase; Actor (Usecase)
-
-Actors
-------
-
-
-.. index:: ! Usecase
-
-Usecases
---------
-
-
-.. index:: Actor
-    single: Usecase; Actor (Usecase)
-
-Usecase actors
-''''''''''''''
-
-.. index:: Persona
-    single: Persona ; Activity (Persona)
-
-Persona activities
-''''''''''''''''''
-
-.. index::
-    single: Usecase ; Summary (Usecase)
-    single: Usecase ; Description (Usecase)
-
-Summary and description
-'''''''''''''''''''''''
-
-Goal
-''''
-
-Precondition
-''''''''''''
-
-Trigger
-'''''''
-
-Postcondition
-'''''''''''''
-
-Risk
-''''
-
-Frequency / Volume
-''''''''''''''''''
-
-Flow
-''''
-
-Extensions
-''''''''''
-
-Interactions
-------------
-
-
 
 Dependencies
 ------------
