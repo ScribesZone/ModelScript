@@ -1,6 +1,11 @@
 .. .. coding=utf-8
 
-.. TrackScript:
+.. highlight:: TrackScript
+
+.. index::  ! .trs, ! TrackScript
+    pair: Script ; TrackScript
+
+.. _TrackScript:
 
 TrackScript
 ===========
@@ -9,6 +14,9 @@ Examples
 --------
 
 ::
+
+    track model CyberBibliobus
+    import glossary model from '../glossaries/glossaries.gls'
 
     question Q1: Catalogue des oeuvres
         | Il est fait mention des `Oeuvres` et de leurs `Auteurs` mais
