@@ -1,6 +1,6 @@
 .. .. coding=utf-8
 
-..  .. highlight:: RelationScript
+.. highlight:: RelationScript
 
 .. index::  ! .res, ! RelationScript
     pair: Script ; RelationScript
@@ -15,7 +15,7 @@ Examples
 
 ::
 
-    TheEmployees(_u_,v,e,r)
+    relation TheEmployees(_u_,v,e,r)
         | Employees and their roles and properties
         intention
             (u,v,e,r) in TheEmployees <=>
