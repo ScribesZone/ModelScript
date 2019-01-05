@@ -11,48 +11,99 @@
 ScenarioScript1
 ===============
 
-Examples
---------
 
 Examples
 --------
+
+Scenario development can be done in three stages:
+
+* **textual scenarios** (sentences),
+* **flat scenarios** (sentences+statements)
+* **usecase scenarios** (sentences+statements+blocks)
+
+Textual Scenarios
+'''''''''''''''''
+
+sentences
 
 ..  code-block:: ScenarioScript1
-   :linenos:
 
-    --@ scenario model SC1
+
+    --@ scenario model S1
+    --@ import glossary model from "../../glossaries/glossary.gls"
+
+    --| sentence1
+    --| sentence2
+    --| sentence3
+    --| sentence4
+    --| sentence5
+    --| sentence6
+    --| sentence7
+    --| sentence8
+
+Flat scenarios
+''''''''''''''
+
+sentences+statements
+
+..  code-block:: ScenarioScript1
+
+    --@ scenario model S1
+    --@ import glossary model from "../../glossaries/glossary.gls"
+    --@ import class model from "../../classes/classes.cls"
+
+    --| sentence1
+    --| sentence2
+        ! statement1
+        ! statement2
+    --| sentence3
+        ! statement3
+        ! statement4
+    --| sentence4
+    --| sentence5
+    --| sentence6
+        ! statement5
+        ! statement6
+        ! statement7
+    --| sentence7
+        ! statement8
+    --| sentence8
+
+Usecase scenarios
+'''''''''''''''''
+sentences+statements+blocks
+
+..  code-block:: ScenarioScript1
+
+    --@ scenario model S1
     --@ import glossary model from "../../glossaries/glossary.gls"
     --@ import class model from "../../classes/classes.cls"
     --@ import participant model from "../../participants.pas"
     --@ import usecase model from "../../usecases/usecases.uss"
 
-    -- TODO: corriger les erreurs et completer la suite
-
     --@ context
-        ! open -q "."
-    --| (1) Nourry Blanc est professeur de musique.
-        ! create nourry : Enseignant
-        ! nourry.nom := 'Nourry Blanc'
-        ! nourry.matiere := 'musique'
-        ! nourry.login := Undefined
-        ! nourry.motDePasse := Undefined
+        --| sentence3 (changed)
+            ! statement3
+            ! statement4
 
-    --@ usecase nourry CreerUnAtelier
-    --| (2) Il décide de réaliser en terminale S876 un atelier "Tolerance !".
-        ! create s876 : Classe
-        ! s876.code := 'S876'
-        ! create atTolerance : Atelier
-        ! atTolerance.titre := 'Tolerance !'
-        ! insert (nourry, atTolerance) into Realise
-        --@ insert
-    --| (3) Cet atelier aura lieu du 23/11/2019 au 27/11/2019.
-    --| (4) Cet atelier sera basé sur l'album "All is 1".
+    --@ persona1 usecase1
+        --| sentence1
+        --| sentence2
+            ! statement1
+            ! statement2
 
+    --| sentence4 (changed)
+    --| sentence5
 
-    -- (5) Il y a 20 exemplaires à la bibliothèque "Mandela/Paris".
+    --@ persona2 usecase2
+        --| sentence6
+            ! statement5
+            ! statement6
+            ! statement7
+        --| sentence7
+            ! statement8
 
-ScenarioScript1
----------------
+    --| sentence8
 
 Tooling
 -------
@@ -68,7 +119,7 @@ Generating models
 '''''''''''''''''
 
 It is possible to generate an object diagram representing the state at
-the end of the scenario. Creating such object diagrams is possible.
+the end of a scenario. Creating such object diagrams is possible.
 Check how to :ref:`generate object diagram<GeneratingObjectDiagrams>`.
 
 
