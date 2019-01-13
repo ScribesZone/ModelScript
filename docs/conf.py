@@ -788,18 +788,20 @@ RelationScriptKeywords = """
 
     relation
     intention
+    in
     examples
-    
+    <=>
     
     constraints
+    
     dom
-    String
-    Real
-    Boolean
-    Integer
-    Date
-    DateTime
-    Time
+    String      s
+    Real        r
+    Boolean     b
+    Integer     i
+    Date        d
+    DateTime    dt
+    Time        t
     key
     prime
     ffd
@@ -813,28 +815,8 @@ RelationScriptKeywords = """
     rules
     rule
     
-    actor
-
-    relation
-    primary
-    secondary
-    adhoc
-    persona
-    volume
-    frequency
-    description
-    goal
-    precondition
-    trigger
-    postcondition
-    risk
-    low
-    high
-    medium
-    flow
-    extension
-    at
-    when
+    dataset
+    query
     """.split()
 
 
@@ -858,3 +840,48 @@ class RelationScriptLexer(ModelScriptLexer):
 lexers['RelationScript'] = RelationScriptLexer(
     startinline=True,
     encoding='utf-8')
+
+
+#--------------------------------------------------------------------------
+#  PermissionScript Lexer
+#--------------------------------------------------------------------------
+
+PermissionScriptKeywords= """
+    can             peut
+    create          creer
+    read            lire
+    update          modifier
+    delete          detruire
+    
+    C       C
+    R       L
+    CR      CL
+    U       M
+    CU      CM
+    RU      LM
+    CRU     CLM
+    D       D
+    CD      CD
+    RD      LD
+    CRD     CLD
+    UD      MD
+    CUD     CMD
+    RUD     LMD
+    CRUD    CLMD
+    """.split()
+
+class PermissionScriptLexer(ModelScriptLexer):
+    name = 'PermissionScript'
+
+    # flags = re.MULTILINE | re.UNICODE
+    tokens = {
+        'root': [
+            lexer.inherit,
+            (lexer.words(PermissionScriptKeywords, suffix=r'\b'), token.Keyword),
+            (r'\w+', token.Name),
+        ]
+    }
+
+lexers['PermissionScript'] = PermissionScriptLexer(
+    startinline=True,
+    encoding = 'utf-8')
