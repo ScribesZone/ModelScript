@@ -15,52 +15,52 @@ Examples
 
 ::
 
-relation model CyberStore
-import glossary model from '../glossaries/glossaries.gls'
+    relation model CyberStore
+    import glossary model from '../glossaries/glossaries.gls'
 
-relation Employee(_firstname_, salary, address, department)
-    | All the employee in the store.
-    intention
-        (n, s, a, d) in Employee <=>
-        | the `Employee` identified by her/his firstname <n>
-        | earns <s> € per cycle. She/he lives
-        | at the address <a> and work in the `Department` <d>.
-    example
-	  ('John', 120, 'Randwick', 'Toys')
+    relation Employee(_firstname_, salary, address, department)
+        | All the employee in the store.
+        intention
+            (n, s, a, d) in Employee <=>
+            | the `Employee` identified by her/his firstname <n>
+            | earns <s> € per cycle. She/he lives
+            | at the address <a> and work in the `Department` <d>.
+        examples
+          ('John', 120, 'Randwick', 'Toys')
+        constraints
+            dom(firstname) = String
+            dom(salary) = Integer
+            dom(address, department) = String
+            key firstname
+            firstname -> salary
+            firstname -> address, department
+
+    relation Leaders(_department_:String, boss:s)
+        | The department leaders
+        intention
+            (p, d) in Leaders <=>
+            | The `Leader` of the `Department` d is d.
+        constraints
+            key department
+
     constraints
-        dom(firstname) = String
-        dom(salary) = Integer
-        dom(address, department) = String
-        key firstname
-        firstname -> salary
-        firstname -> address, department
+        Leaders[department] = Employee[department]
+        Leaders[boss] C= Employee[firstname]
 
-relation Leaders(_department_:String, boss:s)
-    | The department leaders
-    intention
-        (p, d) in Leaders <=>
-        | The `Leader` of the `Department` d is d.
-    constraints
-        key department
+    dataset D1
+        Employee
+            ('John', 120, 'Randwick', 'Toys')
+            ('Mary', 130, 'Wollongong', 'Furniture')
+            ('Peter', 110, 'Randwick', 'Garden')
+            ('Tom', 120, 'Botany Bay', 'Toys')
+        Leaders
+            ('John', 'Toys')
+            ('Mary', 'Furniture')
+            ('Peter', 'Garden')
 
-constraints
-    Leaders[department] = Employee[department]
-    Leaders[boss] <= Employee[firstname]
-
-dataset D1
-    Employee
-        ('John', 120, 'Randwick', 'Toys')
-        ('Mary', 130, 'Wollongong', 'Furniture')
-        ('Peter', 110, 'Randwick', 'Garden')
-        ('Tom', 120, 'Botany Bay', 'Toys')
-    Leaders
-        ('John', 'Toys')
-        ('Mary', 'Furniture')
-        ('Peter', 'Garden')
-
-query JohnBoss(boss)
-    | The department leaders
-    (Employe:(firstname='John')[department] * Leaders)[boss]
+    query JohnBoss(boss)
+        | The department leaders
+        (Employe:(firstname='John')[department] * Leaders)[boss]
 
 
 RelationScript
@@ -173,6 +173,7 @@ Integrity constraints (and in particular
 an ascii-based notation for set operators and relational algebra:
 
 ::
+
     constraints
         R1[d] C= R2[d1]
         R1[d1,d1] C= R2[d1,d2]
@@ -252,7 +253,7 @@ Projection          Employee[salary]
 Selection           Employee :( address='Randwick' )
 Renaming            L(employee, address) := Employee[firstname, address]
 Cartesian product   Employee x Leaders
-θ join              Employee *( Employee.dept=Leaders.dept ) Leaders
+θ join              Employee * ( Employee.dept=Leaders.dept ) Leaders
 Natural join        Employee * Leaders
 Union               Employee[firstname] u Leaders[firstname]
 Intersection        Employee[firstname] n Leaders[firstname]
