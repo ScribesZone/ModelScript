@@ -1,6 +1,6 @@
 .. .. coding=utf-8
 
-.. .. highlight:: PermissionScript
+.. highlight:: PermissionScript
 
 .. index::  ! .pes, ! PermissionScript
     pair: Script ; PermissionScript
@@ -14,27 +14,46 @@ PermissionScript
 Examples
 --------
 
+Version anglaise
+
 ::
 
-    permimission model CyberCompagnie
-    import usecase model from '../classes/classes.cld'
-    import class model from '../usecase/usecase.uss'
+    permission model CyberCompagnie
+    import class model from '../classes/classes.cl1'
+    import usecase model from '../usecase/usecase.uss'
 
-    EmbaucherUnEmploye can C Employe, EstEmployeeDans
-    EmbaucherUnEmploye can RU Compagnie.budget, Compagnie.quota
+    EmbaucherUnEmploye can create Employe, EstEmployeeDans
+    EmbaucherUnEmploye can create, update Compagnie.budget, Compagnie.quota
     LicencierUnEmploye can delete Employe
-    Responsable, Secretaire can R Employee.salary
-    Directeur can read, update Employee.salary
+    Responsable, Secretaire can R Employee.salaire
+    Directeur can read, update Employee.salaire
+
+
+Version française
+
+::
+
+    permission model CyberCompagnie
+    import class model from '../classes/classes.cl1'
+    import usecase model from '../usecase/usecase.uss'
+
+    EmbaucherUnEmploye peut creer Employe, EstEmployeeDans
+    EmbaucherUnEmploye peut lire, modifier Compagnie.budget, Compagnie.quota
+    LicencierUnEmploye peut detruire Employe
+    Responsable, Secretaire peut L Employee.salary
+    Directeur peut lire, modifier Employee.salary
 
 ..  note::
     * ``can`` peut être remplacé par ``peut``.
     * Les actions peuvent être abbréviées ou pas ("C" ou "create").
     * Les actions peuvent être traduites. Voir la section actions_.
 
+
 Concepts
 --------
 
-Conceptuellement le modèle de permission est basé sur une suite de triplets : ::
+Conceptuellement le modèle de permissions est basé sur une suite de
+triplets : ::
 
     (sujets, actions, ressources)
 
@@ -43,12 +62,13 @@ Ce triplet signifie : " *les <sujets> peuvent effectuer les
 
 Exemple : ::
 
-    EmbaucherUnEmploye can RU Compagnie.budget, Compagnie.quota
+    EmbaucherUnEmploye peut LM Compagnie.budget, Compagnie.quota
 
-``EmbaucherUnEmploye`` est le sujet_. ``R`` et ``U`` sont les
+``EmbaucherUnEmploye`` est le sujet_. ``L`` et ``M`` sont les
 actions_. ``Compagnie.budget``, ``Compagnie.quota`` sont les ressources_.
-Le triplet signifie : *le cas d'utilisation* ``EmbaucherUnEmploye`` *peut lire
-(Read) et mettre à jour (Update) les attributs* ``budget`` *et* ``quota`` *de la classe* ``Compagnie``.
+Le triplet signifie : "*le cas d'utilisation* ``EmbaucherUnEmploye``
+*peut lire et modifier les attributs* ``budget`` *et* ``quota``
+*de la classe* ``Compagnie``".
 
 ..  _sujet:
 
@@ -68,14 +88,14 @@ action.
 
 Exemple : ::
 
-    Directeur can CreerUnDepartement          (modèle de cas d utilisation)
-    Directeur can AugmenterUnEmploye          (modèle de cas d utilisation)
+    -- Directeur peut CreerUnDepartement   (vient du modèle de cas d utilisation)
+    -- Directeur peut AugmenterUnEmploye   (vient du modèle de cas d utilisation)
 
-    Directeur can U Employe.salaire           (modèle de permission)
+    Directeur peut modifier Employe.salaire           (modèle de permission)
 
 Dans cet exemple les deux cas d'utilisation ``CreerUnDepartement``
-et ``AugmenterUnEmploye`` peuvent mettre à jour (Update) l'attribut
-``salaire`` de la classe ``Employee``.
+et ``AugmenterUnEmploye`` peuvent modifier l'attribut ``salaire`` de la
+classe ``Employee``.
 
 Actions
 -------
@@ -91,7 +111,7 @@ C / create        C / creer
 R / read          L / lire
 U / update        M / modifier
 D / delete        D / detruire
-X / execute       X / execute
+X / execute       X / executer
 ================= =====================
 
 La signification des opérations dépend des ressources. Voir la section
@@ -104,31 +124,32 @@ Ressources
 
 Pour un modèle de classe une **resource** est soit :
 
-* une **classe**, par exemple ``Employee``,
-* un **attribut**, par exemple ``Employee.salaire``,
-* une **opération**, par exemple ``Employee.augmenter()``.
+* une **classe**, par exemple ``Employe``,
+* un **attribut**, par exemple ``Employe.salaire``,
+* une **opération**, par exemple ``Employe.augmenter()``.
 * une **association**, par exemple ``EstAffecteA``,
 * une **role**, par exemple ``Employe.responsable``.
 
 Le type de ressources définit les actions autorisées :
 
-*   l'opération **create** s'applique à une classe ou à une association.
-    Par exemple ``create Employe`` ou ``create EstEmployePar``. Créer un
+*   l'opération **create**/**creer** s'applique à une classe ou à une association.
+    Par exemple ``creer Employe`` ou ``creer EstEmployePar``. Créer un
     attribut, un role ou une opération ne fait pas de sens.
-*   l'operation **read** s'applique à un attribut ou à un role. Par
-    exemple ``read Employe.salaire`` ou ``read Employe.responsable``.
+*   l'operation **read**/**lire** s'applique à un attribut ou à un role. Par
+    exemple ``lire Employe.salaire`` ou ``lire Employe.responsable``.
 
-    *   Lorsque cette action est associé à une classe (par exemple
-        ``read Employe`` alors n'importe quel attribut peut être attribut
+    *   Lorsque cette action est associée à une classe (par exemple
+        ``lire Employe`` alors n'importe quel attribut peut être attribut
         de la classe peut être lu (dans l'exemple l'accès est donné
         à tous les attributs de la classe ``Employe``).
     *   Lorsque cette action est associée à une association (par exemple
-        ``read EstEmployePar``), alors ,
-        celle-ci peut être traversée dans n'importe quel sens.
+        ``lire EstEmployePar``), alors celle-ci peut être traversée dans
+        n'importe quel sens.
 
-*   l'opération **update** s'applique à un attribut uniquement.
-*   l'opération **delete** s'applique à une classe ou à association
-*   l'opératop, **execute** s'applique à une operation uniquement.
+*   l'opération **update**/**modifie** s'applique à un attribut
+    (ou à une classe, de manière analogue à **read**/**lire**).
+*   l'opération **delete**/**delete** s'applique à une classe ou à association
+*   l'opératop, **execute**/**executer** s'applique à une operation uniquement.
 
 
 ============  ======== ========= ========= =========== =====
@@ -146,37 +167,70 @@ Methode
 
 Les tâches listées par la suite ne peuvent que difficilement être réalisées
 en séquentiel. Cependant plusieurs pratiques existent, selon que l'on
-part d'un modèle ou d'un autre :
+part d'un modèle ou d'un autre.
 
-*   **modèle de classes en premier**. Il s'agit de partir d'un modèle de
-    classes, de lister les différentes ressources et de répondre à la
-    question *"qui change telle ou telle ressource ?"*.
+Classes en premier
+''''''''''''''''''
 
-    XXX exemple XXX
+Dans la méthode "classes en premier" il s'agit de partir d'un modèle de
+classes, de lister chaque classes, attributs et associations, et dans
+chaque cas de répondre à la question *"qui change telle ou telle ressource ?"*.
+Le résultat pourrait être comme ci-dessous (résultats "triés" par la
+deuxième colonne") : ::
 
 
-*   **modèle de cas participants en premier**. Il s'agit de répondre à
-    la question *"que peut faire tel ou tel acteur ?"**
+           ...  peut C Departement
+           ...  peut L Departement.budget
+           ...  peut M Departement.budget
+           ...  peut D Departement
+           ...
+           ...  peut C Projet
 
-    XXX exemple XXX
+Cette méthode permet de vérifier que toutes les parties du modèle de classes
+(à droite) sont utilisées "correctement".
 
-*   **modèle de cas d'utilisation en premier**. Il s'agit de répondre à
-    la question *"que peut faire tel ou tel cas d'utilisation ?"*
+Participants en premier
+'''''''''''''''''''''''
 
-    XXX exemple XXX
+Considèrer le modèle de participants en premier revient à répondre à la
+question *"que peut faire tel ou tel acteur ?"** : ::
 
-*   **matrice de permissions**. Il est également classique de combiner
-    les deux méthodes ci-dessus en produisant d'abord une matrice
-    listant d'un coté toutes les resources (classes, etc.) et de l'autre
-    tous les sujets (acteurs, etc.). Il s'agit ensuite de répondre
-    pour chaque élément de la matrice à la question *"quelles actions
-    peut être réalisées par ce sujet sur cette ressource"*
+    Directeur peut C ...
+    Directeur peut R ...
+    Directeur peut U ...
+    Directeur peut D ...
+    Secretaire peut C ...
+    Secretaire ...
+    ...
 
-    XXX exemple XXX
+Cette méthode permet de visualiser rapidemment les permissions associées
+à chaque acteur. Par contre le détail des cas d'utilisation est manquant.
 
-Quelque soit la méthode retenue, ou certainement combinaison de méthodes,
-l'objectif est de construire un modèle de permissions aligné avec
-le modèle de classes et avec le modèle cas d'utilisation.
+Cas d'utilisation en premier
+''''''''''''''''''''''''''''
+
+Partir des "cas d'utilisation en premier" revient à répondre à
+la question *"que peut faire tel ou tel cas d'utilisation ?"* : ::
+
+    ReserverUneSalle peut C ...
+    ReserverUneSalle peut R ...
+    ReserverUneSalle peut U ...
+    ReserverUneSalle peut D ...
+    AugmenterUnEmploye peut C ...
+    AugmenterUnEmploye ...
+    ...
+
+
+Matrice
+'''''''
+
+Les différentes techniques ci-dessus peuvent être combinées en
+produisant d'abord une matrice listant d'un coté toutes les resources
+(classes, etc.) et de l'autre tous les sujets (acteurs, etc.).
+Il s'agit ensuite de répondre pour chaque élément de la matrice à la
+question *"quelles actions peut être réalisées par ce sujet sur cette
+ressource"*
+
 
 Dependencies
 ------------
