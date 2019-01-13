@@ -1,7 +1,11 @@
-:version: 2018.0.7.4
+:version: 2018.0.7.5
 
 Change History
 ==============
+
+:2019.0.7.5:
+    Improve the documentation of various languages
+
 :2019.0.7.4:
     Improve the documentation
     Improve + add work definitions
