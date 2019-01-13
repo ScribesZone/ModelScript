@@ -15,29 +15,53 @@ Examples
 
 ::
 
-    relation TheEmployees(_u_,v,e,r)
-        | Employees and their roles and properties
-        intention
-            (u,v,e,r) in TheEmployees <=>
-            | the employee e is ... with u ... v ... and
-            | has role r within the company.
-        examples
-            (19, 30, 'noe', 'gardener')
-            (24, -5, 'marie', 'manager')
-        constraints
-            key u
-            dom(u) = dom(v) = Integer
-            dom(e) = dom(c) = Date
-            dom(d) = Real ?
-            3NF
-        transformation
-            from C1
-            from C2
-            rules R1
-            | Columns C1.u and Columns C2.v
-            | have been "merged" as following ...
+relation model CyberStore
+import glossary model from '../glossaries/glossaries.gls'
 
-    TheEmployees[v] C= TheOffices[v]
+relation Employee(_firstname_, salary, address, department)
+    | All the employee in the store.
+    intention
+        (n, s, a, d) in Employee <=>
+        | the `Employee` identified by her/his firstname <n>
+        | earns <s> € per cycle. She/he lives
+        | at the address <a> and work in the `Department` <d>.
+    example
+	  ('John', 120, 'Randwick', 'Toys')
+    constraints
+        dom(firstname) = String
+        dom(salary) = Integer
+        dom(address, department) = String
+        key firstname
+        firstname -> salary
+        firstname -> address, department
+
+relation Leaders(_department_:String, boss:s)
+    | The department leaders
+    intention
+        (p, d) in Leaders <=>
+        | The `Leader` of the `Department` d is d.
+    constraints
+        key department
+
+constraints
+    Leaders[department] = Employee[department]
+    Leaders[boss] <= Employee[firstname]
+
+dataset D1
+    Employee
+        ('John', 120, 'Randwick', 'Toys')
+        ('Mary', 130, 'Wollongong', 'Furniture')
+        ('Peter', 110, 'Randwick', 'Garden')
+        ('Tom', 120, 'Botany Bay', 'Toys')
+    Leaders
+        ('John', 'Toys')
+        ('Mary', 'Furniture')
+        ('Peter', 'Garden')
+
+query JohnBoss(boss)
+    | The department leaders
+    (Employe:(firstname='John')[department] * Leaders)[boss]
+
 
 RelationScript
 --------------
@@ -63,6 +87,8 @@ RelationScript is based on the following concepts:
 * constraints on domains,
 * functional dependencies.
 * normal forms,
+* datasets,
+* queries.
 
 Relations
 ---------
@@ -89,7 +115,7 @@ documentation of the relation.
 
 ::
 
-    R4(_a_,c,d)
+    relation R4(_a_,c,d)
         | The list of X with their c and d.
         | In this relation the person a is ... with c ... and d ...
 
@@ -97,10 +123,11 @@ It can also be defined for "formally" in the intention section.
 
 ::
 
-    R4(_a_,c,d)
+    relation R4(_a_,c,d)
         | The list of X with their c and d.
         intention
-            (a,c,d) <=> the person a is ... with c ... and d ...
+            (a,c,d) in R4 <=>
+            | the person a is ... with c ... and d ...
 
 
 
@@ -111,22 +138,31 @@ The domain of the attributes can be defined as following.
 
 ::
 
-    R(a,b,c,d)
-        dom(a) = String
-        dom(b) = dom(c) = Date
-        dom(d) = Real ?
+    relation R(a,b,c,d)
+        constraints
+            dom(a) = String
+            dom(b) = dom(c) = Date
+            dom(d) = Real ?
 
 A basic type followed by '?' means that this domain is extended
 with the ``null value`` ; the corresponding attribute is optional.
 
-Basic type includes:
-* ``String``,
-* ``Real``,
-* ``Boolean``,
-* ``Integer``,
-* ``Date``,
-* ``DateTime``
-* ``Time``.
+RelationalScript come with various datatype. Each datatype comes with
+a shortcut notations that can be helpful when writing relation on a
+single line.
+
+=============== ==============
+Datatype        Shortcut
+=============== ==============
+String          s
+Real            r
+Boolean         b
+Integer         i
+Date            d
+DateTime        dt
+Time            s
+=============== ==============
+
 
 
 Integrity constraints
@@ -137,11 +173,11 @@ Integrity constraints (and in particular
 an ascii-based notation for set operators and relational algebra:
 
 ::
-
-    R1[d] C= R2[d1]
-    R1[d1,d1] C= R2[d1,d2]
-    R[X] u R[z] = {}
-    R[X] n R[z] = Persons[X]
+    constraints
+        R1[d] C= R2[d1]
+        R1[d1,d1] C= R2[d1,d2]
+        R[X] u R[z] = {}
+        R[X] n R[z] = Persons[X]
 
 The "ascii" notations are
 
@@ -159,16 +195,17 @@ following:
 
 ::
 
-    R(a,b,c,d)
-        key a,b
-        a,b -> c,d
-        prime a
-        prime b
-        /prime c
-        a -/> c
-        c -ffd> d
-        a -/ffd> b
-        {a}+ = {a,b,c}
+    relation R(a,b,c,d)
+        constraints
+            key a,b
+            a,b -> c,d
+            prime a
+            prime b
+            /prime c
+            a -/> c
+            c -ffd> d
+            a -/ffd> b
+            {a}+ = {a,b,c}
 
 
 Normal forms
@@ -176,23 +213,51 @@ Normal forms
 
 ::
 
-    R(a,b,c,d)
-        3NF
+    relation R(a,b,c,d)
+        constraints
+            3NF
 
-Transformation
---------------
+Transformations
+---------------
 
 ::
 
-    import quality model Database from `../quality/database.qas`
+    import quality model Database from `../qa/database.qas`
 
-    R(a,b,c,d)
+    relation R(a,b,c,d)
         transformation
             from C1
             from C2
             rules R1
             | Columns C1.c and Columns C2.c
             | have been "merged" as following ...
+
+
+Queries
+-------
+
+::
+
+    query Q1(boss)
+        | The department leaders
+        (Employe:(firstname='John')[department] * Leaders)[boss]
+
+Queries are based on the relational algebra. All operators have a
+simple ascii syntax/
+
+==================  ====================================================
+Operator            Example
+==================  ====================================================
+Projection          Employee[salary]
+Selection           Employee :( address='Randwick' )
+Renaming            L(employee, address) := Employee[firstname, address]
+Cartesian product   Employee x Leaders
+θ join              Employee *( Employee.dept=Leaders.dept ) Leaders
+Natural join        Employee * Leaders
+Union               Employee[firstname] u Leaders[firstname]
+Intersection        Employee[firstname] n Leaders[firstname]
+Difference          Employee[firstname] - Leaders[firstname]
+==================  ====================================================
 
 Dependencies
 ------------
