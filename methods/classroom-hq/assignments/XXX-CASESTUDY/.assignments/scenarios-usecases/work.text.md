@@ -8,7 +8,7 @@ Dans cette tâche les scénarios sont considérés comme un emboîtement
 d'instances de cas d'utilisation. 
 
 Les modèles de scénarios à raffiner/compléter se trouvent dans les fichiers
-``scenarios/S<N>/S<N>.ob1`` (où ``<N>`` est un entier). Se reporter à la 
+``scenarios/S<N>/S<N>.sc1`` (où ``<N>`` est un entier). Se reporter à la 
 documentation de 
 [ScenarioScript1](https://modelscript.readthedocs.io/en/latest/scripts/scenarios1/index.html) lorsque nécessaire.
 
@@ -143,11 +143,15 @@ L'exemple ci-dessous résume le processus global :
       AVANT: Scénario (plat)        APRES: Scénario (cas d'utilisation) 
     =========================== =========================================
 
-                                participant marie : Bibliotecaire
-                                participant toufik : Manager
-
-                                ...
+                                Modele de participant (participant.pas)
+                                -----------------------------------------    
+                                        participant marie : Bibliotecaire
+                                        participant toufik : Manager
         
+                                        ...
+        
+                                Modèle de scenario (S<N>.sc1)
+                                -----------------------------------------
 
     --| phrase1                 --@ context
     --| phrase2                     --| phrase3 modifiée
