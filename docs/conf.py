@@ -448,9 +448,10 @@ lexers['GlossaryScript'] = GlossaryScriptLexer(
 TrackScriptKeywords = """
     track
     
-    question
-    hypothesis
-    decision
+    question        question
+    hypothesis      hypothese
+    decision        decision
+    problem         probleme
     
     github
     priority

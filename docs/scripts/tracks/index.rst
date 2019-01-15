@@ -93,8 +93,8 @@ Concepts
 --------
 
 The track model aims to track information about other models, namely
-**questions**, **hypothesis**, **decisions**. These items are tracked in
-order :
+**questions**, **hypothesis**, **decisions** and **problems**.
+These items are tracked in order :
 
 * (1) to prepare the agenda of future meetings and
 * (2) to estabish minute meetings afterward.
@@ -121,24 +121,30 @@ Decisions
 Decisions that are taken, during a meeting for instance, can be recorded
 as **decisions**.
 
+Problems
+--------
+
+Problems are issues that can be recorded by the team and that can raise
+some discussion in an upcoming meeting.
+
 Rules
 -----
 
-* Chaque question/hypothèse/décision doit être identifiée de
-  manière unique. Par exemple D3, Q3 et H12.
+*   Chaque suivi doit être identifié de
+    manière unique. Par exemple D3, Q3 et H12, P2.
 
-* Réferencer ces identificateurs (e.g. ``[H12]``) dans le(s)
-  modèle(s) impactés. En commentaire ou autre selon les
-  langages.
+*   Réferencer ces identificateurs (e.g. ``[H12]``) dans le(s)
+    modèle(s) impactés. En commentaire ou autre selon les
+    langages.
 
-* La formulation des questions/hypothèses doit
-  impérativement être précise et faire référence aux
-  termes définis dans le glossaire (entre backquotes).
+*   La formulation des suivis doit impérativement être précise et
+    faire référence aux
+    termes définis dans le glossaire (entre backquotes).
 
-* Une question/hypothèse doit avoir un titre court mais
-  le plus explicatif possible.
+*   Les suivis doivent avoir un titre court mais
+    le plus explicatif possible.
 
-* Les questions/hypothèses doivent être aussi
-  pertinentes que possible du point de vue du client.
-  En particulier éviter de poser des questions pouvant
-  sembler infondées de la part du client.
+*   Les suivis doivent être aussi
+    pertinents que possible du point de vue du client.
+    En particulier éviter de poser des questions pouvant
+    sembler infondées de la part du client.
