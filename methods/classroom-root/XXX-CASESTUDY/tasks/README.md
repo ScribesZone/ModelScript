@@ -1,8 +1,9 @@
-This directory contains, for each usecase, a directory containing 
-a task model in the form of a ``.xml`` file created by the Kmade tool.
-A  ``.pdf`` diagram should be given. 
+This directory contains, for each usecase, a directory containing:
+* a task model in the form of a ``.xml`` file. This file is m 
+* nanaged  by the Kmade tool.
+* a diagram in the form of a ``.pdf``.
 
-For a given usecase ``WithdrawMoney`` the structure is therefore:
+For a usecase named ``WithdrawMoney`` the structure should be:
 
     WithdrawMoney/
         WithdrawMoney.xml
