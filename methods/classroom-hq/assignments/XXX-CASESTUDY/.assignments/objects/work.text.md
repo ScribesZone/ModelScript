@@ -16,7 +16,7 @@ dans le répertoire ``objects/``.
 
 ### Traduire des états en langage ObjectScript
 
-Le fichier ``objects/O<N>/O<N>.ob1`` (où <N> est un entier) 
+Le fichier ``objects/o<N>/o<N>.ob1`` (où <N> est un entier) 
 contient un  modèle d'objets décrit en langue naturelle.
 Il s'agit de plus de traduire chaque ligne en utilisant le langage 
 [ObjectScript1](https://modelscript.readthedocs.io/en/latest/scripts/objects1/index.html) lorsque nécessaire.
@@ -39,7 +39,7 @@ des tests et en particulier des tests de recette.
 Vérifier que l'état est aligné avec le modèle de classes.
 Pour cela utiliser la commande suivante à partir du répertoire principal :
 ```
-    use -qv classes/classes.cl1 objects/O<N>/O<N>.ob1
+    use -qv classes/classes.cl1 objects/o<N>/O<N>.ob1
 ```
 L'interpreteur affichera les éventuelles erreurs de syntaxe
 ainsi que les erreurs de types ou de cardinalités. Si rien ne s'affiche
@@ -47,7 +47,7 @@ cela signifie qu'aucune erreur n'a été trouvée.
 
 ## Dessiner un diagramme d'objets
 
-Produire un diagramme d'objets représentant le modèle d'objets ``objects/O<N>``.
+Produire un diagramme d'objets représentant le modèle d'objets ``objects/o<N>``.
 Pour cela utiliser la même technique que pour les diagrammes de classes.
 La disposition des objets doit autant que possible refléter
 la disposition du diagramme de classes. 
@@ -68,12 +68,12 @@ là où elles interviennent. Lire et appliquer les [règles associées au suivi]
 Avant de clore ce ticket définir le status courant pour ce travail. Lire et appliquer les [règles associées aux status](https://modelscript.readthedocs.io/en/latest/methods/status.html#rules).
 ________
 
-Pour chaque modèle d'objet O<N> (où N est un entier):
+Pour chaque modèle d'objet o<N> (où N est un entier):
 - [ ] (010) Traduction de l'état en langage soil.
-    - M ``objects/O<N>/O<N>.obs``
+    - M ``objects/o<N>/o<N>.obs``
 - [ ] (020) Vérification de l'alignement avec le modèle de classes.
 - [ ] (030) Production du diagramme d'objets.
-    - M ``objects/O<N>/diagrams/O<N>.obd.olt``
-    - M ``objects/O<N>/diagrams/O<N>.obd.png``
+    - M ``objects/o<N>/diagrams/o<N>.obd.olt``
+    - M ``objects/o<N>/diagrams/o<N>.obd.png``
 - [ ] (900) Ecriture du status final.
     - M ``objects/status.md``
