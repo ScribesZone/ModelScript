@@ -11,9 +11,10 @@ Rules
 
 The following information should be present in the status file:
 
-* what have been done
-* what is partially working and have to be continued / improved
-* what remains to be done.
+* what have been done,
+* what is partially working and have to be continued / improved,
+* what remains to be done.,
+* a short synthesis.
 
 Add other information when necessary (for instance bug found or
 issues encountered during the realisation of the task, a reference
