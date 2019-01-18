@@ -17,6 +17,7 @@ Examples
 
     relation model CyberStore
     import glossary model from '../glossaries/glossaries.gls'
+    import glossary model from '../qa/database.qas'
 
     relation Employee(_firstname_, salary, address, department)
         | All the employee in the store.
@@ -24,9 +25,9 @@ Examples
             (n, s, a, d) in Employee <=>
             | the `Employee` identified by her/his firstname <n>
             | earns <s> € per cycle. She/he lives
-            | at the address <a> and work in the `Department` <d>.
+            | at the address <a> and works in the `Department` <d>.
         examples
-          ('John', 120, 'Randwick', 'Toys')
+            ('John', 120, 'Randwick', 'Toys')
         constraints
             dom(firstname) = String
             dom(salary) = Integer
@@ -36,18 +37,22 @@ Examples
             firstname -> address, department
 
     relation Leaders(_department_:String, boss:s)
-        | The department leaders
+        | The department leaders.
         intention
             (p, d) in Leaders <=>
-            | The `Leader` of the `Department` d is d.
+            The `Leader` of the `Department` <d> is the person <p>.
         constraints
             key department
+        transformation
+            from Leader
+            rule Class2Relation
 
     constraints
         Leaders[department] = Employee[department]
         Leaders[boss] C= Employee[firstname]
 
     dataset D1
+        | Employees and leaders of Alpha Super store.
         Employee
             ('John', 120, 'Randwick', 'Toys')
             ('Mary', 130, 'Wollongong', 'Furniture')
@@ -58,8 +63,17 @@ Examples
             ('Mary', 'Furniture')
             ('Peter', 'Garden')
 
+    negative dataset DN1
+        | Octavia and bookstore do not exist.
+        | Violation of referential integrity constraints.
+        Employee
+            ('John', 120, 'Randwick', 'Toys')
+            ('Mary', 130, 'Wollongong', 'Furniture')
+        Leaders
+            ('Octavia', 'Bookstore')
+
     query JohnBoss(boss)
-        | The department leaders
+        | The department leaders.
         (Employe:(firstname='John')[department] * Leaders)[boss]
 
 
@@ -168,25 +182,27 @@ Time            s
 Integrity constraints
 ---------------------
 
-Integrity constraints (and in particular
-`Referential integrity constraints`_) can be defined using
-an ascii-based notation for set operators and relational algebra:
+Integrity constraint, and in particular `Referential integrity constraints`_,
+can be named or anonymous. They can be defined using plain text or using
+the `relational algebra`_ notation when applicable.
 
 ::
 
+    constraint Parent
+        | Les parents d'une personne doivent être
+        | plus agés que cette personne, d'au moins 7 ans.
+
+    constraint FK_34h
+        | The h of the relation R3 is one of the h of R4.
+        R3[h] C= R4[h]
+
     constraints
-        R1[d] C= R2[d1]
+        R1[d] C= R2[d]
         R1[d1,d1] C= R2[d1,d2]
         R[X] u R[z] = {}
         R[X] n R[z] = Persons[X]
 
-The "ascii" notations are
-
-*   ``C=`` and ``C`` stand for set inclusion,
-*   ``u`` and ``n`` stand for set intersection and union,
-*   ``R[x,y]`` stand for relation projection (as defined in relational
-    algebra),
-*   ``{}`` is the empty set.
+See `relational algebra`_ section for more details about the notation.
 
 Functional dependencies
 -----------------------
@@ -243,8 +259,16 @@ Queries
         | The department leaders
         (Employe:(firstname='John')[department] * Leaders)[boss]
 
-Queries are based on the relational algebra. All operators have a
-simple ascii syntax/
+Queries are based on the `relational algebra section`_.
+
+..  _`relational algebra section`:
+
+Relational algebra
+------------------
+
+In RelationScript all classical operators of the relational algebra
+(`wikipedia <https://en.wikipedia.org/wiki/Relational_algebra>`_)
+have their counterparts in ascii syntax.
 
 ==================  ====================================================
 Operator            Example
@@ -258,7 +282,15 @@ Natural join        Employee * Leaders
 Union               Employee[firstname] u Leaders[firstname]
 Intersection        Employee[firstname] n Leaders[firstname]
 Difference          Employee[firstname] - Leaders[firstname]
+Empty set           {}
+Set inclusion       Employee C= Person
+Set inclusion       Employee C Person
+Set equality        Employee = Person
+Intersection        Employee n Person
+Union               Employee u Person
+Tuple               (10, 3, 'Hello)
 ==================  ====================================================
+
 
 Dependencies
 ------------
@@ -274,6 +306,9 @@ The graph below show all language dependencies:
 
 ..  _`relational data model`:
     https://en.wikipedia.org/wiki/Relational_model
+
+..  _`relational algebra wikipedia`:
+    https://en.wikipedia.org/wiki/Relational_algebra
 
 ..  _`Referential integrity constraints`:
     https://en.wikipedia.org/wiki/Referential_integrity
