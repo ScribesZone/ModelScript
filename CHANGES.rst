@@ -4,7 +4,7 @@ Change History
 ==============
 
 :2019.0.7.7:
-    Addition of wd/structure for relations
+    Addition of wd/structure for relations/sql
     Addition of wd/structure for ui tasks/aui/cui/evaluation
     Rename and refactor work definitions
 
