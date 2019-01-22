@@ -8,3 +8,4 @@
 relation model CASESTUDY
 import glossary model from "../glossaries/glossaries.gls"
 import class model from "../classes/classes.cl1"
+import qa model from "../classes/relations.qas"
