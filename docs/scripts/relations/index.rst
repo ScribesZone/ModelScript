@@ -17,7 +17,7 @@ Examples
 
     relation model CyberStore
     import glossary model from '../glossaries/glossaries.gls'
-    import glossary model from '../qa/database.qas'
+    import qa model from '../qa/relations.qas'
 
     relation Employee(_firstname_, salary, address, department)
         | All the employee in the store.
@@ -51,7 +51,10 @@ Examples
         Leaders[department] = Employee[department]
         Leaders[boss] C= Employee[firstname]
 
-    dataset D1
+    constraint SalaryDifference
+        | The difference of salary in a department must not exceed 100%.
+
+    dataset DS1
         | Employees and leaders of Alpha Super store.
         Employee
             ('John', 120, 'Randwick', 'Toys')
@@ -63,7 +66,7 @@ Examples
             ('Mary', 'Furniture')
             ('Peter', 'Garden')
 
-    negative dataset DN1
+    negative dataset NDS1
         | Octavia and bookstore do not exist.
         | Violation of referential integrity constraints.
         Employee
