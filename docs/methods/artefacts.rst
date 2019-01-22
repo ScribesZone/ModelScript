@@ -36,25 +36,22 @@ simplified method.
         participants.pas    Participant model expressed in ParticipantScript.
         status.md           Work status.
 
-    relations/              Relation model.
-        relations.res       Relation model expressed in RelationScript.
-        status.md           Work status.
-
     usecases/               Usecase model.
         usecases.uss        Usecase model expressedin UsecaseScript.
         status.md           Work status.
 
-    tasks/                  Task models.
+    ui-tasks/               Task models.
         <ucname1>/          Task model for usecase <ucname1>.
             <ucname1>.kxml  Task model expressed in KMade.
             <ucname1>.pdf   Task model show as pdf.
         ...                 ...
         status.md           Work status.
 
-    aui/                    Models for the abstract user interface.
-        <ucname1>.pdf       Abstract user interface for usecase <ucname1>.
-        ...                 ...
-        status.md           Work status.
+    ui-abstract/            Models for the abstract user interface.
+
+    ui-concrete/            Files for the concrete user interface.
+
+    ui-evaluation/          Files for the evaluation of the user interface.
 
     scenarios/              Scenarios models.
         S<n>/               Nth scenario.
@@ -66,6 +63,19 @@ simplified method.
     permissions/            Permission model.
         permissions.pes     Permission model expressed in PermissionScript.
         status.md           Work status.
+
+    relations/              Relation model.
+        relations.res       Relation model expressed in RelationScript.
+        status.md           Work status.
+
+    sql/                    SQL implementation.
+        schema/             Database schema.
+            schema.sql      Database schema in SQL.
+        datasets/           Datasets
+            <n>.sql         Datasets in SQL.
+        create-database.sh  Database creation script/
+        status.md           Work status.
+
 
     tracks/                 Track model.
         tracks.trs          Tracks expressed in TrackScript.
