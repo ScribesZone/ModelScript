@@ -1,7 +1,12 @@
-:version: 2018.0.7.6
+:version: 2018.0.7.7
 
 Change History
 ==============
+
+:2019.0.7.7:
+    Addition of wd/structure for relations
+    Addition of wd/structure for ui tasks/aui/cui/evaluation
+    Rename and refactor work definitions
 
 :2019.0.7.6:
     Add /project files

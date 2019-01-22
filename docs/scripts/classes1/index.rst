@@ -19,14 +19,12 @@ Examples
 
 ..  code-block:: ClassScript1
 
-    --@ glossary model CASESTUDY
+    --@ class model Jungle
     --@ import glossary model from "../glossaries/glossaries.gls"
 
     model Jungle
 
     enum Season {
-        winter,
-        autumn,
         spring,
         summer
     }
@@ -39,17 +37,16 @@ Examples
         --| in the forest.
         attributes
             _name_ : String --@ {id} {derived} {optional}
-                --| The name is key.
             length : Integer
+                --| the length of the banana expressed in milimeters.
             size : Real
             frozen : Boolean
             expirationDate: String --@ {Date}
             growthTime : Season
-            remainingDays : Integer
     end
 
     association Owns
-        --| A person owns some cars if he or she *
+        --| A person owns some cars if he or she
         --| bought it and didn't sell it.
         between
             Person [1] role owner
@@ -59,8 +56,6 @@ Examples
     end
 
     associationclass Hate
-        --| Some monkeys hate some snakes.
-        --| That's life. Life in the jungle.
         between
             Monkey [*] role monkeys
             Snake [*] role snakes
@@ -69,15 +64,16 @@ Examples
             intensity : Integer
     end
 
-    --@ invariant SmallBananas
+    --@ constraint SmallBananas
     --@     scope
     --@         Banana.size
-    --@     | Bananas are quite small
+    --@         Banana.length
+    --@     | Bananas are longer than their length.
 
     context self : Banana
-        inv self.size < 10
+    inv SmallBananas : self.size > self.length
 
-    --@ invariant MomentConcerne
+    --@ constraint MomentConcerne
     --@     scope
     --@         Atelier.dateDeDebut
     --@         Atelier.dateDeFin
