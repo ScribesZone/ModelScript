@@ -1,27 +1,33 @@
 [XXX-CASESTUDY] Classes_Relations
 ===========================================================
 
+### Artefacts
+
 Le modèle de classes à compléter se trouve dans le fichier
 ``classes/classes.cl1``.
 
-### Objectifs
+### Résumé
 
 Le modèle de classes élaboré jusqu'à présent était un modèle
 conceptuel, c'est à dire décrivant des concepts du domaine de
-manière abstrante, et ce indépendamment de toutes considérantions
-techniques. 
+manière abstraite ; et ce indépendamment de toute considération
+technique. 
 
 Il s'agit maintenant de transformer ce modèle abstrait en un modèle
-de conceptuel de base de données ; plus particulièrement de
+de de classe pour base de données ; plus particulièrement de
 préparer le modèle classes avant de la transformation en modèle
 de relations.
 
 ### Définition des identifiants de chaque classe
 
 Pour chaque classe, il s'agit de définir quel(s) attribut(s)
-ser(ven)t d'identifiant(s). Chacun de ces attributs doit être
+peuvent appatenir à une clé. Chacun de ces attributs doit être
 entouré par des caractères soulignés ('_'). Par exemple l'attribut
-``login`` devient ``_login_`` s'il s'agit d'un identifiant. 
+``login`` devient ``_login_`` s'il s'agit d'un identifiant. Dans
+certains cas une "clé" peut être composée, dans d'autres cas plusieurs
+"clés" peuvent exister. Quoi qu'il en soit, la convention
+"attributs soulignés" sera raffinée et précisée lors de la
+transformation en modèle de relations.
 
 ### Composition et identification composite
 
@@ -35,9 +41,9 @@ par exemple 6. Dans cet exmple l'identifiant de la salle est le couple
 ( 6 , 13 ).
  
 Dans le cas du modèle de base de données, l' "importation" de 
-l'identifiant du composite se fait uniquement dans le cas d'une relation 
-de composition et il est dans certains cas nécessaire de changer une 
-association en une composition.
+l'identifiant du composite se fait dans le cadre d'association de 
+composition. Il est alors nécessaire, parfois, de changer une 
+association "normalle" en une composition.
 
 Par exemple : ::
 
@@ -45,6 +51,7 @@ Par exemple : ::
         between
             Salle[1] role salle
             Seance[*] role seances            
+    end
             
 peut être changé en : ::
 
@@ -52,10 +59,11 @@ peut être changé en : ::
         between
             Salle[1] role salle
             Seance[*] role seances
+    end
               
-Même si cette composition est contestatble dans le cas d'un modèle
-conceptuel, cette modification est valide dans un cadre technique,
-celui de la conception de bases de données.                
+Même si cette composition pourrait sembler contestable dans le cas d'un 
+modèle conceptuel, cette modification peut valide dans un modèle technique,
+ici dans le cadre de la conception de bases de données.                
             
 ### Questions et hypothèses
 
