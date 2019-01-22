@@ -1,6 +1,13 @@
+--=========================================================================
+-- CyberCinemas
+--=========================================================================
 -- Based on the course of M.C. Fauvet
---
--- SQL constraints are to be added
+---------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------
+-- Database schema
+---------------------------------------------------------------------------
 
 --  relation Movies(_title_:s, releaseYear:i)
 --      | The movies considered by the study.
@@ -15,7 +22,10 @@
 
 CREATE TABLE Movies(
     title VARCHAR(100),
-    releaseYear INTEGER
+    releaseYear INTEGER,
+
+    CONSTRAINT PK
+        PRIMARY KEY (title)
 );
 
 --  relation Cinemas(_name_, city)
@@ -31,10 +41,13 @@ CREATE TABLE Movies(
 
 CREATE TABLE Cinemas(
     name VARCHAR(100),
-    city VARCHAR(100)
+    city VARCHAR(100),
+
+    CONSTRAINT PK
+        PRIMARY KEY (name)
 );
 
---  relation Spectators( _namè_:s, birthYear:i, city:s )
+--  relation Spectators( _name_:s, birthYear:i, city:s )
 --      | The registered spectators with a cinema card.
 --      | Other spectators are not counted as they are anonymous.
 --     columns
@@ -52,7 +65,10 @@ CREATE TABLE Cinemas(
 CREATE TABLE Spectators(
     name VARCHAR(100),
     birthYear INTEGER,
-    city VARCHAR(100)
+    city VARCHAR(100),
+
+    CONSTRAINT PK
+        PRIMARY KEY (name)
 );
 
 
@@ -65,14 +81,21 @@ CREATE TABLE Spectators(
 --              | The name of the cinema displaying the movie.
 --      constraints
 --          key movie, cinema
---
---  constraints
---     IsOn[movie] C= Movies[title]
---     IsOn[cinema] C= Cinemas[name]
+--          IsOn[movie] C= Movies[title]
+--          IsOn[cinema] C= Cinemas[name]
+
+
 
 CREATE TABLE IsOn(
-    movie VARCHAR(100), /* => Movies.title */
-    cinema VARCHAR(100) /* => Cinema.name */
+    movie VARCHAR(100),     -- => Movies.title
+    cinema VARCHAR(100),    -- => Cinema.name
+
+    CONSTRAINT PK
+        PRIMARY KEY (movie, cinema)
+    CONSTRAINT FK_movie
+        FOREIGN KEY (movie) REFERENCES Movies(title),
+    CONSTRAINT FK_cinema
+        FOREIGN KEY (cinema) REFERENCES Cinemas(name)
 );
 
 
@@ -87,16 +110,24 @@ CREATE TABLE IsOn(
 --              | The number of stars between 0 and 5.
 --      constraints
 --          key spectator, movie
---          dom(starr) = {0,1,2,3,4,5}
---
---  constraints
---      Opinions[spectator] C= Spectators[name]
---      Opinions[movie] C= Movies[name]
+--          dom(stars) = {0,1,2,3,4,5}
+--          Opinions[spectator] C= Spectators[name]
+--          Opinions[movie] C= Movies[name]
+
 
 CREATE TABLE Opinions(
-    spectator VARCHAR(100), /* => Spectators.name */
-    movie VARCHAR(100),     /* => Movies.title */
-    stars INTEGER           /* BETWEEN 0 AND 5 */
+    spectator VARCHAR(100),     -- => Spectators.name
+    movie VARCHAR(100),         -- => Movies.title
+    stars INTEGER,              -- BETWEEN 0 AND 5
+
+    CONSTRAINT PK
+        PRIMARY KEY (spectator, movie),
+    CONSTRAINT Dom_stars
+        CHECK (stars in ('0', '1', '2', '3', '4', '5')),
+    CONSTRAINT FK_spectator
+        FOREIGN KEY (spectator) REFERENCES Spectators(name),
+    CONSTRAINT FK_movie
+        FOREIGN KEY (movie) REFERENCES Movies(title)
 );
 
 --  relation Frequents(_spectator_:s, _cinema_:s)
@@ -112,13 +143,19 @@ CREATE TABLE Opinions(
 --              | The name of the cinema frequented.
 --      constraints
 --          key spectator, cinema
---
---
---  constraints
---      Frequents[spectator] ⊆ Spectators[name]
---      Frequents[movie] ⊆ Movies[name]
+--          Frequents[spectator] C= Spectators[name]
+--          Frequents[movie] C= Movies[title]
+
+
 
 CREATE TABLE Frequents(
-    spectator VARCHAR(100), /* => Spectators.name */
-    cinema VARCHAR(100)     /* => Cinemas.name */
+    spectator VARCHAR(100),     -- => Spectators.name
+    cinema VARCHAR(100),        -- => Cinemas.name
+
+    CONSTRAINT PK
+        PRIMARY KEY (spectator, cinema),
+    CONSTRAINT FK_spectator
+        FOREIGN KEY (spectator) REFERENCES Spectators(name),
+    CONSTRAINT FK_cinema
+        FOREIGN KEY (cinema) REFERENCES Cinemas(name)
 );

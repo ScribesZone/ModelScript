@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+
 # Create a database with optionally a dataset loaded.
 # usage:  create-database.sh [ dsX ]
 #     Create the database.sqlite3
@@ -27,7 +28,7 @@ DATASET_FILE=${THISDIR?}/datasets/${DATASET?}.sql
 
 DATASET_ERRORS=${DATASET_FILE?}.err.txt
 
-echo -n "Removing database ... "
+echo -n "Clearing database ... "
 rm -f ${DATABASE?}
 echo "done."
 
@@ -39,8 +40,9 @@ if [ "${DATASET}" = "" ]; then
     echo "Empty database created."
 else
     if [ -f "${DATASET_FILE}" ]; then
-        echo "Loading dataset ${DATASET}"
+        echo -n "Loading dataset ${DATASET} ..."
         sqlite3 ${DATABASE?} <  ${DATASET_FILE?}
+        echo " done."
         echo "Dataset ${DATASET} loaded in database."
     else
         echo "Dataset '${DATASET?}' does not exist." >/dev/stderr

@@ -1,3 +1,68 @@
+--=========================================================================
+-- CyberCinemas
+--=========================================================================
+-- Based on the course of M.C. Fauvet
+---------------------------------------------------------------------------
+
+
+
+---------------------------------------------------------------------------
+-- Prolog for sqlite
+---------------------------------------------------------------------------
+
+PRAGMA foreign_keys = ON;
+
+---------------------------------------------------------------------------
+-- Movies
+---------------------------------------------------------------------------
+
+INSERT INTO Movies VALUES ('Guardians Of The Galaxy','2014');
+INSERT INTO Movies VALUES ('The Inbetweeners 2','2014');
+INSERT INTO Movies VALUES ('The Hundred Foot Journey','2014');
+INSERT INTO Movies VALUES ('Lucy','2014');
+INSERT INTO Movies VALUES ('If I Stay','2014');
+INSERT INTO Movies VALUES ('The Green Hornet','2011');
+INSERT INTO Movies VALUES ('The Company Men','2011');
+INSERT INTO Movies VALUES ('Every Day','2011');
+INSERT INTO Movies VALUES ('Last Lions','2011');
+INSERT INTO Movies VALUES ('Pretty Woman','1990');
+INSERT INTO Movies VALUES ('Edward Scissorhands','1990');
+INSERT INTO Movies VALUES ('Hamlet','1990');
+INSERT INTO Movies VALUES ('I. Robot','2004');
+INSERT INTO Movies VALUES ('Crooks in Clover','1963');
+INSERT INTO Movies VALUES ('America America','1963');
+INSERT INTO Movies VALUES ('A Child Is Waiting','1963');
+INSERT INTO Movies VALUES ('Australia','2008');
+
+
+---------------------------------------------------------------------------
+-- Cinemas
+---------------------------------------------------------------------------
+
+INSERT INTO Cinemas VALUES ('Hoyts CBD','Sydney');
+INSERT INTO Cinemas VALUES ('Hoyts','Brisbane');
+INSERT INTO Cinemas VALUES ('Event Cinema Myer','Brisbane');
+INSERT INTO Cinemas VALUES ('Event Cinema','Cairns');
+INSERT INTO Cinemas VALUES ('Birch Carroll and Coyles','Brisbane');
+INSERT INTO Cinemas VALUES ('Event Cinema Red Center','Alice Spring');
+
+
+---------------------------------------------------------------------------
+-- Spectators
+---------------------------------------------------------------------------
+
+INSERT INTO Spectators VALUES ('Marie','1970','Sydney');
+INSERT INTO Spectators VALUES ('Adrian','1950','Cairns');
+INSERT INTO Spectators VALUES ('Phil','1960','Sydney');
+INSERT INTO Spectators VALUES ('Jackie','1965','Sydney');
+INSERT INTO Spectators VALUES ('Tom','1986','Brisbane');
+INSERT INTO Spectators VALUES ('Alizee','1988','Alice Spring');
+INSERT INTO Spectators VALUES ('Lauranne','1986','Amsterdam');
+
+---------------------------------------------------------------------------
+-- Opinions
+---------------------------------------------------------------------------
+
 INSERT INTO Opinions VALUES ('Marie','The Inbetweeners 2','0');
 INSERT INTO Opinions VALUES ('Adrian','The Inbetweeners 2','0');
 INSERT INTO Opinions VALUES ('Phil','The Inbetweeners 2','2');
@@ -31,13 +96,10 @@ INSERT INTO Opinions VALUES ('Lauranne','Crooks in Clover','5');
 INSERT INTO Opinions VALUES ('Marie','Australia','0');
 INSERT INTO Opinions VALUES ('Adrian','Australia','5');
 
-INSERT INTO Spectators VALUES ('Marie','1970','Sydney');
-INSERT INTO Spectators VALUES ('Adrian','1950','Cairns');
-INSERT INTO Spectators VALUES ('Phil','1960','Sydney');
-INSERT INTO Spectators VALUES ('Jackie','1965','Sydney');
-INSERT INTO Spectators VALUES ('Tom','1986','Brisbane');
-INSERT INTO Spectators VALUES ('Alizee','1988','Alice Spring');
-INSERT INTO Spectators VALUES ('Lauranne','1986','Amsterdam');
+
+---------------------------------------------------------------------------
+-- IsOn
+---------------------------------------------------------------------------
 
 INSERT INTO IsOn VALUES ('Guardians Of The Galaxy','Hoyts CBD');
 INSERT INTO IsOn VALUES ('Guardians Of The Galaxy','Hoyts');
@@ -61,30 +123,10 @@ INSERT INTO IsOn VALUES ('Pretty Woman','Event Cinema Myer');
 INSERT INTO IsOn VALUES ('Pretty Woman','Event Cinema');
 INSERT INTO IsOn VALUES ('Pretty Woman','Birch Carroll and Coyles');
 
-INSERT INTO Movies VALUES ('Guardians Of The Galaxy','2014');
-INSERT INTO Movies VALUES ('The Inbetweeners 2','2014');
-INSERT INTO Movies VALUES ('The Hundred Foot Journey','2014');
-INSERT INTO Movies VALUES ('Lucy','2014');
-INSERT INTO Movies VALUES ('If I Stay','2014');
-INSERT INTO Movies VALUES ('The Green Hornet','2011');
-INSERT INTO Movies VALUES ('The Company Men','2011');
-INSERT INTO Movies VALUES ('Every Day','2011');
-INSERT INTO Movies VALUES ('Last Lions','2011');
-INSERT INTO Movies VALUES ('Pretty Woman','1990');
-INSERT INTO Movies VALUES ('Edward Scissorhands','1990');
-INSERT INTO Movies VALUES ('Hamlet','1990');
-INSERT INTO Movies VALUES ('I. Robot','2004');
-INSERT INTO Movies VALUES ('Crooks in Clovera','1963');
-INSERT INTO Movies VALUES ('America America','1963');
-INSERT INTO Movies VALUES ('A Child Is Waiting','1963');
-INSERT INTO Movies VALUES ('Australia','2008');
 
-INSERT INTO Cinemas VALUES ('Hoyts CBD','Sydney');
-INSERT INTO Cinemas VALUES ('Hoyts','Brisbane');
-INSERT INTO Cinemas VALUES ('Event Cinema Myer','Brisbane');
-INSERT INTO Cinemas VALUES ('Event Cinema','Cairns');
-INSERT INTO Cinemas VALUES ('Birch Carroll and Coyles','Brisbane');
-INSERT INTO Cinemas VALUES ('Event Cinema Red Center','Alice Spring');
+---------------------------------------------------------------------------
+-- Frequents
+---------------------------------------------------------------------------
 
 INSERT INTO Frequents VALUES ('Marie','Hoyts CBD');
 INSERT INTO Frequents VALUES ('Adrian','Hoyts CBD');
