@@ -1,4 +1,4 @@
-[XXX-CASESTUDY] Classes
+[XXX-CASESTUDY] Classes_Conceptuel
 ===========================================================
 
 Le modèle de classes à compléter se trouve dans le fichier

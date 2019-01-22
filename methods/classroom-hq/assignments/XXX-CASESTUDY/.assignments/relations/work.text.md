@@ -16,7 +16,7 @@ règles standards ne peuvent pas être appliquées directement.
 ### Contraintes
 
 Définir les contraintes intégrité suivantes:
-* les contraintes sur les colonnes,
+* les contraintes sur les colonnes (p.e. contraintes de domaine),
 * les contraintes d'intégrité référentielle,
 * les autre contraintes.
 

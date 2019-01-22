@@ -1,4 +1,4 @@
-[XXX-CASESTUDY] Cas d'utilisation (modèle préliminaire)
+[XXX-CASESTUDY] CasDUtilisation_Preliminaire
 ===================================================================
 
 Le modèle de cas d'utilisation à compléter se trouve dans le fichier

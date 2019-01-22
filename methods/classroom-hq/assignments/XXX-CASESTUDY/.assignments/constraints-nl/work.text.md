@@ -1,4 +1,4 @@
-[XXX-CASESTUDY] Contraintes (LN)
+[XXX-CASESTUDY] Contraintes_LN
 ===========================================================
 
 Les contraintes à ajouter doivent être intégrées au modèle de classes 

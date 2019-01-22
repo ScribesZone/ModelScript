@@ -1,4 +1,4 @@
-[XXX-CASESTUDY] Permissions
+[XXX-CASESTUDY] Permissions_CasDUtilisation_Classes
 ===========================================================
 
 Cette tâche a pour but de modifier le modèle de permission

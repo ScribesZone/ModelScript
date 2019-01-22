@@ -1,4 +1,4 @@
-[XXX-CASESTUDY] Scenarios (cas d'utilisation)
+[XXX-CASESTUDY] Scenarios_CasDutilisation
 ===========================================================
 
 Les scénarios réalisés jusque là étaient caractérisés par le modèle 

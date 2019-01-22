@@ -1,4 +1,4 @@
-[XXX-CASESTUDY] Glossaire
+[XXX-CASESTUDY] Glossaires
 ===========================================================
 
 Le glossaire à compléter se trouve dans le fichier

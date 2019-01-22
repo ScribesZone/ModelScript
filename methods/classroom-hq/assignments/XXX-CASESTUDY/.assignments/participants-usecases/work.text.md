@@ -1,4 +1,4 @@
-[XXX-CASESTUDY] Participants
+[XXX-CASESTUDY] Participants_CasDUtilisation
 ===========================================================
 
 Le modèle de participants à compléter se trouve dans le fichier

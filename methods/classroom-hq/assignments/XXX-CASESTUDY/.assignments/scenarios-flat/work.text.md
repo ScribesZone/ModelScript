@@ -1,4 +1,4 @@
-[XXX-CASESTUDY] Scenarios (plats)
+[XXX-CASESTUDY] Scenarios_Plats
 ===========================================================
 
 Les modèles de scénarios à compléter se trouvent dans les fichiers
