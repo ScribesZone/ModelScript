@@ -18,8 +18,8 @@ PRAGMA foreign_keys = ON;
 -- Movies
 ---------------------------------------------------------------------------
 
---@ failure: Movie.PK
 INSERT INTO Movies VALUES ('Guardians Of The Galaxy','2014');
+--@ violates Movie.PKINSERT INTO Movies VALUES ('Guardians Of The Galaxy','2014');
 INSERT INTO Movies VALUES ('Guardians Of The Galaxy','<==== VIOLATION');
 INSERT INTO Movies VALUES ('The Inbetweeners 2','2014');
 INSERT INTO Movies VALUES ('The Hundred Foot Journey','2014');
@@ -44,7 +44,6 @@ INSERT INTO Movies VALUES ('Australia','2008');
 ---------------------------------------------------------------------------
 
 INSERT INTO Cinemas VALUES ('Hoyts CBD','Sydney');
-
 --@ violates Cinemas.PK
 INSERT INTO Cinemas VALUES ('Hoyts CBD','<==== VIOLATION');
 INSERT INTO Cinemas VALUES ('Hoyts','Brisbane');
