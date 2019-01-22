@@ -52,12 +52,6 @@ Définir les contraintes intégrité suivantes:
   uniquement le nom de la contrainte (par exemple 
   ``constraint AtLeastForItemPerDay``).
 
-Les contraintes sur les colonnes doivent être exprimées directement
-dans la relation correspondantes. Les contraintes d'intégrité 
-référentielle et les autres contraintes doivent être définies au
-"premier niveau" via le mot-clé ``constraint`` (ou ``constraint`` sur 
-plusieurs lignes).
-
 ### Jeux de données
 
 Dans ce travail les jeux de données (``dataset``) peuvent être ignorés.
