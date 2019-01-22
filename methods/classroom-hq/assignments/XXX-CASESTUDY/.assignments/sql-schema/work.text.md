@@ -3,50 +3,60 @@
 
 ### Artefacts
 
-Ce travail a pour but d'implémenter en SQL le schéma de la base données.
-Le résultat doit se trouver dans le fichier ``sql/schema/schema.sql``.
-Se référer à la documentation du SGBD utilisé pour toute information
-sur le dialecte SQL correnspondant.
+Le résultat de ce travail doit se trouver dans le 
+fichier ``sql/schema/schema.sql``.
 
 ### Résumé
 
-Implémenter en SQL le schéma de la base de données. Si un modèle de 
-relations existe alors réaliser une traduction aussi fidèle et homogène
-faire ce peut.
+Il s'agit d'implémenter en SQL le schéma de la base de données. Si un
+modèle de relations existe alors on cherchera a réaliser une traduction 
+aussi fidèle et homogène faire se peut.
 
 ### Exemple
 
-Le fichier ``sql/schema/schema.sql`` fourni contenient un exemple de schéma.
-Un jeu de données est également fourni. Dans un premier temps, ces 
+Le fichier ``sql/schema/schema.sql`` fourni contient un exemple de schéma.
+(un jeu de données est également fourni). Dans un premier temps, ces 
 ressources peuvent servir à comprendre/tester la création de la base
-de données, réaliser éventuellement des premières requêtes. 
+de données, réaliser éventuellement des premières requêtes, etc. 
 Bien évdemment le contenu des fichiers fournis devra ensuite être
 remplacé par le code à produire dans ce travail. Il est conseillé de
-lire les tâches SQL avant de réaliser chaque tâches.  
+lire les tâches SQL avant de réaliser de commencer.  
 
 ### Implémentation du schéma de données
 
-Implémenter le schéma relationnel en SQL revient concrètement les 
+Implémenter le schéma relationnel en SQL revient concrètement 
 à exécuter différentes instructions ``CREATE TABLE``. Ces instructions
 doivent être écrites dans le fichier ``sql/schema.sql``. 
-Se référer à le documentation du SQBD utilisépour connaitre le détail de
-la syntaxe SQL utilisées, les types de données disponibles, etc.
+Se référer à le documentation du SQBD utilisé pour connaitre le détail de
+la syntaxe SQL, les types de données disponibles, la manière d'écrire
+les contraintes, etc.
 
 Tester le schéma en executant le code avec une base de données vide.
 
-### Création de la base de données avec sqlite
+### Script de création de la base de données
 
-Dans le cas où le SGBD utilisé est``sqlite`` un script automatisant la
-création de base de données est fourni. Pour créer une base de données vide 
-à partir du schéma, entrer la commande suivante à partir du répertoire 
+Un script de création ``sql/create-database.sh`` a pour rôle d'automatiser
+la création de la base de données à partir du schéma. Le contenu de
+ce script est fourni pour le SGBD ``sqlite``. Dans le cas d'un autre 
+SGBD ce script pourra être réécrit/adapté afin d'avoir une seule et 
+unique commande pour créer la base de données.
+ 
+Avec sqlite entrer la commande suivante à partir du répertoire 
 ``sql/``:
 ```
 create-database.sh
 ```
 Ce script crée une base de données vide ``sql/database.sqlite3`` et charge
-le schéma ``sql/schema/schema.sql``. Si nécessaire se référer au contenu 
-du script pour plus d'information ; pour changer par exemple la 
-localisation de la base de données.     
+le schéma ``sql/schema/schema.sql``. L'exécution du script devrait
+ressembler à cela :
+```
+Clearing database ... done.
+Creating database schema ... done.
+Empty database created.
+```
+Si nécessaire se référer au contenu du script pour plus d'information ;
+pour changer par exemple la localisation de la base de données. Si un autre
+SQBD est utilisé le contenu de ce script devra être adapté.
 
 ### Status final
 
