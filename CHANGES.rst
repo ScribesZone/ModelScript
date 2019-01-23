@@ -1,15 +1,16 @@
-:version: 2018.0.7.8
+:version: 2018.0.7.9
 
 Change History
 ==============
 
+:2019.0.7.9:
+    Convert 4 work definitions to go to doc tasks
 :2019.0.7.8:
     Quick fix: doc - constraints in ClassScript
 :2019.0.7.7:
     Addition of wd/structure for relations/sql
     Addition of wd/structure for ui tasks/aui/cui/evaluation
     Rename and refactor work definitions
-
 :2019.0.7.6:
     Add /project files
     Add /sql files
