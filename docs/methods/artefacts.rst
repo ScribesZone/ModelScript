@@ -52,6 +52,8 @@ simplified method.
     ui-concrete/            Files for the concrete user interface.
 
     ui-evaluation/          Files for the evaluation of the user interface.
+        analysis/
+        tests/
 
     scenarios/              Scenarios models.
         S<n>/               Nth scenario.
