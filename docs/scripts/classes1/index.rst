@@ -19,6 +19,7 @@ Examples
 
 ..  code-block:: ClassScript1
 
+
     --@ class model Jungle
     --@ import glossary model from "../glossaries/glossaries.gls"
 
@@ -64,14 +65,16 @@ Examples
             intensity : Integer
     end
 
+    constraints
+
     --@ constraint SmallBananas
     --@     scope
     --@         Banana.size
     --@         Banana.length
     --@     | Bananas are longer than their length.
 
-    context self : Banana
-    inv SmallBananas : self.size > self.length
+            context self : Banana inv SmallBananas :
+            self.size > self.length
 
     --@ constraint MomentConcerne
     --@     scope
@@ -303,7 +306,9 @@ Constraints
 -----------
 
 `USE OCL`_ supports 3 kinds of constraints : invariant, pre-conditions and
-post-conditions. ClassScript1 is based only on invariants.
+post-conditions. ClassScript1 is based only on invariants. The keyword
+``constraint`` is used for consistency with further models, including
+relation models.
 
 Using ClassScript1, constraints can be defined in natural language, using
 a particular format, and then using OCL.
@@ -347,7 +352,7 @@ en fin du modèles de classes, à la fin du fichier ``classes.class``.
 
 ..  code-block:: ClassScript1
 
-    --@ invariant MomentConcerne
+    --@ constraint MomentConcerne
     --@     scope
     --@         Atelier.dateDeDebut
     --@         Atelier.dateDeFin
