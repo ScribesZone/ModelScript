@@ -1,3 +1,5 @@
+.. _Status:
+
 Status
 ======
 

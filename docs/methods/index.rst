@@ -17,5 +17,10 @@ currently written as a script.
     :maxdepth: 3
 
     artefacts
-    process
+
+    glossaires/index
+    classes_conceptuel/index
+    objets/index
+    contraintes_ln/index
+
     status

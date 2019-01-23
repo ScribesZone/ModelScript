@@ -250,6 +250,9 @@ example the entry One is in package ``Numbers``:
 
     Beta
 
+
+.. _GlossaryScript_Rules:
+
 Rules
 -----
 
@@ -273,6 +276,8 @@ des glossaires.
     courant. Mettre "Personne" dans le glossaire s'il s'agit d'un
     terme spécifique au projet.
 
+.. _GlossaryScript_RewritingTexts:
+
 Rewriting texts
 ---------------
 
@@ -293,6 +298,9 @@ terme appraissant dans un texte il faut déterminer s'il s'agit :
 Ce travail de réécriture / définition du glossaire est bien évidemment
 itératif. L'objectif final est d'obtenir des textes les moins ambigüs
 et plus cohérents possible avec le glossaire.
+
+
+.. _GlossaryScript_RewritingIdentifiers:
 
 Rewriting identifiers
 ---------------------

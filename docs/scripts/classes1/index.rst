@@ -313,6 +313,9 @@ relation models.
 Using ClassScript1, constraints can be defined in natural language, using
 a particular format, and then using OCL.
 
+..  _ClassScript_contraintes_ln:
+
+
 Natural Language Constraints
 ''''''''''''''''''''''''''''
 
@@ -370,6 +373,9 @@ la phrase ainsi :
     --@     | Si un emprunt concerne un atelier alors cet
     --@     | la date de sortie de l'emprunt a eu lieu entre la date de début
     --@     | de l'atelier et sa date de fin.
+
+
+..  _ClassScript_contraintes_methode:
 
 Method
 ......
