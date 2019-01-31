@@ -20,7 +20,7 @@ Chaque violation attendue doit être déclarée dans le modèle.
 Se référer à la documentation concernant les :ref:`violations` pour plus
 de détails.
 
-(B) Vérifiaction des violations
+(B) Vérification des violations
 -------------------------------
 
 Une fois les violations déclarées dans les modèles d'objets négatifs
