@@ -4,7 +4,8 @@ Change History
 ==============
 
 :2019.0.7.9:
-    Convert 4 work definitions to go to doc tasks
+    Convert 4 work definitions to goto_doc issues
+    Refactor doc "tools" section
 :2019.0.7.8:
     Quick fix: doc - constraints in ClassScript
 :2019.0.7.7:
