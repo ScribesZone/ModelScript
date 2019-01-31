@@ -1,8 +1,10 @@
-:version: 2018.0.7.9
+:version: 2018.0.7.10
 
 Change History
 ==============
 
+:2019.0.7.10:
+    Refactor doc: scripts/ => languages/
 :2019.0.7.9:
     Convert 4 work definitions to goto_doc issues
     Refactor doc "tools" section
