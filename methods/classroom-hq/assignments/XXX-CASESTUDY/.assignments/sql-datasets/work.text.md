@@ -55,7 +55,7 @@ Dataset ds1 loaded in database.
 ### Jeux de données négatifs
 
 Inversement les jeux de données négatifs doivent générer des erreurs 
-partout les contraintes associées au schéma ne sont pas respectées.
+partout où les contraintes associées au schéma ne sont pas respectées.
 Un jeu de données négatif pourrait produire un résultat comme suit :
 ```
 Clearing database ... done.
