@@ -1,5 +1,5 @@
-Tooling
-=======
+Tools
+=====
 
 In the current version, tooling is minimal. Consistency checking relies on
 the ``use`` tool. The ``modelc`` compiler is not available yet.
