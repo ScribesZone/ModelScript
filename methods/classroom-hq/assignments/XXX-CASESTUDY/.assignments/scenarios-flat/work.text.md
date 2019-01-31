@@ -5,7 +5,7 @@ Les modèles de scénarios à compléter se trouvent dans les fichiers
 ``scenarios/s<N>/s<N>.ob1`` (où ``<N>`` est un entier).
 
 Les modèles de scénarios doivent être écrits en ScenarioScript1.
-Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/scenarios1/index.html) lorsque nécessaire.
+Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/languages/scenarios1/index.html) lorsque nécessaire.
 
 L'objectif de cette tâche est de traduire dans un premier temps
 les textes en scénarios "plats", c'est à dire une simple suite 
@@ -38,7 +38,7 @@ Ignorer également les emboîtements correspondants, s'ils sont présents.
 Si des questions ou des hypothèses surgissent lors de ce travail
 définir celles-ci explicitement dans le modèle de suivi
 (dossier ``tracks``). Reporter le numéro de ces questions/hypothèses
-là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/scripts/tracks/index.html#rules). 
+là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/languages/tracks/index.html#rules). 
  
 ### Status final
 

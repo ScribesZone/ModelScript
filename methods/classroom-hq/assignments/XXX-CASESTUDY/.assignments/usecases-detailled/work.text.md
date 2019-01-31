@@ -3,7 +3,7 @@
 
 Le modèle de cas d'utilisation à compléter se trouve dans le fichier
 ``usecases/usecases.uss``. Il doit être écrit en UsecaseScript.
-Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/usecases/index.html) lorsque nécessaire.
+Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/languages/usecases/index.html) lorsque nécessaire.
 
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -12,7 +12,7 @@ XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
 Une fois le modèle préliminaire défini, décrire de manière plus détaillée
 le où les cas d'utilisation les plus prioritaires, si celui-ci est 
-défini. Se reporter à la documentation de [UsecaseScript](https://modelscript.readthedocs.io/en/latest/scripts/usecases/index.html)
+défini. Se reporter à la documentation de [UsecaseScript](https://modelscript.readthedocs.io/en/latest/languages/usecases/index.html)
 pour voir quels aspects peuvent être décrits.
 
 ### Questions et hypothèses
@@ -20,7 +20,7 @@ pour voir quels aspects peuvent être décrits.
 Si des questions ou des hypothèses surgissent lors de ce travail
 définir celles-ci explicitement dans le modèle de suivi
 (dossier ``tracks``). Reporter le numéro de ces questions/hypothèses
-là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/scripts/tracks/index.html#rules). 
+là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/languages/tracks/index.html#rules). 
  
 ### Status final
 

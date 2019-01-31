@@ -13,7 +13,7 @@ il est possible de définir le modèle de permissions. Cette tâche a
 * le modèle de cas d'utilisation,
 * les modèles de scénarios.   
 
-Il existe [plusieurs manières](https://modelscript.readthedocs.io/en/latest/scripts/permissions/index.html#methode) de remplir le modèle de permission. 
+Il existe [plusieurs manières](https://modelscript.readthedocs.io/en/latest/languages/permissions/index.html#methode) de remplir le modèle de permission. 
 L'objectif de cette tâche est de mettre en pratique deux de ces 
 techniques.
 
@@ -21,7 +21,7 @@ techniques.
 ## Technique 1: classes en premier
 
 
-Commencer par la méthode ["classes en premier"](https://modelscript.readthedocs.io/en/latest/scripts/permissions/index.html#classes-en-premier).
+Commencer par la méthode ["classes en premier"](https://modelscript.readthedocs.io/en/latest/languages/permissions/index.html#classes-en-premier).
 Lorsque des classes/attributs/associations ne sont créé/utilisés/modifiés
 par aucun cas d'utilisation, indiquer pourquoi sous forme de commentaires
 dans le modèle de permissions.  Ajuster le modèle de cas d'utilisation 
@@ -29,7 +29,7 @@ si nécessaire.
 
 ## Technique 2: cas d'utilisation en premier
 
-Dans un deuxième temps utiliser la méthode ["Cas d'utilisation en premier"](https://modelscript.readthedocs.io/en/latest/scripts/permissions/index.html#cas-d-utilisation-en-premier) pour remplir 
+Dans un deuxième temps utiliser la méthode ["Cas d'utilisation en premier"](https://modelscript.readthedocs.io/en/latest/languages/permissions/index.html#cas-d-utilisation-en-premier) pour remplir 
 la suite du modèle. Ajuster le modèle de classes  si nécessaire.
 
 ## Alignement avec les modèles de scénarios
@@ -42,7 +42,7 @@ dans les scénarios ne violent pas les permissions données.
 Si des questions ou des hypothèses surgissent lors de ce travail
 définir celles-ci explicitement dans le modèle de suivi
 (dossier ``tracks``). Reporter le numéro de ces questions/hypothèses
-là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/scripts/tracks/index.html#rules). 
+là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/languages/tracks/index.html#rules). 
  
 ### Status final
 

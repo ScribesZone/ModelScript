@@ -15,7 +15,7 @@ et donc compléter les réponses.
 
 Le modèle de suivi va être utilisé tout au long du projet.
 Consulter si nécessaire la section faisant référence aux 
-[règles associées au modèle de suivi](https://modelscript.readthedocs.io/en/latest/scripts/tracks/index.html#rules).
+[règles associées au modèle de suivi](https://modelscript.readthedocs.io/en/latest/languages/tracks/index.html#rules).
 
 Concrètement dans cette tâche il est demandé d'écrire au moins une question
 et une hypothèse, concernant les documents fourni par/élaboré avec 

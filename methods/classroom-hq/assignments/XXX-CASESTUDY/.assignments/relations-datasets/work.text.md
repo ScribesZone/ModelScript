@@ -4,7 +4,7 @@
 ### Artefacts 
 Ce travail a pour but de compléter le modèle de relations
 (fichier ``relations/relations.res``) en ajoutant un ou des 
-jeux de données. Utiliser la documentation du langage [ModelScript](https://modelscript.readthedocs.io/en/latest/scripts/relations/index.html) 
+jeux de données. Utiliser la documentation du langage [ModelScript](https://modelscript.readthedocs.io/en/latest/languages/relations/index.html) 
 lorsque nécessaire.
 
 ### Résumé

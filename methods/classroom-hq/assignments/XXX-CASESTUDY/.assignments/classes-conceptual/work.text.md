@@ -5,7 +5,7 @@ Le modèle de classes à compléter se trouve dans le fichier
 ``classes/classes.cl1``.
 
 Le modèle de classes doit être écrit en ClassScript1.
-Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/classes1/index.html) lorsque nécessaire.
+Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/languages/classes1/index.html) lorsque nécessaire.
 
 ### Définition du modèle de classes
 
@@ -53,14 +53,14 @@ Par exemple ilpeut être important de définir ce qu'est la "DateDeRetour" dans 
 contexte d'un bibliothèque. Ce terme fait partie du domaine. Il est sans 
 doute nécessaire de l'expliquer s'il ne correspond pas à une définition
 de sens commun. D'ailleurs le terme à définir est peut être "Retour". 
-Lire et appliquer les [règles associées à la réécriture d'identificateurs](https://modelscript.readthedocs.io/en/latest/scripts/glossaries/index.html#rewriting-identifiers).
+Lire et appliquer les [règles associées à la réécriture d'identificateurs](https://modelscript.readthedocs.io/en/latest/languages/glossaries/index.html#rewriting-identifiers).
 
 ### Questions et hypothèses
 
 Si des questions ou des hypothèses surgissent lors de ce travail
 définir celles-ci explicitement dans le modèle de suivi
 (dossier ``tracks``). Reporter le numéro de ces questions/hypothèses
-là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/scripts/tracks/index.html#rules). 
+là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/languages/tracks/index.html#rules). 
  
 ### Status final
 

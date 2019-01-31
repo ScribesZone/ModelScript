@@ -10,7 +10,7 @@ d'instances de cas d'utilisation.
 Les modèles de scénarios à raffiner/compléter se trouvent dans les fichiers
 ``scenarios/S<N>/S<N>.sc1`` (où ``<N>`` est un entier). Se reporter à la 
 documentation de 
-[ScenarioScript1](https://modelscript.readthedocs.io/en/latest/scripts/scenarios1/index.html) lorsque nécessaire.
+[ScenarioScript1](https://modelscript.readthedocs.io/en/latest/languages/scenarios1/index.html) lorsque nécessaire.
 
 
 ### Définition des personnages
@@ -31,7 +31,7 @@ Par exemple le personnage ``marie`` peut jouer le rôle de
 ```
 
 Les personnages comme "marie" peuvent être charactérisés par de nombreuses
-propriétés (voir l'exemple dans la documentation de [ParticipantScript](https://modelscript.readthedocs.io/en/latest/scripts/participants/index.html).
+propriétés (voir l'exemple dans la documentation de [ParticipantScript](https://modelscript.readthedocs.io/en/latest/languages/participants/index.html).
 Ces propriétés seront nécessaires par exemple lors de la conception 
 d'Interface Homme Machine (IHM). Ici on se contentera d'une brève 
 description pour chaque acteur.
@@ -203,7 +203,7 @@ réordonnancement des instructions n'est pas correct.
 Si des questions ou des hypothèses surgissent lors de ce travail
 définir celles-ci explicitement dans le modèle de suivi
 (dossier ``tracks``). Reporter le numéro de ces questions/hypothèses
-là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/scripts/tracks/index.html#rules). 
+là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/languages/tracks/index.html#rules). 
  
 ### Status final
 

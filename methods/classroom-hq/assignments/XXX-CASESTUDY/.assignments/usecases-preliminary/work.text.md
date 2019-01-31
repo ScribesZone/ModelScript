@@ -3,7 +3,7 @@
 
 Le modèle de cas d'utilisation à compléter se trouve dans le fichier
 ``participants/particiants.pas`` et ``usecases/usecases.uss``  écrit en
-[ParticipantScript](https://modelscript.readthedocs.io/en/latest/scripts/participants/index.html) et [UsecaseScript](https://modelscript.readthedocs.io/en/latest/scripts/usecases/index.html).
+[ParticipantScript](https://modelscript.readthedocs.io/en/latest/languages/participants/index.html) et [UsecaseScript](https://modelscript.readthedocs.io/en/latest/languages/usecases/index.html).
 
 
 ### Modèle préliminaire 
@@ -11,7 +11,7 @@ Le modèle de cas d'utilisation à compléter se trouve dans le fichier
 Donner une première version du modèle en définissant :
 
 *  **(1)** **les acteurs**. Les acteurs doivent être définis de manière séparée
-   dans le [modèle de participants](https://modelscript.readthedocs.io/en/latest/scripts/participants/index.html).
+   dans le [modèle de participants](https://modelscript.readthedocs.io/en/latest/languages/participants/index.html).
    Dans cette version préliminaire il est suffisant de donner le nom de 
    chaque acteur accompangné d'une très breve description. Justifier à 
    chaque fois que le "role" identifié est bien un "acteur" au sens UML,
@@ -38,7 +38,7 @@ ces cas d'utilisation seront définis peu à peu de manière bien plus précise.
 Si des questions ou des hypothèses surgissent lors de ce travail
 définir celles-ci explicitement dans le modèle de suivi
 (dossier ``tracks``). Reporter le numéro de ces questions/hypothèses
-là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/scripts/tracks/index.html#rules). 
+là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/languages/tracks/index.html#rules). 
  
 ### Status final
 

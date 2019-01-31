@@ -13,16 +13,16 @@ On se limite également aux invariants que doivent vérifier chaque état
 du système. Les pré et post conditions ne sont pas prises en compte.
 
 Pour réaliser cette tâche vous devez utiliser la 
-[syntaxe des contraintes en langue naturelle](https://modelscript.readthedocs.io/en/latest/scripts/classes1/index.html#natural-language-constraints).
+[syntaxe des contraintes en langue naturelle](https://modelscript.readthedocs.io/en/latest/languages/classes1/index.html#natural-language-constraints).
 Pour savoir comment "trouver" ces contraintes utiliser la 
-[méthode de définition des contraintes](https://modelscript.readthedocs.io/en/latest/scripts/classes1/index.html#method)
+[méthode de définition des contraintes](https://modelscript.readthedocs.io/en/latest/languages/classes1/index.html#method)
 
 ### Questions et hypothèses
 
 Si des questions ou des hypothèses surgissent lors de ce travail
 définir celles-ci explicitement dans le modèle de suivi
 (dossier ``tracks``). Reporter le numéro de ces questions/hypothèses
-là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/scripts/tracks/index.html#rules). 
+là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/languages/tracks/index.html#rules). 
  
 ### Status final
 

@@ -5,7 +5,7 @@ Le modèle de participants à compléter se trouve dans le fichier
 ``participants/participants.pas``.
 
 Le modèle de participants doit être écrit en ParticipantScript.
-Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/participants/index.html) lorsque nécessaire.
+Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/languages/participants/index.html) lorsque nécessaire.
 
 ### Définition des acteurs
 
@@ -41,7 +41,7 @@ suivants:
 Si des questions ou des hypothèses surgissent lors de ce travail
 définir celles-ci explicitement dans le modèle de suivi
 (dossier ``tracks``). Reporter le numéro de ces questions/hypothèses
-là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/scripts/tracks/index.html#rules). 
+là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/languages/tracks/index.html#rules). 
  
 ### Status final
 

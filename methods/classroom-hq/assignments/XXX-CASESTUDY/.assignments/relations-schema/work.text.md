@@ -5,7 +5,7 @@
 
 Ce travail a pour but de créer le modèle de relations
 (fichier ``relations/relations.res``). Utiliser la
-documentation du langage [ModelScript](https://modelscript.readthedocs.io/en/latest/scripts/relations/index.html) lorsque nécessaire.
+documentation du langage [ModelScript](https://modelscript.readthedocs.io/en/latest/languages/relations/index.html) lorsque nécessaire.
 
 ### Résumé
 

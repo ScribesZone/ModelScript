@@ -4,11 +4,11 @@
 Le glossaire à compléter se trouve dans le fichier
 ``glossaries/glossaries.gls``.
 Le glossaire doit être écrit en GlossaryScript.
-Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/glossaries/index.html) lorsque nécessaire.
+Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/languages/glossaries/index.html) lorsque nécessaire.
 
 ### Ecriture du glossaire
 
-Compléter le glossaire en respectant impérativement les [règles associées aux glossaires oi](https://modelscript.readthedocs.io/en/latest/scripts/glossaries/index.html#rules).
+Compléter le glossaire en respectant impérativement les [règles associées aux glossaires oi](https://modelscript.readthedocs.io/en/latest/languages/glossaries/index.html#rules).
     
 ### Alignement avec le texte des scénarios et des objets
 
@@ -23,7 +23,7 @@ En principe tous les autres  textes devraient être réécrits,
 mais pour simplifier ce n'est pas demandé : se concentrer 
 sur les modèles de scénarios et objets.
 
-Pour la réécriture suivre les [règles associées à la réécriture de textes](https://modelscript.readthedocs.io/en/latest/scripts/glossaries/index.html#rewriting-texts).
+Pour la réécriture suivre les [règles associées à la réécriture de textes](https://modelscript.readthedocs.io/en/latest/languages/glossaries/index.html#rewriting-texts).
      
 ### Alignement les autres modèles
 
@@ -31,7 +31,7 @@ Tout au long du projet il sera nécessaire de s'assurer en permanence de
 l'alignement avec le glossaire de tous les modèles mais aussi 
 du code (SQL, Java, etc.). Cela impliquera entre autre d'aligner non
 seulement les textes, mais aussi les identificateurs.
-Lire les [règles associées à la réécriture d'identificateurs](https://modelscript.readthedocs.io/en/latest/scripts/glossaries/index.html#rewriting-identifiers). Les appliquer au fur et à mesure du
+Lire les [règles associées à la réécriture d'identificateurs](https://modelscript.readthedocs.io/en/latest/languages/glossaries/index.html#rewriting-identifiers). Les appliquer au fur et à mesure du
 développement du projet.
 
 ### Questions et hypothèses
@@ -39,7 +39,7 @@ développement du projet.
 Si des questions ou des hypothèses surgissent lors de ce travail
 définir celles-ci explicitement dans le modèle de suivi
 (dossier ``tracks``). Reporter le numéro de ces questions/hypothèses
-là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/scripts/tracks/index.html#rules). 
+là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/languages/tracks/index.html#rules). 
  
 ### Status final
 

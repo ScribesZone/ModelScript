@@ -5,7 +5,7 @@ Les modèles d'objets à compléter se trouvent dans les fichiers
 ``objects/O<N>/O<N>.ob1`` (où <N> est un entier).
 
 Les modèles d'objets doivent être écrits en ObjectScript1.
-Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/scripts/objects1/index.html) lorsque nécessaire.
+Se reporter à la [documentation](https://modelscript.readthedocs.io/en/latest/languages/objects1/index.html) lorsque nécessaire.
 
 Cette tâche consiste à traduire les états décrits sous forme 
 textuelle en un modèle d'objets annoté. Chaque modèle d'objets se 
@@ -19,7 +19,7 @@ dans le répertoire ``objects/``.
 Le fichier ``objects/o<N>/o<N>.ob1`` (où <N> est un entier) 
 contient un  modèle d'objets décrit en langue naturelle.
 Il s'agit de plus de traduire chaque ligne en utilisant le langage 
-[ObjectScript1](https://modelscript.readthedocs.io/en/latest/scripts/objects1/index.html) lorsque nécessaire.
+[ObjectScript1](https://modelscript.readthedocs.io/en/latest/languages/objects1/index.html) lorsque nécessaire.
 
 Lorsqu'une valeur n'est pas définie utiliser une instruction
 ``... := Undefined``. Dans certains cas il peut être pertinent "d'inventer"
@@ -61,7 +61,7 @@ a été faite.
 Si des questions ou des hypothèses surgissent lors de ce travail
 définir celles-ci explicitement dans le modèle de suivi
 (dossier ``tracks``). Reporter le numéro de ces questions/hypothèses
-là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/scripts/tracks/index.html#rules). 
+là où elles interviennent. Lire et appliquer les [règles associées au suivi](https://modelscript.readthedocs.io/en/latest/languages/tracks/index.html#rules). 
  
 ### Status final
 
