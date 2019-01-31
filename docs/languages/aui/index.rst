@@ -15,9 +15,9 @@ AUIScript
     **to be described only informally using a "paper and pencil" method.**
     This page present a candidate language to represent AUI more formally.
     It is **not** to be used in current projects. It is shown here just
-    to shown how abstract user interface modeling could be integrated
+    to show how abstract user interface modeling could be integrated
     in ModelScript. The language is presented as-is without any guarantee
-    that it fit expert needs.
+    that it fits expert needs.
 
 Examples
 --------
