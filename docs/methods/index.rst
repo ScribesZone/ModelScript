@@ -25,5 +25,6 @@ currently written as a script.
     classes_conceptuel/index
     objets/index
     contraintes_ln/index
+    objets_negatifs/index
 
     status

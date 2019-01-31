@@ -1,8 +1,10 @@
-:version: 2018.0.7.10
+:version: 2018.0.7.11
 
 Change History
 ==============
 
+:2019.0.7.11:
+    Add task:objets_negatifs
 :2019.0.7.10:
     Refactor doc: scripts/ => languages/
 :2019.0.7.9:
