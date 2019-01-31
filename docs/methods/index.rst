@@ -1,11 +1,14 @@
 .. _ModelScriptMethod:
 
-ModelScript Method
-==================
+Methods
+=======
 
 ModelScript comes with a simple method, the "ModelScript Method".
-This method is decomposed in steps and artefacts to be used/produced
-at each step. The method is modular in the sense that only a
+Strictly speaking instead of one method, this is a set of methods since
+some method elements can be added or removed.
+
+The method is decomposed in (1) tasks and (2) artefacts to be used/produced
+by eash tasks. The method is modular in the sense that only a
 few artefacts and/or steps can be used.
 
 The method is based on a project layout for modeling *artefacts*.
