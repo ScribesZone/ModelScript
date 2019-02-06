@@ -35,6 +35,7 @@ currently written as a script.
     relations_jdd_negatifs/index
     sql_schema/index
     sql_jdd/index
+    sql_jdd_negatifs/index
 
     scenarios_plats/index
     participants_cu/index
