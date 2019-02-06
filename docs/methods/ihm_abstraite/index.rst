@@ -8,8 +8,8 @@ tache:ihm_abstraite
 :résultat:
     * ``ui-abstract/<MdT>/<MdT>.pdf``
 
-(A) Définitions des IHM abstraites
-----------------------------------
+(A) Définition des IHM abstraites
+---------------------------------
 
 Ce travail consiste à définir les interfaces abstraites
 correspondant à chaque modèle de tâches (MdT). Pour chaque modèle
