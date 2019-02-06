@@ -34,6 +34,7 @@ currently written as a script.
     participants_cu/index
     cu_preliminaire/index
     cu_detaille/index
+    scenarios_cu/index
 
     ihm_taches/index
     ihm_abstraite/index
