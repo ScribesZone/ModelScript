@@ -26,8 +26,8 @@ simplified method.
         status.md           Work status.
 
     objects/                Object models.
-        O<n>/               Nth object model.
-            O<n>.ob1        Object model expressed in ObjectScript1.
+        o<n>/               Nth object model.
+            o<n>.ob1        Object model expressed in ObjectScript1.
             diagrams/       Object diagrams in different formats.
         ...                 ...
         status.md           Work status.
@@ -56,8 +56,8 @@ simplified method.
         tests/
 
     scenarios/              Scenarios models.
-        S<n>/               Nth scenario.
-            S<n>.sc1        The scenario represented as a ScenarioScript1.
+        s<n>/               Nth scenario.
+            s<n>.sc1        The scenario represented as a ScenarioScript1.
             diagrams/       Scenario diagrams in different formats.
         ...
         status.md           Work status.
