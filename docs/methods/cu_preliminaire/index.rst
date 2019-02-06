@@ -26,7 +26,8 @@ ces cas d'utilisation seront définis peu à peu de manière bien plus précise.
 --------------------------
 
 Les acteurs doivent être définis de manière séparée dans le
-:ref:`modèle de participants <ParticipantScript>`.
+:ref:`modèle de participants <ParticipantScript>` via la tâche
+:ref:`tache:participants_cu`.
 Dans cette version préliminaire il est suffisant de donner le nom de
 chaque acteur accompangné d'une très breve description. Justifier à
 chaque fois que le "role" identifié est bien un "acteur" au sens UML,

@@ -31,9 +31,11 @@ currently written as a script.
 
     classes_relations/index
 
+    participants_cu/index
     cu_preliminaire/index
     cu_detaille/index
 
+    ihm_taches/index
     ihm_abstraite/index
     ihm_concrete/index
     ihm_evaluation/index
