@@ -37,7 +37,7 @@ simplified method.
         status.md           Work status.
 
     usecases/               Usecase model.
-        usecases.uss        Usecase model expressedin UsecaseScript.
+        usecases.uss        Usecase model expressed in UsecaseScript.
         status.md           Work status.
 
     ui-tasks/               Task models.
@@ -82,5 +82,11 @@ simplified method.
     tracks/                 Track model.
         tracks.trs          Tracks expressed in TrackScript.
         status.md           Work status.
+
+    dev/                    Development artefacts including code.
+        <CASESTUDY>/        Code containing the software
+            status.md       Development status
+
+    playground/             Space for learning, prototyping, ...
 
     status.md               Global status of the work.
