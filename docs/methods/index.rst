@@ -31,6 +31,7 @@ currently written as a script.
 
     classes_relations/index
 
+    scenarios_plats/index
     participants_cu/index
     cu_preliminaire/index
     cu_detaille/index
