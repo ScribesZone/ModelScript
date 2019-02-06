@@ -35,5 +35,6 @@ currently written as a script.
     cu_detaille/index
 
     ihm_abstraite/index
+ihm_concrete/index
 
     status
