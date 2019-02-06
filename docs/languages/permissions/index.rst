@@ -162,12 +162,17 @@ delete           X                              X
 execute                              X
 ============  ======== ========= ========= =========== =====
 
+
+..  _PermissionScript_Methode:
+
 Methode
 -------
 
 Les tâches listées par la suite ne peuvent que difficilement être réalisées
 en séquentiel. Cependant plusieurs pratiques existent, selon que l'on
 part d'un modèle ou d'un autre.
+
+..  _PermissionScript_ClassesEnPremier:
 
 Classes en premier
 ''''''''''''''''''
@@ -205,6 +210,9 @@ question *"que peut faire tel ou tel acteur ?"** : ::
 
 Cette méthode permet de visualiser rapidemment les permissions associées
 à chaque acteur. Par contre le détail des cas d'utilisation est manquant.
+
+
+..  _PermissionScript_CasDUtilisationEnPremier:
 
 Cas d'utilisation en premier
 ''''''''''''''''''''''''''''
