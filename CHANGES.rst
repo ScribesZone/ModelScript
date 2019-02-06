@@ -1,8 +1,10 @@
-:version: 2018.0.7.11
+:version: 2018.0.7.12
 
 Change History
 ==============
 
+:2019.0.7.12:
+    Migrate git issues to methods/tasks
 :2019.0.7.11:
     Add task:objets_negatifs
 :2019.0.7.10:
