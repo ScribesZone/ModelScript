@@ -36,7 +36,7 @@ currently written as a script.
     cu_preliminaire/index
     cu_detaille/index
     scenarios_cu/index
-
+    permissions_cu_classes/index
     ihm_taches/index
     ihm_abstraite/index
     ihm_concrete/index
