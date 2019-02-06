@@ -33,6 +33,7 @@ currently written as a script.
     relations_schema/index
     relations_jdd/index
     relations_jdd_negatifs/index
+    sql_schema/index
 
     scenarios_plats/index
     participants_cu/index
