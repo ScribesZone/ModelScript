@@ -30,6 +30,7 @@ currently written as a script.
     contraintes_ocl/index
 
     classes_relations/index
+    relations_schema/index
 
     scenarios_plats/index
     participants_cu/index
