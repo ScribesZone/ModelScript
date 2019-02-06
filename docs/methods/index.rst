@@ -22,9 +22,18 @@ currently written as a script.
     artefacts
 
     glossaires/index
+
     classes_conceptuel/index
     objets/index
     contraintes_ln/index
     objets_negatifs/index
+    contraintes_ocl/index
+
+    classes_relations/index
+
+    cu_preliminaire/index
+    cu_detaille/index
+
+    ihm_abstraite/index
 
     status
