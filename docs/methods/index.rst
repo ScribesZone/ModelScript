@@ -48,4 +48,14 @@ currently written as a script.
     ihm_concrete/index
     ihm_evaluation/index
 
+    projet_participants/index
+    projet_planning/index
+    projet_planning_effectif/index
+    projet_retrospective/index
+    projet_livraison/index
+    projet_audit/index
+    projet_soutenance/index
+
+
+    suivis/index
     status
