@@ -1,8 +1,11 @@
-:version: 2018.0.7.12
+:version: 2018.0.8.0
 
 Change History
 ==============
 
+:2019.0.8.0:
+    Refactor the whole task structure
+    Add new tasks
 :2019.0.7.12:
     Migrate git issues to methods/tasks
 :2019.0.7.11:
