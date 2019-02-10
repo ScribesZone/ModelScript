@@ -21,42 +21,12 @@ currently written as a script.
 
     artefacts
 
-    glossaires/index
+    concepts/index
 
-    classes_conceptuel/index
-    objets/index
-    contraintes_ln/index
-    objets_negatifs/index
-    contraintes_ocl/index
-    scenarios_plats/index
+    bd/index
 
-    classes_relations/index
-    relations_schema/index
-    relations_jdd/index
-    relations_jdd_negatifs/index
-    sql_schema/index
-    sql_jdd/index
-    sql_jdd_negatifs/index
+    cu/index
 
-    participants_cu/index
-    cu_preliminaire/index
-    cu_detaille/index
-    scenarios_cu/index
-    permissions_cu_classes/index
+    ihm/index
 
-    ihm_taches/index
-    ihm_abstraite/index
-    ihm_concrete/index
-    ihm_evaluation/index
-
-    projet_participants/index
-    projet_planning/index
-    projet_planning_effectif/index
-    projet_retrospective/index
-    projet_livraison/index
-    projet_audit/index
-    projet_soutenance/index
-
-
-    suivis/index
-    status
+    projet/index
