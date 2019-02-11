@@ -1,3 +1,5 @@
+..  _`tâche bd.sql.schema`:
+
 tâche bd.sql.schema
 ===================
 
@@ -8,8 +10,8 @@ tâche bd.sql.schema
 :résultat:
     * ``sql/schema/schema.sql``
 
-(A) Introduction
-----------------
+Introduction
+------------
 
 Il s'agit d'implémenter en SQL le schéma de la base de données. Si un
 modèle de relations existe alors on cherchera a réaliser une traduction
@@ -23,29 +25,28 @@ Bien évdemment le contenu des fichiers fournis devra ensuite être
 remplacé par le code à produire dans ce travail. Il est conseillé de
 lire les tâches SQL avant de commencer.
 
-(B) Implémentation du schéma de données
----------------------------------------
+(A) Schéma
+----------
 
 Implémenter le schéma relationnel en SQL revient concrètement
 à exécuter différentes instructions ``CREATE TABLE``. Ces instructions
 doivent être écrites dans le fichier ``sql/schema.sql``.
-Se référer à le documentation du SQBD utilisé pour connaitre le détail de
+Se référer à la documentation du SQBD utilisé pour connaître le détail de
 la syntaxe SQL, les types de données disponibles, la manière d'écrire
 les contraintes, etc.
 
 Tester le schéma en executant le code avec une base de données vide.
 
-(C) Automatisation de la création de la base de données
--------------------------------------------------------
+(B) Automatisation
+------------------
 
 Un script de création ``sql/create-database.sh`` a pour rôle d'automatiser
 la création de la base de données à partir du schéma. Le contenu de
-ce script est fourni pour le SGBD ``sqlite``, et pourra dans ce cas être
+ce script est fourni pour le SGBD ``sqlite``. Il pourra dans ce cas être
 utilisé tel quel.
 
 Si un autre SGBD est utilisé, ce script peut être réécrit/adapté afin
-d'avoir une seule et
-unique commande pour créer la base de données.
+d'avoir une seule et unique commande pour créer la base de données.
 
 Avec sqlite entrer la commande suivante à partir du répertoire ``sql/``: ::
 

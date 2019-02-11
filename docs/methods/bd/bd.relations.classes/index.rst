@@ -1,3 +1,5 @@
+..  _`tâche bd.relations.classes`:
+
 tâche bd.relations.classes
 ==========================
 
@@ -33,8 +35,7 @@ convention n'est pas parfaite, car dans
 certains cas une "clé" peut être composée, dans d'autres cas plusieurs
 "clés" peuvent exister. Quoi qu'il en soit, cette convention sera
 utilisée à ce niveau, sachant que les définitions des identifiants seront
-raffinées et précisées lors de la
-transformation en modèle de relations.
+raffinées et précisées lors de la transformation en modèle de relations.
 
 (B) Composition
 ---------------

@@ -11,12 +11,12 @@ tâche bd.sql.jdd
 :résultat:
     * ``sql/datasets/*.sql``
 
-Exemple
--------
+Introduction
+------------
 
 Des jeux de données (positifs) doivent être implémentés en SQL.
-A titre d'illustration le repertoire ``sql/datasets/`` contient des exemples.
-Cet exemple permet d'illustrer l'approche et de tester des
+A titre d'illustration le répertoire ``sql/datasets/`` contient un
+exemple. Cet exemple permet d'illustrer l'approche et de tester des
 requêtes sur des données existantes. Le contenu de ces fichiers devra être
 évidemment remplacé par des jeux de données appropriés.
 
@@ -43,7 +43,7 @@ existe) : ::
 
 Dans le cadre de cette tâche on s'intéresse aux jeux de données positifs.
 Ces derniers doivent être conformes au schéma de données. Aucune erreur ne
-devra donc être détectée lors du chargement.
+doit donc être détectée lors du chargement.
 
 L'exécution du script ``create-database.sh`` avec le jeu de données
 positif ``ds1`` devrait ressembler à cela : ::

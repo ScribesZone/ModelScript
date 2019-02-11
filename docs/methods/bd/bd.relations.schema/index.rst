@@ -1,3 +1,6 @@
+..  _`tâche bd.relations.schema`:
+
+
 tâche bd.relations.schema
 =========================
 
@@ -13,7 +16,7 @@ Introduction
 ------------
 
 Le modèle de relations doit être créé à partir du modèle de classes,
-s'il existe. Il s'agit plus précisemment de créé le "schéma" relationnel,
+s'il existe. Il s'agit plus précisemment de créer le "schéma" relationnel,
 c'est à dire l'ensemble des relations et des contraintes que l'on peut
 déduire à partir du modèle de classes-relations. Dans un second temps
 seulement, d'éventuels jeux de données (datasets) seront ajoutés. Dans
