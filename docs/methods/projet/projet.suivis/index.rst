@@ -29,5 +29,3 @@ Concrètement dans cette tâche il est demandé d'écrire au moins une question
 et une hypothèse, concernant les documents fourni par/élaboré avec
 le client. Ensuite au cours de la modèlisation et du développement d'ajouter
 questions/hypothèses/décisions en fonction des besoins.
-
-(Z) Suivi et status -------------------  **Suivi**: Des questions ou des hypothèses surgissent lors de ce travail voir la :ref:`tâche projet.status`.  **Status**: Avant de terminer cette tâche écrire le status. Voir la :ref:`tâche projet.status`.

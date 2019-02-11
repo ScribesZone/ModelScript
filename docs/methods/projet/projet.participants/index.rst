@@ -37,8 +37,8 @@ Par exemple "| Integration Manager du 12/03/2020 au 17/03/2020".
 Dans le cadre d'un projet "exploratoire" les rôles peuvent être définis
 au fur et à mesure du projet,
 
-(B) Personne
-------------
+(B) Personnes
+-------------
 
 Les membres de l'équipe doivent être brièvement décrit : nom et trigramme.
 Utiliser le mot clé ``person``. Indiquer le ou les rôles que chaque

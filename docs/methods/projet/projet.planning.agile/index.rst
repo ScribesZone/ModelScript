@@ -32,11 +32,14 @@ Aller sur le dépot de groupe, "Issues > Milestone > New milesone".
 (B) Projet
 ----------
 
-Créer un "projet" GitHub (project) associé au dépot de groupe.
-Utiliser l'onglet "project" du dépot puis "Create à project".
+Créer un tableau de bord (appelé "project" dans GitHub) associé au dépot
+de groupe. Utiliser l'onglet "project" du dépot puis "Create à project".
 Definir les colonnes en fonction des besoins. Des colonnes pourront
 être ajoutées par la suite. Ce tableau de bord pourra contenir
 des tâches sous forme d'issues, mais également de "simples" notes.
+Il est possible de définir plusieurs tableaux, par exemple pour
+plusieurs sprint ou pour des "projets" s'exécutant en parallèle.
+Définir la structure la plus simple adaptée au besoin de l'équipe.
 
 (C) Tâches
 ----------
@@ -91,7 +94,7 @@ qu'un membre de l'équipe se saisisse à un moment d'une tâche.
 (G) Tableau
 -----------
 
-Faire une copie d'écran du tableau (project github) en début de projet
+Faire une copie d'écran du tableau ("project" github) en début de projet
 et la ranger dans ``provisional-plan/diagrams/plan.github.png``.
 
 ..  _`poker planning`: https://en.wikipedia.org/wiki/Planning_poker

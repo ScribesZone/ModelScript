@@ -5,13 +5,13 @@ tâche concepts.classes
     de classes, (2) de le compiler, (3) de créer un diagramme de classes,
     (4) de vérifier l'alignement du modèle de classes avec les autres
     modèles.
-:langage:  :ref:`ObjectScript1`
+:langage:  :ref:`ClassScript1`
 :résultat:
     * ``classes/classes.cl1``
     * ``classes/diagrams/classes.cld.clt``
     * ``classes/diagrams/classes.cld.png``
 
-(A) Définition du modèle de classes
+(A) Classes
 -----------------------------------
 
 Compléter le modèle de classes en fonction :
@@ -35,8 +35,8 @@ Le modèle de classes doit **IMPERATIVEMENT** pouvoir
 S'il y a des erreurs elles seront affichées. Aucun affichage
 signifie que le modèle est conforme à UML.
 
-(C) Diagramme de classes global
--------------------------------
+(C) Diagramme global
+--------------------
 
 `Créer ensuite un diagramme de classes`_ avec l'outil USE OCL.
 Sauvegarder impérativement le diagramme dans le fichier
@@ -45,15 +45,32 @@ existant). Si une ébauche est founrie le diagramme dessiné devra en
 respecter la disposition . Faire une copie d'écran du diagramme
 et remplacer le fichier ``classes/diagrams/classes.cld.png`` fourni.
 Respecter **impérativement** les noms de fichiers, entre autre l'extension
-``.png``.
+``.png``. Le diagramme global doit impérativement montrer les
+cardinalités. Si possible des noms de rôles ou d'associations si
+le diagramme reste visible.
 
-(D) Alignement avec les objets et les scénarios
------------------------------------------------
+(D) Vues
+--------
+
+Il peut être demandé de réaliser plusieurs diagrammes pour différentes
+vues. Créer dans ce cas des fichiers ``classes/diagrams/<NOM>.cld.*``
+où ``<NOM>`` fait référence au nom de la vue. Les classes à masquer
+peuvent être définies avec le menu contextuel de l'outil `use ocl`_
+(click droit).
+
+Si les vues proposées couvrent l'ensemble du diagramme il est intéressant
+de montrer moins de détails dans la vision global (par exemple de
+cacher les attributs) et plus de détails dans les vues.
+Dans chaque vue respecter autant que possible la disposition du
+diagramme global.
+
+(E) Objets et scénarios
+-----------------------
 
 Dans la suite, il sera demandé de valider le modèle de classes proposé
-avec les modèles d'objets et des scénarios. Voir les tâches
-correspondantes. Répéter ces operations jusqu'à ce que le modèle soit
-satisfaisant.
+avec les modèles d'objets et les scénarios. Voir les tâches
+correspondantes. Répéter ces operations jusqu'à ce que ces différents
+modèles soient alignés.
 
 (E) Alignement avec le glossaire
 --------------------------------
@@ -66,7 +83,8 @@ Il est sans doute nécessaire de l'expliquer s'il ne correspond pas à
 une définition de sens commun. D'ailleurs le terme à définir est peut
 être "Retour".
 
-Lire et appliquer les :ref:`règles associées à la réécriture d'identificateurs <GlossaryScript_RewritingIdentifiers>`.
+Lire et appliquer les
+:ref:`règles associées à la réécriture d'identificateurs <GlossaryScript_RewritingIdentifiers>`.
 
 (Z) Suivi et status
 -------------------
@@ -77,6 +95,9 @@ Lire et appliquer les :ref:`règles associées à la réécriture d'identificate
 **Status**: Avant de terminer cette tâche écrire le status. Voir la
 :ref:`tâche projet.status`.
 
+
+..  _`use ocl`:
+    http://scribetools.readthedocs.io/en/latest/useocl/index.html
 
 ..  _`Créer ensuite un diagramme de classes`:
     http://scribetools.readthedocs.io/en/latest/useocl/index.html#creating-diagrams

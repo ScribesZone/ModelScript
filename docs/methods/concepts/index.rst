@@ -6,6 +6,7 @@ tâches concepts.*
 
     concepts.glossaires/index
     concepts.classes/index
+    concepts.scenarios.normalises/index
     concepts.objets/index
     concepts.objets.negatifs/index
     concepts.contraintes.ln/index
