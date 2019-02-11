@@ -1,3 +1,5 @@
+..  _`tâche concepts.classes`:
+
 tâche concepts.classes
 ======================
 

@@ -1,6 +1,5 @@
 .. _`tâche concepts.objets`:
 
-
 tâche concepts.objets
 =====================
 
@@ -17,29 +16,29 @@ tâche concepts.objets
     * ``objects/status.md``
 
 
-(A) Objectif
+Introduction
 ------------
 
 Cette tâche consiste à traduire les modèles d'objets (états) décrits sous
-forme textuelle en un modèle d'objets annoté. Chaque modèle d'objets se
+forme textuelle en modèles d'objets annotés. Chaque modèle d'objets se
 concrétise en un fichier ``.ob1`` exécutable. Ces fichiers vont être 
 utilisés pour valider le modèle de classes (fichier ``.cl1``).
 Il s'agit de répéter les étapes ci-dessous pour chaque modèle d'objets
 dans le répertoire ``objects/``.
 
-(B) Traduire des états en langage ObjectScript
-----------------------------------------------
+(A) Traduction
+--------------
 
-Le fichier ``objects/o<N>/o<N>.ob1`` (où N est un entier)
-contient un  modèle d'objets décrit en langue naturelle.
-Il s'agit de plus de traduire chaque ligne en utilisant le langage 
-:ref:`ObjectScript1` lorsque nécessaire.
+Le fichier ``objects/o<N>/o<N>.ob1`` (où o<N> est l'identifiant du
+modèle d'objet) contient un  modèle d'objets décrit en langue naturelle.
+Il s'agit de traduire chaque ligne en utilisant le langage
+:ref:`ObjectScript1`.
 
 Lorsqu'une valeur n'est pas définie utiliser une instruction
 ``... := Undefined``. Dans certains cas il peut être pertinent "d'inventer"
 une valeur ou des valeurs. Dans ce cas mettre une note dans le modèle de suivi.
 Certaines valeurs ne sont pas fondamentales (par exemple la valeur de
-certains attributs) alors que d'autres sont plus importantes car le
+certains attributs) alors que d'autres sont plus importantes car un
 scénario en dépend de manière plus ou moins directe.
 
 Faire au mieux sachant que l'objectif est de traduire un texte fourni
@@ -48,8 +47,8 @@ nécessaire de voir avec lui comment compléter/valider la description
 d'un modèle d'objets sachant qu'un tel modèle pourra par la suite être
 utilisés pour établir des tests et en particulier des tests de recette.
 
-(C) Vérifier l'alignement avec le modèle de classes
----------------------------------------------------
+(B) Classes
+-----------
 
 Vérifier que l'état est aligné avec le modèle de classes.
 Pour cela utiliser la commande suivante à partir du répertoire principal ::
@@ -60,8 +59,8 @@ L'interpreteur affichera les éventuelles erreurs de syntaxe
 ainsi que les erreurs de types ou de cardinalités. Si rien ne s'affiche
 cela signifie qu'aucune erreur n'a été trouvée.
 
-(D) Créér un diagramme d'objets
--------------------------------
+(C) Diagramme
+-------------
 
 Produire un diagramme d'objets représentant le modèle d'objets ``objects/o<N>``.
 Pour cela utiliser la même technique que pour les diagrammes de classes.
