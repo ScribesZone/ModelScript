@@ -22,11 +22,8 @@ currently written as a script.
     artefacts
 
     concepts/index
-
     bd/index
-
     cu/index
-
     ihm/index
-
     projet/index
+    dev/index
