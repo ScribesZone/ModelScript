@@ -1,7 +1,9 @@
+..  _`tâche projet.planning.gantt`:
+
 tâche projet.planning.gantt
 ===========================
 
-:résumé: L'objectif de cette tâche est de planifier la suite du
+:résumé: L'objectif de cette tâche est de plannifier la suite du
     projet à l'aide de diagrammes de gantt.
 
 :langage: Gantt
@@ -21,7 +23,7 @@ Ici, l'outil open source `gantt project`_ sera utilisé.
 
 La plannification du projet, se fera en début de chaque sprint ou
 incrément. Contrairement à ce qui se fait dans le cadre de méthodes
-agiles la plannification devera couvir la période du début du projet
+agiles la plannification devera couvrir la période du début du projet
 *jusqu'à la fin du projet*, donc au delà de la fin du sprint/incrément à
 venir. Bien évidemment ce dernier sera plus détaillé.
 
@@ -31,7 +33,7 @@ Voir la :ref:`tâche projet.planning.effectif`. On s'interesse ici à au
 planning prévisionnel.
 
 Dans le cadre d'une gestion de projet traditionnelle, c'est le chef de
-projet qui assure la plannification du projet ainsi que sont suivi.
+projet qui assure la plannification du projet ainsi que son suivi.
 
 (A) Calendrier
 --------------
@@ -101,7 +103,7 @@ des tâches par incréments ou autre.
 ---------------
 
 Un ou plusieurs membres de l'équipe de développement peuvent être affecté
-à une tâche, et avec une quotité éventuellement inférieur à 100%. Par
+à une tâche, et avec une quotité éventuellement inférieure à 100%. Par
 exemple ``NZN`` peut être affecté à la tâche ``bd.sql.schema`` à 50%.
 
 Pour réaliser cette affectaton avec `gantt project`_ utiliser
@@ -141,7 +143,7 @@ projet qui gére le planning du projet.
 (H) Diagramme de gantt
 ----------------------
 
-Après avoir réaliser la plannification faire une copie d'écran du
+Après avoir réalisé la plannification faire une copie d'écran du
 diagramme de gantt. Modifier au préalable les paramètres
 d'affichage. Utiliser pour cela le menu ``Edition > Préférence`` puis
 l'onglet ``Propriétés du diagramme de Gantt``, en bas d'écran la section

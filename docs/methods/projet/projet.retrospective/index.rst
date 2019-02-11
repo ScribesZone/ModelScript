@@ -1,3 +1,5 @@
+..  _`tâche projet.retrospective`:
+
 tâche projet.retrospective
 ==========================
 
@@ -31,8 +33,8 @@ répondre à trois questions :
 *   **ce qui à bien marché ?**. Mettre l'accent sur ce point.
 
 *   **ce qui pourrait être essayé pour améliorer le processus ?**.
-    Ce dernier point est primordial car il dégage de axes d'améliorations
-    et se trourne vers le futur. C'est l'un des objectifs principal
+    Ce dernier point est primordial car il dégage de axes d'amélioration
+    et se tourne vers le futur. C'est l'un des objectifs principal
     de mener une rétrospective.
 
 

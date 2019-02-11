@@ -1,3 +1,5 @@
+..  _`tâche projet.planning.standup`:
+
 tâche projet.planning.standup
 =============================
 
@@ -17,7 +19,8 @@ lorsque nécessaire de bloc note.
 (A) Patrons
 -----------
 
-Contrairement à ce que l'on peut imaginer, les standup meetings peuvent
+Contrairement à ce que l'on peut imaginer les standup meetings sont
+bien plus que des meetings debout. Ces réunions peuvent
 et doivent être organisés autour d'un certain nombre de patrons.
 Si un scrum master a été nommé, l'article "It's Not Just Standing Up:
 Patterns for Daily Standup Meetings" (`article`_)
@@ -37,7 +40,7 @@ changement ainsi que le nouvel horaire.
 (C) Standup meetings
 --------------------
 
-Les standup meetings doive avoir lieu de manière *systématique* chaque
+Les standup meetings doivent avoir lieu de manière *systématique* chaque
 jour, sauf les jours où d'autres événements ont lieu (audits par exemple).
 Chaque jour, le commentaire "fait" sera ajouté à la liste des commentaires,
 indiquant simplement que la réunion a été faite.

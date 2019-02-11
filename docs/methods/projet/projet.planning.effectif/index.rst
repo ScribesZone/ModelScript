@@ -18,13 +18,14 @@ d'incrément/sprint sont basés sur les prévisions du déroulement
 des tâches à venir. Ici s'agit ici au contraire d'effectuer :
 
 *  un bilan intermédiaire, par exemple en milieu du déroulement
-   d'un incrément, mais aussi bilan en fin d'incrément/sprint.
+   d'un incrément,
 
 *  un bilan en fin d'incrément/sprint.
 
 Ces bilans rendent compte du déroulement effectif des tâches déjà
-réalisées et montre de manière prévisionnelle le planning ajuster
-pour la suite du projet.
+réalisées et montrent de manière prévisionnelle le planning ajuster
+pour la suite du projet. Le bilan en fin d'incrément sera utilisé
+pour établir le bilan prévisionnel au début de l'incrément suivant.
 
 (A) Planning intermediaire - GitHub
 -----------------------------------

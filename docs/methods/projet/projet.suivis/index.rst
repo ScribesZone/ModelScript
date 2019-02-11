@@ -10,16 +10,16 @@ tâche projet.suivis
 :résultat:
     * ``tracks/tracks.trs``
 
-(A) Introduction
-----------------
+Introduction
+------------
 
 L'objectif de cette tâche est de s'assurer que le modèle de suivi
 est compris. Avec le modèle de suivi il s'agit d'augmenter les
 modèles existants avec les questions/hypothèses/décisions qui y sont
 associées.
 
-(B) Tâche à réaliser
---------------------
+(B) Suivis
+----------
 
 Le modèle de suivi va être utilisé tout au long du projet.
 Consulter si nécessaire la section faisant référence aux

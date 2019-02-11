@@ -1,3 +1,5 @@
+..  _`tâche projet.soutenance`:
+
 tâche projet.soutenance
 =======================
 
@@ -14,8 +16,8 @@ mérites du travail réalisé, mérite en terme de développement, mais aussi
 en terme de conception et de méthodologie.
 
 La dernière étape du dernier sprint correspondant à une soutenance
-pluttôt qu'un audit, les noms de fichiers doivent être ajustés.
-Le répertoire a utiliser répertoire ``project/sprint<N>/soutenance`` où
+plultôt qu'un audit, les noms de fichiers doivent être ajustés.
+Le répertoire à utiliser répertoire ``project/sprint<N>/soutenance`` où
 <N> est le numéro du dernier sprint. Si ce répertoire n'existe pas
 renommer le répertoire ``audit`` en ``soutenance``.
 Faire de même pour les fichiers se trouvant dans le répertoire.
@@ -24,8 +26,8 @@ Faire de même pour les fichiers se trouvant dans le répertoire.
 ----------------
 
 Les transparents de la soutenance finales doivent se trouver
-dans les ficbiers  ``project/sprint<N>/soutenance/soutenance-<N>.odp``
-ou <N> correspondent aux versions successives des transparents.
+dans les ficbiers  ``project/sprint<N>/soutenance/soutenance-<X>.odp``
+ou <X> correspond aux versions successives des transparents.
 La version finale en version pdf se trouve dans
 ``project/sprint<N>/soutenance/soutenance.pdf``.
 Le fichier ``audit-summary.md`` peut être élimné car la soutenance ne

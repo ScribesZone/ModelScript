@@ -1,8 +1,10 @@
+..  _`tâche projet.audit`:
+
 tâche projet.audit
 ==================
 
-:résumé: L'objectif de cette tâche est de préparer l'audit,
-    de réaliser cet audit, puis d'en faire la synthèse.
+:résumé: L'objectif de cette tâche est (1) de préparer l'audit,
+    (2) de réaliser cet audit, puis (3) d'en faire la synthèse.
 
 :résultat:
     * ``sprint<N>/audit/*``
@@ -39,7 +41,7 @@ afin d'établir un rapport d'audit suivi d'actions précises.
 (A) Transparents
 ----------------
 
-Chaque audit est basée sur une présentation effectuées à base
+Chaque audit est basé sur une présentation effectuée à base
 de transparents. Le fichier ``project/sprint<N>/audit/audit-<M>.odp``
 La dernière version doit être convertie en fichier .pdf dans
 ``project/sprint<N>/audit/audit.pdf``
@@ -55,7 +57,7 @@ Chaque membre du groupe doit parler.
 
 Un "secrétaire" doit être nommé afin de prendre des notes tout au long
 de l'audit. Ces notes serviront pour le résumé d'audit. Perdre des
-informations ou remarques faites pendant l'audit est une fautre grave.
+informations ou remarques faites pendant l'audit est une faute.
 
 (C) Compte rendu
 ----------------
@@ -72,9 +74,9 @@ Le compte rendu doit être réalisé sous forme de texte dans le fichier
 ``project/sprint<N>/audit/audi-summary``. Il peut s'agir simplement
 de quelques lignes. Utiliser un style télégraphique,
 une liste de points. Il ne s'agit pas d'un document formel mais simplement
-d'un memo principalement à destination de l'équipe. Le contenu
-du document est par contre particulièrement important car c'est lui
-qui défini l'orientation du prochain sprint.
+d'un memo principalement à destination de l'équipe. La forme n'est pas
+primordiale mais le contenu est par contre particulièrement important
+car c'est lui qui défini l'orientation du prochain sprint.
 
 Si des décisions importantes ont été prises, les consigner dans le
 fichier ``tracks/tracks.trs``.
