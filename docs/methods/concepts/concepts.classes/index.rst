@@ -74,8 +74,8 @@ avec les modèles d'objets et les scénarios. Voir les tâches
 correspondantes. Répéter ces operations jusqu'à ce que ces différents
 modèles soient alignés.
 
-(E) Alignement avec le glossaire
---------------------------------
+(F) Glossaire
+-------------
 
 Vérifier que les termes importants apparaissant dans les noms de classes,
 d'associations, d'attributs ou de rôles sont bien dans le glossaire.

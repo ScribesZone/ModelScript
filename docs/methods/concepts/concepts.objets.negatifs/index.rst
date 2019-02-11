@@ -1,3 +1,5 @@
+.. _`tâche concepts.objets.negatifs`:
+
 tâche concepts.objets.negatifs
 ==============================
 
@@ -6,12 +8,12 @@ tâche concepts.objets.negatifs
 
 :langage:  :ref:`ObjectScript1`
 :résultat:
-    * ``objects/o<N>/no<N>.ob1``
+    * ``objects/no<N>/no<N>.ob1``
     * ``objects/status.md``
 
 
-(A) Création de modèles négatifs d'objets
------------------------------------------
+(A) Création
+------------
 
 Les modèles négatifs d'objets donnent lieu soit à des violations de
 cardinalités, soit à des violations de contraintes. Il s'agit dans
@@ -20,8 +22,8 @@ Chaque violation attendue doit être déclarée dans le modèle.
 Se référer à la documentation concernant les :ref:`violations` pour plus
 de détails.
 
-(B) Vérification des violations
--------------------------------
+(B) Vérification
+----------------
 
 Une fois les violations déclarées dans les modèles d'objets négatifs
 il s'agit de vérifier, pour chaque modèle, que les violations ont
@@ -32,4 +34,11 @@ violations de contraintes sont indiquées dans la section
 contrainte (ou la cardinalité) est erronée (ou non implémentée),
 soit le modèle d'objets est incorrect.
 
-(Z) Suivi et status -------------------  **Suivi**: Des questions ou des hypothèses surgissent lors de ce travail voir la :ref:`tâche projet.status`.  **Status**: Avant de terminer cette tâche écrire le status. Voir la :ref:`tâche projet.status`.
+(Z) Suivi et status
+-------------------
+
+**Suivi**: Des questions ou des hypothèses ? Voir la
+:ref:`tâche projet.suivis`.
+
+**Status**: Avant de terminer cette tâche écrire le status. Voir la
+:ref:`tâche projet.status`.
