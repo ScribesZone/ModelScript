@@ -3,28 +3,29 @@
 tâche cu.participants
 =====================
 
-:résumé: L'objectif de cette tâche est d'exprimer en langage naturel
-    les contraintes devant être ajoutées au modèle de classes.
+:résumé: L'objectif de cette tâche est de définir les acteurs
+    et les personnages.
 
 :langage:  :ref:`ParticipantScript`
 :résultat:
     * ``participants/participants.pas``
 
 
-(A) Définition des acteurs
---------------------------
+(A) Acteurs
+-----------
 
-Définir tout d'abord les "acteurs" qui interviendont par la suite
-dans le modèle  de cas d'utilisation. Donner pour chaque acteur un
+Définir tout d'abord les "acteurs" qui intervienront par la suite
+dans le modèle de cas d'utilisation. Donner pour chaque acteur un
 nom (``ResponsableDesAchats``) ainsi qu'une courte définition faisant
-référence aux éléments du glossaire.
+référence aux éléments du glossaire. Un acteur doit intéragir directement
+avec le système.
 
-(B) Définition des personnages
-------------------------------
+(B) Personnages
+---------------
 
 Les "personnsages" sont des instances particulières d'acteurs. Ceux-ci
 interviennent dans les modèles de scénarios. Repérer "qui", dans chaque
-scénario, existant ou à définir, joue le rôle d'un acteur Définir chaque
+scénario, existant ou à définir, joue le rôle d'un acteur. Définir chaque
 personnage en donnant a minima son nom et son type. Par exemple
 ``mario : ResponsableDesAchats``.
 
@@ -32,15 +33,16 @@ personnage en donnant a minima son nom et son type. Par exemple
 --------------
 
 Les participants et les personnages pourront être définis "à la demande"
-lors des tâche "Usescases" et "Scenarios Sequences". Par la suite  il
-s'agira  aussi d'aligner les participants au modèle le modèle de
+lors de la :ref:`tâche cu.preliminaire` ou de la
+:ref:`tâche cu.scenarios`. Par la suite  il
+s'agira  aussi d'aligner les participants au modèle de
 permissions.
 
-Infine le modèle de particiants doit être affiné/aligné avec les modèles
+Infine le modèle de particiants doit être aligné avec les modèles
 suivants:
 * le modèle de cas d'utilisation
 * les différents modèles de scénarios.
-* le modèle de pemission.
+* le modèle de permission.
 
 (Z) Suivi et status
 -------------------

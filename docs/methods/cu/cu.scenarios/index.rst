@@ -1,3 +1,5 @@
+..  _`tâche cu.scenarios`:
+
 tâche cu.scenarios
 ==================
 
@@ -9,12 +11,12 @@ tâche cu.scenarios
     * ``participants/participants.pas``
     * ``scenarios/n/scenario.scs``
 
-(A) Introduction
-----------------
+Introduction
+------------
 
 Les scénarios réalisés jusque là étaient caractérisés par le modèle
-d'objet qu'ils généraient à la fin de leur exécution.
-Il s'agissait d'une liste "à plat" de création d'objets et de liens.
+d'objets qu'ils généraient à la fin de leur exécution.
+Il s'agissait d'une liste "à plat" de créations d'objets et de liens.
 Dans cette tâche les scénarios sont considérés comme un emboîtement
 d'instances de cas d'utilisation.
 
@@ -22,8 +24,8 @@ Les modèles de scénarios à raffiner/compléter se trouvent dans les fichiers
 ``scenarios/s<N>/s<N>.sc1`` (où ``<N>`` est un entier). Se reporter à la
 documentation de :ref:`ScenarioScript1` lorsque nécessaire.
 
-(B) Définition des personnages
-------------------------------
+(A) Personnages
+---------------
 
 Dans un premier temps il s'agit de repérer dans les scénarios quels
 "personnages" interagissent **directement** avec le système. Ces
@@ -34,23 +36,24 @@ A chaque fois qu'un personnage est identifié celui-ci doit être ajouté au
 modèle de participants (fichier ``participants/participants.pas``).
 
 Par exemple le personnage ``marie`` peut jouer le rôle de
-``Bibliothecaire`` dans un scénario: ::
+``Bibliothecaire`` dans un scénario : ::
 
 
     persona marie : Bibliothecaire
 
-Les personnages comme "marie" peuvent être charactérisés par de nombreuses
-propriétés (voir l'exemple dans la documentation de :ref:`ParticipantScript`).
+Les personnages comme "marie" peuvent être caractérisés par de nombreuses
+propriétés (voir l'exemple dans la documentation de
+:ref:`ParticipantScript`).
 Ces propriétés seront nécessaires par exemple lors de la conception
 d'Interface Homme Machine (IHM). Ici on se contentera d'une brève
 description pour chaque acteur.
 
-(C) Décomposition en instance de cas d'utilisation
---------------------------------------------------
+(B) Décomposition
+-----------------
 
 Chaque scénario "à plat" doit ensuite être décomposé sous forme d'une
 série d'instances de cas d'utilisation. Autrement dit il s'agit de
-repérerer dans le texte des scénarios quels cas d'utilisation
+repérer dans le texte des scénarios quels cas d'utilisation
 sont mis en oeuvre.
 
 
@@ -85,14 +88,14 @@ Les règles suivantes doivent être respectées :
     effectivement ``RentrerUneOeuvre``).
 
 
-(D) Extraction du contexte
---------------------------
+(C) Contexte
+------------
 
 Dans cette sous-tâche il s'agit d'isoler les instructions qui font
-partie du "contexte" plutôt que du flot normal du scénario. Considéront
+partie du "contexte" plutôt que du flôt normal du scénario. Considéront
 par exemple le cas d'une réservation de salle. L'instruction
 ``create s203 : Salle`` ne fait pas partie du cas
-d'utilisation ``ReserverUneSalle``car la salle ``s203`` pré-existe à
+d'utilisation ``ReserverUneSalle`` car la salle ``s203`` pré-existe à
 l'exécution du cas d'utilisation : la salle n'est pas créée, elle est
 juste réservée ! Le fait que la salle 203 existe fait partie du "contexte".
 Une telle information (la phrase et les instructions correspondantes)
@@ -127,10 +130,10 @@ Il s'agit de :
 *   vérifier que cela ne provoque aucune erreur dans la "compilation"
     du scénario.
 
-(E) Remaniement du texte
-------------------------
+(D) Texte
+---------
 
-Le texte fourni initialement et qui a donné lieu au scénario à plat doit,
+Le texte fourni initialement et qui a donné lieu au scénario états doit,
 dans certains cas, être remanié. Par exemple de déplacement de blocks
 contextuels en début de scénario peut impliquer un remaniement de certaines
 phrases. Il en est de même lorsque les limites des scénarios sont établies.
@@ -142,10 +145,10 @@ Il n'y a pas de règle pour le remaniement du texte. L'équipe de
 développement, mais aussi le client, doivent cepandant pouvoir "lire" et
 utiliser le scénario tout au long du son cycle de vie. Une attention
 particulière devra être portée aux élements de traçabilité
-(e.g. [A12][A14] pour faire référence aux éléments A12 et A14).
+(e.g. ``[A12][A14-A19]``).
 
-(F) Exemple de transformation
------------------------------
+(E) Transformation
+------------------
 
 L'exemple ci-dessous résume le processus global :
 * (1) définition des personnages (``persona x : A``),
@@ -156,7 +159,7 @@ L'exemple ci-dessous résume le processus global :
 ::
 
     =========================== =========================================
-      AVANT: Scénario (plat)        APRES: Scénario (cas d'utilisation)
+      AVANT: Scénario (états)        APRES: Scénario (cas d'utilisation)
     =========================== =========================================
 
                                 Modele de participant (participant.pas)
@@ -195,23 +198,23 @@ L'exemple ci-dessous résume le processus global :
 
     =========================== =========================================
 
-(G) Alignement Scénarios / Cas d'utilisation
---------------------------------------------
+(F) Cas d'utilisation
+---------------------
 
 Vérifier (manuellement) que le modèle de scénarios est bien aligné
-avec le modèle de  cas d'utilisation.
+avec le modèle de cas d'utilisation.
 Par exemple ``toufik va ReserverUneSalle`` implique qu'un
 ChefBibliothequaire peut réserver une salle.
 
 
-(H) Alignement Scénarios / Modèle de classes
---------------------------------------------
+(G) Classes
+-----------
 
 Vérifier que le scénario est encore aligné avec le modèle de classes. ::
 
     use -qv Classes/classes.cls Scenarios/n/scenario.scn
 
-Cette vérification a été faite précédemment avec le scénario plat
+Cette vérification a été faite précédemment avec le scénario états
 mais il s'agit là de vérifier que la transformation ci-dessus n'a pas
 généré de problèmes supplémentaires. Ce peut être le cas si le
 réordonnancement des instructions n'est pas correct.

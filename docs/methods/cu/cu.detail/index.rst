@@ -1,3 +1,5 @@
+..  _`tâche cu.detail`:
+
 tâche cu.detail
 ===============
 
@@ -9,13 +11,13 @@ tâche cu.detail
 :résultat:
     * ``usecases/usecases.uss``
 
-(A) Résumé
------------
+(A) Définition
+--------------
 
-Une fois le modèle préliminaire défini, décrire de manière plus détaillée
-le où les cas d'utilisation les plus prioritaires, si celui-ci est
-défini. Se reporter à la documentation de :ref:`UsecaseScript`
-pour voir quels aspects peuvent être décrits.
+Une fois le modèle préliminaire défini via la `tâche cu.preliminaire`,
+décrire de manière plus détaillée le où les cas d'utilisation les plus
+prioritaires. Se reporter à la documentation de :ref:`UsecaseScript`
+pour voir quels aspects peuvent/doivent être décrits.
 
 (Z) Suivi et status
 -------------------

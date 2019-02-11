@@ -1,8 +1,10 @@
+..  _`tâche cu.preliminaire`:
+
 tâche cu.preliminaire
 =====================
 
 :résumé: L'objectif de cette tâche est de définir un modèle
-    préliminaire de cas d'utilisation, a savoir la liste
+    préliminaire de cas d'utilisation, à savoir la liste
     des acteurs, des cas d'utilisation et des interactions.
 
 :langage: :ref:`UsecaseScript`, :ref:`ParticipantScript`
@@ -11,41 +13,39 @@ tâche cu.preliminaire
     * ``usecases/usecases.ucs``
 
 
-(A) Introduction
-----------------
+Introduction
+------------
 
 Il s'agit dans cette tâche de définir un **modèle préliminaire** et en
 particulier d'être très synthétique lors des différentes description.
-Cette  approche est classique dans un démarche "agile. On ne
+Cette approche est classique dans un démarche agile. On ne
 cherche pas à définir de manière détaillée chaque élément
 mais au contraire à donner une vision globale du système.
 Une fois les priorités établies pour chaque cas d'utilisation,
-ces cas d'utilisation seront définis peu à peu de manière bien plus précise.
+ces cas d'utilisation seront définis peu à peu de manière bien plus
+précise dans  :ref:`tâche cu.detail`.
 
-(B) Definition des acteurs
+(A) Acteurs
 --------------------------
 
 Les acteurs doivent être définis de manière séparée dans le
 :ref:`modèle de participants <ParticipantScript>` via la tâche
 :ref:`tâche cu.participants`.
-Dans cette version préliminaire il est suffisant de donner le nom de
-chaque acteur accompangné d'une très breve description. Justifier à
-chaque fois que le "role" identifié est bien un "acteur" au sens UML,
-c'est à dire que l'acteur intéragit **directement** avec le système.
 
-(C) Définition des interactions
--------------------------------
+(B) Interactions
+----------------
 
 Définir quel(s) acteur(s) peut réaliser tel ou tel cas d'utilisation.
-On définira ici les cas d'utilisation juste par leur nom,
-puis ils seront décrits ci-dessous.
+On définira dans un premier temps les cas d'utilisation juste par leur
+nom. Ils seront décrits dans l'étape suivante.
 
-(D) Définition des cas d'utilisation
-------------------------------------
+(C) Cas d'utilisation
+---------------------
 Les cas d'utilsation doivent être accompagnés d'une très brève description
 résumant (1) les objectifs de l'acteur et (2) le déroulement "normal" du
-cas d'utilisation.
-
+cas d'utilisation. La description doit être généralisée. Contrairement
+au scénarios un cas d'utilisation reflête le cas général :
+écrire "Le client s'identifie" plutôt que "Paul tape son code 6535".
 
 (Z) Suivi et status
 -------------------
