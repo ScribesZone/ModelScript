@@ -11,5 +11,5 @@ tâches concepts.*
     concepts.objets.negatifs/index
     concepts.contraintes.ln/index
     concepts.contraintes.ocl/index
-    concepts.scenarios.codes/index
+    concepts.scenarios.etats/index
 

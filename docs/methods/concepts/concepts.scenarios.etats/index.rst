@@ -1,6 +1,6 @@
-.. _`tâche concepts.scenarios.états`:
+.. _`tâche concepts.scenarios.etats`:
 
-tâche concepts.scenarios.états
+tâche concepts.scenarios.etats
 ==============================
 
 :résumé: L'objectif de cette tâche est de traduire les scénarios textuels
