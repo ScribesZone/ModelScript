@@ -9,14 +9,18 @@ tâche concepts.contraintes.ln
     * ``classes/classes.cl1``
 
 
-(A) Ecriture des contraintes
-----------------------------
+(A) Contraintes
+---------------
 
 Un modèle de classes doit comporter non seulement des classes et des
 associations mais aussi les contraintes qui leur sont associées.
 Dans cette tâche ces contraintes doivent être décrites en Langue Naturelle
-(LN). Par la suite ces contraintes pourront être traduites en langage OCL,
-mais ce n'est pas l'objectif ici.
+(LN).
+
+Par la suite ces contraintes pourront être traduites en langage OCL,
+mais ce n'est pas l'objectif ici. Ne pas chercher dans un premier temps
+à écrire les contraintes en OCL.
+
 
 Pour réaliser cette tâche utiliser la
 :ref:`syntaxe des contraintes en langue naturelle <ClassScript_contraintes_ln>`.
