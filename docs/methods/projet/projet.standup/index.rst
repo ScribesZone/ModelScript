@@ -12,7 +12,7 @@ Introduction
 Le "daily scrum meeting" (ou "standup meeting") est l'un des rituels
 les plus populaires associé à la méthode scrum_.
 
-Une seule issue ``projet.planning.standup`` doit être créée sur GitHub
+Une seule issue ``projet.standup`` doit être créée sur GitHub
 pour cette tâche. Les commentaires associés à cette issue feront office
 lorsque nécessaire de bloc note.
 
