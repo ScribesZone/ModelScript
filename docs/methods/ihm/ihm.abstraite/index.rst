@@ -1,15 +1,16 @@
+..  _`tâche ihm.abstraite`:
+
 tâche ihm.abstraite
 ===================
 
-:résumé: L'objectif de cette tâche est définir les IHM abstraites à
-    partir du modèle de tâches.
+:résumé: L'objectif de cette tâche est définir les IHM abstraite.
 
 :langage:  KMade
 :résultat:
     * ``ui-abstract/<MdT>/<MdT>.pdf``
 
-(A) Définition des IHM abstraites
----------------------------------
+(A) IHM abstraites
+------------------
 
 Ce travail consiste à définir les interfaces abstraites
 correspondant à chaque modèle de tâches (MdT). Pour chaque modèle
@@ -21,7 +22,7 @@ des noms tel que ``ui-abstract/<MdT>/<MdT>.<XXX>``.
 (B) Alignement
 --------------
 
-S'assurer que les modèles d'IHM abstraites sont alignées avec les
+S'assurer que les modèles d'IHM abstraites sont alignés avec les
 modèles de tâches et correspondent à des transformations définies.
 
 (Z) Suivi et status

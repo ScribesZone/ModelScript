@@ -1,3 +1,5 @@
+..  _`tâche ihm.taches`:
+
 tâche ihm.taches
 ================
 
@@ -8,9 +10,8 @@ tâche ihm.taches
     * ``ui-tasks/<CU>/<CU>.kxml``
     * ``ui-tasks/<CU>/<CU>.pdf``
 
-
-(A) Définition du modèle de tâches
------------------------------------
+(A) Tâches
+----------
 
 Ce travail a pour but de créer le modèle de tâches en utilisant
 l'environment KMade. Pour chaque cas d'utilisation prioritaire ``<CU>``

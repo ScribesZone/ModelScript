@@ -1,3 +1,5 @@
+..  _`tâche ihm.evaluation`:
+
 tâche ihm.evaluation
 ====================
 
@@ -14,15 +16,15 @@ tâche ihm.evaluation
 Le résultat de l'évaluation heuristique de l'interface doit être livré
 sous forme pdf dans ``ui-evaluation/analysis/evaluation-heuristique.pdf``.
 
-(B) Définition du protocole pour les tests utilisateurs
--------------------------------------------------------
+(B) Protocole
+-------------
 
 Avant de réaliser des tests utilisateurs le protocole de tests doit
-être élaboré puis livré sous forme pdf dans `
-`ui-evaluation/tests/protocole.pdf``.
+être élaboré puis livré sous forme pdf dans
+``ui-evaluation/tests/protocole.pdf``.
 
-(C) Tests utilisateurs
-----------------------
+(C) Tests
+---------
 
 Après avoir défini le protocole de tests utilisateurs, les tests
 peuvent avoir lieu. Une fois ces tests effectués le bilan doit être
