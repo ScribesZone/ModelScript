@@ -1,8 +1,10 @@
-:version: 2018.0.8.0
+:version: 2018.0.8.1
 
 Change History
 ==============
 
+:2019.0.8.1:
+    Update tasks *.*
 :2019.0.8.0:
     Refactor the whole task structure
     Add new tasks
