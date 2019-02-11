@@ -3,20 +3,20 @@ tâche concepts.glossaires
 
 :résumé: L'objectif de cette tâche est (1) de compléter le glossaire,
     (2) éventuellement de réécrire certains textes, en particulier
-    ceux liés aux modèles d'objets et de scénario.
+    ceux liés aux modèles d'objets et aux scénarios.
 :langage:  :ref:`GlossaryScript`
 :résultat:
     * ``glossaries/glossary.gls``
     * ``glossaries/status.md``
 
-(A) Ecriture du glossaire
--------------------------
+(A) Glossaire
+-------------
 
 Compléter le glossaire en respectant impérativement les
 :ref:`règles associées aux glossaires <GlossaryScript_Rules>`.
     
-(B) Réécriture de textes
-------------------------
+(B) Textes
+----------
 
 Le glossaire doit être aligné avec les termes utilisés par le client.
 En particulier si différents textes ont été fournis, ceux-ci devraient
@@ -27,8 +27,8 @@ D'un point de vue pragmatique si tous les textes ne peuvent pas être
 réécrits se focaliser en priorité sur la réécriture des textes associés
 aux modèles d'objets et aux scénarios.
 
-(C) Réécriture d'identificateurs
---------------------------------
+(C) Identificateurs
+-------------------
 
 Tout au long du projet il sera nécessaire de s'assurer en permanence de 
 l'alignement avec le glossaire de tous les modèles mais aussi 
