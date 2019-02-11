@@ -8,7 +8,7 @@ tâches projet.*
     projet.participants/index
     projet.planning.gantt/index
     projet.planning.agile/index
-    projet.planning.standup/index
+    projet.standup/index
     projet.suivis/index
     projet.status/index
     projet.planning.effectif/index

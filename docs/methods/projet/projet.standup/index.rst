@@ -1,7 +1,7 @@
-..  _`tâche projet.planning.standup`:
+..  _`tâche projet.standup`:
 
-tâche projet.planning.standup
-=============================
+tâche projet.standup
+====================
 
 :résumé: Cette tâche consiste à réaliser chaque jour un
      "standup meeting" ou "daily scrum meeting".
