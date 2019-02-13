@@ -1,7 +1,7 @@
 --=========================================================================
 --                          Scenario Model
 ---------------------------------------------------------------------------
--- This object model is expressed in ScenarioScript1.
+-- This scenario model is expressed in ScenarioScript1.
 -- See https://modelscript.readthedocs.io/en/latest/scripts/scenarios1/index.html
 -- ScenarioScript1 is an annotated version of USE OCL.
 -- Annotations are in comments and start with

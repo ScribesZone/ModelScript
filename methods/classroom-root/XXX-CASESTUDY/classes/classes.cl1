@@ -1,7 +1,7 @@
 --=========================================================================
 --                          Class Model
 ---------------------------------------------------------------------------
--- This glossary model is expressed in GlossaryScript.
+-- This class model is expressed in ClassScript1.
 -- See https://modelscript.readthedocs.io/en/latest/scripts/classes1/index.html
 -- ClassScript1 is an annotated version of USE OCL.
 -- Annotations are in comments and start with
