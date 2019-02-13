@@ -16,6 +16,8 @@ It also relies on a set of tasks to be performed for the *process*.
 Each tasks have to be concluded by an status file, a file which is not
 currently written as a script.
 
+:download:`ModelScript CheatSheet <../dist/ModelScript-CheatSheet.pdf>`
+
 ..  toctree::
     :maxdepth: 3
 
@@ -27,3 +29,9 @@ currently written as a script.
     ihm/index
     projet/index
     dev/index
+
+..  _`ModelScript CheatSheet`:
+
+
+..  |umlOclCheatSheet| replace::
+    (:download:`local<docs/UMLOCL-CheatSheet-18.pdf>`)
