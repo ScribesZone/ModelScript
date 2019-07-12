@@ -21,8 +21,6 @@ currently written as a script.
 ..  toctree::
     :maxdepth: 3
 
-    artefacts
-
     concepts/index
     bd/index
     cu/index
