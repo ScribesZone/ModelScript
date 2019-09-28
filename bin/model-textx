@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Run textx on some testcases or just on a grammar
-#
+# See usage for details
 
 
 if [ "$#" -ne 2 ]; then
