@@ -1,10 +1,9 @@
 //=========================================================================
-//                      Usecase model
+//                      Modele de cas d'utilisation
 //-------------------------------------------------------------------------
 // This usecase model is expressed in UsecaseScript
-// See https://modelscript.rtfd.io/en/latest/scripts/usecases/index.html
+// See https://modelscript.rtfd.io/en/latest/languages/usecases/index.html
 //=========================================================================
 
 usecase model XXX-CASESTUDY
-import glossary model from "../glossaries/glossaries.gls"
-import participant model from "../participants/participants.pas"
+import glossary model from "../../concepts/glossaires/glossaires.gls"

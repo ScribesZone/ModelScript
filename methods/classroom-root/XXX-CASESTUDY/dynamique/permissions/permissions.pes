@@ -1,14 +1,13 @@
 //=========================================================================
-//                      Permission model
+//                      Modèle de permissions
 //-------------------------------------------------------------------------
-// This permission model is expressed in PermissionScript
-// See https://modelscript.rtfd.io/en/latest/scripts/permissions/index.html
+// Ce modèle de permissions est écrit en PermissionScript
+// Voir https://modelscript.rtfd.io/en/latest/languages/permissions/index.html
 //=========================================================================
 
 permission model XXX-CASESTUDY
-import glossary model from "../glossaries/glossaries.gls"
-import class model from "../classes/classes.cl1"
-import participant model from "../participants/participants.pas"
-import usecase model "../usecases/usecases.uss"
+import glossary model from "../../concepts/glossaires/glossaires.gls"
+import class model from "../../concepts/classes/classes.cl1"
+import usecase model "../cu/cu.uss"
 // import relation model "../relations/relations.res"
 

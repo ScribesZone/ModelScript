@@ -1,16 +1,15 @@
 --=========================================================================
---                          Scenario Model
+--                        Modèle de scénarios
 ---------------------------------------------------------------------------
--- This scenario model is expressed in ScenarioScript1.
--- See https://modelscript.readthedocs.io/en/latest/scripts/scenarios1/index.html
--- ScenarioScript1 is an annotated version of USE OCL.
--- Annotations are in comments and start with
---    "@" for statement annotations
---    "|" for documentation annotations
+-- Ce modèle de scénario est exprimé en ScenarioScript1.
+-- Voir https://modelscript.readthedocs.io/en/latest/languages/scenarios1/index.html
+-- ScenarioScript1 est version annotée du langage USE OCL.
+-- Les annotations sont en commentaires et commencent par
+--    "@" pour les annotations d'instructions
+--    "|" pour les annotations de commentaires
 --=========================================================================
 --
 --@ scenario model S1
---@ import glossary model from "../../glossaries/glossaries.gls"
---@ import class model from "../../classes/classes.cl1"
---@ import participant model from "../../participants.pas"
---@ import usecase model from "../../usecases/usecases.uss"
+--@ import glossary model from "../../../concepts/glossaries/glossaries.gls"
+--@ import class model from "../../../concepts/classes/classes.cl1"
+--@ import usecase model from "../../cu/cu.uss"

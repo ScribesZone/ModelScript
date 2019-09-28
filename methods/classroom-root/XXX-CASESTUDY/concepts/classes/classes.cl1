@@ -1,16 +1,16 @@
 --=========================================================================
---                          Class Model
+--                          Modèle de classe
 ---------------------------------------------------------------------------
--- This class model is expressed in ClassScript1.
--- See https://modelscript.readthedocs.io/en/latest/scripts/classes1/index.html
--- ClassScript1 is an annotated version of USE OCL.
--- Annotations are in comments and start with
---    "@" for statement annotations
---    "|" for documentation annotations
+-- Ce modèle de classe est exprimé en ClassScript1.
+-- Voir https://modelscript.readthedocs.io/en/latest/languages/classes1/index.html
+-- ClassScript1 est une version annotée du langage USE OCL.
+-- Les annotations sont en commentaires et commencent par :
+--    "@" pour les annotations d'instructions,
+--    "|" pour les annotations de documentation.
 --=========================================================================
 --
 --@ class model XXX-CASESTUDY
---@ import glossary model from "../glossaries/glossaries.gls"
+--@ import glossary model from "../glossaires/glossaires.gls"
 
 model XXX-CASESTUDY
 

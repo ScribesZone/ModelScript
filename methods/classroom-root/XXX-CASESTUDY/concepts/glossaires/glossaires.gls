@@ -1,8 +1,8 @@
 //=========================================================================
-//                      Glossary model
+//                      Modèle de glossaire
 //-------------------------------------------------------------------------
-// This glossary model is expressed in GlossaryScript
-// See https://modelscript.rtfd.io/en/latest/scripts/glossaries/index.html
+// Ce modèle de glossaire est exprimé en GlossaryScript
+// voir https://modelscript.readthedocs.io/en/latest/languages/glossaries/index.html
 //=========================================================================
 
 glossary model XXX-CASESTUDY
