@@ -118,7 +118,7 @@ directory is the root directory of the modeling project):
 
 ..  code-block:: none
 
-       use -c classes/classes.cl1
+       use -c concepts/classes/classes.cl1
 
 The interpreter check that there is no errors such as
 syntax errors and type errors.
@@ -131,7 +131,7 @@ Creating UML class diagrams is possible using the `USE OCL`_ tool:
 
 ..  code-block:: none
 
-    use -nr classes/classes.cl1
+    use -nr concepts/classes/classes.cl1
 
 Refer to the page "`creating UML class diagrams`_" for more
 information.
