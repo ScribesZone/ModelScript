@@ -138,8 +138,8 @@ information.
 
 When using the :ref:`ModelScript Method<ModelScriptMethod>` the
 layout of the class diagram have to be saved in the file
-``classes/diagrams/classes.cld.clt``. The diagram has to be
-saved in the file ``classes/diagrams/classes.cld.png``.
+``concepts/classes/diagrams/classes.cld.clt``. The diagram has to be
+saved in the file ``concepts/classes/diagrams/classes.cld.png``.
 
 Concepts
 --------
