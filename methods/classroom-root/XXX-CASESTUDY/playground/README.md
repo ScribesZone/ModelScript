@@ -1,2 +1,3 @@
-Ce This directory contains resources and code for training, prototyping, ...
-No quality control policies apply on the content of this directory.
+Ce repéretoire contient des ressources et du code pour prototyper des 
+idées, se former, etc. Le contenu de ce répertoire n'est pas soumis
+aux règles de contrôle qualité.
