@@ -3,24 +3,24 @@
 tâche concepts.classes
 ======================
 
-:résumé: L'objectif de cette tâche est (1) de compléter le modèle
+:résumé: L'objectif de cette tâche est (1) de définir/compléter le modèle
     de classes, (2) de le compiler, (3) de créer un diagramme de classes,
     (4) de vérifier l'alignement du modèle de classes avec les autres
     modèles.
 :langage:  :ref:`ClassScript1`
 :résultat:
-    * ``classes/classes.cl1``
-    * ``classes/diagrams/classes.cld.clt``
-    * ``classes/diagrams/classes.cld.png``
+    * ``concepts/classes/classes.cl1``
+    * ``concepts/classes/diagrams/classes.cld.clt``
+    * ``concepts/classes/diagrams/classes.cld.png``
 
 (A) Classes
 -----------------------------------
 
 Compléter le modèle de classes en fonction :
 
-* des besoins exprimés par le client (dossier ``requirements/`` )
-* des modèles d'objets (dossier ``objects/`` )
-* des scénarios (dossier ``scenarios/`` )
+* des besoins exprimés par le client (dossier ``concepts/besoins/`` )
+* des modèles d'objets (dossier ``concepts/objects/`` )
+* des scénarios (dossier ``dynamique/scenarios/`` )
 * de vos connaissances du domaine.
 
 Certains de ces répertoires peuvent être absents.
@@ -30,9 +30,9 @@ Certains de ces répertoires peuvent être absents.
 
 Le modèle de classes doit **IMPERATIVEMENT** pouvoir
 être "compilé" sans erreur en utilisant la commande suivante
-(à partir du répertoire racine du dépot)::
+(à partir du répertoire racine du projet)::
 
-       use -c classes/classes.cl1
+       use -c concepts/classes/classes.cl1
 
 S'il y a des erreurs elles seront affichées. Aucun affichage
 signifie que le modèle est conforme à UML.
@@ -42,26 +42,27 @@ signifie que le modèle est conforme à UML.
 
 `Créer ensuite un diagramme de classes`_ avec l'outil USE OCL.
 Sauvegarder impérativement le diagramme dans le fichier
-``classes/diagrams/classes.cld.clt`` (remplacer le fichier
-existant). Si une ébauche est founrie le diagramme dessiné devra en
-respecter la disposition . Faire une copie d'écran du diagramme
-et remplacer le fichier ``classes/diagrams/classes.cld.png`` fourni.
+``concepts/classes/diagrams/classes.cld.clt`` (remplacer le fichier
+existant). Si une ébauche est fournie le diagramme dessiné devra en
+respecter la disposition. Faire une copie d'écran du diagramme
+et remplacer le fichier ``concepts/classes/diagrams/classes.cld.png``
+fourni.
 Respecter **impérativement** les noms de fichiers, entre autre l'extension
 ``.png``. Le diagramme global doit impérativement montrer les
-cardinalités. Si possible des noms de rôles ou d'associations si
+cardinalités ; si possible des noms de rôles ou d'associations si
 le diagramme reste visible.
 
 (D) Vues
 --------
 
 Il peut être demandé de réaliser plusieurs diagrammes pour différentes
-vues. Créer dans ce cas des fichiers ``classes/diagrams/<NOM>.cld.*``
+vues. Créer dans ce cas des fichiers ``concepts/classes/diagrams/<NOM>.cld.*``
 où ``<NOM>`` fait référence au nom de la vue. Les classes à masquer
 peuvent être définies avec le menu contextuel de l'outil `use ocl`_
 (click droit).
 
 Si les vues proposées couvrent l'ensemble du diagramme il est intéressant
-de montrer moins de détails dans la vision global (par exemple de
+de montrer moins de détails dans la vision globale (par exemple de
 cacher les attributs) et plus de détails dans les vues.
 Dans chaque vue respecter autant que possible la disposition du
 diagramme global.
