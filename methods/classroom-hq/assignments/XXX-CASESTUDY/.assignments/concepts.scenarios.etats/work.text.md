@@ -3,7 +3,7 @@
 
 L'objectif de cette tâche est de créer les scénarios états
 et de les "compiler".
- Voir la [tache:concepts.scenarios](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.scenarios.etats/index.html).
+ Voir la [tache:concepts.scenarios.etats](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.scenarios.etats/index.html).
 
 ________
 

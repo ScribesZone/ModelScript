@@ -89,8 +89,11 @@ Il est sans doute nécessaire de le définir s'il ne correspond pas à
 une définition de sens commun. D'ailleurs le terme à définir est peut
 être "Retour".
 
-Lire et appliquer les
-:ref:`règles associées à la réécriture d'identificateurs <GlossaryScript_RewritingIdentifiers>`.
+.. A AJOUTER QUAND LES FAUTES SERONT CORRIGEES
+    -------------------------------------------------------------------
+    -------------------------------------------------------------------
+    Lire et appliquer les
+    :ref:`règles associées à la réécriture d'identificateurs <GlossaryScript_RewritingIdentifiers>`.
 
 (Z) Suivi et status
 -------------------

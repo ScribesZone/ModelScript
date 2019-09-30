@@ -1,7 +1,7 @@
 [XXX-CASESTUDY] tache:concepts.objets
 ===========================================================
 
-L'objectif de cette tâche est créer/traduire les modèles d'objets annotés
+L'objectif de cette tâche est créer/traduire les modèles d'objets
 et de les "compiler".
  Voir la [tache:concepts.objets](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.objets/index.html).
 
