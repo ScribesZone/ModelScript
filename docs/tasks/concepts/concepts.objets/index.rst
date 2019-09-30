@@ -21,16 +21,16 @@ Introduction
 
 Cette tâche consiste à traduire les modèles d'objets décrits
 sous forme textuelle en modèles d'objets annotés. Chaque modèle d'objets se
-concrétise en un fichier ``.ob1`` exécutable. Ces fichiers vont être 
+concrétise en un fichier ``.ob1``. Ces fichiers vont être
 utilisés pour valider le modèle de classes (fichier ``.cl1``).
 Il s'agit de répéter les étapes ci-dessous pour chaque modèle d'objets
-dans le répertoire ``objets/``.
+dans le répertoire ``concepts/objets/``.
 
 (A) Traduction
 --------------
 
-Le fichier ``concepts/objets/o<N>/o<N>.ob1`` (où o<N> est l'identifiant du
-modèle d'objet) contient un modèle d'objets décrit en langue naturelle.
+Le fichier ``concepts/objets/o<N>/o<N>.ob1`` (où ``o<N>`` est l'identifiant
+du modèle d'objet) contient un modèle d'objets décrit en langue naturelle.
 Il s'agit de traduire chaque ligne en utilisant le langage
 :ref:`ObjectScript1`.
 
