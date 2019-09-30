@@ -14,4 +14,4 @@ ________
     - M ``concepts/objects/o<N>/diagrammes/o<1>.obd.olt``
     - M ``concepts/objects/o<N>/diagrammes/o<1>.obd.png``
 - [ ] (900) Ecriture du status final.
-    - M ``concepts/classes/status.md``
+    - M ``concepts/objets/status.md``
