@@ -26,7 +26,8 @@ seront produits par la suite dans la :ref:`tâche cu.scenarios`
 Dans cette tâche on ne s'intéresse qu'au changement d'états du système
 en adoptant une perspective "données".
 
-Les tâches ci-dessous doivent être répétées pour chaque scénario.
+Les tâches ci-dessous doivent être répétées pour chaque scénario présents
+dans le répertoire ``dynamique/scenarios/``.
 
 (A) Traduction
 --------------
