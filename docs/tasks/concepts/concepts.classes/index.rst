@@ -16,7 +16,8 @@ tâche concepts.classes
 (A) Classes
 -----------------------------------
 
-Compléter le modèle de classes en fonction :
+Créer ou compléter le modèle de classes dans
+``concepts/classes/classes.cl1`` en fonction :
 
 * des besoins exprimés par le client (dossier ``concepts/besoins/`` )
 * des modèles d'objets (dossier ``concepts/objets/`` )
