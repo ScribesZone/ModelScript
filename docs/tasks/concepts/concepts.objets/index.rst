@@ -11,8 +11,8 @@ tâche concepts.objets
 :langage:  :ref:`ObjectScript1`
 :résultat:
     * ``concepts/objects/o<N>/o<N>.ob1``
-    * ``concepts/objects/o<N>/diagrams/o<N>.obd.olt``
-    * ``concepts/objects/o<N>/diagrams/o<N>.obd.png``
+    * ``concepts/objects/o<N>/diagrammes/o<N>.obd.olt``
+    * ``concepts/objects/o<N>/diagrammes/o<N>.obd.png``
     * ``concepts/objects/status.md``
 
 

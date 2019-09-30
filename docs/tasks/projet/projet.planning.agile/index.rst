@@ -104,6 +104,6 @@ qu'un membre de l'équipe se saisisse à un moment donné d'une tâche.
 -----------
 
 Faire une copie d'écran du tableau ("project" github) en début de projet
-et la ranger dans ``provisional-plan/diagrams/plan.github.png``.
+et la ranger dans ``provisional-plan/diagrammes/plan.github.png``.
 
 ..  _`poker planning`: https://en.wikipedia.org/wiki/Planning_poker

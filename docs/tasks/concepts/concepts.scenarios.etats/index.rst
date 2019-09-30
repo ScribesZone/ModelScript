@@ -10,8 +10,8 @@ tâche concepts.scenarios.etats
 :langage: :ref:`ScenarioScript1`
 :résultat:
     * ``dynamique/scenarios/s<N>/s<N>.sc1``
-    * ``dynamique/scenarios/s<N>/diagrams/S<N>.scd.olt``
-    * ``dynamique/scenarios/s<N>/diagrams/S<N>.scd.png``
+    * ``dynamique/scenarios/s<N>/diagrammes/s<N>.scd.olt``
+    * ``dynamique/scenarios/s<N>/diagrammes/s<N>.scd.png``
 
 Introduction
 ------------

@@ -149,8 +149,8 @@ d'affichage. Utiliser pour cela le menu ``Edition > Préférence`` puis
 l'onglet ``Propriétés du diagramme de Gantt``, en bas d'écran la section
 "Détails". Faire afficher les noms des ressources ainsi que le nom
 des tâches plutôt que leur id. Créer une vue globale du diagramme
-(fichier ``diagrams/plan.gan.png``) et éventuellement une ou plusieurs
-autres vues plus détaillées (fichier ``diagrams/<NOM>.gan.png`` ou
+(fichier ``diagrammes/plan.gan.png``) et éventuellement une ou plusieurs
+autres vues plus détaillées (fichier ``diagrammes/<NOM>.gan.png`` ou
 ``<NOM>`` est le nom de la vue).
 
 (I) Diagramme des ressources
@@ -159,9 +159,9 @@ autres vues plus détaillées (fichier ``diagrams/<NOM>.gan.png`` ou
 Créer un diagramme des ressources. Utiliser pour cela l'onglet
 ``Diagramme des Ressources`` sur l'écran principal et immédiatement au
 dessus de la liste des tâches. Faire une copie d'écran correspondant
-à la vision globale (fichier ``diagrams/plan.res.png``) accompagnée
+à la vision globale (fichier ``diagrammes/plan.res.png``) accompagnée
 éventuellement d'une ou plusieurs vues d'intérêt
-``diagrams/<NOM>.res.png`` ou ``<NOM>`` est le nom de la vue)
+``diagrammes/<NOM>.res.png`` ou ``<NOM>`` est le nom de la vue)
 
 ..  _gantt project:
     https://scribestools.readthedocs.io/en/latest/ganttproject/index.html

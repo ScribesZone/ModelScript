@@ -35,7 +35,7 @@ Si le mode agile a été selectionné, les tâches doivent avoir
 d'avancement du projet. Réaliser une copie d'écran
 de ce tableau en milieu de sprint par exemple.
 Sauvegarder cette copie dans le fichier
-``sprint<N>/effective-plan/diagrams/intermediate-plan.github.png``.
+``sprint<N>/effective-plan/diagrammes/intermediate-plan.github.png``.
 
 (B) Planning intermediaire - Gantt
 ----------------------------------
@@ -49,14 +49,14 @@ la tâche est représentée par un trait noir à l'interieur de la tâche.
 Sauvegarder le modèle intermédiaire dans
 ``sprint<N>/effective-plan/intermediate-plan.gan``.
 Réaliser une copie d'écran dans
-``sprint<N>/effective-plan/diagrams/intermediate-plan.gan.png``.
+``sprint<N>/effective-plan/diagrammes/intermediate-plan.gan.png``.
 
 (C) Planning effectif - GitHub
 ------------------------------
 
 Si GitHub est utilisé réaliser en fin de sprint la même opération que pour
 le plan intermédiaire. Sauvegarder l'image du tableau dans le fichier
-``sprint<N>/effective-plan/diagrams/plan.github.png``
+``sprint<N>/effective-plan/diagrammes/plan.github.png``
 
 (D) Planning effectif - Gantt
 -----------------------------
@@ -65,4 +65,4 @@ Si le modèle de gantt est utilisé réaliser en fin d'incrément/de projet
 la même opération que pour le plan intermédiaire. Sauvegarder le version
 finale du plan dans
 ``sprint<N>/effective-plan/plan.gan`` et une copie d'écran dans
-``sprint<N>/effective-plan/diagrams/plan.gan.png``.
+``sprint<N>/effective-plan/diagrammes/plan.gan.png``.

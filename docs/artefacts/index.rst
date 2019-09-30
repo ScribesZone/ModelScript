@@ -124,7 +124,7 @@ projet/
             planning-previsionnel.gan
             planning-intermediaire.gan
             planning-effectif.gan
-            diagrams/
+            diagrammes/
                 planning-previsionnel.gan.png
                 planning-previsionnel.res.png
                 planning-previsionnel.github.png

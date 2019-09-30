@@ -235,14 +235,14 @@ Creating UML object diagrams is possible using the `USE OCL`_ tool:
 
 ..  code-block:: none
 
-    use -nr concepts/classes/classes.cl1 concepts/objects/O<N>/O<N>.ob1
+    use -nr concepts/classes/classes.cl1 concepts/objects/o<N>/o<N>.ob1
 
 Refer to the page "`creating UML object diagrams`_" for more information.
 
 When using the :ref:`ModelScript Method<ModelScriptMethod>` the
 layout of the object diagram have to be saved in the file
-``concepts/objects/O<N>/diagrams/O<N>.obd.clt``. The diagram has to be
-saved in the file ``concepts/objects/O<N>/diagrams/O<N>.obd.png``.
+``concepts/objects/O<N>/diagrammes/o<N>.obd.clt``. The diagram has to be
+saved in the file ``concepts/objects/O<N>/diagrammes/O<N>.obd.png``.
 
 
 Dependencies
