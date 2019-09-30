@@ -19,7 +19,7 @@ tâche concepts.classes
 Compléter le modèle de classes en fonction :
 
 * des besoins exprimés par le client (dossier ``concepts/besoins/`` )
-* des modèles d'objets (dossier ``concepts/objects/`` )
+* des modèles d'objets (dossier ``concepts/objets/`` )
 * des scénarios (dossier ``dynamique/scenarios/`` )
 * de vos connaissances du domaine.
 

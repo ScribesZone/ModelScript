@@ -90,7 +90,7 @@ RelationScript allows to express "schemas_" in the sense of the
     Note that the term "relation model" should not
     be confused with "relational data model". A relation model defines
     relations, just like usecase models defines usecases, class models
-    defines classes, object models defines objects, and so on.
+    defines classes, object models defines objets, and so on.
 
 Concepts
 --------

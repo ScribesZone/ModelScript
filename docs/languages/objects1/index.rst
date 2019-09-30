@@ -206,7 +206,7 @@ the name of the object model is o<N> where <N> is an integer):
 
 ..  code-block:: none
 
-    use -qv concepts/classes/classes.cl1 concepts/objects/o<N>/o<N>.ob1
+    use -qv concepts/classes/classes.cl1 concepts/objets/o<N>/o<N>.ob1
 
 The analyser check that there is no syntax errors,  no type errors,
 no cardinality errors, etc.
@@ -218,7 +218,7 @@ might be useful to use the following command:
 
 ..  code-block:: none
 
-    use -nogui concepts/classes/classes.cl1 concepts/objects/O<N>/O<N>.ob1
+    use -nogui concepts/classes/classes.cl1 concepts/objets/o<N>/o<N>.ob1
 
 This will launch the interpreter. To quit use the ``quit`` command :
 
@@ -235,14 +235,14 @@ Creating UML object diagrams is possible using the `USE OCL`_ tool:
 
 ..  code-block:: none
 
-    use -nr concepts/classes/classes.cl1 concepts/objects/o<N>/o<N>.ob1
+    use -nr concepts/classes/classes.cl1 concepts/objets/o<N>/o<N>.ob1
 
 Refer to the page "`creating UML object diagrams`_" for more information.
 
 When using the :ref:`ModelScript Method<ModelScriptMethod>` the
 layout of the object diagram have to be saved in the file
-``concepts/objects/O<N>/diagrammes/o<N>.obd.clt``. The diagram has to be
-saved in the file ``concepts/objects/O<N>/diagrammes/O<N>.obd.png``.
+``concepts/objets/O<N>/diagrammes/o<N>.obd.clt``. The diagram has to be
+saved in the file ``concepts/objets/O<N>/diagrammes/O<N>.obd.png``.
 
 
 Dependencies

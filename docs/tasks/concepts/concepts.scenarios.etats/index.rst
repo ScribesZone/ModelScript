@@ -65,7 +65,7 @@ modèle d'objet. Dans ce cas il est possible d'inclure ce modèle
 d'objets au début du scénario. Utiliser pour cela l'instruction
 ``open -q`` de use : ::
 
-    open -q ../../../../concepts/objects/o3/o3.ob1
+    open -q ../../../../concepts/objets/o3/o3.ob1
 
 Cette technique d'inclusion peut êgalement être mis en oeuvre pour
 inclure un scénario dans un autre.

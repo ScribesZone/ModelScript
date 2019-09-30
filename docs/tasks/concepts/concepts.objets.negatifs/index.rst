@@ -8,8 +8,8 @@ tâche concepts.objets.negatifs
 
 :langage:  :ref:`ObjectScript1`
 :résultat:
-    * ``objects/no<N>/no<N>.ob1``
-    * ``objects/status.md``
+    * ``objets/no<N>/no<N>.ob1``
+    * ``objets/status.md``
 
 
 (A) Création

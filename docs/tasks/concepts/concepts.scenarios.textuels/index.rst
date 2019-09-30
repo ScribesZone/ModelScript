@@ -34,7 +34,7 @@ est de :
 Les documents fournis peuvent faire référence à des exemples ou à des jeux
 de données particuliers. Dans ce cas définir des modèles d'objets sous
 forme de texte. Associer à chaque modèle un identificateur, par exemple "o3".
-Créer ainsi le fichier ``objects/o3/o3.ob1`` en respectant la syntaxe
+Créer ainsi le fichier ``objets/o3/o3.ob1`` en respectant la syntaxe
 du langage :ref:`ObjectScript1`. Dans un premier dans les modèles d'objets
 seront uniquement représentés sous forme de documentation (utilisation
 de ``|``). Les modèles d'objets seront "codés" par la suite dans la

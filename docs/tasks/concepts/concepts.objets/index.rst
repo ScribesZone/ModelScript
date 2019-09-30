@@ -10,26 +10,26 @@ tâche concepts.objets
 
 :langage:  :ref:`ObjectScript1`
 :résultat:
-    * ``concepts/objects/o<N>/o<N>.ob1``
-    * ``concepts/objects/o<N>/diagrammes/o<N>.obd.olt``
-    * ``concepts/objects/o<N>/diagrammes/o<N>.obd.png``
-    * ``concepts/objects/status.md``
+    * ``concepts/objets/o<N>/o<N>.ob1``
+    * ``concepts/objets/o<N>/diagrammes/o<N>.obd.olt``
+    * ``concepts/objets/o<N>/diagrammes/o<N>.obd.png``
+    * ``concepts/objets/status.md``
 
 
 Introduction
 ------------
 
-Cette tâche consiste à traduire les modèles d'objets (états) décrits sous
-forme textuelle en modèles d'objets annotés. Chaque modèle d'objets se
+Cette tâche consiste à traduire les modèles d'objets décrits
+sous forme textuelle en modèles d'objets annotés. Chaque modèle d'objets se
 concrétise en un fichier ``.ob1`` exécutable. Ces fichiers vont être 
 utilisés pour valider le modèle de classes (fichier ``.cl1``).
 Il s'agit de répéter les étapes ci-dessous pour chaque modèle d'objets
-dans le répertoire ``objects/``.
+dans le répertoire ``objets/``.
 
 (A) Traduction
 --------------
 
-Le fichier ``concepts/objects/o<N>/o<N>.ob1`` (où o<N> est l'identifiant du
+Le fichier ``concepts/objets/o<N>/o<N>.ob1`` (où o<N> est l'identifiant du
 modèle d'objet) contient un modèle d'objets décrit en langue naturelle.
 Il s'agit de traduire chaque ligne en utilisant le langage
 :ref:`ObjectScript1`.
@@ -50,7 +50,7 @@ utilisés pour établir des tests et en particulier des tests de recette.
 Vérifier que l'état est aligné avec le modèle de classes.
 Pour cela utiliser la commande suivante à partir du répertoire principal ::
 
-    use -qv concepts/classes/classes.cl1 concepts/objects/o<N>/o<N>.ob1
+    use -qv concepts/classes/classes.cl1 concepts/objets/o<N>/o<N>.ob1
 
 L'interpreteur affichera les éventuelles erreurs de syntaxe
 ainsi que les erreurs de types ou de cardinalités. Si rien ne s'affiche
@@ -59,7 +59,7 @@ cela signifie qu'aucune erreur n'a été trouvée.
 (C) Diagramme
 -------------
 
-Produire un diagramme d'objets représentant le modèle d'objets ``objects/o<N>``.
+Produire un diagramme d'objets représentant le modèle d'objets ``objets/o<N>``.
 Pour cela utiliser la même technique que pour les diagrammes de classes.
 La disposition des objets doit autant que possible refléter
 la disposition du diagramme de classes. 
