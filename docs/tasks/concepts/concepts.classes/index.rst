@@ -10,8 +10,8 @@ tâche concepts.classes
 :langage:  :ref:`ClassScript1`
 :résultat:
     * ``concepts/classes/classes.cl1``
-    * ``concepts/classes/diagrams/classes.cld.clt``
-    * ``concepts/classes/diagrams/classes.cld.png``
+    * ``concepts/classes/diagrammes/classes.cld.clt``
+    * ``concepts/classes/diagrammes/classes.cld.png``
 
 (A) Classes
 -----------------------------------
@@ -23,47 +23,49 @@ Compléter le modèle de classes en fonction :
 * des scénarios (dossier ``dynamique/scenarios/`` )
 * de vos connaissances du domaine.
 
-Certains de ces répertoires peuvent être absents.
+Certains éléments peuvent ne pas s'appliquer.
 
 (B) Compilation
 ---------------
 
 Le modèle de classes doit **IMPERATIVEMENT** pouvoir
 être "compilé" sans erreur en utilisant la commande suivante
-(à partir du répertoire racine du projet)::
+(à partir du répertoire racine)::
 
        use -c concepts/classes/classes.cl1
 
 S'il y a des erreurs elles seront affichées. Aucun affichage
-signifie que le modèle est conforme à UML.
+signifie que le modèle est conforme au langage
+:ref:`ClassScript1` (USE OCL).
 
 (C) Diagramme global
 --------------------
 
 `Créer ensuite un diagramme de classes`_ avec l'outil USE OCL.
 Sauvegarder impérativement le diagramme dans le fichier
-``concepts/classes/diagrams/classes.cld.clt`` (remplacer le fichier
+``concepts/classes/diagrammes/classes.cld.clt`` (remplacer le fichier
 existant). Si une ébauche est fournie le diagramme dessiné devra en
 respecter la disposition. Faire une copie d'écran du diagramme
-et remplacer le fichier ``concepts/classes/diagrams/classes.cld.png``
+et remplacer le fichier ``concepts/classes/diagrammes/classes.cld.png``
 fourni.
 Respecter **impérativement** les noms de fichiers, entre autre l'extension
 ``.png``. Le diagramme global doit impérativement montrer les
-cardinalités ; si possible des noms de rôles ou d'associations si
+cardinalités ; afficher si possible les noms de rôles ou d'associations si
 le diagramme reste visible.
 
 (D) Vues
 --------
 
 Il peut être demandé de réaliser plusieurs diagrammes pour différentes
-vues. Créer dans ce cas des fichiers ``concepts/classes/diagrams/<NOM>.cld.*``
+vues. Créer dans ce cas des fichiers ``concepts/classes/diagrammes/<NOM>.cld.*``
 où ``<NOM>`` fait référence au nom de la vue. Les classes à masquer
 peuvent être définies avec le menu contextuel de l'outil `use ocl`_
 (click droit).
 
 Si les vues proposées couvrent l'ensemble du diagramme il est intéressant
-de montrer moins de détails dans la vision globale (par exemple de
-cacher les attributs) et plus de détails dans les vues.
+de montrer moins de détails dans la vision globale (par exemple en
+cachant les attributs) et plus de détails dans les vues (par exemple
+en montrant les attributs).
 Dans chaque vue respecter autant que possible la disposition du
 diagramme global.
 
@@ -71,18 +73,18 @@ diagramme global.
 -----------------------
 
 Dans la suite, il sera demandé de valider le modèle de classes proposé
-avec les modèles d'objets et les scénarios. Voir les tâches
-correspondantes. Répéter ces operations jusqu'à ce que ces différents
-modèles soient alignés.
+avec les modèles d'objets et les scénarios. Voir les éventuelles tâches
+correspondantes.
 
 (F) Glossaire
 -------------
 
-Vérifier que les termes importants apparaissant dans les noms de classes,
-d'associations, d'attributs ou de rôles sont bien dans le glossaire.
+Si un glossaire existe, vérifier que les termes importants apparaissant
+dans les noms de classes, d'associations, d'attributs ou de rôles
+sont bien dans le glossaire.
 Par exemple il peut être important de définir ce qu'est la "DateDeRetour"
 dans le contexte d'un bibliothèque. Ce terme fait partie du domaine.
-Il est sans doute nécessaire de l'expliquer s'il ne correspond pas à
+Il est sans doute nécessaire de le définir s'il ne correspond pas à
 une définition de sens commun. D'ailleurs le terme à définir est peut
 être "Retour".
 
