@@ -42,7 +42,7 @@ dynamique/
 
     dynamique/                  Description du comportement du système.
 
-        cu/                     Modèles de cas d'utilisation.
+        cu/                     Modèle de cas d'utilisation.
             cu.uss              Cas d'utilisation en UsecaseScript.
             diagrammes/         Diagrammes de cas d'utilisation.
             status.md           Status.
@@ -63,7 +63,7 @@ ihm/
 
 ::
 
-    ihm/
+    ihm/                        Interface homme machine.
 
         taches/                 Modèles de tâches.
             <cu1>/              Modèle de tâches pour le cu <cu1>.
@@ -82,8 +82,8 @@ ihm/
             ...
             status.md           Status.
 
-        evaluation/             Evaluation de l'interface
-            analysis/
+        evaluation/             Evaluation de l’interface homme machine.
+            analyse/
                 evaluation-heuristique.pdf
             tests/
                 protocole.pdf
@@ -94,18 +94,19 @@ bd/
 '''
 
 ::
+    bd/                     Modèles et implémentaton de la base de données.
 
-    relations/              Modèle de relations.
-        relations.res       Modèle de relations exprimé en RelationScript.
-        status.md           Status.
+        relations/          Modèle de relations.
+            relations.res   Modèle de relations exprimé en RelationScript.
+            status.md       Status.
 
-    sql/                    Implémentation SQL de la base de données.
-        schema/             Schéma de la base de données.
-            schema.sql      Schéma de la base de données exprimé en SQL.
-        jdds/               Jeux de données.
-            jdd<N>.sql      Jeux de données positif numéro N
-            jddn<M>.sql     Jeux de données négatif numéro M
-            ...
+        sql/                Implémentation SQL de la base de données.
+            schema/         Schéma de la base de données.
+                schema.sql  Schéma de la base de données exprimé en SQL.
+            jdds/           Jeux de données.
+                jdd<N>.sql  Jeux de données positif numéro N.
+                jddn<M>.sql Jeux de données négatif numéro M.
+                ...
         requetes/           Requêtes
         cree-la-bd.sh       Script de création de la base de données.
         status.md           Status.
@@ -115,30 +116,30 @@ projet/
 
 ::
 
-    projet/
+    projet/                 Informations liées au projet.
+        aq                  Assurance qualité.
         sprint<N>/          Information à propos du Nième sprint.
+            plannings/      Plannings pour le Nième sprint.
+                previsionnel/
+                    planning-previsionnel.gan
+                    planning-previsionnel.gan.png
+                    planning-previsionnel.res.png
+                    planning-previsionnel.github.png
+                intermediaire/
+                    planning-intermediaire.gan
+                    planning-intermediaire.gan.png
+                    planning-intermediaire.res.png
+                    planning-intermediaire.github.png
+                effectif/
+                    planning-effectif.gan
+                    planning-effectif.gan.png
+                    planning-effectif.res.png
+                    planning-effectif.github.png
             audit/
                 audit.pdf
                 resume.md
-        plannings/
-            planning-previsionnel.gan
-            planning-intermediaire.gan
-            planning-effectif.gan
-            diagrammes/
-                planning-previsionnel.gan.png
-                planning-previsionnel.res.png
-                planning-previsionnel.github.png
-                planning-intermediaire.gan.png
-                planning-intermediaire.res.png
-                planning-intermediaire.github.png
-                planning-effectif.gan.png
-                planning-effectif.res.png
-                planning-effectif.github.png
-        audit/
-            audit.pdf
-            resume.pdf
-        retrospective/
-            retrospective.md
+            retrospective/
+                retrospective.md
         suivi-du-temps/
             <XXX>.md
         suivi/
