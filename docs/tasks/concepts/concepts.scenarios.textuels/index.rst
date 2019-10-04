@@ -17,16 +17,16 @@ Introduction
 
 L'activité de capture des besoins donne lieu à différents textes
 accompagnés d'autres ressources (images par exemple). Ces documents
-se trouvent dans le dossier ``requirements``. L'objectif de cette tâche
+se trouvent dans le dossier ``besoins``. L'objectif de cette tâche
 est de :
 
-*   extraire de ces documents une liste de scénarios clairement
-    identifiés,
-
-*   scénarios éventuellement basés sur des modèles d'objets,
-    identifiés également,
+*   extraire de ces documents une liste de scénarios accompagnés
+    éventuellement de modèles d'objets,
 
 *   de produire des scénarios textuels épurés et basé sur le glossaire.
+
+Il peut être utile de compléter le jeu de scénarios ainsi extrait par
+d'autres scénarios qu'il conviendra de faire valider auprès du client.
 
 (A) Objets
 ----------
