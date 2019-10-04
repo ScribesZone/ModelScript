@@ -6,7 +6,7 @@ tâches bd.*
     :maxdepth: 3
 
 
-    bd.relations.classes/index
+    bd.classes/index
     bd.relations.schema/index
     bd.relations.jdd/index
     bd.relations.jdd.negatifs/index
