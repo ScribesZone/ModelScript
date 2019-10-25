@@ -10,7 +10,7 @@ tâche cu.preliminaire
 :langage: :ref:`UsecaseScript`, :ref:`ParticipantScript`
 :résultat:
     * ``participants/particiants.pas``
-    * ``usecases/usecases.ucs``
+    * ``usecases/usecases.uss``
 
 
 Introduction
