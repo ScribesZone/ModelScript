@@ -1,5 +1,10 @@
 #TODO:3 improve glossary exemple
 
+
+#TODO:3 ajouter le tache concepts.capture
+#TODO:1 deplacer participants.pas dans dynamique /
+#TODO:1 renommer dynamique / par cu /
+
 #================================================================
 #   GlossaryScript
 #================================================================
