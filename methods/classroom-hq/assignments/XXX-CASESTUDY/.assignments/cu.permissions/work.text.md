@@ -7,8 +7,8 @@ L'objectif de cette tâche est de créer le modèle de permissions.
 ________
 
 - [ ] (010) Application de la technique "classes en premier".
-    - M ``dynamique/permissions/permissions.pes``
+    - M ``cu/permissions/permissions.pes``
 - [ ] (010) Application de la technique "cas d'utilisation en premier".
-    - M ``dynamique/permissions/permissions.pes``
+    - M ``cu/permissions/permissions.pes``
 - [ ] (900) Ecriture du status final.
-    - M ``dynamique/permissions/status.md``
+    - M ``cu/permissions/status.md``

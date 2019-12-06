@@ -8,8 +8,8 @@ de cas d'utilisation.
 ________
 
 - [ ] (100) Définition des cas d'utilisation.
-    - M ``dynamique/cu/cu.ucs``
+    - M ``cu/cu/cu.ucs``
 - [ ] (200) Définition des interactions.
-    - M ``dynamique/cu/cu.ucs``
+    - M ``cu/cu/cu.ucs``
 - [ ] (900) Ecriture du status final.
-    - M ``dynamique/cu/status.md``
+    - M ``cu/cu/status.md``

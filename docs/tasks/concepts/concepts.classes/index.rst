@@ -21,7 +21,7 @@ Créer ou compléter le modèle de classes dans
 
 * des besoins exprimés par le client (dossier ``concepts/besoins/`` )
 * des modèles d'objets (dossier ``concepts/objets/`` )
-* des scénarios (dossier ``dynamique/scenarios/`` )
+* des scénarios (dossier ``cu/scenarios/`` )
 * de vos connaissances du domaine.
 
 Certains éléments peuvent ne pas s'appliquer.

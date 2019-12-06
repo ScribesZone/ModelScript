@@ -8,7 +8,7 @@ et de les "compiler".
 ________
 
 - [ ] (010) Traduction des modèles d'objets.
-    - M ``dynamique/scenarios/s<N>/s<N>.sc1``
+    - M ``cu/scenarios/s<N>/s<N>.sc1``
 - [ ] (100) Compilation sans erreur (``use -qv``)
 - [ ] (900) Ecriture du status final.
-    - M ``dynamique/scenarios/status.md``
+    - M ``cu/scenarios/status.md``

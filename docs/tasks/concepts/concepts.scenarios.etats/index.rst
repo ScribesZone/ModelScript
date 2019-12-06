@@ -9,9 +9,9 @@ tâche concepts.scenarios.etats
 
 :langage: :ref:`ScenarioScript1`
 :résultat:
-    * ``dynamique/scenarios/s<N>/s<N>.sc1``
-    * ``dynamique/scenarios/s<N>/diagrammes/s<N>.scd.olt``
-    * ``dynamique/scenarios/s<N>/diagrammes/s<N>.scd.png``
+    * ``cu/scenarios/s<N>/s<N>.sc1``
+    * ``cu/scenarios/s<N>/diagrammes/s<N>.scd.olt``
+    * ``cu/scenarios/s<N>/diagrammes/s<N>.scd.png``
 
 Introduction
 ------------
@@ -27,7 +27,7 @@ Dans cette tâche on ne s'intéresse qu'au changement d'états du système
 en adoptant une perspective "données".
 
 Les tâches ci-dessous doivent être répétées pour chaque scénario présents
-dans le répertoire ``dynamique/scenarios/``.
+dans le répertoire ``cu/scenarios/``.
 
 (A) Traduction
 --------------
@@ -57,7 +57,7 @@ en une suite d'instructions ``!`` *à plat*. Voir la tâche
 Vérifier que le scenario est aligné avec le modèle de classes.
 Pour cela utiliser la commande suivante à partir du répertoire principal ::
 
-    use -qv concepts/classes/classes.cl1 dynamique/scenarios/s<N>/s<N>.sc1
+    use -qv concepts/classes/classes.cl1 cu/scenarios/s<N>/s<N>.sc1
 
 .. .. note a mettre dans le language plutot
 

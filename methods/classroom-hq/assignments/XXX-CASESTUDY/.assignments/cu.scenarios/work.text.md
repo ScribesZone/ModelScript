@@ -8,6 +8,6 @@ scénarios de cas d'utilisation.
 ________
 
 - [ ] (010) Réécriture des scénarios au vu des cas d'utilisation.
-    - M ``dynamique/scenarios/s<N>/s<N>.sc1``
+    - M ``cu/scenarios/s<N>/s<N>.sc1``
 - [ ] (900) Ecriture du status final.
-    - M ``dynamique/scenarios/status.md``
+    - M ``cu/scenarios/status.md``
