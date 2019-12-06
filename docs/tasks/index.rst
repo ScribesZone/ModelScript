@@ -3,15 +3,16 @@
 Tasks
 =====
 
-:download:`ModelScript CheatSheet <../dist/ModelScript-CheatSheet.pdf>`
+.. To be restored
+    :download:`ModelScript CheatSheet <../dist/ModelScript-CheatSheet.pdf>`
 
 ..  toctree::
     :maxdepth: 3
 
     concepts/index
-    bd/index
     cu/index
     ihm/index
+    bd/index
     projet/index
     dev/index
 
