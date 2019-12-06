@@ -1,7 +1,7 @@
 .. _Artefacts:
 
 Artefacts
-----------
+---------
 
 La méthode ModelScript défini une structure d'artefacts, c'est à dire
 de répertoires et de fichiers, avec des noms précis.
@@ -35,12 +35,12 @@ concepts/
             ...                 ...
             status.md           Status.
 
-dynamique/
-''''''''''
+cu/
+'''
 
 ::
 
-    dynamique/                  Description du comportement du système.
+    cu/                         Description du comportement du système.
 
         cu/                     Modèle de cas d'utilisation.
             cu.uss              Cas d'utilisation en UsecaseScript.
@@ -94,6 +94,7 @@ bd/
 '''
 
 ::
+
     bd/                     Modèles et implémentaton de la base de données.
 
         relations/          Modèle de relations.
