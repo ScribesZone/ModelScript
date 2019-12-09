@@ -8,7 +8,7 @@ tâche bd.relations.schema
     à partir du modèle de classes si celui-ci existe.
 
 :langage: :ref:`RelationScript`
-:résultat:
+:artéfacts:
     * ``relations/relations.res``
 
 

@@ -7,7 +7,7 @@ tâche projet.suivis
     de suivi est compris.
 
 :langage: :ref:`TrackScript`
-:résultat:
+:artéfacts:
     * ``tracks/tracks.trs``
 
 Introduction

@@ -7,7 +7,7 @@ tâche bd.relations.classes
     classes conceptuel en un modèle de données pour base de données.
 
 :langage: :ref:`ClassScript1`
-:résultat:
+:artéfacts:
     * ``classes/classes.cl1``
 
 

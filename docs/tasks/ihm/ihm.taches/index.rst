@@ -6,7 +6,7 @@ tâche ihm.taches
 :résumé: L'objectif de cette tâche est d'élaborer le modèle de
     tâches pour chaque cas d'utilisation prioritaires.
 
-:résultat:
+:artéfacts:
     * ``ui-tasks/<CU>/<CU>.kxml``
     * ``ui-tasks/<CU>/<CU>.pdf``
 

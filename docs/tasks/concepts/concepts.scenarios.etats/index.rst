@@ -8,7 +8,7 @@ tâche concepts.scenarios.etats
     scénarios par rapport au modèle de classes.
 
 :langage: :ref:`ScenarioScript1`
-:résultat:
+:artéfacts:
     * ``cu/scenarios/s<N>/s<N>.sc1``
     * ``cu/scenarios/s<N>/diagrammes/s<N>.scd.olt``
     * ``cu/scenarios/s<N>/diagrammes/s<N>.scd.png``

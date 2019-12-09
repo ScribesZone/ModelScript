@@ -6,7 +6,7 @@ tâche dev.general
 :résumé: Cette tâche regroupe l'ensemble des activités de développement
     non couvertes par une autre tâche dev.*.
 
-:résultat:
+:artéfacts:
     * ``dev``
 
 

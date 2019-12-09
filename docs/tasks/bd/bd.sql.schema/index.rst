@@ -7,7 +7,7 @@ tâche bd.sql.schema
     SQL de la base de données.
 
 :langage: SQL
-:résultat:
+:artéfacts:
     * ``sql/schema/schema.sql``
 
 Introduction

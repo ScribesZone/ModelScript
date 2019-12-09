@@ -7,7 +7,7 @@ tâche concepts.contraintes.ln
     les contraintes devant être ajoutées au modèle de classes.
 
 :langage:  :ref:`ClassScript1`
-:résultat:
+:artéfacts:
     * ``classes/classes.cl1``
 
 

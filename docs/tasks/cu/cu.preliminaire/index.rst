@@ -8,7 +8,7 @@ tâche cu.preliminaire
     des acteurs, des cas d'utilisation et des interactions.
 
 :langage: :ref:`UsecaseScript`, :ref:`ParticipantScript`
-:résultat:
+:artéfacts:
     * ``participants/particiants.pas``
     * ``usecases/usecases.uss``
 

@@ -7,7 +7,7 @@ tâche cu.permissions
 
 :langage: :ref:`PermissionScript`
 
-:résultat:
+:artéfacts:
     * ``permissions/permissions.pes``
 
 

@@ -7,7 +7,7 @@ tâche bd.sql.jdd.negatifs
      de données (jdd) négatifs pour la base de données SQL.
 
 :langage: SQL
-:résultat:
+:artéfacts:
     * ``sql/datasets/*.sql``
 
 (A) JDD négatifs

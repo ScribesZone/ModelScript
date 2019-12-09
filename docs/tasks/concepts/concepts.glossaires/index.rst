@@ -7,7 +7,7 @@ tâche concepts.glossaires
     (2) éventuellement de réécrire certains textes, en particulier
     ceux liés aux modèles d'objets et aux scénarios.
 :langage:  :ref:`GlossaryScript`
-:résultat:
+:artéfacts:
     * ``glossaries/glossary.gls``
     * ``glossaries/status.md``
 

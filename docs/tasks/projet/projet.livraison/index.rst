@@ -5,7 +5,7 @@ tâche projet.livraison
 
 :résumé: L'objectif de cette tâche est de livrer le logiciel.
 
-:résultat:
+:artéfacts:
     * ``github:release``
     * ``CHANGES.txt``
 

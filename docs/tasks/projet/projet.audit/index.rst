@@ -6,7 +6,7 @@ tâche projet.audit
 :résumé: L'objectif de cette tâche est (1) de préparer l'audit,
     (2) de réaliser cet audit, puis (3) d'en faire la synthèse.
 
-:résultat:
+:artéfacts:
     * ``sprint<N>/audit/*``
 
 Introduction

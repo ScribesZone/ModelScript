@@ -9,7 +9,7 @@ tâche concepts.objets
     d'objets.
 
 :langage:  :ref:`ObjectScript1`
-:résultat:
+:artéfacts:
     * ``concepts/objets/o<N>/o<N>.ob1``
     * ``concepts/objets/o<N>/diagrammes/o<N>.obd.olt``
     * ``concepts/objets/o<N>/diagrammes/o<N>.obd.png``
@@ -42,7 +42,7 @@ Faire au mieux sachant que l'objectif est de traduire un texte fourni
 par (ou écrit en collaboration avec) le "client". Il sera peut être
 nécessaire de voir avec lui comment compléter/valider la description
 d'un modèle d'objets sachant qu'un tel modèle pourra par la suite être
-utilisés pour établir des tests et en particulier des tests de recette.
+utilisé pour établir des tests et en particulier des tests de recette.
 
 (B) Classes
 -----------

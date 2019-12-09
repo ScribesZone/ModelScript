@@ -6,7 +6,7 @@ tâche ihm.abstraite
 :résumé: L'objectif de cette tâche est définir les IHM abstraite.
 
 :langage:  KMade
-:résultat:
+:artéfacts:
     * ``ui-abstract/<MdT>/<MdT>.pdf``
 
 (A) IHM abstraites

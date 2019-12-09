@@ -5,7 +5,7 @@ tâche ihm.evaluation
 
 :résumé: L'objectif de cette tâche est d'évaluer l'IHM produite.
 
-:résultat:
+:artéfacts:
     * ``ui-evaluation/analysis/evaluation-heuristique.pdf``
     * ``ui-evaluation/tests/protocole.pdf``
     * ``ui-evaluation/tests/rapport.pdf``

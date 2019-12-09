@@ -7,7 +7,7 @@ tâche bd.relations.jdd.negatifs
     de données (jdd) négatifs pour le modèle de relations.
 
 :langage: :ref:`RelationScript`
-:résultat:
+:artéfacts:
     * ``relations/relations.res``
 
 (A) JDD négatifs
