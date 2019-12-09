@@ -24,8 +24,13 @@ doit présenter toutes les classes du modèle ; par opposition avec les
 NOTE: Si une ébauche de diagramme a été fournie le diagramme dessiné
 devra en respecter la disposition.
 
-Pour créer un diagramme de classes se référer à la documention
-de `USE OCL sur ScribesTools`_.
+Pour créer un diagramme de classes utiliser la commande suivante::
+
+    use concepts/classes/classes.cl1
+
+Se référer ensuite à la documention de `USE OCL sur ScribesTools`_.
+
+Respecter impérativement les consignes suivantes :
 
 *   (1) Sauvegarder impérativement le diagramme dans le fichier
     ``concepts/classes/diagrammes/classes.cld.clt`` (remplacer le
