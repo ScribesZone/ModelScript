@@ -18,7 +18,7 @@ tâche concepts.classes.diagrammmes
 --------------------
 
 Il s'agit de créer un "diagramme global" de classes. Un tel diagramme
-doit présenter toutes les classes du modèle, par opposition avec les
+doit présenter toutes les classes du modèle ; par opposition avec les
 "vues" qui ne présentent que certaines classes sélectionnées.
 
 NOTE: Si une ébauche de diagramme a été fournie le diagramme dessiné
@@ -33,7 +33,7 @@ de `USE OCL sur ScribesTools`_.
     comme indiqué dans la documentation.
 
 *   (2) Faire ensuite une copie d'écran du diagramme et remplacer le
-    fichier ``concepts/classes/diagrammes/classes.cld.png``fourni.
+    fichier ``concepts/classes/diagrammes/classes.cld.png`` fourni.
 
 Respecter **impérativement** les noms de fichiers, entre autre l'extension
 ``.png``.
@@ -48,7 +48,7 @@ le diagramme reste visible.
 Il peut être demandé de réaliser plusieurs diagrammes de vues.
 Contrairement au diagramme global qui montre toutes les classes
 (et est parfois peu lisible) une "vue" ne montre que certaines classes
-séléctionnées, en montrant par exemple le détail de ces classes.
+sélectionnées, en montrant par exemple le détail de ces classes.
 
 Pour chaque vue les fichiers ``concepts/classes/diagrammes/<NOM>.cld.*``
 où ``<NOM>`` fait référence au nom de la vue. Les classes à masquer
