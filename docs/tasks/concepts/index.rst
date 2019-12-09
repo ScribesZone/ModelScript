@@ -9,6 +9,7 @@ tâches concepts.*
     concepts.classes.diagrammes/index
     concepts.scenarios.textuels/index
     concepts.objets/index
+    concepts.objets.diagrammes/index
     concepts.objets.negatifs/index
     concepts.contraintes.ln/index
     concepts.contraintes.ocl/index

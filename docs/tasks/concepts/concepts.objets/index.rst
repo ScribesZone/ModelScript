@@ -4,17 +4,12 @@ tâche concepts.objets
 =====================
 
 :résumé: L'objectif de cette tâche est (1) de traduire les modèles d'objets
-    textuels en modèle d'objets annotés en :ref:`ObjectScript1`,
-    (2) de compiler ces modèles d'objets et (3) de créer des diagrammes
-    d'objets.
-
+    textuels en modèle d'objets annotés en :ref:`ObjectScript1` et
+    (2) de compiler ces modèles d'objets.
 :langage:  :ref:`ObjectScript1`
 :artéfacts:
     * ``concepts/objets/o<N>/o<N>.ob1``
-    * ``concepts/objets/o<N>/diagrammes/o<N>.obd.olt``
-    * ``concepts/objets/o<N>/diagrammes/o<N>.obd.png``
     * ``concepts/objets/status.md``
-
 
 Introduction
 ------------
@@ -52,21 +47,10 @@ Pour cela utiliser la commande suivante à partir du répertoire principal ::
 
     use -qv concepts/classes/classes.cl1 concepts/objets/o<N>/o<N>.ob1
 
-L'interpreteur affichera les éventuelles erreurs de syntaxe
+ou <N> correspond au numéro du modèle d'objet. L'interpreteur affichera
+les éventuelles erreurs de syntaxe
 ainsi que les erreurs de types ou de cardinalités. Si rien ne s'affiche
 cela signifie qu'aucune erreur n'a été trouvée.
-
-(C) Diagramme
--------------
-
-Produire un diagramme d'objets représentant le modèle d'objets ``objets/o<N>``.
-Pour cela utiliser la même technique que pour les diagrammes de classes.
-La disposition des objets doit autant que possible refléter
-la disposition du diagramme de classes. 
-
-Observer la présence ou non d'objets isolés. Vérifier s'il s'agit d'un
-problème dans le scénario lui même ou un problème dans la traduction qui en
-a été faite.
 
 (Z) Suivi et status
 -------------------
