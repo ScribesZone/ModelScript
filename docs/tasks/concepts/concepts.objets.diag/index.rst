@@ -1,7 +1,7 @@
-.. _`tâche concepts.objets.diagrammes`:
+.. _`tâche concepts.objets.diag`:
 
-tâche concepts.objets.diagrammes
-================================
+tâche concepts.objets.diag
+==========================
 
 :résumé: L'objectif de cette tâche est de créer des diagrammes
     d'objets.
@@ -12,8 +12,8 @@ tâche concepts.objets.diagrammes
     * ``concepts/objets/o<N>/diagrammes/o<N>.obd.olt``
     * ``concepts/objets/o<N>/diagrammes/o<N>.obd.png``
 
-(A) Diagramme
--------------
+(A) Diagrammes
+--------------
 
 Pour produire un diagramme d'objets procéder de manière analogue à la
 production de diagrammes de classes. Lancer l'outil USE avec la
@@ -22,6 +22,9 @@ commande suivante (remplacer ``<N>`` par le numéro du modèle d'objets)::
     use concepts/classes/classes.cl1 concepts/objets/o<N>/o<N>.ob1
 
 Utiliser le menu ``View > Create View > Object Diagram``.
+
+* ``concepts/objets/o<N>/diagrammes/o<N>.obd.olt``
+* ``concepts/objets/o<N>/diagrammes/o<N>.obd.png``
 
 NOTE: La disposition des objets doit autant que possible refléter
 la disposition du diagramme de classes.

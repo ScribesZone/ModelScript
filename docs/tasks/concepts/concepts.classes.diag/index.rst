@@ -1,7 +1,7 @@
-..  _`tâche concepts.classes.diagrammes`:
+..  _`tâche concepts.classes.diag`:
 
-tâche concepts.classes.diagrammes
-==================================
+tâche concepts.classes.diag
+===========================
 
 :résumé: L'objectif de cette tâche est créer un ou plusieurs diagrammes
     de classes.
