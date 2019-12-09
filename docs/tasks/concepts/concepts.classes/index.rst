@@ -4,14 +4,11 @@ tâche concepts.classes
 ======================
 
 :résumé: L'objectif de cette tâche est (1) de définir/compléter le modèle
-    de classes, (2) de le compiler, (3) de créer un diagramme de classes,
-    (4) de vérifier l'alignement du modèle de classes avec les autres
-    modèles.
+    de classes, (2) de le compiler, (3) de vérifier l'alignement
+    du modèle de classes avec le glossaire si celui-ci existe.
 :langage:  :ref:`ClassScript1`
-:résultat:
-    * ``concepts/classes/classes.cl1``
-    * ``concepts/classes/diagrammes/classes.cld.clt``
-    * ``concepts/classes/diagrammes/classes.cld.png``
+:artéfacts:
+    * ``concepts/classes/classes.cl1`
 
 (A) Classes
 -----------------------------------
@@ -26,6 +23,9 @@ Créer ou compléter le modèle de classes dans
 
 Certains éléments peuvent ne pas s'appliquer.
 
+Pour écrire le modèle utiliser la documentation du langage
+:ref:`ClassScript1` (USE OCL).
+
 (B) Compilation
 ---------------
 
@@ -39,45 +39,8 @@ S'il y a des erreurs elles seront affichées. Aucun affichage
 signifie que le modèle est conforme au langage
 :ref:`ClassScript1` (USE OCL).
 
-(C) Diagramme global
---------------------
 
-`Créer ensuite un diagramme de classes`_ avec l'outil USE OCL.
-Sauvegarder impérativement le diagramme dans le fichier
-``concepts/classes/diagrammes/classes.cld.clt`` (remplacer le fichier
-existant). Si une ébauche est fournie le diagramme dessiné devra en
-respecter la disposition. Faire une copie d'écran du diagramme
-et remplacer le fichier ``concepts/classes/diagrammes/classes.cld.png``
-fourni.
-Respecter **impérativement** les noms de fichiers, entre autre l'extension
-``.png``. Le diagramme global doit impérativement montrer les
-cardinalités ; afficher si possible les noms de rôles ou d'associations si
-le diagramme reste visible.
-
-(D) Vues
---------
-
-Il peut être demandé de réaliser plusieurs diagrammes pour différentes
-vues. Créer dans ce cas des fichiers ``concepts/classes/diagrammes/<NOM>.cld.*``
-où ``<NOM>`` fait référence au nom de la vue. Les classes à masquer
-peuvent être définies avec le menu contextuel de l'outil `use ocl`_
-(click droit).
-
-Si les vues proposées couvrent l'ensemble du diagramme il est intéressant
-de montrer moins de détails dans la vision globale (par exemple en
-cachant les attributs) et plus de détails dans les vues (par exemple
-en montrant les attributs).
-Dans chaque vue respecter autant que possible la disposition du
-diagramme global.
-
-(E) Objets et scénarios
------------------------
-
-Dans la suite, il sera demandé de valider le modèle de classes proposé
-avec les modèles d'objets et les scénarios. Voir les éventuelles tâches
-correspondantes.
-
-(F) Glossaire
+(C) Glossaire
 -------------
 
 Si un glossaire existe, vérifier que les termes importants apparaissant
