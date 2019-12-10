@@ -8,7 +8,7 @@ tâche concepts.classes
     du modèle de classes avec le glossaire si celui-ci existe.
 :langage:  :ref:`ClassScript1`
 :artefacts:
-    * ``concepts/classes/classes.cl1`
+    * ``concepts/classes/classes.cl1``
 
 (A) Classes
 -----------------------------------
