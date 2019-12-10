@@ -29,6 +29,9 @@ du modèle d'objet) contient un modèle d'objets décrit en langue naturelle.
 Il s'agit de traduire chaque ligne en utilisant le langage
 :ref:`ObjectScript1`.
 
+NOTE: les modèles d'objet annotés peuvent être
+"compilés". Voir la section suivante pour plus de détails.
+
 Lorsqu'une valeur n'est pas définie utiliser une instruction
 ``... := Undefined``. Dans certains cas il peut être pertinent "d'inventer"
 une valeur ou des valeurs. Dans ce cas mettre une note dans le modèle de suivi.
@@ -42,15 +45,26 @@ utilisé pour établir des tests et en particulier des tests de recette.
 (B) Classes
 -----------
 
-Vérifier que l'état est aligné avec le modèle de classes.
-Pour cela utiliser la commande suivante à partir du répertoire principal ::
+Vérifier que le modèle d'objets est aligné avec le modèle de classes.
+Pour cela utiliser la commande suivante à partir du répertoire
+principal : ::
 
     use -qv concepts/classes/classes.cl1 concepts/objets/o<N>/o<N>.ob1
 
 ou <N> correspond au numéro du modèle d'objet. L'interpreteur affichera
-les éventuelles erreurs de syntaxe
-ainsi que les erreurs de types ou de cardinalités. Si rien ne s'affiche
-cela signifie qu'aucune erreur n'a été trouvée.
+les éventuelles erreurs de syntaxe ainsi que les erreurs de types ou de
+cardinalités. Si rien ne s'affiche cela signifie qu'aucune erreur n'a été
+trouvée.
+
+La localisation des erreurs n'est parfois pas indiquée clairement. Si
+ce problème apparaît utiliser l'interpreteur USE en utilisant la commande
+suivante : ::
+
+    use -nogui concepts/classes/classes.cl1 concepts/objets/o<N>/o<N>.ob1
+
+Si l'objectif est de vérifier les cardinalités utiliser ensuite la commande
+use ``check`` ou ``check -v``. Terminer finalement avex la command ``quit`
+ou ``Ctrl C`` pour sortir de l'interpréteur.
 
 (Z) Suivi et status
 -------------------
