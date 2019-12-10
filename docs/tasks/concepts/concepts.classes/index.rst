@@ -15,10 +15,14 @@ tâche concepts.classes
 -----------------------------------
 
 Créer le modèle de classes dans le fichier ``concepts/classes/classes.cl1``.
-Eventuellement un modèle est peut être fourni soit par exemple
-dans ce fichier soit peut être sous forme de diagramme dans le répertoire
-``concepts/classes/diagrammes``. Dans ce cas il s'agit de le completer
-et/ou de le corriger le cas échéant.
+Pour écrire le modèle utiliser la documentation du langage
+:ref:`ClassScript1` (USE OCL).
+
+Eventuellement un modèle est peut être fourni, soit par exemple
+sous forme textuelle dans ce fichier ``concepts/classes/classes.cl1``,
+soit peut être sous forme de diagramme dans le répertoire
+``concepts/classes/diagrammes``. Dans les deux cas il s'agit de completer
+et/ou de le corriger le modèle le cas échéant.
 
 Le modèle de classes doit in fine être développé en fonction :
 
@@ -28,9 +32,6 @@ Le modèle de classes doit in fine être développé en fonction :
 * de vos connaissances du domaine.
 
 Certains éléments peuvent ne pas s'appliquer.
-
-Pour écrire le modèle utiliser la documentation du langage
-:ref:`ClassScript1` (USE OCL).
 
 (B) Compilation
 ---------------
