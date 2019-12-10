@@ -7,7 +7,6 @@ tâche concepts.classes.diag
     de classes.
 :langage:  :ref:`ClassScript1`
 :artefacts:
-    * ``concepts/classes/classes.cl1``
     * ``concepts/classes/diagrammes/classes.cld.clt``
     * ``concepts/classes/diagrammes/classes.cld.png``
     * ``concepts/classes/diagrammes/<nom>.cld.png``
