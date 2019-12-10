@@ -8,7 +8,7 @@ tâche ihm.concrete
     charte graphique et (2) éventuellement des maquettes de l'interface
     concrète.
 
-:artéfacts:
+:artefacts:
     * ``ui-concrete/*``
 
 

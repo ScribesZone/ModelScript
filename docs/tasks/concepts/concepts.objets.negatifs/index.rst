@@ -7,7 +7,7 @@ tâche concepts.objets.negatifs
     d'objets et (2) que ces modèles génèrent les erreurs escomptées.
 
 :langage:  :ref:`ObjectScript1`
-:artéfacts:
+:artefacts:
     * ``objets/no<N>/no<N>.ob1``
     * ``objets/status.md``
 

@@ -8,7 +8,7 @@ tâche bd.sql.jdd
      de données (jdd) (positif) pour la base de données SQL.
 
 :langage: SQL
-:artéfacts:
+:artefacts:
     * ``sql/datasets/*.sql``
 
 Introduction

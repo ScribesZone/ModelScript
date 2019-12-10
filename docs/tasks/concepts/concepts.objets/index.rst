@@ -7,7 +7,7 @@ tâche concepts.objets
     textuels en modèle d'objets annotés en :ref:`ObjectScript1` et
     (2) de compiler ces modèles d'objets.
 :langage:  :ref:`ObjectScript1`
-:artéfacts:
+:artefacts:
     * ``concepts/objets/o<N>/o<N>.ob1``
     * ``concepts/objets/status.md``
 

@@ -7,7 +7,7 @@ tâche projet.participants
     membres de l'équipe ainsi que leurs rôles.
 
 :langage: :ref:`ParticipantScript`
-:artéfacts:
+:artefacts:
     * ``participants/participants.pas``
 
 Introduction

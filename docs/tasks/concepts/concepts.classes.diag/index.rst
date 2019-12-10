@@ -6,7 +6,7 @@ tâche concepts.classes.diag
 :résumé: L'objectif de cette tâche est créer un ou plusieurs diagrammes
     de classes.
 :langage:  :ref:`ClassScript1`
-:artéfacts:
+:artefacts:
     * ``concepts/classes/classes.cl1``
     * ``concepts/classes/diagrammes/classes.cld.clt``
     * ``concepts/classes/diagrammes/classes.cld.png``

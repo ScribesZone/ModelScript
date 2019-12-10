@@ -8,7 +8,7 @@ tâche concepts.scenarios.textuels
     accompagnés de modèles d'objets.
 
 :langage: :ref:`ScenarioScript1`, :ref:`ObjectScript1`
-:artéfacts:
+:artefacts:
     * ``objects/o<N>/o<N>.ob1``
     * ``scenarios/s<N>/s<N>.sc1``
 

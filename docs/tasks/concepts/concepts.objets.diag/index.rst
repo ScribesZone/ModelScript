@@ -7,7 +7,7 @@ tâche concepts.objets.diag
     d'objets.
 
 :langage:  :ref:`ObjectScript1`
-:artéfacts:
+:artefacts:
     * ``concepts/objets/o<N>/o<N>.ob1``
     * ``concepts/objets/o<N>/diagrammes/o<N>.obd.olt``
     * ``concepts/objets/o<N>/diagrammes/o<N>.obd.png``

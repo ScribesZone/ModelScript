@@ -7,7 +7,7 @@ tâche concepts.classes
     de classes, (2) de le compiler, (3) de vérifier l'alignement
     du modèle de classes avec le glossaire si celui-ci existe.
 :langage:  :ref:`ClassScript1`
-:artéfacts:
+:artefacts:
     * ``concepts/classes/classes.cl1`
 
 (A) Classes

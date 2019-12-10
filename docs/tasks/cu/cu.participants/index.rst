@@ -7,7 +7,7 @@ tâche cu.participants
     et les personnages.
 
 :langage:  :ref:`ParticipantScript`
-:artéfacts:
+:artefacts:
     * ``participants/participants.pas``
 
 

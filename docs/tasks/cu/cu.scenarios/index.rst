@@ -7,7 +7,7 @@ tâche cu.scenarios
      jusque là avec les cas d'utilisation.
 
 :langage: :ref:`ScenarioScript1`, :ref:`ParticipantScript`
-:artéfacts:
+:artefacts:
     * ``participants/participants.pas``
     * ``scenarios/n/scenario.scs``
 

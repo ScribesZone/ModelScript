@@ -7,7 +7,7 @@ tâche concepts.contraintes.ocl
     exprimées en langage naturel en contraintes OCL.
 
 :langage:  :ref:`ClassScript1`
-:artéfacts:
+:artefacts:
     * ``classes/classes.cl1``
 
 

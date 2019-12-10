@@ -7,7 +7,7 @@ tâche bd.relations.jdd
     de données (jdd) (positifs) pour le modèle de relations.
 
 :langage: :ref:`RelationScript`
-:artéfacts:
+:artefacts:
     * ``relations/relations.res``
 
 (A) JDD positifs

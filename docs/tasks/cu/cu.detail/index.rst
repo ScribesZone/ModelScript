@@ -8,7 +8,7 @@ tâche cu.detail
     les cas d'utilisation du modèle préliminaire.
 
 :langage:  :ref:`UsecaseScript`
-:artéfacts:
+:artefacts:
     * ``usecases/usecases.uss``
 
 (A) Définition

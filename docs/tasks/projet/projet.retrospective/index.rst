@@ -6,7 +6,7 @@ tâche projet.retrospective
 :résumé: Cette tâche vise a réaliser une rétrospective portant sur
      le dernier sprint/incrément écoulé.
 
-:artéfacts:
+:artefacts:
     * ``sprint<N>/retrospective/*``
 
 Introduction
