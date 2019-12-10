@@ -10,8 +10,5 @@ ________
 - [ ] (010) Traduction des modèles d'objets.
     - M ``concepts/objets/o<N>/o<N>.ob1``
 - [ ] (100) Compilation sans erreur (``use -qv``)
-- [ ] (200) Création des diagrammes d'objets.
-    - M ``concepts/objects/o<N>/diagrammes/o<1>.obd.olt``
-    - M ``concepts/objects/o<N>/diagrammes/o<1>.obd.png``
 - [ ] (900) Ecriture du status final.
     - M ``concepts/objets/status.md``
