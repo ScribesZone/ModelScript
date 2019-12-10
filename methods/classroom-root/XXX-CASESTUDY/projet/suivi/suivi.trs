@@ -1,12 +1,11 @@
 //=========================================================================
-//                      Track model
+//                      Model de suivi
 //-------------------------------------------------------------------------
-// This glossary model is expressed in TrackScript
-// See https://modelscript.rtfd.io/en/latest/scripts/tracks/index.html
+// Ce modèle de suivi est exprimé en TrackScript.
+// https://modelscript.readthedocs.io/en/latest/languages/tracks/index.html
 //=========================================================================
 
 track model XXX-CASESTUDY
-import glossary model from "../glossaries/glossaries.gls"
 
 
 
