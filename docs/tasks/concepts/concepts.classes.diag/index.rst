@@ -32,10 +32,14 @@ Se référer ensuite à la documention de `USE OCL sur ScribesTools`_.
 
 Respecter impérativement les consignes suivantes :
 
-*   (1) Sauvegarder impérativement le diagramme dans le fichier
+*   (1) Sauvegarder le diagramme dans le fichier
     ``concepts/classes/diagrammes/classes.cld.clt`` (remplacer le
     fichier existant). Utiliser pour cela la commande ``Save Layout``
     comme indiqué dans la documentation.
+    NOTE: Le fichier ``.clt`` ("Class Layout") contient le diagramme,
+    c'est à dire le "graphique", la disposition des classes et des
+    associations. Le fichier ``.cl1`` contient le modèle de classes,
+    sans aucun rendu graphique.
 
 *   (2) Faire ensuite une copie d'écran du diagramme et remplacer le
     fichier ``concepts/classes/diagrammes/classes.cld.png`` fourni.
@@ -43,22 +47,26 @@ Respecter impérativement les consignes suivantes :
 Respecter **impérativement** les noms de fichiers, entre autre l'extension
 ``.png``.
 
-**ATTENTION**: le diagramme global doit impérativement montrer les
+**ATTENTION**: les diagrammes doivent impérativement montrer les
 cardinalités ; afficher si possible les noms de rôles ou d'associations si
-le diagramme reste visible.
+le diagramme reste visible. Utiliser le menu contextuel (click droit)
+pour avoir accès à ces options.
 
 (B) Vues
 --------
 
-Il peut être demandé de réaliser plusieurs diagrammes de vues.
+Il peut vous être demandé de réaliser plusieurs diagrammes de vues.
 Contrairement au diagramme global qui montre toutes les classes
 (et est parfois peu lisible) une "vue" ne montre que certaines classes
 sélectionnées, en montrant par exemple le détail de ces classes.
 
-Pour chaque vue les fichiers ``concepts/classes/diagrammes/<NOM>.cld.*``
-où ``<NOM>`` fait référence au nom de la vue. Les classes à masquer
-peuvent être définies avec le menu contextuel de l'outil
-(click droit)
+Les classes à masquer peuvent être définies avec le menu contextuel de
+l'outil (click droit)
+
+Tout comme pour le diagramme global, les fichiers à produire sont
+``concepts/classes/diagrammes/<NOM>.cld.clt|png``
+où ``<NOM>`` fait référence au nom de la vue et ``.clt`` fait référence
+au diagramme, ``.png`` à la capture d'écran correspondante.
 
 
 
