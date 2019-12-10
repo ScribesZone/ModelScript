@@ -143,8 +143,8 @@ projet/
                 retrospective.md
         suivi-du-temps/
             <XXX>.md
-        suivi/
-            suivi.trs
+        suivis/
+            suivis.trs
         done.md
         status.md
 
