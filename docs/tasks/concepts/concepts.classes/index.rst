@@ -9,7 +9,7 @@ tâche concepts.classes
 :langage:  :ref:`ClassScript1`
 :artefacts:
     * ``concepts/classes/classes.cl1``
-    * ``concepts/objets/status.md``
+    * ``concepts/classes/status.md``
 
 (A) Classes
 -----------------------------------
