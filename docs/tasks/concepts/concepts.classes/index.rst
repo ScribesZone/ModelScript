@@ -14,8 +14,13 @@ tâche concepts.classes
 (A) Classes
 -----------------------------------
 
-Créer ou compléter le modèle de classes dans
-``concepts/classes/classes.cl1`` en fonction :
+Créer le modèle de classes dans le fichier ``concepts/classes/classes.cl1``.
+Eventuellement un modèle est peut être fourni soit par exemple
+dans ce fichier soit peut être sous forme de diagramme dans le répertoire
+``concepts/classes/diagrammes``. Dans ce cas il s'agit de le completer
+et/ou de le corriger le cas échéant.
+
+Le modèle de classes doit in fine être développé en fonction :
 
 * des besoins exprimés par le client (dossier ``concepts/besoins/`` )
 * des modèles d'objets (dossier ``concepts/objets/`` )
