@@ -18,11 +18,11 @@ Créer le modèle de classes dans le fichier ``concepts/classes/classes.cl1``.
 Pour écrire le modèle utiliser la documentation du langage
 :ref:`ClassScript1` (USE OCL).
 
-Eventuellement un modèle est peut être fourni, soit par exemple
-sous forme textuelle dans ce fichier ``concepts/classes/classes.cl1``,
-soit peut être sous forme de diagramme dans le répertoire
+Eventuellement un modèle est peut être fourni, soit
+sous forme textuelle dans le fichier ``concepts/classes/classes.cl1``,
+soit sous forme de diagramme dans le répertoire
 ``concepts/classes/diagrammes``. Dans les deux cas il s'agit de completer
-et/ou de le corriger le modèle le cas échéant.
+et/ou de corriger le modèle à partir des éléments fournis.
 
 Le modèle de classes doit in fine être développé en fonction :
 
