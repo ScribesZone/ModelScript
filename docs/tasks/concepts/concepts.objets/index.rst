@@ -45,9 +45,9 @@ utilisé pour établir des tests et en particulier des tests de recette.
 (B) Classes
 -----------
 
-Vérifier que le modèle d'objets est aligné avec le modèle de classes.
-Pour cela utiliser la commande suivante à partir du répertoire
-principal : ::
+Lorsqu'un modèle d'objet est créé il est **IMPERATIF** de Vérifier qu'il
+est aligné avec le modèle de classes.
+Pour cela utiliser la commande suivante : ::
 
     use -qv concepts/classes/classes.cl1 concepts/objets/o<N>/o<N>.ob1
 
@@ -63,7 +63,7 @@ suivante : ::
     use -nogui concepts/classes/classes.cl1 concepts/objets/o<N>/o<N>.ob1
 
 Si l'objectif est de vérifier les cardinalités utiliser ensuite la commande
-use ``check`` ou ``check -v``. Terminer finalement avex la command ``quit`
+use ``check`` ou ``check -v``. Terminer finalement avec la command ``quit`
 ou ``Ctrl C`` pour sortir de l'interpréteur.
 
 (Z) Suivi et status
