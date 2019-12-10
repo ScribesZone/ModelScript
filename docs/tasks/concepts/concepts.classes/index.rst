@@ -24,21 +24,21 @@ soit sous forme de diagramme dans le répertoire
 ``concepts/classes/diagrammes``. Dans les deux cas il s'agit de completer
 et/ou de corriger le modèle à partir des éléments fournis.
 
-Le modèle de classes doit in fine être développé en fonction :
+Le modèle de classes doit *in fine* être développé en fonction :
 
 * des besoins exprimés par le client (dossier ``concepts/besoins/`` )
 * des modèles d'objets (dossier ``concepts/objets/`` )
 * des scénarios (dossier ``cu/scenarios/`` )
 * de vos connaissances du domaine.
 
-Certains éléments peuvent ne pas s'appliquer.
+Certains éléments peuvent ne pas être présents.
 
 (B) Compilation
 ---------------
 
 Le modèle de classes doit **IMPERATIVEMENT** pouvoir
 être "compilé" sans erreur en utilisant la commande suivante
-(à partir du répertoire racine)::
+(à partir du répertoire racine) : ::
 
        use -c concepts/classes/classes.cl1
 
