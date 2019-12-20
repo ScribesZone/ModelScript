@@ -1,0 +1,14 @@
+--=========================================================================
+--                          Modèle d'objets
+---------------------------------------------------------------------------
+-- Ce modèle d'objet est exprimé en ObjectScript.
+-- Voir https://modelscript.readthedocs.io/en/latest/languages/objects1/index.html
+-- ObjectScript1 est une version annotée du langage USE OCL.
+-- Les annotations sont définies sous forme de commentaires :
+--    "@" pour les annotations d'instructions,
+--    "|" pour les annotations de documentation
+--=========================================================================
+--
+--@ object model O1
+--@ import glossary model from "../../glossaires/glossaires.gls"
+--@ import class model from "../../classes/classes.cl1"
