@@ -10,12 +10,12 @@
 ClassScript1
 ============
 
-Examples
+Exemples
 --------
 
 ..  note::
-    The following example is absolutely meaningless.
-    It is provided here just to give a flavor of the ClassScript1 syntax.
+    L'exemple suivant n'a strictement aucun sens. Il est juste fourni
+    ici pour donner une idée de la syntaxe de ClassScript1.
 
 ..  code-block:: ClassScript1
 
@@ -88,72 +88,74 @@ Examples
 ClassScript1
 ------------
 
-*ClassScript* is a textual notation for UML `class diagrams`_.
-In the current version of ModelScript, the``ClassScript1`` language is
-actually a "augmented subset" of the `USE OCL`_ language.
-ClassScript1 differs only very slightly from `USE OCL`_:
+*ClassScript* est un langage textuel pour les `diagrammes de classes UML`_.
+Dans la version de ModelScript le langage ``ClassScript1`` est en fait
+une version augmentée d'un sous ensemble du langage `USE OCL`_.
+ClassScript1 diffère très légèrement de `USE OCL`_:
 
-*   annotations. Two kinds of annotations are added as comments:
+*   annotations. Deux types d'annotations sont ajoutées sous forme de
+    commentaire USE OCL :
 
-    *   ``--|`` stands for a ModelScript documentation.
-    *   ``--@`` are for other ModelScript code.
+    *   ``--|`` préfixe la documentation ModelScript.
+    *   ``--@`` préfixe les autres annotations ModelScript.
 
-*   restrictions: ClassScript1 does not support qualified associations,
-    and other features such as post-conditions or pre-conditions.
+*   restrictions: ClassScript1 ne prend pas en compte les associations
+    qualifièes et les autres fonctionnalités telles que les
+    post-conditions et les post-conditions.
 
-While in the context of `USE OCL`_ the ``.use`` extension is used,
-``.cl1`` is the extension of ClassScripts1 scripts.
+Alors que l'extension ``.use`` est utilisée dans le cadre de `USE OCL`_,
+ici ``.cl1`` est l'extension des scripts ClassScripts1.
 
-Tooling
--------
+Outils
+------
 
-Analyzing models
-''''''''''''''''
+Analyse de modèles
+''''''''''''''''''
 
-ClassScript1 models can be analyzed with the `USE OCL`_ tool.
-When using the :ref:`ModelScript Method<ModelScriptMethod>`
-the following command line should be entered in a terminal
-(assuming that the current
-directory is the root directory of the modeling project):
+Les modèles ClassScript1 peuvent être utilisés avec l'outil `USE OCL`_.
+Quand la :ref:`méthode ModelScript<ModelScriptMethod>` est utilisée
+la ligne de commande suivante permet de "compiler" le modèle de classes
+(en supposant que le répertoire courant est le répertoire racine du
+projet de modèlisation) :
 
 ..  code-block:: none
 
        use -c concepts/classes/classes.cl1
 
-The interpreter check that there is no errors such as
-syntax errors and type errors.
-If no errors are displayed, then the class model is correct.
+L'interpréteur vérifie si il y a des erreurs ou non. Ce peut être
+des erreurs de syntaxe, des erreurs de types, des contraintes violées, etc.
+Si aucune erreur n'est affichée alors le modèle de classes est correct.
 
-Generating diagrams
-'''''''''''''''''''
+Génération de diagrammes
+''''''''''''''''''''''''
 
-Creating UML class diagrams is possible using the `USE OCL`_ tool:
+Dessiner un diagramme de classes UML est possible avec l'outil `USE OCL`_.
 
 ..  code-block:: none
 
     use -nr concepts/classes/classes.cl1
 
-Refer to the page "`creating UML class diagrams`_" for more
-information.
+Voir la page "`créer un diagramme de classes UML`_" pour plus d'information.
 
-When using the :ref:`ModelScript Method<ModelScriptMethod>` the
-layout of the class diagram have to be saved in the file
-``concepts/classes/diagrams/classes.cld.clt``. The diagram has to be
-saved in the file ``concepts/classes/diagrams/classes.cld.png``.
+Quand la :ref:`méthode ModelScript<ModelScriptMethod>` est utilisée
+le fichier de "layout" de USE OCL (la disposition des classes) doit être
+sauvegardé dans le fichier ``concepts/classes/diagrammes/classes.cld.clt``.
+Un copie d'écran du diagramme doit être réalisée et il s'agit de remplacer
+le fichier ``concepts/classes/diagrammes/classes.cld.png``.
 
 Concepts
 --------
 
-A class model is based on the following concepts:
+Un modèle de classes est basé sur les concepts suivants :
 
-* enumerations,
+* énumérations,
 * classes,
-* attributes,
+* attributs,
 * associations,
-* association classes,
-* constraints.
+* classes associatives,
+* contraintes.
 
-Enumerations
+Enumérations
 ------------
 
 ..  code-block:: ClassScript1
@@ -174,13 +176,13 @@ Enumerations
 Classes
 -------
 
-UML class diagram:
+Diagramme de classes UML:
 
 ..  image:: media/USEOCLClasses.png
     :align: center
 
 
-ClassScript1 (based on USE OCL):
+ClassScript1 (basé sur USE OCL):
 
 ..  code-block:: ClassScript1
 
@@ -203,10 +205,10 @@ ClassScript1 (based on USE OCL):
     end
 
 
-Attributes
-----------
+Attributs
+---------
 
-ClassScript (USE OCL):
+ClassScript1 (basé sur USE OCL):
 
 ..  code-block:: ClassScript1
 
@@ -228,28 +230,28 @@ ClassScript (USE OCL):
 
 :Attribute types:
 
-    Attributes can have only one of those type:
-    *   an enumerations,
+    Les attributs peuvent avoir les types suivants (lire la note sur
+    les Dates pour plus de détails) :
+
     *   ``Boolean``,
     *   ``Integer``,
     *   ``Real``,
     *   ``String``,
     *   ``Date``,
     *   ``DateTme``,
-    *   ``Time``.
+    *   ``Time``,
+    *   une énumération.
 
 :Dates:
 
-    Natively there is no ``Date``, ``DateTime`` or ``Time`` data types in
-    `USE OCL`_.
-    Attributes have to be defined as ``String`` and an
-    ``{Date}``, ``{DateTime}`` or ``{Time}`` annotation has to be added
-    as shown in the example above.
-    Attribute values (in object models for instance) have then to be
-    represented in the following format:
-    ``2020/12/23`` for Date, ``2020/12/23-23:50:59`` for DateTime,
-    and ``23:00`` for Time. This format allows date comparisons although
-    no other computation is available.
+    Les types ``Date``, ``DateTime`` et ``Time`` n'existent pas en `USE OCL`_.
+    Les attributs de ces types doivent donc être défini comme étant de type
+    ``String`` et les annotations ``{Date}``, ``{DateTime}`` or ``{Time}``
+    doivent être ajoutées dans le code (voir l'exemple ci-dessus).
+    La valeur de ces attributs doivent être représentés comme suit :
+    ``2020/12/23`` pour les valeurs dy type Date, ``2020/12/23-23:50:59``
+    pour DateTime, and ``23:00:32`` pour Time. Ce format permet les
+    comparaisons. Les autres opérations ne sont pas possibles.
 
 Associations
 ------------
@@ -259,7 +261,7 @@ UML class diagram:
 ..  image:: media/USEOCLAssociationUSE.png
     :align: center
 
-ClassScript (USE OCL):
+ClassScript1 (basé sur USE OCL):
 
 ..  code-block:: ClassScript1
 
@@ -273,10 +275,11 @@ ClassScript (USE OCL):
                 --| properties if he or she's lucky
     end
 
-Note that the roles order is important. In the example above the
-association reads "(an) owner Owns (some) ownedCars": the first
-role is the subject of the verb, the second role is the complement.
-The role order is also when creating links in object diagrams.
+Notons que l'ordre des roles est important. Dans l'exemple ci-dessus
+l'association se lit  "(an) owner Owns (some) ownedCars" : le premier
+rôle est le sujet de la phrase ; le second rôle est le complément.
+L'ordre des rôles est également important pour la création des liens
+dans les diagrammes d'objets.
 
 Association Classes
 -------------------
@@ -286,7 +289,7 @@ UML Diagram:
 ..  image:: media/USEOCLAssociationClassUSE.png
     :align: center
 
-Class Script (USE OCL):
+ClassScript1 (basé sur USE OCL):
 
 
 ..  code-block:: ClassScript1
@@ -302,26 +305,27 @@ Class Script (USE OCL):
             intensity : Integer
     end
 
-Constraints
+Contraintes
 -----------
 
-`USE OCL`_ supports 3 kinds of constraints : invariant, pre-conditions and
-post-conditions. ClassScript1 is based only on invariants. The keyword
-``constraint`` is used for consistency with further models, including
-relation models.
+`USE OCL`_ permet l'écriture de 3 types de contraintes : invariant,
+pré-conditions et post-conditions. Par contre ClassScript1 est basé sur
+l'utilisation d'invariants uniquement. A la place du mot clé "invariant"
+le mot clé ``constraint`` est utilisé par soucis de cohérence avec les
+autres langages de ModelScript.
 
-Using ClassScript1, constraints can be defined in natural language, using
-a particular format, and then using OCL.
+En ClassScript1 les contraintes peuvent être définies en langage naturel
+en respectant toutefois un certain format. Ces contraintes peuvent
+ensuite être décrites en langage OCL.
 
 ..  _ClassScript_contraintes_ln:
 
+Contraintes en Langage Naturel (LN)
+'''''''''''''''''''''''''''''''''''
 
-Natural Language Constraints
-''''''''''''''''''''''''''''
-
-Ecrire les contraintes en Langue Naturelle est une étape indispensable
+Ecrire les contraintes en Langue Naturelle (LN) est une étape indispensable
 avant de formaliser ces contraintes en OCL. C'est en effet le client
-qui exprime ces contraintes ou sinon qui les valide.
+qui exprime ces contraintes ou tout au moins qui les valide.
 
 Structure
 .........
@@ -347,11 +351,11 @@ Chaque contrainte doit comporter les éléments suivants :
     correspondance entre les éléments décrivant la portée du modèle doit
     être claire et non ambigüe.
 
-Example
+Exemple
 .......
 
 Dans cet exemple la contrainte est un invariant. Ce code est à ajouter
-en fin du modèles de classes, à la fin du fichier ``classes.class``.
+à la fin du modèle de classes (à la fin du fichier ``classes.cl1``).
 
 ..  code-block:: ClassScript1
 
@@ -362,49 +366,56 @@ en fin du modèles de classes, à la fin du fichier ``classes.class``.
     --@         Concerne
     --@         Emprunt.dateDeSortie
     --@     | Si un emprunt concerne un atelier alors cet
-    --@     | emprunt a eu lieu dans la période correspondant à l'atelier.
+    --@     | emprunt a eu lieu dans la période correspondant à
+    --@     | l'atelier.
 
 Dans l'exemple ci-dessus la notion de période n'est pas nécessairement
 claire et la locution "a eu lieu" non plus. Il est possible de préciser
-la phrase ainsi :
+la phrase comme ci-dessous. Par ailleurs ci-dessous l'utilisation de
+variables a été ajoutée. Ces variables ne sont pas nécessaires dans cet
+exemple mais elles peuvent être utiles avec des phrases plus complexes.
 
 ..  code-block:: ClassScript1
 
-    --@     | Si un emprunt concerne un atelier alors cet
-    --@     | la date de sortie de l'emprunt a eu lieu entre la date de début
-    --@     | de l'atelier et sa date de fin.
+    --@     | Si un emprunt (e) concerne un atelier (a) alors cet
+    --@     | la date de sortie de l'emprunt (a) eu lieu entre la date de début
+    --@     | de l'atelier (a) et sa date de fin.
 
 
 ..  _ClassScript_contraintes_methode:
 
-Method
-......
+Méthode
+.......
 
-L'une des façons de trouver les contraintes et de passer un à un les
-différents éléments d'un modèle de classes. Il s'agit de lister les
-contraintes portant sur :
+Trouver les contraintes à définir peut s'avérer difficile dans le cas
+de problèmes complexes. L'une des techniques possibles est de passer un
+à un les différents éléments d'un modèle de classes. Il s'agit ainsi de
+lister les contraintes portant sur :
 
-* **un attribut**, typiquement les contraintes de domaine (e.g. *age>0*)
-* **plusieurs attributs** d'une classe (e.g. ``min<=max``)
-* **une association** (e.g. *le père d'une personne est plus agé*)
-* **plusieurs associations** (e.g. *le salaire d'une personne employée dans une
-  entreprise ne peut pas être supérieur à 5% du buget du projet sur lequel
-  elle travaille, sauf si elle est classée A*).
+*   **un attribut**, typiquement les contraintes de domaine (e.g. *age>0*)
 
-Lorsque plusieurs associations forment un cycle il assez probable qu'une
-ou des contraintes s'appliquent au sein de ce périmètre.
+*   **plusieurs attributs** d'une classe (e.g. ``min<=max``)
+
+*   **une association** (e.g. *le père d'une personne est plus agé*)
+
+*   **plusieurs associations** (e.g. *le salaire d'une personne employée
+    dans une entreprise ne peut pas être supérieur à 5% du budget du projet
+    sur lequel elle travaille, sauf si elle est classée A*).
+
+Par ailleurs lorsque plusieurs associations forment un cycle il assez
+probable qu'une ou des contraintes s'appliquent au sein de ce périmètre.
 
 
-OCL Constraints
-'''''''''''''''
+Constraintes OCL
+''''''''''''''''
 
-The constraints expressed in natural language (see above) can then
-be traduced in OCL (using `USE OCL`_)
+Les contraintes exprimées en langage naturel (voir ci-dessus) peuvent
+ensuite être traduites en OCL en utilisant `USE OCL`_
 
-Dependencies
-------------
+Dépendances
+-----------
 
-The graph below show all language dependencies.
+Le graphe ci-dessous montre les dépendances entre langages.
 
 ..  image:: media/language-graph-cls.png
     :align: center
@@ -412,6 +423,6 @@ The graph below show all language dependencies.
 
 ..  _`USE OCL`: https://scribestools.readthedocs.io/en/latest/useocl/index.html
 
-.. _`class diagrams`: https://www.uml-diagrams.org/class-diagrams-overview.html
+.. _`diagrammes de classes UML`: https://www.uml-diagrams.org/class-diagrams-overview.html
 
-.. _`creating UML class diagrams`: http://scribetools.readthedocs.io/en/latest/useocl/index.html#creating-diagrams
+.. _`créer un diagramme de classes UML`: http://scribetools.readthedocs.io/en/latest/useocl/index.html#creating-diagrams
