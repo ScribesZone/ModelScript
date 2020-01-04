@@ -10,10 +10,10 @@
 ObjectScript1
 =============
 
-Examples
+Exemples
 --------
 
-The following code shows a raw object model:
+Le code ci-dessous montre un modèle d'objets basique :
 
 ..  code-block:: ObjectScript1
 
@@ -30,7 +30,7 @@ The following code shows a raw object model:
     ! s876.code := 'S876'
     ! insert (nourry, s876) into IntervientDans
 
-The following code shows an annotated object model:
+Le code ci-dessous montre un modèle d'objets annoté :
 
 ..  code-block:: ObjectScript1
 
@@ -53,7 +53,7 @@ The following code shows an annotated object model:
         ! insert (nourry, s876) into IntervientDans
     --| (6) Alicia Ganto est professeur de math.
 
-The following code shows a negative object model:
+Le code suivant montre un modèle d'objets négatif :
 
 ..  code-block:: ObjectScript1
 
@@ -72,37 +72,37 @@ The following code shows a negative object model:
 ObjectScript1
 -------------
 
-"ObjectScript1" is a textual notation for UML `object diagrams`_.
-Object script is a restricted version of the `USE OCL`_
-SOIL language. In the context of `USE OCL`_ the
-``.soil`` extension is usually  used, but here the ``.ob1`` is used
-for object scripts.
-
+**ObjectScript1** est une notation textuelle pour écrire des
+`diagrammes d'objets`_ UML.
+ObjectScript1 est une version réduite du langage SOIL (`USE OCL`_).
+L'extension ``.ob1`` est utilisée à la place de l'extension ``.soil``.
 
 Concepts
 --------
 
-Object models are based on the following concepts:
+Les modèles d'objets sont basés sur les concepts suivants :
 
-*   enumeration values,
-*   objects,
-*   attribute values,
-*   links,
-*   link objects,
-*   annotated texts,
-*   violations.
+*   les valeurs d'énumérations,
+*   les objets,
+*   les valeurs d'attributs,
+*   les liens,
+*   les objets-liens,
+*   les textes annotés,
+*   les violations.
 
-Enumeration values
-------------------
+Valeur d'énumérations
+---------------------
+
+ObjectScript1 (basé sur USE OCL):
 
 ..  code-block:: ObjectScript1
 
     Season::winter
 
-Objects
--------
+Objets
+------
 
-ObjectScript (USE OCL):
+ObjectScript1 (basé sur USE OCL):
 
 ..  code-block:: ObjectScript1
 
@@ -110,10 +110,10 @@ ObjectScript (USE OCL):
     ! bob.nom := 'bob'
     ! bob.dateDeNaissance := '21/10/1994'
 
-Links
+Liens
 -----
 
-ObjectScript (USE OCL):
+ObjectScript1 (basé sur USE OCL):
 
 ..  code-block:: ObjectScript1
 
@@ -121,15 +121,15 @@ ObjectScript (USE OCL):
     ! insert(tian,c232) into Owns
 
 
-UML object diagram:
+Diagramme d'objets UML :
 
 ..  image:: media/USEOCLAssociationSOIL.png
     :align: center
 
-Link objects
-------------
+Objet-liens
+-----------
 
-Object Script (USE OCL):
+ObjectScript1 (basé sur USE OCL):
 
 ..  code-block:: ObjectScript1
 
@@ -137,8 +137,11 @@ Object Script (USE OCL):
     ! c.reason := "kaa is really mean"
     ! c.intensity = 1000
 
-Annotated Texts
----------------
+Textes annotés
+--------------
+
+ObjectScript1
+
 
 ..  code-block:: ObjectScript1
 
@@ -165,96 +168,110 @@ Annotated Texts
 Violations
 ----------
 
-Violations are errors raised by a given object model. Violations are
-déclared using the ``violates`` keyword. There are to kinds of violations:
+Les violations sont des erreurs produites par un
+modèle d'objets appelé "modèle d'objets négatifs". Les violations sont
+déclarées à l'aide du mot clé ``violates``. Il y a deux genres de
+violations ;
 
-*   **Cardinality violations**. This occurs when the cardinality
-    associated to a given object is lower or higher that the minimal
-    or maximal cardinality of a role. Cardinality violations might look
-    like this::
+*   **Violations de cardinalités**. Une telle violation se produit
+    soit lorsque la cardinalitée effective associée à un role est
+    supérieure à la cardinalité maximale déclarée,
+    soit lorsque la cardinalité effective est inférieure à la
+    cardinalité minimale. Voici deux exemples possibles de violations : ::
 
         --@ violates EstResponsableDe.responsable.min
         --@ violates Dirige.directeur.max
 
-    In this exemple ``EstResponsableDe`` and ``Dirige`` are associations.
-    ``responsable``, ``directeur`` are roles. ``min`` and ``max`` refer
-    to the minimal and maximal cardinality associated with the role.
+    Dans cet exemple ``EstResponsableDe`` et ``Dirige`` sont des
+    associations. ``responsable``, ``directeur`` sont des rôles.
+    ``min`` et ``max`` font référence à la cardinalité minimale et
+    maximale associées aux rôles.
 
-*   **Constraint violations**. This occurs when a constraint is violated
-    by one or more objects. A cardinality violation might look like this::
+*   **Violations de contraintes**. Ces violations se produisent
+    lorsqu'un ou plusieurs objets violent une contrainte. Voici un
+    exemple de contrainte de violations : ::
 
         --@ violates DirecteurAdulte
 
-    In this example ``DirecteurAdulte`` is a constraint defined in the
-    class model.
+    Dans cet exemple ``DirecteurAdulte`` est une contrainte définie
+    dans le modèle de classes.
+
+    NOTE: les violations de contraintes ne sont détectées par l'outil
+    USE OCL uniquement si la contrainte est définie en OCL.
 
 
-Tooling
--------
+Outils
+------
 
-.. _AnalyzingObjectModels:
+.. _AnalyseDesModelesDObjets:
 
-Analyzing models
-''''''''''''''''
+Analyse des modèles d'objets
+''''''''''''''''''''''''''''
 
-The conformity of object models with class models can be checked with
-the `USE OCL`_ tool.
-When using the :ref:`ModelScript Method<ModelScriptMethod>`
-enter the following command line in a terminal (assuming that the current
-directory is the root directory of the modeling project and that
-the name of the object model is o<N> where <N> is an integer):
+La conformité des modèles d'objets vis à vis du modèle de classes
+peut être vérifiée avec l'outil `USE OCL`_. Lorsque la
+:ref:`méthode ModelScript<ModelScriptMethod>` est utilisée entrer la
+commande suivante dans un terminal (on suppose que le répertoire courant
+est le répertoire racine du projet de modélisation) :
 
 ..  code-block:: none
 
     use -qv concepts/classes/classes.cl1 concepts/objets/o<N>/o<N>.ob1
 
-The analyser check that there is no syntax errors,  no type errors,
-no cardinality errors, etc.
-If no errors are displayed, then both models are correct
-and they are aligned.
+L'analyseur vérifie qu'il n'y a pas d'erreurs de syntaxe, pas d'erreurs
+de type, pas d'erreurs de cardinalités et pas d'erreurs de contraintes.
+Si aucune erreur n'est affichée alors les deux modèles sont corrects et
+sont alignés.
 
-The location of errors are not always displayed. It this is the case it
-might be useful to use the following command:
+..  note::
 
-..  code-block:: none
+    Si des violations sont définies (instructions ``@violates``) le
+    modèle d'objets doit produire les erreurs escomptées. Cette
+    vérification n'est pas automatisée. Il faut donc vérifier
+    "manuellement" que toutes les erreurs mentionnées sont effectivement
+    produites.
+
+La localisation des erreurs n'est parfois pas indiquée clairement. Si
+ce problème apparaît utiliser l'interpreteur USE en utilisant la commande
+suivante : ::
 
     use -nogui concepts/classes/classes.cl1 concepts/objets/o<N>/o<N>.ob1
 
-This will launch the interpreter. To quit use the ``quit`` command :
+Si l'objectif est de vérifier les cardinalités utiliser ensuite la commande
+use ``check`` ou ``check -v``. Terminer finalement avec la command ``quit``
+ou ``Ctrl C`` pour sortir de l'interpréteur.
 
-..  code-block:: none
 
-    use> quit
+.. _GenerationDeDiagrammesDObjets:
 
-.. _GeneratingObjectDiagrams:
+Génération de diagrammes
+''''''''''''''''''''''''
 
-Generating diagrams
-'''''''''''''''''''
-
-Creating UML object diagrams is possible using the `USE OCL`_ tool:
+Créer des diagrammes d'objets est possible en utilisant l'outil `USE OCL`_.
 
 ..  code-block:: none
 
     use -nr concepts/classes/classes.cl1 concepts/objets/o<N>/o<N>.ob1
 
-Refer to the page "`creating UML object diagrams`_" for more information.
+Se référer à la page "`creating UML object diagrams`_" pour plus
+d'information.
 
-When using the :ref:`ModelScript Method<ModelScriptMethod>` the
-layout of the object diagram have to be saved in the file
-``concepts/objets/O<N>/diagrammes/o<N>.obd.clt``. The diagram has to be
-saved in the file ``concepts/objets/O<N>/diagrammes/O<N>.obd.png``.
+La disposition (layout) du diagramme doit être sauvé dans le fichier
+``concepts/objets/O<N>/diagrammes/o<N>.obd.clt``. Une copie d'écran
+doit être effectuée et sauvé dans
+``concepts/objets/O<N>/diagrammes/O<N>.obd.png``.
 
 
-Dependencies
-------------
+Dépendances
+-----------
 
-The graph below show all language depdencies.
+Le graphe ci-dessous montre les dépendances entre langages.
 
 ..  image:: media/language-graph-obs.png
     :align: center
 
 ..  _`USE OCL`: http://sourceforge.net/projects/useocl/
 
-..  _`object diagrams`: https://www.uml-diagrams.org/class-diagrams-overview.html#object-diagram
+..  _`diagrammes d'objets`: https://www.uml-diagrams.org/class-diagrams-overview.html#object-diagram
 
 .. _`creating UML object diagrams`: https://scribestools.readthedocs.io/en/latest/useocl/index.html#creating-diagrams
