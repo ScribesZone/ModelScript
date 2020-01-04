@@ -10,11 +10,16 @@
 GlossaryScript
 ==============
 
-Examples
+Exemples
 --------
 
-A complete, yet meaningless, example of glossary is given below. Note
-that many terms should be defined as they are referenced in definitions.
+L'exemple ci-dessous n'a aucun sens. Il est seulement utilisé
+pour illustrer la syntaxe du langage GlossaryScript.
+
+..  note::
+
+    Le glossaire fourni ci-dessous n'est pas complet. Certaines
+    définitions sont manquantes bien qu'elles soient référencées.
 
 ..  code-block:: GlossaryScript
 
@@ -59,11 +64,14 @@ that many terms should be defined as they are referenced in definitions.
 GlossaryScript
 --------------
 
-The ``GlossaryScript`` language, as defined below, allows to express
-*glossaries*. Various glossaries can be defined (for instance
-a domain glossary and a technical glossary) but all glossaries
-are defined in the same file. Packages can be used to split this file.
-Glossary scripts are to be save with the ``.gls`` extension.
+Le langage ``GlossaryScript``, tel que défini ci-dessus par l'exemple,
+permet d'exprimer des *glossaires*. Plusieurs glossaires peuvent
+être défini dans un même modèle. Par exemple il est possible de définir
+un glossaire de domaine bancaire et à coté de cela un glossaire technique
+définissant les termes de J2EE. Tous les glossaires sont définis dans
+le même fichier. La notion de paquetage (packages) permet de séparer ce
+fichier en plusieurs glossaires.
+Les scripts GlossaryScript ont l'extension ``.gls``.
 
 .. index:: ! Glossary
 
@@ -71,30 +79,39 @@ Glossary scripts are to be save with the ``.gls`` extension.
 Concepts
 --------
 
-A **glossary** is a collection of **entries** optionally organized into
-**packages**. The goal of a **glossary** is to define all **terms**
-used in the context of a given project.
+Un **glossaire** est une collection d'**entrées** optionnellement
+organisée en **paquetages**. Le but d'un glossaire est de définir
+tous les **termes** utilisés dans le contexte d'un projet donné.
 
-In essence a **glossary** is:
+Un **glossaire** est composé de :
 
-*   a set of **entries** composed by a **main term** and
-    **alternative terms** (**synonyms**, **abbreviations**, etc.)
+*   un ensemble d'**entrées** composé d'un **terme principal**
+    ainsi que de **termes alternatifs** (**synonymes**,
+    **abbréviations**, etc.),
 
-*   the definition of relationships between all these **terms**,
+*   la définition des relations entre ces différents termes,
+
+*   une définition pour chaque entrée, définition pouvant faire
+    référence aux différents termes du glossaire.
 
 .. index:: ! Entry
     single: Term
     single: Term; Main term (term)
 
-Entries
+Entrées
 -------
 
-An **entry** is basically:
+Une **entrée** est essentiellement :
 
-* a selected **main term** (e.g. ``Fil`` in the example below)
-* a set of **alternative terms** (**synonyms**, **abbreviations**, etc.),
-* a **definition** that fits for all the **terms**,
-* some optional textual représentation **translations**.
+*   un **terme principal** (p.e. ``Fil`` dans l'exemple ci-dessous)
+
+*   un ensemble de **termes alternatifs** (**synonymes**, **abbréviations**,
+    etc.)
+
+*   une **définition** qui correspond bien à l'ensemble des termes,
+
+*   un ensemble optionnel de **traductions** définissant pour différents
+    **langages** la représentation concrète de l'entrée.
 
 ..  code-block:: GlossaryScript
 
@@ -110,16 +127,30 @@ An **entry** is basically:
             es: "conversacion"
     ...
 
-The **main term** (``Fil`` here) is the one that is expected to be
-referenced in technical texts.
+Le **terme principal** (``Fil`` ici) est celui sensé être référencé :
+
+*   dans le reste du glossaire,
+
+*   et dans les textes techniques lorsque ceux-ci sont réécrits avec le
+    glossaire.
+
+..  note::
+
+    Un même mot peut parfois avoir plusieurs acceptions (plusieurs
+    significations). Si c'est le cas numéroter les termes principaux pour
+    chaque acception. Par exemple ``Fil1`` et ``Fil2`` peuvent
+    correspondre à deux acceptions du mot Fil. Les différentes occurrences
+    du mot Fil dans les différents textes devront bien évidemment être
+    remplacées par ``Fil1`` ou ``Fil2`` .
 
 .. index::
     single: Synonym
     single: Term; Synonym (term)
 
-synomys
-'''''''
-Various synonyms can be associated to an entry:
+Synonymes
+'''''''''
+
+Plusieurs synonymes peuvent être associés à une entrée :
 
 ..  code-block:: GlossaryScript
 
@@ -128,21 +159,21 @@ Various synonyms can be associated to an entry:
         | ...
         synonyms: Discussion, FilDeDiscussion
 
-Synonyms are terms that
-that have the same meaning of the main term, but that come in different
-forms. For instance the terms ``Discussion`` and ``Fil`` are said to be
-synonym in the example above.  But ``Fil`` being the main term,
-all occurrences of ``Discussion`` are expected to be substituted by
-``Fil``.
+Les **synonymes** sont des termes qui ont la même signification que
+le terme principal. Par exemple dans l'exemple ci-dessus
+``Discussion`` et ``Fil`` ont la même signification, mais ``Fil`` est le
+terme principal. Cela signifie que toutes les occurrences de ``Discussion``
+dans les textes devraient être remplacées par ``Fil``.
 
 .. index:: Inflection
     single: Term ; Inflection (term)
 
 
-inflections
-'''''''''''
-*Inflections* are derivatives of the *main term*, such as plural forms,
-forms with different genders, verbal vs. nominal form, and so one:
+Inflexions
+''''''''''
+Les **inflexions** sont des dérivations du terme principal, tel que
+pluriels, formes avec des genres différents, formes verbales vs.
+nominales, conjugaisons, etc.
 
 ..  code-block:: GlossaryScript
 
@@ -151,18 +182,19 @@ forms with different genders, verbal vs. nominal form, and so one:
         | ...
         inflections: Fils
 
-By contrast with *synonyms* *inflections* are regular variations
-of the *main term* and are not expected to be replaced by this very term.
+Au contraire des synonymes les inflexions sont des variations "normales"
+du terme principal et ne sont pas supposées être remplacé par celui-ci.
 
 .. index:: Translation
     single: Term ; Translation (term)
 
-translations
-''''''''''''
-While an *entry* is defined by its *main term*, this *entry* can possess
-various *translations*. Each *translation* is defined by:
-* the natural language used for the translation (encode using iso-639)
-* the translation string.
+Traductions
+'''''''''''
+Alors qu'une entrée est définie par son terme principal, cette entrée peut
+posséder plusieurs **traductions**. Chaque traduction est définie par :
+
+* la langue utilisée pour la traduction (encodée en iso-639),
+* la chaîne de caractères correspondant à la traduction.
 
 ..  code-block:: GlossaryScript
 
@@ -175,27 +207,29 @@ various *translations*. Each *translation* is defined by:
 
 .. index:: Package
 
-Packages
---------
+Paquetages
+----------
 
-A set of *entries* can be separated into different *packages* using the
-``package`` keyword followed by the package identifier.
+Un ensemble d'entrées peut être scindé en plusieurs **paquetages** en
+utilisant le mot clé ``package`` suivi du nom de paquetage. Deux
+possibilités sont offertes par ModelScript : (1) utiliser le mot clé de
+manière globale suivi d'un ensemble d'entrées, ou (2) d'indiquer pour
+chaque entrée le paquetage à laquelle elle appartient.
 
 .. index::
     single: Package; Toplevel package
     single: Toplevel package
 
-Toplevel packages
-'''''''''''''''''
+Paquetages globaux
+''''''''''''''''''
 
-All *entries* after the ``package`` keyword and until the next one go
-to the specified *package*. Moreover the *entries* before go to the
-default "unamed" package. Note that to save space *entries* and *packages*
-are at the same indent level.
+Toutes les entrées entre un mot clé ``package`` et le suivant sont
+rangées dans ce paquetage. De plus toutes les entrées avant le premier
+mot clé ``package`` font partie du paquetage ``unamed``.
 
-A common usage for *packages* is to define various "sub glossary".
-For instance the example below shows how to define a "DomainGlossary"
-and a "TechnicalGlossary".
+..  note::
+    Pour éviter une indentation supplémentaire les entrées et les
+    paquetages sont définis au même niveau.
 
 ..  code-block:: GlossaryScript
 
@@ -230,13 +264,13 @@ and a "TechnicalGlossary".
     single: Package; Inline package
     single: Inline package
 
-Inline packages
-'''''''''''''''
+Paquetages en ligne
+'''''''''''''''''''
 
-Note that an *entry* can be assigned to a particular *package*
-using the ``package`` keyword. In that case the specification
-overrides the current package. For instance in the following
-example the entry One is in package ``Numbers``:
+Une entrée peut être à n'importe quel moment associée à un
+paquetage particulier, existant ou non. Il suffit d'utiliser pour
+cela le mot clé ``package`` à l'intérieur de l'entrée ; voir
+par exemple ``Numbers`` ci-dessous :
 
 ..  code-block:: GlossaryScript
 
@@ -251,21 +285,24 @@ example the entry One is in package ``Numbers``:
     Beta
 
 
-.. _GlossaryScript_Rules:
+.. _GlossaryScript_Regles:
 
-Rules
------
+Règles
+------
 
 Les règles suivantes doivent être appliquées dans l'élaboration
-des glossaires.
+des glossaires :
 
 *   Dans les définitions, les références à d'autres termes du
-    glossaire doivent être entre backquotes (p.e. `Backquote`).
+    glossaire doivent être entre backquotes (p.e. ```Backquote```).
     Ces termes doivent être définis.
 
-*   Les définitions doivent commencer par une forme nominale ;
+*   Dans les textes les mots sans ```Backquote``` font référence
+    aux mots du dictionnaire. Les deux peuvent cohéxister.
+
+*   Les définitions doivent normallement commencer par une forme nominale,
     tout comme dans un dictionnaire. La définition
-    *"Singe : Animal ..."* est adaptée. Le premier terme ("Animal" ici)
+    ``"Singe : Animal ...`` est adaptée. Le premier terme ("Animal" ici)
     peut faire partie du glossaire entre backquotes ou être un terme
     d'usage courant (sans backquotes).
 
@@ -276,14 +313,14 @@ des glossaires.
     courant. Mettre "Personne" dans le glossaire s'il s'agit d'un
     terme spécifique au projet.
 
-.. _GlossaryScript_RewritingTexts:
+.. _GlossaryScript_Reecriture:
 
-Rewriting texts
----------------
+Réécriture de textes
+--------------------
 
 Au fur et à mesure qu'un glossaire est défini, il faut réécrire les
-texte utilisant "informellement" le glossaire. En pratique pour chaque
-terme appraissant dans un texte il faut déterminer s'il s'agit :
+textes utilisant "informellement" le glossaire. En pratique pour chaque
+terme apparaissant dans un texte il faut déterminer s'il s'agit :
 
 *   d'un terme d'usage général : aucune action n'est nécessaire.
 
@@ -293,51 +330,52 @@ terme appraissant dans un texte il faut déterminer s'il s'agit :
     il faut alors créer une référence (entre backquotes) vers ce terme.
 
 *   d'un synonyme déjà défini : il faut le remplacer par le terme
-    principal.
+    principal entre .
 
 Ce travail de réécriture / définition du glossaire est bien évidemment
 itératif. L'objectif final est d'obtenir des textes les moins ambigüs
 et plus cohérents possible avec le glossaire.
 
 
-.. _GlossaryScript_RewritingIdentifiers:
+.. _GlossaryScript_ReecritureDIdentificateurs:
 
-Rewriting identifiers
----------------------
+Réécriture des identificateurs
+------------------------------
 
 La plupart des identificateurs (UML, Class, Java, SQL, etc.) devraient
-faire référence à un ou plusieurs terme d'un glossaire du domaine
-et/ou technique. C'est le cas par exemple pour l'identificateur suivant:
+faire référence à un ou plusieurs termes d'un glossaire du domaine
+et/ou technique. C'est le cas par exemple pour l'identificateur suivant :
 
     getCartLayout
 
-Le term ``Cart`` provient sans doute du glossaire du domaine alors que
+Le terme ``Cart`` provient sans doute du glossaire du domaine alors que
 ``Layout`` peut provenir d'un domaine technique correpondant à un
 framework utilisé.
 
-Dans certains cas des abbréviations sont utilisés pour obtenir des
-identificateurs plus cours. Celles-ci doivent être ajoutées dans le
-glossaire technique (e.g. ``DAO``) ou dans le glossaire de domaine
-(``num`` pour ``numero``). Le glossaire doit assurer l'usage des termes
-de manière homogéne est consistante dans tous les modèles et dans tous
+Dans certains cas des abbréviations sont utilisées pour obtenir des
+identificateurs plus courts. Celles-ci doivent être ajoutées dans le
+glossaire technique (p.e. ``DAO``) ou dans le glossaire de domaine
+(``num`` pour ``numéro``). Le glossaire doit assurer l'usage des termes
+de manière homogéne et consistante dans tous les modèles et dans tout
 le code.
 
-Un identificateurs qui ne fait référence ni au domaine ni aux
-aspects techniques, est sujet a suspiscion.
+Un identificateur qui ne fait référence ni au domaine ni aux
+aspects techniques est sujet à suspicion.
 
-Dans tous les cas il est fondamental lorsque les glossaires chanqent
-ou lorsque de nouveaux indentificateurs sont définis, de s'assurer de
-l'alignement entre glossaire et autre artefacts.
+Dans tous les cas il est fondamental, lorsque les glossaires changent
+ou lorsque de nouveaux identificateurs sont définis, de s'assurer de
+l'alignement entre glossaire et les autres artefacts.
 
-Dependencies
-------------
+Dépendances
+-----------
 
-The graph below show all language depdencies. As it can be seen the
-glossary depend on all requirement documents. This is due to the fact
-that the glossary is extracted from these documents. On the opposite
-direction it is worth noticing that all artefacts depends on the glossary.
-This is due to the fact that all scripts/artefacts may contain
-documentations based on the glossary terms as well as identifiers.
+Le graphe ci-dessous montrent les dépendances entre langages et en
+particulier avec le glossaire. Comme on peut le voir le glossaire
+dépend de tous les éléments issus de la capture des besoins.
+Le glossaire est en fait extrait des différents documents existants.
+Dans la direction opposée tous les modèles dépendent du glossaire
+dans la mesure où tous ces modèles peuvent avoir de la documentation
+et sont certainement basés sur des identificateurs.
 
 ..  image:: media/language-graph-gls.png
     :align: center
