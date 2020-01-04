@@ -11,10 +11,11 @@ UsecaseScript
 =============
 
 
-Examples
+Exemples
 --------
 
-A **preliminary usecase model** might look like the following:
+Un **modèle préliminaire de cas d'utilisation** pourrait ressembler
+à l'exemple ci-dessous :
 
 ..  code-block:: UsecaseScript
 
@@ -57,7 +58,8 @@ A **preliminary usecase model** might look like the following:
 
     ...
 
-A **detailled usecase** might look like the following:
+Un **modèle détaillé de cas d'utilisation** pourrait ressembler à
+l'exemple ci-dessous.
 
 
 ..  code-block:: UsecaseScript
@@ -142,28 +144,37 @@ A **detailled usecase** might look like the following:
 UsecaseScript
 -------------
 
-UsecaseScript makes it possible to represent usecase models.
+UsecaseScript permet le développement incrémental des modèles de cas
+d'utilisation avec en particulier :
+
+*   les **modèles préliminaires**. Les cas d'utilisation sont décrits
+    de manière synthétique.
+
+*   les **modèles détaillés**. La description des cas d'utilisation
+    est complète, avec pour chaque cas d'utilisation des scénarios
+    d'exécution.
+
+Notons que dans tous les cas les acteurs et les personnages sont
+décrits (de manière plus ou moins détaillée) dans le modèle de
+participants.
 
 Concepts
 --------
 
-Usecase models are based on the following concepts:
+Les modèles de cas d'utilisation sont basés sur les concepts suivants :
 
-* **actors** (imported from the participants model)
-* **usecases**
-* **interactions**
+*   les **acteurs**. Ils sont en principe définis dans les modèles
+    de participants.
 
-.. index:: UsecaseScript
-    single: Script; UsecaseScript
+*   les **cas d'utilisation**.
 
+*   les **interactions**.
 
-.. index:: Actor
-    single: Usecase; Actor (Usecase)
-
-Dependencies
+Dépendances
 ------------
 
-The graph below show all language depdencies.
+Le graphe ci-dessous montre les différentes dépendances entre langages
+et en particulier celles reliées au langage UsecaseScript.
 
 ..  image:: media/language-graph-uss.png
     :align: center
