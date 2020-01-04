@@ -10,7 +10,7 @@
 ParticipantScript
 =================
 
-Examples
+Exemples
 --------
 
 ::
@@ -169,23 +169,24 @@ Examples
 ParticipantScript
 -----------------
 
-The participant model aims to define all kinds of participants involved
-somehow in the software project. This could be either because they
-will *use* the system or because they are implicated in its design.
+Le modèle de participants a pour but de définir les différents types
+de participants impliqués d'une manière ou d'une autre dans le projet
+et le logiciel. Cela peut être soit parcequ'un participant utilise le
+logiciel soit parcequ'il est impliqué dans sa conception.
 
 Concepts
 --------
 
-* actors
-* stakeholders
-* team role
-* person
-* persona
+* les acteurs,
+* les parties prenantes,
+* les rôle,
+* les personnes,
+* les personnages.
 
-Dependencies
-------------
+Dependances
+-----------
 
-The graph below show all language depdencies.
+Le graphe ci-dessous montre les dépendances entre langages.
 
 ..  image:: media/language-graph-pas.png
     :align: center
