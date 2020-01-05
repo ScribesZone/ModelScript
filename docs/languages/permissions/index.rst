@@ -11,7 +11,7 @@
 PermissionScript
 ================
 
-Examples
+Exemples
 --------
 
 Version anglaise
@@ -37,13 +37,14 @@ Version française
     import class model from '../classes/classes.cl1'
     import usecase model from '../usecase/usecase.uss'
 
-    EmbaucherUnEmploye peut creer Employe, EstEmployeeDans
+    EmbaucherUnEmploye peut créer Employe, EstEmployeeDans
     EmbaucherUnEmploye peut lire, modifier Compagnie.budget, Compagnie.quota
-    LicencierUnEmploye peut detruire Employe
+    LicencierUnEmploye peut détruire Employe
     Responsable, Secretaire peut L Employee.salary
     Directeur peut lire, modifier Employee.salary
 
 ..  note::
+
     * ``can`` peut être remplacé par ``peut``.
     * Les actions peuvent être abbréviées ou pas ("C" ou "create").
     * Les actions peuvent être traduites. Voir la section actions_.
@@ -77,28 +78,36 @@ Sujets
 
 Un **sujet** est soit:
 
-*   un **acteur** (provenant du :ref:`modèle de participants<ParticipantScript>`),
+*   un **acteur** (provenant du
+    :ref:`modèle de participants<ParticipantScript>`),
     par exemple ``Directeur``,
-*   un **cas d'utilisation** (provenant du :ref:`modèle de cas d'utilisation<UsecaseScript>`),
+
+*   un **cas d'utilisation** (provenant du
+    :ref:`modèle de cas d'utilisation<UsecaseScript>`),
     par exemple ``CreerUnDepartement``.
 
-Si un **acteur** peut réaliser une action sur une ressource_ alors
-tous les cas d'utilisation associés à cet acteur peuvent réaliser cette
-action.
 
-Exemple : ::
+..  commentaire LA REGLE DE TRANSITIVITE DOIT ETRE REVUE
+    ELLE EST ICI A L'ENVERS
 
-    -- Directeur peut CreerUnDepartement   (vient du modèle de cas d utilisation)
-    -- Directeur peut AugmenterUnEmploye   (vient du modèle de cas d utilisation)
+    Si un **acteur** peut réaliser une action sur une ressource_ alors
+    tous les cas d'utilisation associés à cet acteur peuvent réaliser cette
+    action.
 
-    Directeur peut modifier Employe.salaire           (modèle de permission)
+    Exemple : ::
 
-Dans cet exemple les deux cas d'utilisation ``CreerUnDepartement``
-et ``AugmenterUnEmploye`` peuvent modifier l'attribut ``salaire`` de la
-classe ``Employee``.
+        -- Directeur peut CreerUnDepartement   (vient du modèle de cas d utilisation)
+        -- Directeur peut AugmenterUnEmploye   (vient du modèle de cas d utilisation)
+
+        Directeur peut modifier Employe.salaire           (modèle de permission)
+
+    Dans cet exemple les deux cas d'utilisation ``CreerUnDepartement``
+    et ``AugmenterUnEmploye`` peuvent modifier l'attribut ``salaire`` de la
+    classe ``Employee``.
 
 Actions
 -------
+..  commentaire LA REGLE DE TRANSITIVITE DOIT ETRE RE
 
 Les actions correspondent essentiellement au modèle CRUD (voir wikipedia_).
 Les actions peuvent être écrites en entier ou sous forme abbréviées,
@@ -107,11 +116,11 @@ en anglais ou en français.
 ================= =====================
 En anglais        En français
 ================= =====================
-C / create        C / creer
+C / create        C / créer
 R / read          L / lire
 U / update        M / modifier
-D / delete        D / detruire
-X / execute       X / executer
+D / delete        D / détruire
+X / execute       X / exécuter
 ================= =====================
 
 La signification des opérations dépend des ressources. Voir la section
@@ -122,7 +131,7 @@ ressources_.
 Ressources
 ----------
 
-Pour un modèle de classe une **resource** est soit :
+Pour un modèle de classe une **ressource** est soit :
 
 * une **classe**, par exemple ``Employe``,
 * un **attribut**, par exemple ``Employe.salaire``,
@@ -132,14 +141,15 @@ Pour un modèle de classe une **resource** est soit :
 
 Le type de ressources définit les actions autorisées :
 
-*   l'opération **create**/**creer** s'applique à une classe ou à une association.
-    Par exemple ``creer Employe`` ou ``creer EstEmployePar``. Créer un
+*   l'opération **create**/**créer** s'applique à une classe ou à une association.
+    Par exemple ``créer Employe`` ou ``créer EstEmployePar``. Créer un
     attribut, un role ou une opération ne fait pas de sens.
+
 *   l'operation **read**/**lire** s'applique à un attribut ou à un role. Par
     exemple ``lire Employe.salaire`` ou ``lire Employe.responsable``.
 
     *   Lorsque cette action est associée à une classe (par exemple
-        ``lire Employe`` alors n'importe quel attribut peut être attribut
+        ``lire Employe`` alors n'importe quel attribut
         de la classe peut être lu (dans l'exemple l'accès est donné
         à tous les attributs de la classe ``Employe``).
     *   Lorsque cette action est associée à une association (par exemple
@@ -148,8 +158,10 @@ Le type de ressources définit les actions autorisées :
 
 *   l'opération **update**/**modifie** s'applique à un attribut
     (ou à une classe, de manière analogue à **read**/**lire**).
-*   l'opération **delete**/**delete** s'applique à une classe ou à association
-*   l'opératop, **execute**/**executer** s'applique à une operation uniquement.
+
+*   l'opération **delete**/**détruire** s'applique à une classe ou à association
+
+*   l'opératop, **execute**/**exécuter** s'applique à une operation uniquement.
 
 
 ============  ======== ========= ========= =========== =====
@@ -165,7 +177,7 @@ execute                              X
 
 ..  _PermissionScript_Methode:
 
-Methode
+Méthode
 -------
 
 Les tâches listées par la suite ne peuvent que difficilement être réalisées
@@ -181,7 +193,7 @@ Dans la méthode "classes en premier" il s'agit de partir d'un modèle de
 classes, de lister chaque classes, attributs et associations, et dans
 chaque cas de répondre à la question *"qui change telle ou telle ressource ?"*.
 Le résultat pourrait être comme ci-dessous (résultats "triés" par la
-deuxième colonne") : ::
+deuxième colonne) : ::
 
 
            ...  peut C Departement
@@ -198,7 +210,7 @@ Participants en premier
 '''''''''''''''''''''''
 
 Considèrer le modèle de participants en premier revient à répondre à la
-question *"que peut faire tel ou tel acteur ?"** : ::
+question *"que peut faire tel ou tel acteur ?"* : ::
 
     Directeur peut C ...
     Directeur peut R ...
@@ -237,13 +249,13 @@ produisant d'abord une matrice listant d'un coté toutes les resources
 (classes, etc.) et de l'autre tous les sujets (acteurs, etc.).
 Il s'agit ensuite de répondre pour chaque élément de la matrice à la
 question *"quelles actions peut être réalisées par ce sujet sur cette
-ressource"*
+ressource"*.
 
 
-Dependencies
-------------
+Dépendances
+-----------
 
-The graph below shows all language dependencies.
+Le graphe ci-dessous montre les dépendances entre langages.
 
 ..  image:: media/language-graph-pes.png
     :align: center
