@@ -51,7 +51,7 @@ description pour chaque acteur.
 (B) Décomposition
 -----------------
 
-Chaque scénario "à plat" doit ensuite être décomposé sous forme d'une
+Chaque scénario état doit ensuite être décomposé sous forme d'une
 série d'instances de cas d'utilisation. Autrement dit il s'agit de
 repérer dans le texte des scénarios quels cas d'utilisation
 sont mis en oeuvre.
@@ -133,7 +133,7 @@ Il s'agit de :
 (D) Texte
 ---------
 
-Le texte fourni initialement et qui a donné lieu au scénario états doit,
+Le texte fourni initialement et qui a donné lieu au scénario état doit,
 dans certains cas, être remanié. Par exemple de déplacement de blocks
 contextuels en début de scénario peut impliquer un remaniement de certaines
 phrases. Il en est de même lorsque les limites des scénarios sont établies.
@@ -159,7 +159,7 @@ L'exemple ci-dessous résume le processus global :
 ::
 
     =========================== =========================================
-      AVANT: Scénario (états)        APRES: Scénario (cas d'utilisation)
+      AVANT: Scénario (état)        APRES: Scénario (cas d'utilisation)
     =========================== =========================================
 
                                 Modele de participant (participant.pas)
@@ -214,7 +214,7 @@ Vérifier que le scénario est encore aligné avec le modèle de classes. ::
 
     use -qv Classes/classes.cls Scenarios/n/scenario.scn
 
-Cette vérification a été faite précédemment avec le scénario états
+Cette vérification a été faite précédemment avec le scénario état
 mais il s'agit là de vérifier que la transformation ci-dessus n'a pas
 généré de problèmes supplémentaires. Ce peut être le cas si le
 réordonnancement des instructions n'est pas correct.
