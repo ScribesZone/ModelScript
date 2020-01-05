@@ -21,7 +21,7 @@ Pour écrire le modèle utiliser la documentation du langage
 Eventuellement un modèle est peut être fourni, soit
 sous forme textuelle dans le fichier ``concepts/classes/classes.cl1``,
 soit sous forme de diagramme dans le répertoire
-``concepts/classes/diagrammes``. Dans les deux cas il s'agit de completer
+``concepts/classes/diagrammes``. Dans les deux cas il s'agit de compléter
 et/ou de corriger le modèle à partir des éléments fournis.
 
 Le modèle de classes doit *in fine* être développé en fonction :
@@ -59,11 +59,8 @@ Il est sans doute nécessaire de le définir s'il ne correspond pas à
 une définition de sens commun. D'ailleurs le terme à définir est peut
 être "Retour".
 
-.. A AJOUTER QUAND LES FAUTES SERONT CORRIGEES
-    -------------------------------------------------------------------
-    -------------------------------------------------------------------
-    Lire et appliquer les
-    :ref:`règles associées à la réécriture d'identificateurs <GlossaryScript_RewritingIdentifiers>`.
+Lire et appliquer les
+:ref:`règles associées à la réécriture d'identificateurs <GlossaryScript_ReecritureDIdentificateurs>`.
 
 (Z) Suivi et status
 -------------------
