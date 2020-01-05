@@ -10,7 +10,7 @@
 RelationScript
 ==============
 
-Examples
+Exemples
 --------
 
 ::
@@ -19,7 +19,7 @@ Examples
     import glossary model from '../glossaries/glossaries.gls'
     import qa model from '../qa/relations.qas'
 
-    relation Employee(_firstname_, salary, address, department)
+    relation Employee(firstname_, salary, address, department)
         | All the employee in the store.
         intention
             (n, s, a, d) in Employee <=>
@@ -36,7 +36,7 @@ Examples
             firstname -> salary
             firstname -> address, department
 
-    relation Leaders(_department_:String, boss:s)
+    relation Leaders(department_:String, boss:s)
         | The department leaders.
         intention
             (p, d) in Leaders <=>
@@ -83,77 +83,83 @@ Examples
 RelationScript
 --------------
 
-RelationScript allows to express "schemas_" in the sense of the
-`relational data model`_.
+Le langage RelationScript permet d'exprimer des "schemas_" au sens du
+`modèle relationnel`_.
 
 .. note::
-    Note that the term "relation model" should not
-    be confused with "relational data model". A relation model defines
-    relations, just like usecase models defines usecases, class models
-    defines classes, object models defines objets, and so on.
+
+    Attention, le terme "modèle de relations" ne doit pas être confondu
+    avec le terme `modèle relationnel`_. Un modèle de relations
+    permet de définir des relations, tout comme un modèle de cas
+    d'utilisation définit des cas d'utilisation, un modèle de classes
+    définit des classes, etc.
 
 Concepts
 --------
 
-RelationScript is based on the following concepts:
+Le langage RelationScript est basé sur les concepts suivants :
 
-* schema (called relation model),
-* relations,
-* columns,
-* key and foreign keys,
-* constraints on domains,
-* functional dependencies.
-* normal forms,
-* datasets,
-* queries.
+* les schémas, appelés modèles de relations, (relation models),
+* les relations (relations),
+* les colonnes (columns),
+* les clés et les clés étrangères (keys et foreign keys),
+* les contraintes (constraints),
+* les dépendences fonctionnelles (functional dependencies),
+* les formes normales (normal forms),
+* les jeux de données (data sets),
+* les requêtes (queries).
 
 Relations
 ---------
 
-Declaration of relations can expressed in a single line using the simple
-notation typically used in textbooks. Column names are separated
-by commas. While key attributes, usually underlined in textbooks,
-are here enclosed in underscores such as ``_a_``).
+Les relations peuvent être déclarées sur une seule ligne, en utilisant
+la notation simple que l'on trouve typiquement dans les livres ; par
+exemple : ::
 
-::
+    R(x_, y_, z).
 
-    R3(_a_,_b_,c,d)
+Dans les livres et par convention les attributs clés sont soulignés.
+Dans la même veine, en RelationScript le nom des attributs clés est
+suffixé par un caractère souligné "``_``".
 
-In the example above the column ``a`` and ``b`` are key participants.
-This means that there are part of some key, but there is no indication
-of what are the keys. This could be a key (a,b), or two keys (a) and (b).
-If necessary the body of the relation will define what are the keys.
+Dans l'exemple ci-dessus la clé est (x,y). Dans le cas où il y aurait
+plusieurs clés, les attributs peuvent être suffixés. Par exemple la
+relation suivante possède 3 clés : ::
 
-Relation intention
-------------------
+    R(x_id1, y_id2_id3, z_id3, t, u).
 
-The intention of a relation can be defined informally somehow inside the
-documentation of the relation.
 
-::
+Telle qu'elle est définie la relation possède 3 clés : < (x), (y), (y,z) >.
+Dans tous les cas les clés peuvent être spécifées de manière plus commode
+dans la section ``keys`` de la relation (voir plus loin).
 
-    relation R4(_a_,c,d)
-        | The list of X with their c and d.
-        | In this relation the person a is ... with c ... and d ...
+Intention
+---------
 
-It can also be defined for "formally" in the intention section.
+L'intention d'une relation correspond à sa signification, à la manière
+d'interpréter le contenu d'une relation. L'intention peut soit être
+implicite, soit de être définie de manière explicite et
+structurée. Dans l'exemple ci-dessous l'intention est implicite, la
+relation est définie sous forme de documentation non structurée. ::
 
-::
+    relation R4(a_,c,d)
+        | The list of X. This relation means that ...
 
-    relation R4(_a_,c,d)
+Il est préférable de définir l'intention de manière structurée comme
+ci-dessous. Notons que ``est dans`` sont des mot-clés et que la ligne
+correspondante à une structure. Le nombre de paramètres du tuple doit
+correspondre au nombre d'attributs de la relation. ::
+
+    relation R4(a_,c,d)
         | The list of X with their c and d.
         intention
-            (a,c,d) in R4 <=>
+            (a,c,d) est dans R4 <=>
             | the person a is ... with c ... and d ...
 
+Contraintes de domaine
+----------------------
 
-
-Constraints on domain
----------------------
-
-The domain of the attributes can be defined as following.
-
-::
+Le domaine des attributs peut être défini comme ci-dessous : ::
 
     relation R(a,b,c,d)
         constraints
@@ -161,12 +167,14 @@ The domain of the attributes can be defined as following.
             dom(b) = dom(c) = Date
             dom(d) = Real ?
 
-A basic type followed by '?' means that this domain is extended
-with the ``null value`` ; the corresponding attribute is optional.
+Un type basique suivi de de l'opérateur ``?`` signifie que le domaine est
+étendu avec la valeur ``null``. En d'autres termes cela signifie que
+l'attribut correspondant est optionnel. NOTE: Le modèle relationnel ne
+permet pas de tels attributs.
 
-RelationalScript come with various datatype. Each datatype comes with
-a shortcut notations that can be helpful when writing relation on a
-single line.
+Différents types de données sont définis par le langage RelationalScript.
+Chaque type de données possède sa propre notation abbréviée, ce qui
+s'avère pratique lors de la défiinition de relation sur une seule ligne.
 
 =============== ==============
 Datatype        Shortcut
@@ -177,19 +185,23 @@ Boolean         b
 Integer         i
 Date            d
 DateTime        dt
-Time            s
+Time            t
 =============== ==============
 
+En utilisant la notation abbréviée une relation peut être définie comme
+suit : ::
 
+    relation LesEmployés(nom:s, prenom:s, age:i, dateNaissance: d)
 
-Integrity constraints
----------------------
+Contraintes d'intégrité
+-----------------------
 
-Integrity constraint, and in particular `Referential integrity constraints`_,
-can be named or anonymous. They can be defined using plain text or using
-the `relational algebra`_ notation when applicable.
-
-::
+Les contraintes d'intégrité, et en particulier les
+`contraintes d'intégrité référentielle`_,
+peuvent être nommées ou peuvent être anonymes.
+Elles peuvent être définies de manière informelle sous forme de
+documentation. Elles peuvent également être définies en utilisant
+l'`algèbre relationnelle`_. ::
 
     constraint Parent
         | Les parents d'une personne doivent être
@@ -205,15 +217,14 @@ the `relational algebra`_ notation when applicable.
         R[X] u R[z] = {}
         R[X] n R[z] = Persons[X]
 
-See `relational algebra`_ section for more details about the notation.
+Voir la section concernant l'`algèbre relationnelle`_
+pour plus de détails sur la notation utilisée.
 
-Functional dependencies
------------------------
+Dépendences fonctionnelles
+--------------------------
 
-`Functional dependencies`_ and the associated concepts can be defined as
-following:
-
-::
+Les `dépendances fonctionnelles`_ et les concepts associés peuvent être
+définis comme suit : ::
 
     relation R(a,b,c,d)
         constraints
@@ -227,9 +238,8 @@ following:
             a -/ffd> b
             {a}+ = {a,b,c}
 
-
-Normal forms
-------------
+Formes normales
+---------------
 
 ::
 
@@ -253,8 +263,8 @@ Transformations
             | have been "merged" as following ...
 
 
-Queries
--------
+Requêtes
+--------
 
 ::
 
@@ -262,19 +272,25 @@ Queries
         | The department leaders
         (Employe:(firstname='John')[department] * Leaders)[boss]
 
-Queries are based on the `relational algebra section`_.
+    query LesEmployés(nom:s, age:i)
+         intention
+            (n,a) est dans R4 <=>
+            | l'employé de nom n a pour age a
 
-..  _`relational algebra section`:
+Les corps des requêtes sont basés sur l'`algèbre relationnelle`_.
 
-Relational algebra
-------------------
+..  _`algèbre relationnelle`:
 
-In RelationScript all classical operators of the relational algebra
-(`wikipedia <https://en.wikipedia.org/wiki/Relational_algebra>`_)
-have their counterparts in ascii syntax.
+Algèbre relationnelle
+---------------------
+
+Le langage RelationScript définit tous les opérateurs classiques
+de l'algèbre relationnelle
+(`wikipedia <https://en.wikipedia.org/wiki/Relational_algebra>`_).
+A chaque opérateur est associé une notation en ascii.
 
 ==================  ====================================================
-Operator            Example
+Operateur           Exemple
 ==================  ====================================================
 Projection          Employee[salary]
 Selection           Employee :( address='Randwick' )
@@ -295,10 +311,11 @@ Tuple               (10, 3, 'Hello)
 ==================  ====================================================
 
 
-Dependencies
-------------
+Dépendances
+-----------
 
-The graph below show all language dependencies:
+Le graphe ci-dessous montre les dépendances entre langages avec un focus
+sur le langage RelationScript.
 
 ..  image:: media/language-graph-res.png
     :align: center
@@ -307,14 +324,14 @@ The graph below show all language dependencies:
 ..  _schemas:
     https://en.wikipedia.org/wiki/Database_schema
 
-..  _`relational data model`:
+..  _`modèle relationnel`:
     https://en.wikipedia.org/wiki/Relational_model
 
 ..  _`relational algebra wikipedia`:
     https://en.wikipedia.org/wiki/Relational_algebra
 
-..  _`Referential integrity constraints`:
+..  _`contraintes d'intégrité référentielle`:
     https://en.wikipedia.org/wiki/Referential_integrity
 
-..  _`Functional dependencies`:
+..  _`dépendances fonctionnelles`:
     https://en.wikipedia.org/wiki/Functional_dependency
