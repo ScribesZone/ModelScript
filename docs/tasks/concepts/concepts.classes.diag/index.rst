@@ -3,13 +3,13 @@
 tâche concepts.classes.diag
 ===========================
 
-:résumé: L'objectif de cette tâche est créer un ou plusieurs diagrammes
+:résumé: L'objectif de cette tâche est de créer un ou plusieurs diagrammes
     de classes.
 :langage:  :ref:`ClassScript1`
 :artefacts:
     * ``concepts/classes/diagrammes/classes.cld.clt``
     * ``concepts/classes/diagrammes/classes.cld.png``
-    * ``concepts/classes/diagrammes/<NOM>.cld.png``
+    * ``concepts/classes/diagrammes/<NOM>.cld.clt``
     * ``concepts/classes/diagrammes/<NOM>.cld.png``
 
 
@@ -21,14 +21,16 @@ Un tel diagramme doit présenter toutes les classes du modèle ;
 par opposition avec les "vues" qui ne présentent que certaines
 classes sélectionnées.
 
-NOTE: Si une ébauche de diagramme a été fournie le diagramme dessiné
-devra en respecter la disposition.
+..  note::
 
-Pour créer un diagramme de classes utiliser la commande suivante::
+    Si une ébauche de diagramme a été fournie le diagramme dessiné
+    devra en respecter la disposition.
+
+Pour créer un diagramme de classes utiliser la commande suivante : ::
 
     use concepts/classes/classes.cl1
 
-Se référer ensuite à la documention de `USE OCL sur ScribesTools`_.
+Se référer ensuite à la documentation de `USE OCL sur ScribesTools`_.
 
 Respecter impérativement les consignes suivantes :
 
@@ -46,10 +48,11 @@ Respecter impérativement les consignes suivantes :
     Respecter **impérativement** les noms de fichiers, entre autre
     l'extension ``.png``.
 
-**ATTENTION** : **les diagrammes doivent impérativement montrer les**
-**cardinalités** ; afficher si possible les noms de rôles ou d'associations
-si le diagramme reste visible. Utiliser le menu contextuel (click droit)
-pour avoir accès à ces options.
+..  attention::
+    **les diagrammes doivent impérativement montrer les**
+    **cardinalités** ; afficher si possible les noms de rôles ou
+    d'associations si le diagramme reste visible. Utiliser le
+    menu contextuel (click droit) pour avoir accès à ces options.
 
 (B) Vues
 --------
