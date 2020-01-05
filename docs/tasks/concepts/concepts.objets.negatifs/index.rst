@@ -17,7 +17,7 @@ tâche concepts.objets.negatifs
 
 Les modèles négatifs d'objets donnent lieu soit à des violations de
 cardinalités, soit à des violations de contraintes. Il s'agit dans
-cette tâches d'écrire un ou plusieurs modèles d'objets négatifs.
+cette tâche d'écrire un ou plusieurs modèles d'objets négatifs.
 Chaque violation attendue doit être déclarée dans le modèle.
 Se référer à la documentation concernant les :ref:`violations` pour plus
 de détails.
