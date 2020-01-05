@@ -17,7 +17,7 @@ Introduction
 ------------
 
 Il s'agit dans cette tâche de définir un **modèle préliminaire** et en
-particulier d'être très synthétique lors des différentes description.
+particulier d'être très synthétique lors des différentes descriptions.
 Cette approche est classique dans un démarche agile. On ne
 cherche pas à définir de manière détaillée chaque élément
 mais au contraire à donner une vision globale du système.
@@ -42,10 +42,14 @@ nom. Ils seront décrits dans l'étape suivante.
 (C) Cas d'utilisation
 ---------------------
 Les cas d'utilsation doivent être accompagnés d'une très brève description
-résumant (1) les objectifs de l'acteur et (2) le déroulement "normal" du
-cas d'utilisation. La description doit être généralisée. Contrairement
+résumant
+
+*   (1) les objectifs de l'acteur et
+*   (2) le déroulement "normal" du cas d'utilisation.
+
+La description doit être généralisée. Contrairement
 au scénarios un cas d'utilisation reflête le cas général :
-écrire "Le client s'identifie" plutôt que "Paul tape son code 6535".
+écrire ``Le client s'identifie`` plutôt que ``Paul tape son code 6535``.
 
 (Z) Suivi et status
 -------------------
