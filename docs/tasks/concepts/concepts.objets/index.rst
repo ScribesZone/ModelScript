@@ -63,7 +63,7 @@ suivante : ::
     use -nogui concepts/classes/classes.cl1 concepts/objets/o<N>/o<N>.ob1
 
 Si l'objectif est de vérifier les cardinalités utiliser ensuite la commande
-use ``check`` ou ``check -v``. Terminer finalement avec la command ``quit`
+use ``check`` ou ``check -v``. Terminer finalement avec la command ``quit``
 ou ``Ctrl C`` pour sortir de l'interpréteur.
 
 (Z) Suivi et status
