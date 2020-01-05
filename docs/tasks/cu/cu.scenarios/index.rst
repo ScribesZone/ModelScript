@@ -3,7 +3,7 @@
 tâche cu.scenarios
 ==================
 
-:résumé: L'objectif de cette tâche est d'aligner les scénariosn définis
+:résumé: L'objectif de cette tâche est d'aligner les scénarios définis
      jusque là avec les cas d'utilisation.
 
 :langage: :ref:`ScenarioScript1`, :ref:`ParticipantScript`
@@ -45,7 +45,7 @@ Les personnages comme "marie" peuvent être caractérisés par de nombreuses
 propriétés (voir l'exemple dans la documentation de
 :ref:`ParticipantScript`).
 Ces propriétés seront nécessaires par exemple lors de la conception
-d'Interface Homme Machine (IHM). Ici on se contentera d'une brève
+d'Interfaces Homme Machine (IHM). Ici on se contentera d'une brève
 description pour chaque acteur.
 
 (B) Décomposition
@@ -73,7 +73,7 @@ Dans cet exemple le personnage ``marie`` intéragit (mot-clé ``va``)
 avec le cas d'utilisation ``RentrerUneOeuvre``. Cette interaction
 modifie l'état du système via les instructions ``! insert ...`` et
 ``! delete ...``. L'indentation montre que les phrases/instructions
-avant et après ne font pas partie de cette instance de cas d'utilisation.
+emboitées font partie de cette instance de cas d'utilisation.
 
 Les règles suivantes doivent être respectées :
 
@@ -83,7 +83,7 @@ Les règles suivantes doivent être respectées :
 *   ``marie`` doit être un personnage existant dans le modèle
     de participant et
 
-*   ``marie``doit correspondre à un acteur (``Bibliothecaire`` ici)
+*   ``marie`` doit correspondre à un acteur (``Bibliothecaire`` ici)
     pouvant exécuter le cas d'utilisation (une ``Bibliothecaire`` peut
     effectivement ``RentrerUneOeuvre``).
 
@@ -130,6 +130,12 @@ Il s'agit de :
 *   vérifier que cela ne provoque aucune erreur dans la "compilation"
     du scénario.
 
+..  note::
+
+    Certaines phrases doivent dans certains cas être "coupées en deux"
+    ou rephrasées, par exemple si un morceau d'une phrase existante
+    fait partie du contexte et d'autres éléments d'un cas d'utilisation.
+
 (D) Texte
 ---------
 
@@ -151,15 +157,19 @@ particulière devra être portée aux élements de traçabilité
 ------------------
 
 L'exemple ci-dessous résume le processus global :
+
 * (1) définition des personnages (``persona x : A``),
+
 * (2) identification des instances de cas d'utilisation (``x va y``),
+
 * (3) extraction des instructions du contexte (``context``),
+
 * (4) remaniement du texte.
 
 ::
 
     =========================== =========================================
-      AVANT: Scénario (état)        APRES: Scénario (cas d'utilisation)
+      AVANT: Scénario état         APRES: Scénario cas d'utilisation
     =========================== =========================================
 
                                 Modele de participant (participant.pas)
@@ -203,8 +213,14 @@ L'exemple ci-dessous résume le processus global :
 
 Vérifier (manuellement) que le modèle de scénarios est bien aligné
 avec le modèle de cas d'utilisation.
-Par exemple ``toufik va ReserverUneSalle`` implique qu'un
-ChefBibliothequaire peut réserver une salle.
+Par exemple ``toufik va ReserverUneSalle`` implique que ``toufik``
+est un personnage, qu'il est peut être ``ChefBibliothequaire`` et
+qu'un ``ChefBibliothequaire`` peut ``ReserverUneSalle``.
+
+.. note::
+
+    A l'heure actuelle cette vérification n'est pas outillée et
+    elle doit donc être faite manuellement.
 
 
 (G) Classes
