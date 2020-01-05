@@ -2,8 +2,8 @@ tâche cu.permissions
 ====================
 
 :résumé: L'objectif de cette tâche est de définir le modèle
-    de permission en mettant en relation les acteurs/cas d'utilisation
-    avec les éléments du modèles de classes utilisés.
+    de permissions en mettant en relation les acteurs/cas d'utilisation
+    avec les éléments du modèle de classes utilisés.
 
 :langage: :ref:`PermissionScript`
 
