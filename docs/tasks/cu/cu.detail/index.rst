@@ -14,7 +14,7 @@ tâche cu.detail
 (A) Définition
 --------------
 
-Une fois le modèle préliminaire défini via la `tâche cu.preliminaire`,
+Une fois le modèle préliminaire défini via la :ref:`tâche cu.preliminaire`,
 décrire de manière plus détaillée le où les cas d'utilisation les plus
 prioritaires. Se reporter à la documentation de :ref:`UsecaseScript`
 pour voir quels aspects peuvent/doivent être décrits.
