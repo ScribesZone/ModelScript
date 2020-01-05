@@ -14,11 +14,12 @@ tâche cu.participants
 (A) Acteurs
 -----------
 
-Définir tout d'abord les "acteurs" qui intervienront par la suite
+Définir tout d'abord les "acteurs" qui interviendront par la suite
 dans le modèle de cas d'utilisation. Donner pour chaque acteur un
-nom (``ResponsableDesAchats``) ainsi qu'une courte définition faisant
-référence aux éléments du glossaire. Un acteur doit intéragir directement
-avec le système.
+nom (p.e. ``ResponsableDesAchats``) ainsi qu'une courte définition faisant
+référence aux éléments du glossaire. Par définition un acteur intéragit
+directement avec le système (via une interface), sinon il ne s'agit
+pas d'un acteur.
 
 (B) Personnages
 ---------------
@@ -38,8 +39,9 @@ lors de la :ref:`tâche cu.preliminaire` ou de la
 s'agira  aussi d'aligner les participants au modèle de
 permissions.
 
-Infine le modèle de particiants doit être aligné avec les modèles
+*In fine* le modèle de particiants doit être aligné avec les modèles
 suivants:
+
 * le modèle de cas d'utilisation
 * les différents modèles de scénarios.
 * le modèle de permission.
