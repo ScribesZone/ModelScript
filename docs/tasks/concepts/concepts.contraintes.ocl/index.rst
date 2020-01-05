@@ -26,7 +26,7 @@ langage naturel.
 (B) Tests positifs
 ------------------
 
-Vérifier que l'ensemble des modèles d'objets positifs ne
+Vérifier que l'ensemble des modèles d'objets (positifs) ne
 génèrent aucune erreur. Utiliser la commande ``use -qv`` pour cela.
 Si des erreurs sont produites cela veut dire que les contraintes
 sont trop restrictives.
@@ -35,8 +35,9 @@ sont trop restrictives.
 ------------------
 
 Vérifier que les tests négatifs concernant telle ou telle contrainte
-génèrent bien une erreur. Si toutes les erreurs attendues ne sont pas
-générées alors c'est que les contraintes écrites ne sont pas assez
+produisent bien les violations escomptées. Si toutes les violations
+attendues ne sont pas
+produites alors c'est que les contraintes écrites ne sont pas assez
 restrictives. Revoir les contraintes dans ce cas là.
 
 (Z) Suivi et status
