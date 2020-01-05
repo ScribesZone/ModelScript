@@ -2,7 +2,7 @@
 ===========================================================
 
 L'objectif de cette tâche est créer/traduire les diagrammes d'objets.
- Voir la [tache:concepts.objets](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.objets.diag/index.html).
+ Voir la [tache:concepts.objets.diag](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.objets.diag/index.html).
 
 ________
 
