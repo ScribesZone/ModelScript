@@ -15,7 +15,7 @@ tâche concepts.glossaires
 -------------
 
 Compléter le glossaire en respectant impérativement les
-:ref:`règles associées aux glossaires <GlossaryScript_Rules>`.
+:ref:`règles associées aux glossaires <GlossaryScript_Regles>`.
     
 (B) Textes
 ----------
@@ -23,7 +23,7 @@ Compléter le glossaire en respectant impérativement les
 Le glossaire doit être aligné avec les termes utilisés par le client.
 En particulier si différents textes ont été fournis, ceux-ci devraient
 être réécrits.  Pour la réécriture suivre les  règles associées à la
-:ref:`réécriture de textes <GlossaryScript_RewritingTexts>`.
+:ref:`réécriture de textes <GlossaryScript_Reecriture>`.
 
 D'un point de vue pragmatique si tous les textes ne peuvent pas être
 réécrits se focaliser en priorité sur la réécriture des textes associés
@@ -36,7 +36,7 @@ Tout au long du projet il sera nécessaire de s'assurer en permanence de
 l'alignement avec le glossaire de tous les modèles mais aussi 
 du code (SQL, Java, etc.). Cela impliquera entre autre d'aligner non
 seulement les textes, mais aussi les identificateurs.
-Lire les règles associées à la :ref:`réécriture d'identificateurs <GlossaryScript_RewritingIdentifiers>`.
+Lire les règles associées à la :ref:`réécriture d'identificateurs <GlossaryScript_ReecritureDIdentificateurs>`.
 
 (Z) Suivi et status
 -------------------
