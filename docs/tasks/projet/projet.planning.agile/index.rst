@@ -73,8 +73,8 @@ sous tâches.
 Cette technique doit être utilisée pour faire référence
 aux tâches du dépot "root", par exemple la tâche
 ``projet.planning.gantt.sprint2`` pourrait contenir la référence
-``l3miage/l3miage-1819-bdsi-root#13`` si le dépot root est
-``l3miage/l3miage-1819-bdsi-root`` et si l'issue #13 est l'issue
+``l3miage/l3miage-1920-bdsi-root#13`` si le dépot root est
+``l3miage/l3miage-1920-bdsi-root`` et si l'issue #13 est l'issue
 ``projet.planning.gantt``.
 
 (F) Plannification
