@@ -18,15 +18,15 @@ Introduction
 
 L'objectif de cette tâche est de traduire dans un premier temps
 les scénarios textes en scénarios "états", c'est en scénarios vu comme
-une simple succession de changement d'états effectuée via des
+une simple succession de changements d'états effectuée via des
 d'instructions ``!``. Le terme "scénarios états" doit être considéré
 en regard aux "sénarios cas d'utilisation". Ces derniers
-seront produits par la suite dans la :ref:`tâche cu.scenarios`
+seront produits par la suite dans la :ref:`tâche cu.scenarios`.
 
 Dans cette tâche on ne s'intéresse qu'au changement d'états du système
 en adoptant une perspective "données".
 
-Les tâches ci-dessous doivent être répétées pour chaque scénario présents
+Les tâches ci-dessous doivent être répétées pour chaque scénario présent
 dans le répertoire ``cu/scenarios/``.
 
 (A) Traduction
