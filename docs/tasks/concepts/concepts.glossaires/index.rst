@@ -14,7 +14,8 @@ tâche concepts.glossaires
 (A) Glossaire
 -------------
 
-Compléter le glossaire en respectant impérativement les
+Compléter le glossaire en respectant les règles du langage
+:ref:`GlossaryScript` ainsi que les
 :ref:`règles associées aux glossaires <GlossaryScript_Regles>`.
     
 (B) Textes
