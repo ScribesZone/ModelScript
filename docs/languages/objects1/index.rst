@@ -169,15 +169,19 @@ Violations
 ----------
 
 Les violations sont des erreurs produites par un
-modèle d'objets appelé "modèle d'objets négatifs". Les violations sont
-déclarées à l'aide du mot clé ``violates``. Il y a deux genres de
-violations ;
+modèle d'objets appelé "modèle d'objets négatifs" (ou "modèle négatif
+d'objets"). Les violations sont déclarées à l'aide du mot clé
+``violates``. Il y a deux genres de violations ;
 
 *   **Violations de cardinalités**. Une telle violation se produit
-    soit lorsque la cardinalitée effective associée à un role est
-    supérieure à la cardinalité maximale déclarée,
-    soit lorsque la cardinalité effective est inférieure à la
-    cardinalité minimale. Voici deux exemples possibles de violations : ::
+
+    *   soit lorsque la cardinalité effective associée à un role est
+        supérieure à la cardinalité maximale déclarée,
+
+    *   soit lorsque la cardinalité effective est inférieure à la
+        cardinalité minimale.
+
+    Voici deux exemples possibles de violations : ::
 
         --@ violates EstResponsableDe.responsable.min
         --@ violates Dirige.directeur.max
