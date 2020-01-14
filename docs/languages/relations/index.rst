@@ -77,8 +77,11 @@ Exemples
 
     query JohnBoss(boss)
         | The department leaders.
-        (Employe:(firstname='John')[department] * Leaders)[boss]
+        (Employee:(firstname='John')[department] * Leaders)[boss]
 
+    view Salaries(name_:s, salary:i)
+        | The salary of each employee.
+        Employee[firstname, salary]
 
 RelationScript
 --------------
@@ -92,7 +95,9 @@ Le langage RelationScript permet d'exprimer des "schemas_" au sens du
     avec le terme `modèle relationnel`_. Un modèle de relations
     permet de définir des relations, tout comme un modèle de cas
     d'utilisation définit des cas d'utilisation, un modèle de classes
-    définit des classes, etc.
+    définit des classes, etc. Le `modèle relationnel`_ est au contraire
+    bien plus général. Il s'agit d'une manière de structurer et
+    d'interroger des données.
 
 Concepts
 --------
@@ -107,7 +112,8 @@ Le langage RelationScript est basé sur les concepts suivants :
 * les dépendences fonctionnelles (functional dependencies),
 * les formes normales (normal forms),
 * les jeux de données (data sets),
-* les requêtes (queries).
+* les requêtes (queries)
+* les vues (views).
 
 Relations
 ---------
@@ -119,7 +125,8 @@ exemple : ::
     R(x_, y_, z).
 
 Dans les livres et par convention les attributs clés sont soulignés.
-Dans la même veine, en RelationScript le nom des attributs clés est
+En l'absence de soulignement des caractère, mais dans la même veine,
+en RelationScript le nom des attributs clés est
 suffixé par un caractère souligné "``_``".
 
 Dans l'exemple ci-dessus la clé est (x,y). Dans le cas où il y aurait
@@ -146,15 +153,17 @@ relation est définie sous forme de documentation non structurée. ::
         | The list of X. This relation means that ...
 
 Il est préférable de définir l'intention de manière structurée comme
-ci-dessous. Notons que ``est dans`` sont des mot-clés et que la ligne
-correspondante à une structure. Le nombre de paramètres du tuple doit
-correspondre au nombre d'attributs de la relation. ::
+ci-dessous. Notons que ``dans`` est un mot-clé (``in`` en anglais)
+et que la ligne correspondante à une structure. Le nombre de paramètres
+du tuple doit correspondre au nombre d'attributs de la relation.
+Dans le texte de l'intentation les variables doivent apparaître entre
+crochets (p.e. ``<a>``) ::
 
     relation R4(a_,c,d)
-        | The list of X with their c and d.
+        | The list of X.
         intention
-            (a,c,d) est dans R4 <=>
-            | the person a is ... with c ... and d ...
+            (a,c,d) dans R4 <=>
+            | the person <a> is ... with <c> ... and <d> ...
 
 Contraintes de domaine
 ----------------------
@@ -169,12 +178,15 @@ Le domaine des attributs peut être défini comme ci-dessous : ::
 
 Un type basique suivi de de l'opérateur ``?`` signifie que le domaine est
 étendu avec la valeur ``null``. En d'autres termes cela signifie que
-l'attribut correspondant est optionnel. NOTE: Le modèle relationnel ne
-permet pas de tels attributs.
+l'attribut correspondant est optionnel.
+
+..  note::
+    Le modèle relationnel n'autorise pas les attributs optionnels. Ces
+    cette possibilité est offerte pour faciliter la traduction vers SQL.
 
 Différents types de données sont définis par le langage RelationalScript.
 Chaque type de données possède sa propre notation abbréviée, ce qui
-s'avère pratique lors de la défiinition de relation sur une seule ligne.
+s'avère pratique lors de la définition de relations sur une seule ligne.
 
 =============== ==============
 Datatype        Shortcut
@@ -250,15 +262,21 @@ Formes normales
 Transformations
 ---------------
 
+Un modèle de relations peut être obtenu par transformation à partir
+d'un modèle de classes (mot clé ``transformation`` ci-dessou). Il est
+possible de spécifier de quelles classes ou associations provient une
+relation (mot clé ``from``). De même les règles utilisées
+peuvent être spécifiées (mot clé ``rules``). Si nécessaire une
+documentation sous forme de texte peut être associée à la transformation.
+
 ::
 
-    import quality model Database from `../qa/database.qas`
+    import class model from `../concepts/classes/classes.cl1`
 
     relation R(a,b,c,d)
         transformation
-            from C1
-            from C2
-            rules R1
+            from C1, C2
+            rules R1, R2
             | Columns C1.c and Columns C2.c
             | have been "merged" as following ...
 
@@ -266,18 +284,28 @@ Transformations
 Requêtes
 --------
 
+Les requêtes sont simplement des relations dont le corps est
+exprimé à l'aide de l'`algèbre relationnelle`_.
+
 ::
 
     query Q1(boss)
         | The department leaders
         (Employe:(firstname='John')[department] * Leaders)[boss]
 
-    query LesEmployés(nom:s, age:i)
-         intention
-            (n,a) est dans R4 <=>
-            | l'employé de nom n a pour age a
+Vues
+----
 
-Les corps des requêtes sont basés sur l'`algèbre relationnelle`_.
+Au niveau du modèle relationnel les requêtes et les vues sont
+en tout point équivalentes. Le concept de vue est défini ici
+pour simplifier la transformation vers le langage SQL.
+
+::
+
+    view V1(boss)
+        | The department leaders
+        (Employe:(firstname='John')[department] * Leaders)[boss]
+
 
 ..  _`algèbre relationnelle`:
 
