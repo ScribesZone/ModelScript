@@ -791,6 +791,7 @@ RelationScriptKeywords = """
     intention
     in
     examples
+    dans
     <=>
     
     constraints
