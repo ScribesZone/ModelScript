@@ -794,6 +794,7 @@ RelationScriptKeywords = """
     <=>
     
     constraints
+    constraint
     
     dom
     String      s
@@ -817,6 +818,7 @@ RelationScriptKeywords = """
     rule
     
     dataset
+    negative
     query
     """.split()
 
