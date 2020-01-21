@@ -3,8 +3,8 @@
 tâche bd.classes
 ================
 
-:résumé: L'objectif de cette tâche est d'annoter le modèle de
-    classes conceptuel afin de le transformer en un modèle de données
+:résumé: L'objectif de cette tâche est d'annoter le "modèle de
+    classes conceptuel" afin de le transformer en un "modèle de données"
     pour base de données.
 
 :langage: :ref:`ClassScript1`
@@ -20,10 +20,32 @@ conceptuel, c'est à dire un modèle décrivant des concepts du domaine de
 manière abstraite ; et ce indépendamment de toute considération
 technique.
 
-Il s'agit maintenant de transformer ce modèle abstrait en un modèle
-de classes pour base de données ; plus particulièrement de
-préparer le modèle de classes avant de le transformer en modèle
-de relations (cela fait l'objet d'une autre tache).
+Il s'agit maintenant de transformer ce modèle abstrait en un "modèle
+de données" pour base de données (voir l'illustration ci-dessous).
+Ce modèle de données est un genre de modèle de classes. Il est donc
+écrit en :ref:`ClassScript1` comme tout modèle de classes. Sa particularité
+est qu'il contient des annotations ``{id}`` pour spécifier les clés.
+
+::
+
+        +--------------------------------+
+        |  Modèle de classes conceptuel  |       <--- langage ClassScript1
+        +--------------------------------+
+                        |
+                        V  + {id}                <=== TACHE BD.CLASSES
+        +================================+
+        |        MODELE DE DONNEES       |       <=== langage ClassScript1
+        +================================+
+                        |
+                        V                        <--- tache bd.relations.schema
+        +--------------------------------+
+        |       Modèle de relations      |       <--- langage RelationScript
+        +--------------------------------+
+
+Dans cette tâche il s'agit de préparer
+le modèle de classes conceptuel avant de le transformer en modèle
+de relations (cela fait l'objet de la :ref:`tâche bd.relations.schema`).
+
 
 (A) Identifiants
 ----------------
@@ -34,30 +56,46 @@ généralement la forme d'annotations ``{id}``.
 
 ..  note::
 
-    La notion de "clé" est propre au modèle relationnel. Dans le monde
-    objet cette notion n'est normallement pas utilisée. Il n'y a pas
-    besoin de "clés" car tout objet est systématiquement identifié de
-    manière unique. Les annotations `{id}` sont uniquement utilisés
-    en vue de la transformation vers le modèle relationnel.
+    Rappelons que la notion de "clé" est propre au modèle relationnel.
+    Dans le monde objet cette notion n'est normallement pas utilisée.
+    Il n'y a pas besoin de "clés" car tout objet est systématiquement
+    identifié de manière unique. Les annotations `{id}` sont donc
+    uniquement utilisées dans le modèle de données en vue de la
+    transformation vers le modèle relationnel.
 
 Les annotations ``{...}`` n'étant pas disponibles en ClassScript1, on
-utilisera le suffixe ``_id`` pour les identificateurs clés. Pour
-simplifier on pourra réduire le suffixe à un simple caractère souligné
-('_'). Par exemple l'attribut ``login`` devient ``login_id``
-ou plus simplement ``login_``.
-
+utilisera le suffixe ``_id`` pour les identificateurs clés.
+Par exemple l'attribut ``login`` devient ``login_id``.
 Cette convention n'est pas parfaite mais elle permet de
 visualiser les clés dans les diagrammes de classes avec l'outil USE OCL.
 
-Dans le cas de plusieurs clés candidates le suffixe sera numéroté,
-comme par exemple ``prenom_id1``, ``nom_id1``, ``numen_id2``. Voir le
+Dans le cas de plusieurs clés candidates le suffixe sera numéroté ;
+par exemple ``prenom_id1``, ``nom_id1``, ``numen_id2``. Voir le
 langage :ref:`RelationScript` pour d'autres exemples.
+
+De manière consistante avec le langage :ref:`RelationScript` le suffixe
+``_`` signifie que l'attribut fait partie d'un identifiant, mais la
+notation ne spécifie pas lequel. Cette notation peut être choisie si
+l'on désire avant tout améliorer la lisibilité du diagramme.
+Lorsque la notation simplifiée ``_`` est utilisée il n'y a pas
+d'ambiguité avec un seul identifiant (par exemple ``login_`` seul).
+Par contre dans le cas de ``prenom_``, ``nom_``, ``numen_`` il n'est
+pas possible de déterminer qu'il y a deux clés. Par défaut et sans
+indication contraire on supposera qu'il existe une seule clé composée
+de tous les attributs "soulignés". Si ce comportement par défaut
+n'est pas adapté le détail des clés peut être indiqué sous forme de
+contraintes explicites. Utiliser pour cela la notation pour
+les contraintes textuelles (voir le langage :ref:`ClassScript1`).
+
+Voir la :ref:`tâche bd.relations.schema` pour
+plus d'information sur la manière de spécifier les clés en
+:ref:`RelationScript`.
 
 (B) Compositions
 ----------------
 
 
-..  comment :: POUR LA VERSION AVEC {lid}
+..  comment POUR LA VERSION AVEC {lid}
     Dans certains cas les objets d'une classe doivent être identifiés
     non pas de manière directe, avec son/ses identifiants, mais par
     rapport aux objets composites les contenant. Dans ce cas on utilise
@@ -70,11 +108,11 @@ par son numéro, par exemple 127, mais aussi le nom du batiment, par
 exemple "condillac". Dans cet exemple l'identifiant de la salle
 est le couple ( "condillac" , 127 ).
 
-..  comment ::
+..  comment
     Le numéro de salle (127)
     est un identificateur "local" par rapport au batiment. ::
 
-::
+..  code-block:: ClassScript1
 
     class Batiment
         attributes
@@ -104,7 +142,9 @@ Par contre, pour les besoins de la transformations en base de données,
 il peut parfois être nécessaire de changer une association "standard" en
 une composition alors que cela n'est pas naturel.
 
-Par exemple : ::
+Par exemple :
+
+..  code-block:: ClassScript1
 
     association ComporteSeance
         between
@@ -112,7 +152,9 @@ Par exemple : ::
             Seance[*] role seances
     end
 
-peut être changé en : ::
+peut être changé en une composition :
+
+..  code-block:: ClassScript1
 
     composition ComporteSeance
         between
@@ -129,7 +171,9 @@ technique, ici dans le cadre de la conception de bases de données.
 
 Selon le standard UML l'identifiant d'une classe associative est
 formé des identifiants des deux classes de chaque coté de la classe
-associative. Considérons la classe associative suivante : ::
+associative. Considérons la classe associative suivante :
+
+..  code-block:: ClassScript1
 
     class Personne
         attributes
@@ -154,7 +198,7 @@ Le standard UML indique explicitement que la clé de la classe
 
 En complétant cet exemple un emploi pourrait de plus être identifié
 par un attribut clé ``nnue_id`` (nnue signifiant par exemple Numéro
-National Unique d'Emploi). Dans ce cas ``nnue_id`` est d'une autre clé
+National Unique d'Emploi). Dans ce cas ``nnue_id`` est une autre clé
 candidate.
 
 Notons que dans cette modélisation on ne modélise que
@@ -168,12 +212,14 @@ en 2020. Dans cette situation il y a deux emplois entre la même société et
 la même personne. Situation impossible à modéliser avec le modèle
 ci-dessus.
 
-Supposont que l'on veuille maintenant modéliser l'historique des emplois.
+Supposons que l'on veuille maintenant modéliser l'historique des emplois.
 Une personne (par exemple paul) peut donc avoir tenu plusieurs
 emplois dans la même société mais en débutant à des années
 différentes (pour simplifier on consière uniquement la granularité
-des années dans cet exemple ). La classe associative est modifiée comme
-suit : ::
+des années dans cet exemple). La classe associative est modifiée comme
+suit :
+
+..  code-block:: ClassScript1
 
     associationclass Emploi
         attributes
@@ -205,11 +251,11 @@ de "chaque coté".
 
 ..  attention::
 
-    L'utilisation du préfixe ``_lid`` est incompatible avec le standard
-    UML. Cette convention est pratique dans le cadre du développement
-    de modèles de données en vue de transformation vers le modèle
-    relationnel, mais attention à ne pas utiliser cette convention
-    hors de ce contexte !
+    L'utilisation du préfixe ``_lid`` est complètement incompatible avec
+    le standard UML. Cette convention est pratique dans le cadre du
+    développement de modèles de données en vue de transformation vers
+    le modèle relationnel, mais attention à ne pas utiliser cette
+    convention hors de ce contexte !
 
 (Z) Suivi et status
 -------------------
