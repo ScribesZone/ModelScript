@@ -22,7 +22,8 @@ Si un ou des modèles d'objets existent, traduire en priorité ces
 derniers.
 
 Les jeux de données positifs doivent être écrits en utilisant les
-mots clés ``dataset`` ou ``positive dataset``.
+mots clés ``dataset`` ou ``positive dataset`` du langage
+:ref:`RelationScript`.
 
 (Z) Suivi et status
 -------------------
