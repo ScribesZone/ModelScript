@@ -4,8 +4,8 @@
 tâche bd.relations.schema
 =========================
 
-:résumé: Cette tâche a pour objectif de créer le schéma relationnel,
-    à partir du modèle de classes si celui-ci existe.
+:résumé: Cette tâche a pour objectif de créer le schéma relationnel
+    à partir du modèle modèle de données si celui-ci existe.
 
 :langage: :ref:`RelationScript`
 :artefacts:
@@ -15,51 +15,113 @@ tâche bd.relations.schema
 Introduction
 ------------
 
-Le modèle de relations doit être créé à partir du modèle de classes,
-s'il existe. Il s'agit plus précisemment de créer le "schéma" relationnel,
-c'est à dire l'ensemble des relations et des contraintes que l'on peut
-déduire à partir du modèle de classes-relations. Dans un second temps
-seulement, d'éventuels jeux de données (datasets) seront ajoutés. Dans
-ce travail on se limite à la création du schéma. Aucun contenu n'est
-créé.
+Le modèle de relations (aussi appelé "schéma relationnel") doit être créé
+à partir du modèle de données si celui-ci existe. Le modèle de relations
+est alors l'ensemble des relations et des contraintes que l'on peut
+déduire à partir du modèle de données (exprimé sous forme d'un modèle
+de classes décoré par des annotations ``_id``). L'enchaînement des
+tâches est généralement le suivant :
+
+::
+
+        +--------------------------------+
+        |  Modèle de classes conceptuel  |       <--- langage ClassScript1
+        +--------------------------------+
+                        |
+                        V                        <--- tâche bd.classes
+        +--------------------------------+
+        ||        Modèle de données      |       <--- langage ClassScript1
+        +--------------------------------+
+                        |
+                        V                        <--- TACHE BD.RELATIONS.SCHEMA
+        +================================+
+        ||       MODELE DE RELATIONS    ||       <--- LANGAGE RelationScript
+        +================================+
+                        |
+                        V                        <--- tâche bd.sql.schema
+        +--------------------------------+
+        |           Schéma SQL           |       <--- langage SQL
+        +--------------------------------+
+
+
+.. note::
+
+    Dans cette tâche seul le schéma de données est considéré. On ne prend
+    pas en compte d'éventuels jeux de données (datasets).
+    Dans cette tâche aucun contenu n'est créé.
+
+:ref:`RelationScript` est le langage utilisé dans cette tâche. Se
+référer à la documentation pour plus d'exemples.
 
 (A) Transformations
 -------------------
 
-Si le modèle de relations est créé à partir de zero (sans modèle
-de classe alors cette partie peut être ignorée ainsi que toute
-référence à la notion de transformation de modèle.
+..  attention::
 
-Lorsque des règles de transformation "standards" existent alors celles-ci
-doivent être respectées à chaque fois que faire ce peut. Plus précisemment
-si une liste précise de transformations nommées a été fournie, il s'agit
-alors d'indiquer voir de justifier l'application de ces transformations
-(mot-clé ``transformation`` et ``rule``). Ajouter un commentaire
-lorsque les  règles standards ne peuvent pas être appliquées directement.
+    Si le modèle de relations est créé à partir de zéro (en
+    l'absence de modèle de données) alors cette partie peut être ignorée.
+
+Lorsque des règles de transformation "standards" existent alors
+celles-ci doivent être respectées à chaque fois que faire ce peut.
+Plus précisemment si une liste précise de transformations nommées
+a été fournie, il s'agit alors d'indiquer et de justifier
+l'application de ces transformations. Cela se fait à l'aide
+des mots-clés ``transformation``, ``from`` et ``rule`` comme illustré
+dans l'exemple suivant :
+
+..  code-block:: RelationScript
+
+    relation LesResponsables(departement_id:String, boss:String)
+        ...
+        transformation
+            from Responsable
+            rule ClasseVersRelation
+            | L'attribut boss a été transformé en String car
+            | ...
+
+Dans cet exemple ``Responsable`` est un élement du modèle de classes
+à l'origine de la transformation. On suppose de plus qu'il existe une
+règle nommée ``ClasseVersRelation``.
+Dans des exemples plus complexes une relation peut être le résultat
+de la transformation de plusieurs éléments (classes, association, etc.)
+et peut être de plusieurs règles.
+
+Dans certains cas la transformation est plus complexe ou sort du cadre
+des transformations standards. On utilise alors la documentation de la
+transformation pour justifier quelle(s) (autres) transformation(s) a/ont
+été appliquée(s). Dans l'exemple ci-dessus ces justifications correspondent
+au texte commençant par ``| L'attribut ...``.
 
 (B) Contraintes
 ---------------
 
-Définir les contraintes intégrité suivantes:
+Il s'agit ensuite de définir les contraintes intégrité suivantes :
 
-* les contraintes sur les colonnes (p.e. contraintes de domaine, mot
-  clé ``dom``),
+*   **les contraintes sur les colonnes**.
+    En :ref:`RelationScript` les contraintes de domaine peuvent soit
+    être indiquées dans le profil de la relation (par exemple
+    ``R(x:String)``) ou sous forme de contraintes explicites (par exemple
+    ``dom(x)=String`` dans la section ``constraints``). Voir la
+    documentation de :ref:`RelationScript` pour plus de détails.
 
-* les contraintes de clés (mot clé ``key``). Rappel: la notation
-  "souligné" indique simplement que la colonne soulignée fait partie
-  d'au moins une clé. Il peut y avoir plusieurs clés et une clé
-  peut être composite. Ces informations ne peuvent pas être déduites
-  de la notation "soulignée". Les contraintes de clés doivent donc
-  être exprimées explicitement.
+*   **les contraintes de clés**.
+    Les contraintes de clés proviennent directement des annotations
+    ``{id}`` du modèle de données (si il existe). Les clés peuvent
+    soit être définies dans le profil de la relation (par exemple
+    ``Compte(login_id)`` soit le mot clé ``key`` dans la section
+    ``constraints``. Voir la documentation de :ref:`RelationScript`
+    pour plus de détails.
 
-* les contraintes d'intégrité référentielle (par exemple
-  ``R[x] C= S[y]``),
+*   **les contraintes d'intégrité référentielle**. Elles sont exprimées
+    en algèbre relationelle sous forme de :ref:`RelationScript`
+    (par exemple ``R[x] C= S[y]``).
 
-* les autre contraintes. Si une contrainte ne peut pas être exprimées
-  avec le modèle relationnel, celle-ci doit être spécifiée. Si cette
-  contrainte provient du modèle de classes conceptuel, alors répéter
-  uniquement le nom de la contrainte (par exemple
-  ``constraint AtLeastForItemPerDay``).
+*   **les autres contraintes**. Si une contrainte ne peut pas être
+    exprimées en utilisant l'algèbre relationnelle,
+    la contrainte sera spécifiée sous forme textuelle. Si cette
+    contrainte provient du modèle de classes conceptuel, alors répéter
+    uniquement le nom de la contrainte (par exemple
+    ``constraint AtLeastForItemPerDay``).
 
 (Z) Suivi et status
 -------------------
