@@ -9,7 +9,7 @@ tâche bd.classes
 
 :langage: :ref:`ClassScript1`
 :artefacts:
-    * ``classes/classes.cl1``
+    * ``concepts/classes/classes.cl1``
 
 
 Introduction
@@ -53,6 +53,9 @@ de relations qui sera par la suite transformé en schéma SQL (cela fait
 l'objet de la :ref:`tâche bd.relations.schema` puis de la
 :ref:`tâche bd.sql.schema` ).
 
+Pour simplifier le modèle de données sera défini en lieu et place du
+modèle de classes conceptuel. Autrement dit dans cette tâche il est
+demandé de modifier le fichier ``concepts/classes/classes.cl1``.
 
 (A) Identifiants
 ----------------
