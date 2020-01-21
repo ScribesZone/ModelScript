@@ -32,19 +32,26 @@ est qu'il contient des annotations ``{id}`` pour spécifier les clés.
         |  Modèle de classes conceptuel  |       <--- langage ClassScript1
         +--------------------------------+
                         |
-                        V  + {id}                <=== TACHE BD.CLASSES
+                        V  + {id}                <<<< TACHE BD.CLASSES
         +================================+
-        |        MODELE DE DONNEES       |       <=== langage ClassScript1
+        ||        MODELE DE DONNEES     ||       <<<< LANGAGE ClassScript1
         +================================+
                         |
-                        V                        <--- tache bd.relations.schema
+                        V                        <--- tâche bd.relations.schema
         +--------------------------------+
         |       Modèle de relations      |       <--- langage RelationScript
+        +--------------------------------+
+                        |
+                        V                        <--- tâche bd.sql.schema
+        +--------------------------------+
+        |           Schéma SQL           |       <--- langage SQL
         +--------------------------------+
 
 Dans cette tâche il s'agit de préparer
 le modèle de classes conceptuel avant de le transformer en modèle
-de relations (cela fait l'objet de la :ref:`tâche bd.relations.schema`).
+de relations qui sera par la suite transformé en schéma SQL (cela fait
+l'objet de la :ref:`tâche bd.relations.schema` puis de la
+:ref:`tâche bd.sql.schema` ).
 
 
 (A) Identifiants
