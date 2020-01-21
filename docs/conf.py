@@ -509,6 +509,9 @@ ClassScript1Keywords= """
     between
     role
     associationclass
+    composition
+    
+    constraints
     $
     inv
     pre 
@@ -517,6 +520,13 @@ ClassScript1Keywords= """
     new
     declare
     
+    String
+    Integer
+    Real
+    Boolean
+    Date
+    DateTime
+    Time
     """.split()
 
 class ClassScript1Lexer(ModelScriptLexer):
@@ -529,7 +539,7 @@ class ClassScript1Lexer(ModelScriptLexer):
 
             lexer.inherit,
 
-            ('(enum|class|association|associationclass)( +)(\w+)',
+            ('(enum|class|association|associationclass|composition)( +)(\w+)',
                 lexer.bygroups(
                     token.Keyword,
                     lexer.Text,
@@ -821,6 +831,8 @@ RelationScriptKeywords = """
     dataset
     negative
     query
+    view
+    
     """.split()
 
 
