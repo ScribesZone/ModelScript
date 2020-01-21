@@ -9,7 +9,7 @@ tâche bd.relations.schema
 
 :langage: :ref:`RelationScript`
 :artefacts:
-    * ``relations/relations.res``
+    * ``bd/relations/relations.res``
 
 
 Introduction
@@ -50,7 +50,8 @@ tâches est généralement le suivant :
     pas en compte d'éventuels jeux de données (datasets).
     Dans cette tâche aucun contenu n'est créé.
 
-:ref:`RelationScript` est le langage utilisé dans cette tâche. Se
+Le fichier a modifier dans cette tâche est ``bd/relations/relations.res``.
+:ref:`RelationScript` est le langage utilisé. Se
 référer à la documentation pour plus d'exemples.
 
 (A) Transformations
