@@ -21,7 +21,7 @@ Si un ou des modèles d'objets négatifs existent, traduire en priorité ces
 derniers.
 
 Les jeux de données négatifs doivent être écrits en utilisant les
-mots clés ``negative dataset``.
+mots clés ``negative dataset`` du langage :ref:`RelationScript`.
 
 (Z) Suivi et status
 -------------------
