@@ -5,17 +5,17 @@ tâche bd.sql.jdd
 ================
 
 :résumé: L'objectif de cette tâche est de définir des jeux
-     de données (jdd) (positif) pour la base de données SQL.
+     de données (jdd) (positifs) pour la base de données SQL.
 
 :langage: SQL
 :artefacts:
-    * ``sql/datasets/*.sql``
+    * ``bd/sql/jdds/*.sql``
 
 Introduction
 ------------
 
 Des jeux de données (positifs) doivent être implémentés en SQL.
-A titre d'illustration le répertoire ``sql/datasets/`` contient un
+A titre d'illustration le répertoire ``bd/sql/jdds/`` contient un
 exemple. Cet exemple permet d'illustrer l'approche et de tester des
 requêtes sur des données existantes. Le contenu de ces fichiers devra être
 évidemment remplacé par des jeux de données appropriés.
