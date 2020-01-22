@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+# Version française 2.3. Dernière version dans ModelScript
+#
 # Crée la base de donnée avec le schéma de données et éventuellement
 # un jeu de données spécifié.
 # usage:  cree-la-bd.sh [ jddX ]
@@ -35,7 +37,13 @@ echo "fait."
 
 echo -n "Chargement du schéma ... "
 sqlite3 ${DATABASE?} < ${SCHEMA?}
-echo "done."
+if [ $? -eq 0 ]; then
+    echo "fait."
+else
+    echo "**** Erreur pendant le chargement du schéma"
+fi
+
+
 
 if [ "${DATASET}" = "" ]; then
     echo "Base de données vide créée."
@@ -43,8 +51,12 @@ else
     if [ -f "${DATASET_FILE}" ]; then
         echo -n "Chargement du jeu de données ${DATASET} ..."
         sqlite3 ${DATABASE?} <  ${DATASET_FILE?}
-        echo " fait."
-        echo "Jeu de données ${DATASET} chargé dans la base de données."
+        if [ $? -eq 0 ]; then
+            echo "fait."
+            echo "Jeu de données ${DATASET} chargé dans la base de données."
+        else
+            echo "**** Erreur pendant le chargement du jeu de données"
+        fi
     else
         echo "Le jeu de données '${DATASET?}' n'existe pas." >/dev/stderr
         echo "Fichier ${DATASET_FILE?} inexistant."  >/dev/stderr
