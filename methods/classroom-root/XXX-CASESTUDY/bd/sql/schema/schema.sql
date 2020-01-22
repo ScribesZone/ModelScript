@@ -123,7 +123,7 @@ CREATE TABLE Opinions(
     CONSTRAINT PK
         PRIMARY KEY (spectator, movie),
     CONSTRAINT Dom_stars
-        CHECK (stars in ('0', '1', '2', '3', '4', '5')),
+        CHECK (stars IN ('0', '1', '2', '3', '4', '5')),
     CONSTRAINT FK_spectator
         FOREIGN KEY (spectator) REFERENCES Spectators(name),
     CONSTRAINT FK_movie
