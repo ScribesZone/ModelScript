@@ -8,7 +8,7 @@ tâche bd.relations.jdd.negatifs
 
 :langage: :ref:`RelationScript`
 :artefacts:
-    * ``relations/relations.res``
+    * ``bd/relations/relations.res``
 
 (A) JDD négatifs
 ----------------
@@ -22,6 +22,8 @@ derniers.
 
 Les jeux de données négatifs doivent être écrits en utilisant les
 mots clés ``negative dataset`` du langage :ref:`RelationScript`.
+Ces jeux de données seront directement écrits
+dans le fichier ``bd/relations/relations.res``.
 
 (Z) Suivi et status
 -------------------

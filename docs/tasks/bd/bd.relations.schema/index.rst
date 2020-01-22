@@ -30,7 +30,7 @@ tâches est généralement le suivant :
                         |
                         V                        <--- tâche bd.classes
         +--------------------------------+
-        ||        Modèle de données      |       <--- langage ClassScript1
+        |         Modèle de données      |       <--- langage ClassScript1
         +--------------------------------+
                         |
                         V                        <--- TACHE BD.RELATIONS.SCHEMA
@@ -109,7 +109,7 @@ Il s'agit ensuite de définir les contraintes intégrité suivantes :
     Les contraintes de clés proviennent directement des annotations
     ``{id}`` du modèle de données (si il existe). Les clés peuvent
     soit être définies dans le profil de la relation (par exemple
-    ``Compte(login_id)`` soit le mot clé ``key`` dans la section
+    ``Compte(login_id)``), soit le mot clé ``key`` dans la section
     ``constraints``. Voir la documentation de :ref:`RelationScript`
     pour plus de détails.
 
@@ -123,6 +123,9 @@ Il s'agit ensuite de définir les contraintes intégrité suivantes :
     contrainte provient du modèle de classes conceptuel, alors répéter
     uniquement le nom de la contrainte (par exemple
     ``constraint AtLeastForItemPerDay``).
+
+Se référer à la documentation de :ref:`RelationScript` pour plus
+d'exemples.
 
 (Z) Suivi et status
 -------------------

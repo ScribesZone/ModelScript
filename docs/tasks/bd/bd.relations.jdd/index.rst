@@ -8,7 +8,7 @@ tâche bd.relations.jdd
 
 :langage: :ref:`RelationScript`
 :artefacts:
-    * ``relations/relations.res``
+    * ``bd/relations/relations.res``
 
 (A) JDD positifs
 ----------------
@@ -23,7 +23,8 @@ derniers.
 
 Les jeux de données positifs doivent être écrits en utilisant les
 mots clés ``dataset`` ou ``positive dataset`` du langage
-:ref:`RelationScript`.
+:ref:`RelationScript`. Ces jeux de données seront directement écrits
+dans le fichier ``bd/relations/relations.res``.
 
 (Z) Suivi et status
 -------------------
