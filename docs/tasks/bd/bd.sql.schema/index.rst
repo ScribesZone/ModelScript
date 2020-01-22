@@ -18,16 +18,18 @@ modèle de relations existe alors on cherchera a réaliser une traduction
 aussi fidèle et homogène que faire se peut.
 
 ..  attention::
-    Le fichier ``bd/sql/schema/schema.sql`` fourni contient un exemple
-    de schéma écrit en SQL. Dans un premier temps, ces
-    ressources peuvent servir à comprendre/tester la création
-    d'une base de données, à réaliser éventuellement des premières
-    requêtes, etc. Il est fortement conseillé d'utiliser tout d'abord
+    Une base de données est fournie à titre d'exemple. Elle est issue
+    d'un cas d'étude appelé CyberCinema. Le fichier
+    ``bd/sql/schema/schema.sql`` fourni contient le schéma de CyberCinema.
+    Dans un premier temps, les ressources associées  peuvent
+    servir à comprendre/tester la création d'une base de données,
+    à réaliser éventuellement des premières requêtes, etc.
+    Il est fortement conseillé d'utiliser tout d'abord
     la base de données existante et de lire/tester toutes les tâches
     ``bd.sql.*`` avant de commencer à écrire le nouveau schéma de
     données.
     Bien évidemment **le contenu des fichiers fournis
-    devra  finalement être remplacé** par le code à produire.
+    devra finalement être remplacé** par le code à produire.
 
 (A) Schéma
 ----------
@@ -35,9 +37,44 @@ aussi fidèle et homogène que faire se peut.
 Implémenter le schéma relationnel en SQL revient concrètement
 à écrire différentes instructions ``CREATE TABLE``. Ces instructions
 doivent être écrites dans le fichier ``schema.sql``.
-Se référer à la documentation du SQBD utilisé pour connaître le détail de
+Se référer à la documentation du SGBD utilisé pour connaître le détail de
 la syntaxe SQL, les types de données disponibles, la manière d'écrire
 les contraintes, etc.
+
+A titre d'illustration voici l'instruction SQL correspondant à la
+création de la table ``Opinions`` du cas d'étude CyberCinemas.
+
+..  code-block:: sql
+
+    CREATE TABLE Opinions(
+        spectator VARCHAR(100),     -- => Spectators.name
+        movie VARCHAR(100),         -- => Movies.title
+        stars INTEGER,              -- BETWEEN 0 AND 5
+
+        CONSTRAINT PK
+            PRIMARY KEY (spectator, movie),
+        CONSTRAINT Dom_stars
+            CHECK (stars IN ('0', '1', '2', '3', '4', '5')),
+        CONSTRAINT FK_spectator
+            FOREIGN KEY (spectator) REFERENCES Spectators(name),
+        CONSTRAINT FK_movie
+            FOREIGN KEY (movie) REFERENCES Movies(title)
+    );
+
+Comme on le voit certaines normes de programmation doivent être
+suivies :
+
+*   tous les mots clés SQL doivent être en majuscules,
+
+*   l'indentation de 4 ou 8 espaces comme ci-dessus doit être respectée,
+
+*   les contraintes doivent être définie de manière standardisée
+    comme ci-dessus.
+
+        * PK signifie Primary Key
+        * Dom_<attributs> pour les contraintes sur un domaine
+        * FK_<name> pour les contraintes d'intégrité référentielle
+
 
 (B) Automatisation
 ------------------
