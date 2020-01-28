@@ -79,16 +79,21 @@ Par exemple l'attribut ``login`` devient ``login_id``.
 Cette convention n'est pas parfaite mais elle permet de
 visualiser les clés dans les diagrammes de classes avec l'outil USE OCL.
 
+(B) Identifiants multiples
+--------------------------
+
 Dans le cas de plusieurs clés candidates le suffixe sera numéroté ;
 par exemple ``prenom_id1``, ``nom_id1``, ``numen_id2``. Voir le
 langage :ref:`RelationScript` pour d'autres exemples.
 
-De manière consistante avec le langage :ref:`RelationScript` le suffixe
-``_`` signifie que l'attribut fait partie d'un identifiant, mais la
+Une clé peut également être simplement suffixée par un simple caractère
+souligné ``_``.
+De manière consistante avec le langage :ref:`RelationScript` ce suffixe
+``_`` signifie juste que l'attribut fait partie d'un identifiant, mais la
 notation ne spécifie pas lequel. Cette notation peut être choisie si
 l'on désire avant tout améliorer la lisibilité du diagramme.
 Lorsque la notation simplifiée ``_`` est utilisée il n'y a pas
-d'ambiguité avec un seul identifiant (par exemple ``login_`` seul).
+d'ambiguité dans le cas d'un seul identifiant (par exemple ``login_`` seul).
 Par contre dans le cas de ``prenom_``, ``nom_``, ``numen_`` il n'est
 pas possible de déterminer qu'il y a deux clés. Par défaut et sans
 indication contraire on supposera qu'il existe une seule clé composée
@@ -101,7 +106,7 @@ Voir la :ref:`tâche bd.relations.schema` pour
 plus d'information sur la manière de spécifier les clés en
 :ref:`RelationScript`.
 
-(B) Compositions
+(C) Compositions
 ----------------
 
 
@@ -146,11 +151,15 @@ Le fonctionnement ci-dessus, l' "importation" de
 l'identifiant du composite, se fait dans le cadre d'une
 composition.
 
+(D) Composition artificielles
+-----------------------------
+
 Dans l'exemple ci-dessus la nature de l'association, une composition,
 est tout à fait logique. Un batiment est bien composé de salles.
 Par contre, pour les besoins de la transformations en base de données,
 il peut parfois être nécessaire de changer une association "standard" en
-une composition alors que cela n'est pas naturel.
+une composition alors que cela n'est pas naturel. On parlera alors
+de "composition artificielle".
 
 Par exemple :
 
@@ -162,7 +171,7 @@ Par exemple :
             Seance[*] role seances
     end
 
-peut être changé en une composition :
+peut être changé en une composition artificielle :
 
 ..  code-block:: ClassScript1
 
@@ -176,7 +185,7 @@ Même si cette composition pourrait sembler contestable dans le cas d'un
 modèle conceptuel, cette modification peut être valide dans un modèle
 technique, ici dans le cadre de la conception de bases de données.
 
-(C) Classes associatives
+(E) Classes associatives
 ------------------------
 
 Selon le standard UML l'identifiant d'une classe associative est
@@ -211,7 +220,10 @@ par un attribut clé ``nnue_id`` (nnue signifiant par exemple Numéro
 National Unique d'Emploi). Dans ce cas ``nnue_id`` est une autre clé
 candidate.
 
-Notons que dans cette modélisation on ne modélise que
+(F) Classes associatives artificielles
+--------------------------------------
+
+Dans la modélisation précédante on ne modélise que
 l'état des employés à un moment donné. La sémantique du standard d'UML
 indique en effet *"il n'y a qu'un emploi entre une personne
 et une société donnée"*.
@@ -220,9 +232,10 @@ Ainsi on ne peut donc pas modéliser le fait que "paul" a travaillé la
 première fois en 2007 à dans à la société "MegaTron" et une deuxième fois
 en 2020. Dans cette situation il y a deux emplois entre la même société et
 la même personne. Situation impossible à modéliser avec le modèle
-ci-dessus.
+ci-dessus. Pour parlier ce problème on introduit la notion de
+"classe associative artificielle".
 
-Supposons que l'on veuille maintenant modéliser l'historique des emplois.
+Supposons en effet que l'on veuille modéliser l'historique des emplois.
 Une personne (par exemple paul) peut donc avoir tenu plusieurs
 emplois dans la même société mais en débutant à des années
 différentes (pour simplifier on consière uniquement la granularité
@@ -254,14 +267,15 @@ Le numéro national unique d'emploi (nnue) est une clé "globale" associée
 n'importe qu'elle autre classe, une clé associative étant une classe).
 
 La clé (``nom_id``, ``siren_id``, ``annee_lid``) est
-liée au fait que ``Emploi`` est une classe associative.
+liée au fait que ``Emploi`` est une classe associative artificielle.
 En pratique l'attribut ``annee_lid``
 (local id) a été ajouté aux deux clés "importées" des deux classes
 de "chaque coté".
 
 ..  attention::
 
-    L'utilisation du préfixe ``_lid`` est complètement incompatible avec
+    L'utilisation de classe associative artificielle, c'est à dire
+    du préfixe ``_lid`` est complètement incompatible avec
     le standard UML. Cette convention est pratique dans le cadre du
     développement de modèles de données en vue de transformation vers
     le modèle relationnel, mais attention à ne pas utiliser cette
