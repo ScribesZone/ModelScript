@@ -1,12 +1,12 @@
-[XXX-CASESTUDY] tache:concepts.objets
+[XXX-CASESTUDY] tâche:concepts.objets
 ===========================================================
 
 L'objectif de cette tâche est créer/traduire les modèles d'objets
 et de les "compiler".
- Voir la [tache:concepts.objets](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.objets/index.html).
+ Voir la [tâche:concepts.objets](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.objets/index.html).
 
 ________
-org [tache:concepts.objets](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.objets/index.html)
+org [tâche:concepts.objets](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.objets/index.html)
 
 - [ ] (010) Traduction des modèles d'objets.
     - M ``concepts/objets/o<N>/o<N>.ob1``

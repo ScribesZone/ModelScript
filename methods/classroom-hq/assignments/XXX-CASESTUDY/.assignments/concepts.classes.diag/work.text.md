@@ -1,11 +1,11 @@
-[XXX-CASESTUDY] tache:concepts.classes.diag
+[XXX-CASESTUDY] tâche:concepts.classes.diag
 ===========================================================
 
 L'objectif de cette tâche est créer les diagrammes de classes.
- Voir la [tache:concepts.classes.diag](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.classes.diag/index.html).
+ Voir la [tâche:concepts.classes.diag](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.classes.diag/index.html).
 
 ________
-org [tache:concepts.classes.diag](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.classes.diag/index.html)
+org [tâche:concepts.classes.diag](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.classes.diag/index.html)
 
 - [ ] (100) Création du diagramme de classes global.
     - M ``concepts/classes/diagrammes/classes.cld.clt``
