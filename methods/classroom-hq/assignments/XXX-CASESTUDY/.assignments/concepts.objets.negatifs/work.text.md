@@ -6,6 +6,7 @@ négatifs et de les "compiler".
 Voir la [tache:concepts.objets.negatifs](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.objets.negatifs/index.html).
 
 ________
+org [tache:concepts.objets.negatifs](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.objets.negatifs/index.html)
 
 - [ ] (100) Ecriture d'objets négatifs.
     - M ``concepts/objets/o<N>/o<N>.ob1``

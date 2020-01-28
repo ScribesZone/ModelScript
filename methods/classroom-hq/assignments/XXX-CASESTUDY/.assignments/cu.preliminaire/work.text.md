@@ -6,6 +6,7 @@ de cas d'utilisation.
  Voir la [tache:cu.preliminaire](https://modelscript.readthedocs.io/en/latest/tasks/cu/cu.preliminaire/index.html#).
 
 ________
+org [tache:cu.preliminaire](https://modelscript.readthedocs.io/en/latest/tasks/cu/cu.preliminaire/index.html#)
 
 - [ ] (100) Définition des cas d'utilisation.
     - M ``cu/cu/cu.ucs``

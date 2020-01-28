@@ -6,6 +6,7 @@ et de les "compiler".
  Voir la [tache:concepts.objets](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.objets/index.html).
 
 ________
+org [tache:concepts.objets](https://modelscript.readthedocs.io/en/latest/tasks/concepts/concepts.objets/index.html)
 
 - [ ] (010) Traduction des modèles d'objets.
     - M ``concepts/objets/o<N>/o<N>.ob1``
