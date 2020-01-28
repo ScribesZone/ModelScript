@@ -23,7 +23,7 @@ aussi fidèle et homogène que faire se peut.
     ``bd/sql/schema/schema.sql`` fourni contient le schéma de CyberCinema.
     Dans un premier temps, les ressources associées  peuvent
     servir à comprendre/tester la création d'une base de données,
-    à réaliser éventuellement des premières requêtes, etc.
+    à réaliser des premières requêtes, etc.
     Il est fortement conseillé d'utiliser tout d'abord
     la base de données existante et de lire/tester toutes les tâches
     ``bd.sql.*`` avant de commencer à écrire le nouveau schéma de
@@ -61,19 +61,21 @@ création de la table ``Opinions`` du cas d'étude CyberCinemas.
             FOREIGN KEY (movie) REFERENCES Movies(title)
     );
 
-Comme on le voit certaines normes de programmation doivent être
-suivies :
+..  attention::
 
-*   tous les mots clés SQL doivent être en majuscules,
+    Comme on le voit certaines normes de programmation doivent
+    être suivies :
 
-*   l'indentation de 4 ou 8 espaces comme ci-dessus doit être respectée,
+    *   tous les mots clés SQL doivent être en majuscules,
 
-*   les contraintes doivent être définie de manière standardisée
-    comme ci-dessus.
+    *   l'indentation de 4 ou 8 espaces comme ci-dessus doit être respectée,
 
-        * PK signifie Primary Key
-        * Dom_<attributs> pour les contraintes sur un domaine
-        * FK_<name> pour les contraintes d'intégrité référentielle
+    *   les contraintes doivent être définie de manière standardisée
+        comme ci-dessus.
+
+            * ``PK`` signifie Primary Key
+            * ``Dom_<attributs>`` pour les contraintes sur un domaine
+            * ``FK_<name>`` pour les contraintes d'intégrité référentielle
 
 
 (B) Automatisation
@@ -106,7 +108,7 @@ ressembler à cela : ::
 
 Se référer éventuellement au contenu du script pour plus d'information ;
 pour changer par exemple la localisation de la base de données. Si un autre
-SQBD est utilisé le contenu de ce script devra être adapté.
+SGBD est utilisé le contenu de ce script devra être adapté.
 
 (C) Vérifications
 -----------------
