@@ -5,7 +5,7 @@ tâche bd.relations.schema
 =========================
 
 :résumé: Cette tâche a pour objectif de créer le schéma relationnel
-    à partir du modèle modèle de données si celui-ci existe.
+    à partir du modèle de données (si celui-ci existe).
 
 :langage: :ref:`RelationScript`
 :artefacts:
@@ -17,7 +17,7 @@ Introduction
 
 Le modèle de relations (aussi appelé "schéma relationnel") doit être créé
 à partir du modèle de données si celui-ci existe. Le modèle de relations
-est alors l'ensemble des relations et des contraintes que l'on peut
+est l'ensemble des relations et des contraintes que l'on peut
 déduire à partir du modèle de données (exprimé sous forme d'un modèle
 de classes décoré par des annotations ``_id``). L'enchaînement des
 tâches est généralement le suivant :
@@ -83,11 +83,12 @@ dans l'exemple suivant :
 Dans cet exemple ``Responsable`` est un élement du modèle de classes
 à l'origine de la transformation. On suppose de plus qu'il existe une
 règle nommée ``ClasseVersRelation``.
+
 Dans des exemples plus complexes une relation peut être le résultat
 de la transformation de plusieurs éléments (classes, association, etc.)
 et peut être de plusieurs règles.
 
-Dans certains cas la transformation est plus complexe ou sort du cadre
+Dans certains cas la transformation est encore plus complexe ou sort du cadre
 des transformations standards. On utilise alors la documentation de la
 transformation pour justifier quelle(s) (autres) transformation(s) a/ont
 été appliquée(s). Dans l'exemple ci-dessus ces justifications correspondent
@@ -101,7 +102,8 @@ Il s'agit ensuite de définir les contraintes intégrité suivantes :
 *   **les contraintes sur les colonnes**.
     En :ref:`RelationScript` les contraintes de domaine peuvent soit
     être indiquées dans le profil de la relation (par exemple
-    ``R(x:String)``) ou sous forme de contraintes explicites (par exemple
+    ``R(x:String)`` ou de façon plus concise ``R(x:s)``) ou sous forme de
+    contraintes explicites (par exemple
     ``dom(x)=String`` dans la section ``constraints``). Voir la
     documentation de :ref:`RelationScript` pour plus de détails.
 
