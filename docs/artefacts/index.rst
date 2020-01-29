@@ -104,7 +104,7 @@ bd/
         sql/                Implémentation SQL de la base de données.
             schema/         Schéma de la base de données.
                 schema.sql  Schéma de la base de données exprimé en SQL.
-            jdds/           Jeux de données.
+            jdd/            Jeux de données.
                 jdd<N>.sql  Jeux de données positif numéro N.
                 jddn<M>.sql Jeux de données négatif numéro M.
                 ...
