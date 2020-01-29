@@ -108,8 +108,10 @@ bd/
                 jdd<N>.sql  Jeux de données positif numéro N.
                 jddn<M>.sql Jeux de données négatif numéro M.
                 ...
-        requetes/           Requêtes
+            requetes/       Requêtes
+                attendu/    Résultats attendus des requêtes
         cree-la-bd.sh       Script de création de la base de données.
+        eval.sh             Script d'évaluation des requêtes
         status.md           Status.
 
 projet/
