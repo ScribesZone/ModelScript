@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Version française 2.3. Dernière version dans ModelScript
+# Version française 2.4. Dernière version dans ModelScript
 #
 # Crée la base de donnée avec le schéma de données et éventuellement
 # un jeu de données spécifié.
@@ -11,7 +11,7 @@
 # Ce script exécute essentiellement les commandes suivantes :
 #
 #     sqlite3 bd.sqlite3 < schema.sql
-#     sqlite3 bd.sqlite3 < jdds/jddX.sql
+#     sqlite3 bd.sqlite3 < jdd/jddX.sql
 #
 # Si nécessaire l'emplacement de la base de données peut être modifié
 # en changeant la variable $DATABASE ci-dessous.
@@ -27,7 +27,7 @@ DATABASE=${THISDIR?}/bd.sqlite3
 SCHEMA=${THISDIR?}/schema/schema.sql
 
 # Path to the dataset file.
-DATASET_FILE=${THISDIR?}/jdds/${DATASET?}.sql
+DATASET_FILE=${THISDIR?}/jdd/${DATASET?}.sql
 
 DATASET_ERRORS=${DATASET_FILE?}.err.txt
 

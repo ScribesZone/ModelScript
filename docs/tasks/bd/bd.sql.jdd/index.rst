@@ -9,13 +9,13 @@ tâche bd.sql.jdd
 
 :langage: SQL
 :artefacts:
-    * ``bd/sql/jdds/jdd*.sql``
+    * ``bd/sql/jdd/jdd*.sql``
 
 Introduction
 ------------
 
 Des jeux de données (positifs) doivent être implémentés en SQL.
-A titre d'illustration le répertoire ``bd/sql/jdds/`` contient un
+A titre d'illustration le répertoire ``bd/sql/jdd/`` contient un
 exemple. Cet exemple permet d'illustrer l'approche et de tester des
 requêtes sur des données existantes.
 
@@ -28,7 +28,7 @@ requêtes sur des données existantes.
 
 Les jeux de données doivent être implémentés via des instructions SQL
 ``INSERT``. Ces instructions doivent être écrites dans les fichiers
-``bd/sql/jdds/jdd<N>.sql`` ou ``<N>`` est le numéro du jeu de données.
+``bd/sql/jdd/jdd<N>.sql`` ou ``<N>`` est le numéro du jeu de données.
 
 Voici a titre d'exemple un extrait du jeu de données associé à
 CyberCinemas :
@@ -57,7 +57,7 @@ possible.
 Le script de création de base de données peut être utilisé pour charger
 un jeu de données. Par exemple pour un jeu de données ``jdd1`` la création
 de la base de données se fait avec la commande suivante
-(dans l'exemple ci-dessous on suppose que le fichier ``jdds/jdd1.sql``
+(dans l'exemple ci-dessous on suppose que le fichier ``jdd/jdd1.sql``
 existe) : ::
 
     cree-la-bd.sh jdd1

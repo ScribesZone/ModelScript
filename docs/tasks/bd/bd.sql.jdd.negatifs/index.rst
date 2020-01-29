@@ -8,7 +8,7 @@ tâche bd.sql.jdd.negatifs
 
 :langage: SQL
 :artefacts:
-    * ``bd/sql/jdds/jddn*.sql``
+    * ``bd/sql/jdd/jddn*.sql``
 
 (A) JDD négatifs
 ----------------
