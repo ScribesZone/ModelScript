@@ -43,7 +43,7 @@ de ``|``). Les modèles d'objets seront "codés" par la suite dans la
 Si aucun jeu de données n'est fourni il peut être nécessaire
 d'en "inventer" un (ou plusieurs). Cela permettera d'instancier des
 scénarios comme indiqué ci-dessous. Les modèles d'objets serviront
-également de base pour valider le modèle de classe. Ils serviront
+également de base pour valider le modèle de classes. Ils serviront
 finalement comme jeux de données pour valider le schéma de la base
 de données.
 
