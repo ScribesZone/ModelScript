@@ -2,7 +2,7 @@
 //                      Participant model
 //-------------------------------------------------------------------------
 // This glossary model is expressed in ParticipantScript
-// See https://modelscript.rtfd.io/en/latest/scripts/participants/index.html
+// See https://modelscript.rtfd.io/en/latest/languages/participants/index.html
 //=========================================================================
 
 participant model XXX-CASESTUDY
