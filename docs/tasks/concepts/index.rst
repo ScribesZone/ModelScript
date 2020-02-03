@@ -5,9 +5,9 @@ tâches concepts.*
     :maxdepth: 3
 
     concepts.glossaires/index
+    concepts.scenarios.textuels/index
     concepts.classes/index
     concepts.classes.diag/index
-    concepts.scenarios.textuels/index
     concepts.objets/index
     concepts.objets.diag/index
     concepts.objets.negatifs/index
