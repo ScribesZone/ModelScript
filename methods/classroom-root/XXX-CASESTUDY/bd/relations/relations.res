@@ -2,7 +2,7 @@
 //                      Relation model
 //-------------------------------------------------------------------------
 // This relation model is expressed in RelationScript
-// See https://modelscript.rtfd.io/en/latest/scripts/relations/index.html
+// See https://modelscript.rtfd.io/en/latest/languages/relations/index.html
 //=========================================================================
 
 relation model XXX-CASESTUDY
