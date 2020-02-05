@@ -21,8 +21,14 @@ Elaborer puis livrer la charte graphique sous forme d'un fichier
 (B) Maquettes
 -------------
 
-Elaborer puis livrer les maquettes sous la forme de
+Elaborer les maquettes sous la forme de
 fichiers pdf dans le répertoire ``ui-concrete/``.
+
+(C) Alignement
+--------------
+
+S'assurer que les maquettes sont bien alignées avec les
+modèles de tâches.
 
 (Z) Suivi et status
 -------------------
