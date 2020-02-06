@@ -10,11 +10,11 @@ tâche ihm.evaluation
     * ``ui-evaluation/tests/protocole.pdf``
     * ``ui-evaluation/tests/rapport.pdf``
 
-(A) Evaluation heuristique
+(A) Evaluation experte
 --------------------------
 
-Le résultat de l'évaluation heuristique de l'interface doit être livré
-sous forme pdf dans ``ui-evaluation/analysis/evaluation-heuristique.pdf``.
+Le résultat de l'évaluation experte de l'interface doit être livré
+sous forme pdf dans ``ui-evaluation/analysis/evaluation-experte.pdf``.
 
 (B) Protocole
 -------------
