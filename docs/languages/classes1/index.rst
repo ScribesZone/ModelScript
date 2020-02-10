@@ -82,8 +82,9 @@ Exemples
     --@         Atelier.dateDeFin
     --@         Concerne
     --@         Emprunt.dateDeSortie
-    --@     | Si un emprunt concerne un atelier alors cet
-    --@     | emprunt a eu lieu dans la période correspondant à l'atelier.
+    --@     | Si un emprunt <e> concerne un atelier <a> alors cet
+    --@     | emprunt <e> a eu lieu dans la période <p> correspondant
+    --@     | à l'atelier <a>.
 
 ClassScript1
 ------------
@@ -377,9 +378,9 @@ exemple mais elles peuvent être utiles avec des phrases plus complexes.
 
 ..  code-block:: ClassScript1
 
-    --@     | Si un emprunt (e) concerne un atelier (a) alors cet
-    --@     | la date de sortie de l'emprunt (a) eu lieu entre la date de début
-    --@     | de l'atelier (a) et sa date de fin.
+    --@     | Si un emprunt <e> concerne un atelier <a> alors cet
+    --@     | la date de sortie de l'emprunt <e> eu lieu entre la date de
+    --@     | début de l'atelier <a> et sa date de fin.
 
 
 ..  _ClassScript_contraintes_methode:
