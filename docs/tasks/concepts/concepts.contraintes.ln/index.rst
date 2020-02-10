@@ -16,12 +16,21 @@ tâche concepts.contraintes.ln
 
 Un modèle de classes doit comporter non seulement des classes et des
 associations mais aussi les contraintes qui leur sont associées.
-Dans cette tâche ces contraintes doivent être décrites en Langue Naturelle
-(LN).
 
-Par la suite ces contraintes pourront être traduites en langage OCL,
-mais ce n'est pas l'objectif ici. Ne pas chercher dans un premier temps
-à écrire les contraintes en OCL.
+..  note::
+
+    Il existe trois types de contraintes : (1) les invariants,
+    (2) les préconditions et (3) les postconditions. Ces deux dernières
+    catégories sont associées aux opérations. Sachant que l'on ne considère pas
+    ces dernières au niveau conceptuel, nous nous limiterons ici au
+    invariants, et par abus de langage le terme "contrainte" sera utilisé
+    pour "invariant".
+
+Dans cette tâche les invariants associés au modèle de classes doivent
+être décrits en Langue Naturelle (LN).
+
+Par la suite ces invariants pourront être traduites en langage OCL,
+mais ce n'est pas l'objectif ici.
 
 
 Pour réaliser cette tâche utiliser la
