@@ -23,6 +23,14 @@ Voir la `feuille de résumé OCL`_  pour des précisions sur le langage OCL.
 Vérifier que la traduction en OCL est fidèle à la contrainte en
 langage naturel.
 
+..  note::
+
+    Pour rappel, par abus de langage nous utilisons les termes
+    "contraintes" et "invariants" de manière interchangeable.
+    Les autres types de contraintes (pré et post conditions) ne sont
+    pas considérée dans la mesure où les opérations ne sont pas
+    prises en compte.
+
 (B) Tests positifs
 ------------------
 
