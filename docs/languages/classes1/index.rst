@@ -311,13 +311,13 @@ Contraintes
 
 `USE OCL`_ permet l'écriture de 3 types de contraintes : invariant,
 pré-conditions et post-conditions. Par contre ClassScript1 est basé sur
-l'utilisation d'invariants uniquement. A la place du mot clé "invariant"
-le mot clé ``constraint`` est utilisé par soucis de cohérence avec les
-autres langages de ModelScript.
+l'utilisation d'invariants uniquement. Par abus de language
+on utilisera de manière interchangeable les termes "contrainte" et
+"invariant".
 
-En ClassScript1 les contraintes peuvent être définies en langage naturel
-en respectant toutefois un certain format. Ces contraintes peuvent
-ensuite être décrites en langage OCL.
+En ClassScript1 les contraintes (invariants) peuvent être définies
+en langage naturel en respectant toutefois un certain format.
+Ces contraintes peuvent ensuite être décrites en langage OCL.
 
 ..  _ClassScript_contraintes_ln:
 
@@ -326,7 +326,7 @@ Contraintes en Langage Naturel (LN)
 
 Ecrire les contraintes en Langue Naturelle (LN) est une étape indispensable
 avant de formaliser ces contraintes en OCL. C'est en effet le client
-qui exprime ces contraintes ou tout au moins qui les valide.
+qui exprime ces contraintes, ou tout au moins qui les valide.
 
 Structure
 .........
@@ -335,8 +335,9 @@ Chaque contrainte doit comporter les éléments suivants :
 
 *   un **identificateur** (p.e. ``FormatMotDePasse``),
 
-*   une **portée** d'application, c'est à dire la partie du diagramme
-    de classes qui permet d'expliquer "où se trouve" la contrainte.
+*   une **portée** d'application (mot clé ``scope``), c'est à dire la
+    partie du diagramme de classes qui permet d'expliquer
+    "où se trouve" la contrainte.
     La zone est représentée par une liste de noms de :
 
     * **classes** (p.e. ``Personne``),
@@ -360,7 +361,7 @@ Dans cet exemple la contrainte est un invariant. Ce code est à ajouter
 
 ..  code-block:: ClassScript1
 
-    --@ constraint MomentConcerne
+    --@ invariant MomentConcerne
     --@     scope
     --@         Atelier.dateDeDebut
     --@         Atelier.dateDeFin
@@ -373,12 +374,16 @@ Dans cet exemple la contrainte est un invariant. Ce code est à ajouter
 Dans l'exemple ci-dessus la notion de période n'est pas nécessairement
 claire et la locution "a eu lieu" non plus. Il est possible de préciser
 la phrase comme ci-dessous. Par ailleurs ci-dessous l'utilisation de
-variables a été ajoutée. Ces variables ne sont pas nécessaires dans cet
-exemple mais elles peuvent être utiles avec des phrases plus complexes.
+variables a été ajoutée sous forme de "marqueurs". Il s'agit donc
+de langue naturelle "marquée". Ces variables ne sont pas nécessaires
+dans cet exemple mais elles peuvent être utiles avec des phrases
+plus complexes. Elles peuvent également se réveler utiles pour guider
+d'une part l'implementation de la contrainte et d'autre par l'écriture
+des tests positifs et négatifs.
 
 ..  code-block:: ClassScript1
 
-    --@     | Si un emprunt <e> concerne un atelier <a> alors cet
+    --@     | Si un emprunt <e> concerne un atelier <a> alors
     --@     | la date de sortie de l'emprunt <e> eu lieu entre la date de
     --@     | début de l'atelier <a> et sa date de fin.
 
@@ -397,7 +402,7 @@ lister les contraintes portant sur :
 
 *   **plusieurs attributs** d'une classe (e.g. ``min<=max``)
 
-*   **une association** (e.g. *le père d'une personne est plus agé*)
+*   **une association** (e.g. *le père d'une personne <p> est plus agé*)
 
 *   **plusieurs associations** (e.g. *le salaire d'une personne employée
     dans une entreprise ne peut pas être supérieur à 5% du budget du projet
