@@ -385,7 +385,7 @@ des tests positifs et négatifs.
 
     --@     | Si un emprunt <e> concerne un atelier <a> alors
     --@     | la date de sortie de l'emprunt <e> eu lieu entre la date de
-    --@     | début de l'atelier <a> et sa date de fin.
+    --@     | début <dd> de l'atelier <a> et sa date de fin <df>.
 
 
 ..  _ClassScript_contraintes_methode:
