@@ -43,9 +43,12 @@ Exemples
             The `Leader` of the `Department` <d> is the person <p>.
         constraints
             key department
-        transformation
-            from Leader
-            rule Class2Relation
+
+    relation Leaders2   # columns defined "vertically"
+        | The department leaders.
+        columns
+            departement:String
+            boss:String
 
     constraints
         Leaders[department] = Employee[department]
@@ -83,6 +86,23 @@ Exemples
         | The salary of each employee.
         Employee[firstname, salary]
 
+    relation LesAppartements
+        transformation
+            from R_Class(Appartement)
+            from R_Compo(EstDans)
+            from R_OneToMany(Partage)
+        columns
+            nom_ : String
+            numero_ : Integer
+            superficie : Real
+            nbDePieces : Integer
+            jnum : Integer
+        constraints
+            key nom_, numero_
+            LesAppartements[jnum] C= LesJardins[jnum_]
+            LesAppartements[nom_] C= LesBatiments[nom_]
+
+
 RelationScript
 --------------
 
@@ -95,9 +115,9 @@ Le langage RelationScript permet d'exprimer des "schemas_" au sens du
     avec le terme `modèle relationnel`_. Un modèle de relations
     permet de définir des relations, tout comme un modèle de cas
     d'utilisation définit des cas d'utilisation, un modèle de classes
-    définit des classes, etc. Le `modèle relationnel`_ est au contraire
-    bien plus général. Il s'agit d'une manière de structurer et
-    d'interroger des données.
+    définit des classes, etc. Le `modèle relationnel`_ correspond
+    au contraire à un concept plus général. Il s'agit d'une manière de
+    structurer et d'interroger des données.
 
 Concepts
 --------
@@ -113,7 +133,8 @@ Le langage RelationScript est basé sur les concepts suivants :
 * les formes normales (normal forms),
 * les jeux de données (data sets),
 * les requêtes (queries)
-* les vues (views).
+* les vues (views)
+* les transformations.
 
 Relations
 ---------
@@ -122,12 +143,27 @@ Les relations peuvent être déclarées sur une seule ligne, en utilisant
 la notation simple que l'on trouve typiquement dans les livres ; par
 exemple : ::
 
-    R(x_, y_, z).
+    R(x, y, z).
+
+Il est également possible, et de manière tout à fait équivalente,
+de définir les colonnes de manière verticale (et optionellement
+d'ajouter le mot clé ``relation``) : ::
+
+    relation R
+        columns
+            x
+            y
+            z
+
+Clés
+----
 
 Dans les livres et par convention les attributs clés sont soulignés.
 En l'absence de soulignement des caractère, mais dans la même veine,
 en RelationScript le nom des attributs clés est
-suffixé par un caractère souligné "``_``".
+suffixé par un caractère souligné "``_``". ::
+
+    R(x_, y_, z).
 
 Dans l'exemple ci-dessus la clé est (x,y). Dans le cas où il y aurait
 plusieurs clés, les attributs peuvent être suffixés. Par exemple la
@@ -263,23 +299,84 @@ Transformations
 ---------------
 
 Un modèle de relations peut être obtenu par transformation à partir
-d'un modèle de classes (mot clé ``transformation`` ci-dessou). Il est
-possible de spécifier de quelles classes ou associations provient une
-relation (mot clé ``from``). De même les règles utilisées
-peuvent être spécifiées (mot clé ``rules``). Si nécessaire une
-documentation sous forme de texte peut être associée à la transformation.
+d'un modèle de classes. Une telle transformation peut correspondre à
+l'application d'une suite de règles définies dans une catalogue.
+Un exemple de catalogue est montré ci-dessous à titre d'illustration
+(:download:`télécharger <media/Catalog-UMLToRelational-MCornax.pdf>`).
+
+..  image:: media/regles-m-cornax.png
+    :align: center
+
+Considérons de plus le modèle de classes ci-dessous.
+
+..  image:: media/jardins-uml.png
+    :align: center
+
+En utilisant la règle ``R_Class`` la classe ``Batiment``
+est transformée en la relation ``LesBatiments`` définie comme
+suit :
+
+..  note::
+
+    La version française de la règle fait le renommage suivant : ``X``
+    devient ``LesXs``.
 
 ::
 
-    import class model from `../concepts/classes/classes.cl1`
 
-    relation R(a,b,c,d)
+
+    relation LesBatiments
         transformation
-            from C1, C2
-            rules R1, R2
-            | Columns C1.c and Columns C2.c
-            | have been "merged" as following ...
+            from R_Class(Batiment)
+        columns
+            nom_ : String
+            capacite : Integer
+        constraints
+            key nom_
 
+Remarquer la section ``transformation`` et le mot clé ``from``.
+Vient ensuite le nom de la règle utilisée ``R_Class`` qui ici
+est appliquée à la classe ``Batiment``. Le reste de la définition
+de la relation est standard.
+
+La transformation de la classe ``Appartement`` est montrée ci-dessous
+à titre d'illustration. ::
+
+    relation LesAppartements
+        transformation
+            from R_Class(Appartement)
+            from R_Compo(EstDans)
+            from R_OneToMany(Partage)
+        columns
+            nom_ : String
+            numero_ : Integer
+            superficie : Real
+            nbDePieces : Integer
+            jnum : Integer
+        constraints
+            key nom_, numero_
+            LesAppartements[jnum] C= LesJardins[jnum_]
+            LesAppartements[nom_] C= LesBatiments[nom_]
+
+Dans la section ``transformation`` ont voit que trois règles ont été
+appliquées :
+
+*   la règle standard de transformation de classe ``R_Class``,
+*   la règle de transformation de composition ``R_Compo``. Cette
+    règle a été appliquée à la composition ``EstDans``,
+*   la règle ``R_OneToMany`` appliquée à l'association ``Partage``.
+
+Dans certains cas il est nécessaire de changer le nom de
+certains attributs, de fusionner deux attributs en une même colonne, etc.
+Dans ce cas la transformation peut être documentée sous forme de
+documentation dans la section transformation. ::
+
+    relation LesX
+        transformation
+            from R1(X)
+            | Le type de l'attribut z a été changé vers String car ...
+            | L'attribut u a été préfixé par le nom du rôle car ...
+            | ...
 
 Requêtes
 --------
