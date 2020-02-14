@@ -804,6 +804,7 @@ RelationScriptKeywords = """
     dans
     <=>
     
+    columns
     constraints
     constraint
     
@@ -825,8 +826,6 @@ RelationScriptKeywords = """
      
     transformation
     from
-    rules
-    rule
     
     dataset
     negative
