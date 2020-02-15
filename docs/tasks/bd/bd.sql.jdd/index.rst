@@ -15,23 +15,15 @@ Introduction
 ------------
 
 Des jeux de données (positifs) doivent être implémentés en SQL.
-A titre d'illustration le répertoire ``bd/sql/jdd/`` contient un
-exemple. Cet exemple permet d'illustrer l'approche et de tester des
-requêtes sur des données existantes.
-
-..  attention::
-    Le contenu de ces fichiers n'est fourni qu'a titre d'illustration.
-    Il devra être remplacé par des jeux de données appropriés.
 
 (A) Implémentation
 ------------------
 
-Les jeux de données doivent être implémentés via des instructions SQL
+Les jeux de données doivent être implémentés via des instructions
 ``INSERT``. Ces instructions doivent être écrites dans les fichiers
 ``bd/sql/jdd/jdd<N>.sql`` ou ``<N>`` est le numéro du jeu de données.
 
-Voici a titre d'exemple un extrait du jeu de données associé à
-CyberMovies :
+Voici a titre d'exemple un extrait d'un jeu de données :
 
 ..  code-block:: sql
 
@@ -47,9 +39,11 @@ CyberMovies :
     INSERT INTO Cinemas VALUES ('Event Cinema Red Center','Alice Spring');
     ...
 
-Si des modèles d'objets ou des jeux de données relationnels ont été
-définis auparavant ces derniers doivent être réutilisés autant que
-possible.
+..  note::
+
+    Si des modèles d'objets ou des jeux de données relationnels ont été
+    définis auparavant ces derniers doivent être réutilisés autant que
+    possible.
 
 (B) Chargement
 --------------
