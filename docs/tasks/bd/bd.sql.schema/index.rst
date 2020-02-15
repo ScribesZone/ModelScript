@@ -18,18 +18,20 @@ modèle de relations existe alors on cherchera a réaliser une traduction
 aussi fidèle et homogène que faire se peut.
 
 ..  attention::
-    Une base de données est fournie à titre d'exemple. Elle est issue
-    d'un cas d'étude appelé CyberMovies. Le fichier
-    ``bd/sql/schema/schema.sql`` fourni contient le schéma de CyberMovies.
-    Dans un premier temps, les ressources associées  peuvent
-    servir à comprendre/tester la création d'une base de données,
-    à réaliser des premières requêtes, etc.
-    Il est fortement conseillé d'utiliser tout d'abord
-    la base de données existante et de lire/tester toutes les tâches
-    ``bd.sql.*`` avant de commencer à écrire le nouveau schéma de
-    données.
-    Bien évidemment **le contenu des fichiers fournis
-    devra finalement être remplacé** par le code à produire.
+
+    Dans certains cas une base de données appelée "CyberMovies" peut
+    être fournie à titre d'exemple. Pour vérifier si c'est le cas ouvrir
+    ouvrir le fichier ``bd/sql/schema/schema.sql`` et observer son
+    contenu. Si cet exemple n'est pas fourni, dans les tâches
+    ci-dessous le schéma et les données devront être créés avant toute
+    chose.
+
+    Au contraire si l'exemple CyberMovies est fourni alors les ressources
+    associées peuvent servir à comprendre/tester la création d'une
+    base de données, à réaliser des premières requêtes, etc. Dans ce cas
+    il est alors fortement conseillé d'utiliser tout d'abord
+    cette base et de lire/tester toutes les tâches ``bd.sql.*``
+    avant de commencer à écrire le nouveau schéma de données.
 
 (A) Schéma
 ----------
@@ -41,8 +43,8 @@ Se référer à la documentation du SGBD utilisé pour connaître le détail de
 la syntaxe SQL, les types de données disponibles, la manière d'écrire
 les contraintes, etc.
 
-A titre d'illustration voici l'instruction SQL correspondant à la
-création de la table ``Opinions`` du cas d'étude CyberMovies.
+Voici a titre d'illustration une instruction SQL de
+création de table.
 
 ..  code-block:: sql
 
@@ -61,7 +63,7 @@ création de la table ``Opinions`` du cas d'étude CyberMovies.
             FOREIGN KEY (movie) REFERENCES Movies(title)
     );
 
-..  attention::
+..  note::
 
     Comme on le voit certaines normes de programmation doivent
     être suivies :
@@ -116,9 +118,12 @@ SGBD est utilisé le contenu de ce script devra être adapté.
 Une fois la base de données créée il est possible si on le désire
 d'utiliser le SGBD selectionné (ici sqlite3) pour consulter le schéma et
 le contenu de la base de données.
-Avec sqlite3 et la base de données fournie par défaut la session
-suivante montre la liste des tables de la BD ainsi que le contenu de
-l'une de ces tables. ::
+
+..  attention::
+
+    L'exemple ci-dessous suppose que l'exemple CyberMovies est disponible.
+
+::
 
     $ sqlite3 bd.sqlite3
     SQLite version 3.22.0
@@ -129,7 +134,7 @@ l'une de ces tables. ::
     sqlite>
 
 Comme on peut le voir avec la dernière requête le contenu de la base
-de données par est initialement vide. La :ref:`tâche bd.sql.jdd`
+de données est initialement vide. La :ref:`tâche bd.sql.jdd`
 montre comment remplir la base avec un jeux de données (jdd).
 
 (Z) Suivi et status
