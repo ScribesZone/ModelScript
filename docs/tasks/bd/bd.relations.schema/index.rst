@@ -17,9 +17,7 @@ Introduction
 ------------
 
 Le schéma de production d'une base de données à partir d'un modèle de
-classes est le suivant. Dans un tel contexte on s'intéresse à la
-troisème étape. Sinon, il s'agit simplement de créer un modèle de
-relation à partir de zéro.
+classes est le suivant.
 
 ::
 
@@ -42,11 +40,15 @@ relation à partir de zéro.
         |           Schéma SQL           |       <--- langage SQL
         +--------------------------------+
 
+Dans un tel contexte on s'intéresse à la
+troisème étape. Sinon, il s'agit simplement de créer un modèle de
+relation à partir de zéro.
 
 .. note::
 
     Dans cette tâche seul le schéma de données est considéré. On ne prend
     pas en compte d'éventuels jeux de données (datasets).
+
 
 Le fichier a modifier dans cette tâche est ``bd/relations/relations.res``.
 :ref:`RelationScript` est le langage utilisé. Se
