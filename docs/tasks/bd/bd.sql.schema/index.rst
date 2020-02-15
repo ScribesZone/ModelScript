@@ -4,7 +4,7 @@ tâche bd.sql.schema
 ===================
 
 :résumé: L'objectif de cette tâche est d'implémenter le schéma
-    SQL de la base de données en partant du modèles de relations.
+    SQL de la base de données en partant du modèle de relations.
 
 :langage: SQL
 :artefacts:
@@ -19,8 +19,8 @@ aussi fidèle et homogène que faire se peut.
 
 ..  attention::
     Une base de données est fournie à titre d'exemple. Elle est issue
-    d'un cas d'étude appelé CyberCinema. Le fichier
-    ``bd/sql/schema/schema.sql`` fourni contient le schéma de CyberCinema.
+    d'un cas d'étude appelé CyberMovies. Le fichier
+    ``bd/sql/schema/schema.sql`` fourni contient le schéma de CyberMovies.
     Dans un premier temps, les ressources associées  peuvent
     servir à comprendre/tester la création d'une base de données,
     à réaliser des premières requêtes, etc.
@@ -42,7 +42,7 @@ la syntaxe SQL, les types de données disponibles, la manière d'écrire
 les contraintes, etc.
 
 A titre d'illustration voici l'instruction SQL correspondant à la
-création de la table ``Opinions`` du cas d'étude CyberCinemas.
+création de la table ``Opinions`` du cas d'étude CyberMovies.
 
 ..  code-block:: sql
 

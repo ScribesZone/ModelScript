@@ -31,7 +31,7 @@ Les jeux de données doivent être implémentés via des instructions SQL
 ``bd/sql/jdd/jdd<N>.sql`` ou ``<N>`` est le numéro du jeu de données.
 
 Voici a titre d'exemple un extrait du jeu de données associé à
-CyberCinemas :
+CyberMovies :
 
 ..  code-block:: sql
 
