@@ -26,30 +26,31 @@ explicitement dans le jeu de données à l'aide d'annotations
 
 ..  code-block:: sql
 
-    INSERT INTO Opinions VALUES ('Marie','The Inbetweeners 2','0');
-
-    --@ violates Opinions.PK
-    INSERT INTO Opinions VALUES ('Marie', 'The Inbetweeners 2', '3');
-
-    --@ violates Opinions.Dom_stars
-    INSERT INTO Opinions VALUES ('Marie','The Inbetweeners 2','===> VIOLATION <===');
-
-    --@ violates Opinions.FK_spectator
-    INSERT INTO Opinions VALUES ('==> VIOLATION <==','The Inbetweeners 2','0');
-
-    --@ violates Opinions.FK_movie
-    INSERT INTO Opinions VALUES ('Marie','==> VIOLATION <==','0');
-    INSERT INTO Opinions VALUES ('Adrian','The Inbetweeners 2','0');
-    INSERT INTO Opinions VALUES ('Phil','The Inbetweeners 2','2');
+    ...
+    107   INSERT INTO Opinions VALUES ('Marie','The Inbetweeners 2','0');
+    108
+    109   --@ violates Opinions.PK
+    110   INSERT INTO Opinions VALUES ('Marie', 'The Inbetweeners 2', '3');
+    111
+    112   --@ violates Opinions.Dom_stars
+    113   INSERT INTO Opinions VALUES ('Marie','The Inbetweeners 2','===> VIOLATION <===');
+    114
+    115   --@ violates Opinions.FK_spectator
+    116   INSERT INTO Opinions VALUES ('==> VIOLATION <==','The Inbetweeners 2','0');
+    117
+    118   --@ violates Opinions.FK_movie
+    119   INSERT INTO Opinions VALUES ('Marie','==> VIOLATION <==','0');
+    120   INSERT INTO Opinions VALUES ('Adrian','The Inbetweeners 2','0');
+    121   INSERT INTO Opinions VALUES ('Phil','The Inbetweeners 2','2');
     ...
 
-Chaque annotation ``--@ violates`` indique quelles arreurs sont censées
+Chaque annotation ``--@ violates`` indique quelles erreurs sont censées
 être produites lors de l'exécution de la ligne suivante. Comme on
 peut le voir dans l'exemple ci-dessus le paramètre de chaque violation
-correspond à un nom de contrainte.
+correspond à un nom de contrainte défini dans le schéma.
 
-Le chargement du jeu de données ``jddn1.sql`` produit le résultat
-suivant : ::
+Dans l'exemple le chargement du jeu de données ``jddn1.sql`` produit le
+résultat suivant : ::
 
     $ cree-la-bd.sh jddn1
 
@@ -57,19 +58,23 @@ suivant : ::
     Chargement du schéma ... fait.
     Chargement du jeu de données jddn1 ...Error: near line 23: UNIQUE constraint failed: Movies.title
     ...
-    Error: near line 109: UNIQUE constraint failed: Opinions.spectator, Opinions.movie
-    Error: near line 111: CHECK constraint failed: Dom_stars
-    Error: near line 113: FOREIGN KEY constraint failed
-    Error: near line 115: FOREIGN KEY constraint failed
+    Error: near line 110: UNIQUE constraint failed: Opinions.spectator, Opinions.movie
+    Error: near line 113: CHECK constraint failed: Dom_stars
+    Error: near line 116: FOREIGN KEY constraint failed
+    Error: near line 119: FOREIGN KEY constraint failed
     ...
 
 Le propre des jeux de données négatifs est qu'à chaque violation escomptée
 une erreur doit être effectivement produite. Dans l'exemple ci-dessus
 on retrouve les numéros de lignes où doivent se trouver les violations
-ainsi qu'un message d'erreur propre au SGBD. La vérification de la
+ainsi qu'un message d'erreur propre au SGBD.
+
+La vérification de la
 correspondance entre violations escomptées et erreurs produites n'est pas
 automatisée. Il convient donc de vérifier "manuellement" l'alignement
-entre violations scomptées / erreurs produites. La qualité d'un schéma
+entre violations escomptées / erreurs produites.
+
+La qualité d'un schéma
 de base de données ne tient pas uniquement en ce que ce schéma autorise
 mais aussi en la qualité des erreurs détectées.
 
