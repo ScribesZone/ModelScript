@@ -1,5 +1,6 @@
 ..  _`tâche bd.relations.schema`:
 
+.. highlight:: RelationScript
 
 tâche bd.relations.schema
 =========================
@@ -15,12 +16,10 @@ tâche bd.relations.schema
 Introduction
 ------------
 
-Le modèle de relations (aussi appelé "schéma relationnel") doit être créé
-à partir du modèle de données si celui-ci existe. Le modèle de relations
-est l'ensemble des relations et des contraintes que l'on peut
-déduire à partir du modèle de données (exprimé sous forme d'un modèle
-de classes décoré par des annotations ``_id``). L'enchaînement des
-tâches est généralement le suivant :
+Le schéma de production d'une base de données à partir d'un modèle de
+classes est le suivant. Dans un tel contexte on s'intéresse à la
+troisème étape. Sinon, il s'agit simplement de créer un modèle de
+relation à partir de zéro.
 
 ::
 
@@ -48,83 +47,72 @@ tâches est généralement le suivant :
 
     Dans cette tâche seul le schéma de données est considéré. On ne prend
     pas en compte d'éventuels jeux de données (datasets).
-    Dans cette tâche aucun contenu n'est créé.
 
 Le fichier a modifier dans cette tâche est ``bd/relations/relations.res``.
 :ref:`RelationScript` est le langage utilisé. Se
 référer à la documentation pour plus d'exemples.
 
-(A) Transformations
--------------------
+(A) Columns
+-----------
 
-..  attention::
+La première étape consiste à définir les relations et leurs colonnes. ::
 
-    Si le modèle de relations est créé à partir de zéro (en
-    l'absence de modèle de données) alors cette partie peut être ignorée.
+    relation LesAppartements
+        columns
+            nom_ : String
+            numero_ : Integer
+            superficie : Real
+            nbDePieces : Integer
 
-Lorsque des règles de transformation "standards" existent alors
-celles-ci doivent être respectées à chaque fois que faire ce peut.
-Plus précisemment si une liste précise de transformations nommées
-a été fournie, il s'agit alors d'indiquer et de justifier
-l'application de ces transformations. Cela se fait à l'aide
-des mots-clés ``transformation``, ``from`` et ``rule`` comme illustré
-dans l'exemple suivant :
+La section ``columns`` définit les colonnes de la relation
+``LesAppartements``. D'autres notations sont possibles
+(:ref:`documentation<RelationScript_Relations>`).
 
-..  code-block:: RelationScript
+(B) Transformation
+------------------
 
-    relation LesResponsables(departement_id:String, boss:String)
-        ...
+Dans le cas où le modèle de relations est dérivé à partir
+d'un modèle de classe il est important de documenter le
+processus de transformation suivi.
+La section ``transformation`` est alors ajouté à chaque relation
+dérivée. ::
+
+    relation LesAppartements
         transformation
-            from Responsable
-            rule ClasseVersRelation
-            | L'attribut boss a été transformé en String car
-            | ...
+            from R_Class(Appartement)
+            from R_Compo(EstDans)
+            from R_OneToMany(Partage)
+        columns
+            nom_ : String
+            numero_ : Integer
+            superficie : Real
+            nbDePieces : Integer
 
-Dans cet exemple ``Responsable`` est un élement du modèle de classes
-à l'origine de la transformation. On suppose de plus qu'il existe une
-règle nommée ``ClasseVersRelation``.
+Dans cet exemple la transformation effectuée a été basé sur
+l'application de trois règles (``R_Class``, ``R_Compo`` et
+``R_OneToMany``) (:ref:`documentation<RelationScript_Transformation>`).
 
-Dans des exemples plus complexes une relation peut être le résultat
-de la transformation de plusieurs éléments (classes, association, etc.)
-et peut être de plusieurs règles.
-
-Dans certains cas la transformation est encore plus complexe ou sort du cadre
-des transformations standards. On utilise alors la documentation de la
-transformation pour justifier quelle(s) (autres) transformation(s) a/ont
-été appliquée(s). Dans l'exemple ci-dessus ces justifications correspondent
-au texte commençant par ``| L'attribut ...``.
-
-(B) Contraintes
+(C) Contraintes
 ---------------
 
 Il s'agit ensuite de définir les contraintes intégrité suivantes :
 
-*   **les contraintes sur les colonnes**.
-    En :ref:`RelationScript` les contraintes de domaine peuvent soit
-    être indiquées dans le profil de la relation (par exemple
-    ``R(x:String)`` ou de façon plus concise ``R(x:s)``) ou sous forme de
+*   **les contraintes de domaine**.
+    Les contraintes de domaine peuvent soit être indiquées dans le
+    profil de la relation (par exemple ``R(x:String)`` ou de
+    façon plus concise ``R(x:s)``) soit être sous forme de
     contraintes explicites (par exemple
-    ``dom(x)=String`` dans la section ``constraints``). Voir la
-    documentation de :ref:`RelationScript` pour plus de détails.
+    ``dom(x)=String`` dans la section ``constraints``)
+    (:ref:`documentation<RelationScript_ContrainteDeDomaine>`).
 
 *   **les contraintes de clés**.
-    Les contraintes de clés proviennent directement des annotations
-    ``{id}`` du modèle de données (si il existe). Les clés peuvent
-    soit être définies dans le profil de la relation (par exemple
-    ``Compte(login_id)``), soit le mot clé ``key`` dans la section
-    ``constraints``. Voir la documentation de :ref:`RelationScript`
-    pour plus de détails.
+    Les clés peuvent soit être définies dans le profil de la relation
+    (par exemple ``Compte(login_id)``), soit via mot clé ``key``
+    (:ref:`documentation<RelationScript_Cles>`).
 
 *   **les contraintes d'intégrité référentielle**. Elles sont exprimées
-    en algèbre relationelle sous forme de :ref:`RelationScript`
-    (par exemple ``R[x] C= S[y]``).
-
-*   **les autres contraintes**. Si une contrainte ne peut pas être
-    exprimées en utilisant l'algèbre relationnelle,
-    la contrainte sera spécifiée sous forme textuelle. Si cette
-    contrainte provient du modèle de classes conceptuel, alors répéter
-    uniquement le nom de la contrainte (par exemple
-    ``constraint AtLeastForItemPerDay``).
+    en langue naturelle ou en algèbre relationelle
+    (:ref:`documentation<RelationScript_ContrainteDIntegrite>`).
 
 Se référer à la documentation de :ref:`RelationScript` pour plus
 d'exemples.
