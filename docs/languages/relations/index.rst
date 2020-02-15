@@ -136,6 +136,8 @@ Le langage RelationScript est basé sur les concepts suivants :
 * les vues (views)
 * les transformations.
 
+.. _`RelationScript_Relations`:
+
 Relations
 ---------
 
@@ -155,11 +157,13 @@ d'ajouter le mot clé ``relation``) : ::
             y
             z
 
+.. _`RelationScript_Cles`:
+
 Clés
 ----
 
 Dans les livres et par convention les attributs clés sont soulignés.
-En l'absence de soulignement des caractère, mais dans la même veine,
+En l'absence de soulignement des caractères ascii,
 en RelationScript le nom des attributs clés est
 suffixé par un caractère souligné "``_``". ::
 
@@ -173,8 +177,14 @@ relation suivante possède 3 clés : ::
 
 
 Telle qu'elle est définie la relation possède 3 clés : < (x), (y), (y,z) >.
-Dans tous les cas les clés peuvent être spécifées de manière plus commode
-dans la section ``keys`` de la relation (voir plus loin).
+Dans tous les cas les clés peuvent être spécifées de manière plus
+explicites dans la section ``constraints``. ::
+
+    relation R(x, y, z)
+        constraints
+            key x
+            key y
+            key y,z
 
 Intention
 ---------
@@ -201,16 +211,28 @@ crochets (p.e. ``<a>``) ::
             (a,c,d) dans R4 <=>
             | the person <a> is ... with <c> ... and <d> ...
 
+.. _`RelationScript_ContrainteDeDomaine`:
+
 Contraintes de domaine
 ----------------------
 
-Le domaine des attributs peut être défini comme ci-dessous : ::
+Le domaine des attributs peut être défini de différentes manière comme
+le montre les exemples suivants : ::
 
-    relation R(a,b,c,d)
+    relation R1(a,b,c,d)
         constraints
             dom(a) = String
             dom(b) = dom(c) = Date
             dom(d) = Real ?
+
+    relation R2(a:String, b:Date, c:Date, d:Real ?)
+
+    relation R3
+        columns
+            a : String
+            b : Date
+            c : Date
+            d : Real ?
 
 Un type basique suivi de de l'opérateur ``?`` signifie que le domaine est
 étendu avec la valeur ``null``. En d'autres termes cela signifie que
@@ -241,19 +263,27 @@ suit : ::
 
     relation LesEmployés(nom:s, prenom:s, age:i, dateNaissance: d)
 
+.. _`RelationScript_ContrainteDIntegrite`:
+
 Contraintes d'intégrité
 -----------------------
 
-Les contraintes d'intégrité, et en particulier les
-`contraintes d'intégrité référentielle`_,
-peuvent être nommées ou peuvent être anonymes.
-Elles peuvent être définies de manière informelle sous forme de
-documentation. Elles peuvent également être définies en utilisant
-l'`algèbre relationnelle`_. ::
+Les contraintes d'intégrité (et en particulier les
+`contraintes d'intégrité référentielle`_) peuvent être définies
+sous forme de documentation en langue naturelle. ::
 
     constraint Parent
         | Les parents d'une personne doivent être
         | plus agés que cette personne, d'au moins 7 ans.
+
+Si le modèle de relations est dérivé d'un modèle de classes, il n'est
+pas nécessaire de répeter le corps des contraintes qui sont simplement
+"héritées" ; seul le nom suffit. ::
+
+    constraint AuMoins7Ans
+
+Le corps de certaines contraintes peut également être défini en utilisant
+l'`algèbre relationnelle`_. ::
 
     constraint FK_34h
         | The h of the relation R3 is one of the h of R4.
@@ -295,6 +325,9 @@ Formes normales
         constraints
             3NF
 
+.. _`RelationScript_Transformation`:
+
+
 Transformations
 ---------------
 
@@ -322,8 +355,6 @@ suit :
     devient ``LesXs``.
 
 ::
-
-
 
     relation LesBatiments
         transformation
@@ -361,15 +392,16 @@ La transformation de la classe ``Appartement`` est montrée ci-dessous
 Dans la section ``transformation`` ont voit que trois règles ont été
 appliquées :
 
-*   la règle standard de transformation de classe ``R_Class``,
+*   la règle de transformation de classe ``R_Class``,
 *   la règle de transformation de composition ``R_Compo``. Cette
     règle a été appliquée à la composition ``EstDans``,
 *   la règle ``R_OneToMany`` appliquée à l'association ``Partage``.
 
 Dans certains cas il est nécessaire de changer le nom de
 certains attributs, de fusionner deux attributs en une même colonne, etc.
-Dans ce cas la transformation peut être documentée sous forme de
-documentation dans la section transformation. ::
+Certaines règles peuvent être manquantes ou doivent être appliquée
+de manière différente. Toutes ces modifications peut être documentées
+sous forme de documentation dans la section transformation. ::
 
     relation LesX
         transformation
