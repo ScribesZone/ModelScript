@@ -40,7 +40,7 @@ Exemples
         | The department leaders.
         intention
             (p, d) in Leaders <=>
-            The `Leader` of the `Department` <d> is the person <p>.
+            | The `Leader` of the `Department` <d> is the person <p>.
         constraints
             key department
 
