@@ -208,7 +208,7 @@ crochets (p.e. ``<a>``) ::
     relation R4(a_,c,d)
         | The list of X.
         intention
-            (a,c,d) dans R4 <=>
+            (a,c,d) in R4 <=>
             | the person <a> is ... with <c> ... and <d> ...
 
 .. _`RelationScript_ContrainteDeDomaine`:
