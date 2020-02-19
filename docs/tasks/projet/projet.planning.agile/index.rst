@@ -11,7 +11,7 @@ tâche projet.planning.agile
     * ``github:<project>``
     * ``github:<issues>``
     * ``github:<milestones>``
-    * ``sprint<N>/provisional-plan/*``
+    * ``projet/sprint<N>/provisional-plan/*``
 
 Introduction
 ------------
@@ -38,8 +38,14 @@ Aller sur le dépot de groupe, puis ``Issues > Milestone > New milestone``.
 Créer un tableau de bord (appelé "project" dans GitHub) associé au dépot
 de groupe. Utiliser l'onglet ``project`` du dépot puis
 ``Create a project``.
-Définir les colonnes en fonction des besoins. Des colonnes pourront
-être ajoutées par la suite. Ce tableau de bord pourra contenir
+Définir les colonnes en fonction des besoins.
+
+..  note::
+
+    Les colonnes pourront être ajoutées par la suite au fur et à mesure
+    des besoins.
+
+Ce tableau de bord pourra contenir
 des tâches sous forme d'issues, mais également de "simples" notes.
 Il est possible de définir plusieurs tableaux, par exemple pour
 plusieurs sprint ou pour des "projets" s'exécutant en parallèle.
@@ -49,18 +55,12 @@ de l'équipe. Cette structure pourra être adaptée au fil de l'eau.
 (C) Tâches
 ----------
 
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-XXX A RELIRE
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-
 Il s'agit ici de définir les tâches du projet sous forme
 d'issues GitHub. On cherche plus particulièrement a
 **établir la traçabilité** entre :
 
-*   le processus ModelScript
-*   et le processus suivi effectivement.
+*   (1) le processus ModelScript
+*   (2) le processus suivi effectivement.
 
 Lorsqu'une tâche est dérivée directemment d'une tâche de référence
 ModelScript le nom de l'issue y fera référence directement. Par exemple
@@ -76,6 +76,9 @@ scénario ``s1`` et les incréments ``d1`` et ``d2``.
     autant donner de recommendations sur la manière d'utiliser cette
     fonctionnalité. Ci-dessous cette l'utilisation de cette fonctionnalité
     est formalisée afin d'assurer la traçabilité entre issues.
+
+(D) Références
+--------------
 
 Utiliser le nom de la tâche pour référencer la tâche "mère"
 n'est pas toujours facile ni souhaitable. Dans le cas de relation
@@ -106,27 +109,12 @@ ModelScript. ::
     #79 Faire de l'espace sur le disque    [Extra]
 
 
-(D) Labels
+(E) Labels
 ----------
 
 Associer à chaque tâche les "labels" correspondant. Par exemple "bd".
 Pour cela utiliser ``Labels`` dans le panneau de droite de l'issue
 concernée.
-
-(E) Décomposition
------------------
-
-Il pratique de lier une issue à d'autres issues. Cela peut être
-utile dans le cas de tâches que l'on veut décomposer en sous tâches.
-Pour cela il est suffisant de mettre ``#<N>`` dans le corps de la
-sous tâches.
-
-Cette technique doit être utilisée pour faire référence
-aux tâches du dépot "root", par exemple la tâche
-``projet.planning.gantt.sprint2`` pourrait contenir la référence
-``l3miage/l3miage-1920-bdsi-root#13`` si le dépot root est
-``l3miage/l3miage-1920-bdsi-root`` et si l'issue #13 est l'issue
-``projet.planning.gantt``.
 
 (F) Planification
 -----------------

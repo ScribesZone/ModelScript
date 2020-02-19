@@ -8,7 +8,7 @@ tâche projet.planning.gantt
 
 :langage: Gantt
 :résultats:
-    * ``sprint<N>/provisionnel/*``
+    * ``projet/sprint<N>/provisionnel/*``
 
 Introduction
 ------------
@@ -92,8 +92,8 @@ La création d'un jalon se fait en deux temps :
 *   transformer cette tâche en jalon avec
     ``Alt Enter > Général > Point bilan``.
 
-(C) Resources
--------------
+(C) Ressources
+--------------
 
 Dans le cadre de la gestion de projet traditionnelle, les membres de
 l'équipe de dévelopement sont considérées comme des "ressources" ; plus
@@ -103,12 +103,12 @@ particulièrement des "ressources humaines". Dans le cadre de
 ``Resource Chart`` pour voir l'ensemble des ressources.
 
 Utiliser le menu ``Ressource > Nouvelle ressource (Ctrl H)``.
-Utiliser le trigramme de chaque membre en lieu et place du du nom.
+Utiliser le trigramme de chaque membre en lieu et place du nom.
 
 (D) Tâches
 ----------
 
-Dans un premier temps lister les tâches à réaliser,
+Dans un premier temps lister les tâches à réaliser
 *sans chercher à les ordonnancer*. Ceci se fera dans une étape utltérieure.
 Utiliser dans un premier temps ``Ctrl T`` pour introduire rapidement
 les différentes tâches. Ne pas chercher à déterminer la durée de chaque
@@ -116,7 +116,7 @@ tâche. Lister simplement les tâches.
 
 Lorsque les tâches font références à des tâches ModelScript utiliser leur
 idendificateur (par exemple ``projet.planning.gantt``). Ajouter, lorsque
-nécessaire, un suffixe (par exemple ``projet.planning.gantt.sprint2``).
+nécessaire, un prefixe (par exemple ``sprint2.projet.planning.gantt``).
 
 (E) Décomposition
 -----------------
@@ -152,7 +152,7 @@ Pour réaliser cette affectaton avec `gantt project`_ utiliser
 un référent ou responsable pour la tâche. Utiliser dans ce cas
 la case à cocher ``Responsable``.
 
-L'affectation des ressources doit être faire conjointement à la
+L'affectation des ressources doit être faire conjointement avec la
 planification. Voir ci-dessous.
 
 (G) planification

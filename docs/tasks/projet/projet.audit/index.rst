@@ -7,7 +7,7 @@ tâche projet.audit
     (2) de réaliser cet audit, puis (3) d'en faire la synthèse.
 
 :artefacts:
-    * ``sprint<N>/audit/*``
+    * ``projet/sprint<N>/audit/*``
 
 Introduction
 ------------
@@ -32,7 +32,7 @@ Il s'agit pour l'équipe de développement d'indiquer :
 Il ne s'agit pas de "vendre" ce qui a été fait en en exagérant
 les mérites, mais plutôt de convaincre que ce qui a été fait est
 solide et que l'équipe est suffisemment fiable pour mériter le
-l'octroi d'un nouvel incrément.
+l'octroi des ressources nécessaire à un nouvel incrément.
 
 L'objectif de l'audit lui-même est d'intéragir avec le comité d'audit,
 de l'informer, mais aussi de recueillir les recommendations émises
@@ -42,22 +42,32 @@ afin d'établir un rapport d'audit suivi d'actions précises.
 ----------------
 
 Chaque audit est basé sur une présentation effectuée à base
-de transparents. Le fichier ``project/sprint<N>/audit/audit-<M>.odp``
+de transparents. Les fichiers
+``projet/sprint<N>/audit/audit-<N>.odp``
+où ``<N>`` est un numéro de version correspondent aux versions
+successivent des transparents.
 La dernière version doit être convertie en fichier .pdf dans
-``project/sprint<N>/audit/audit.pdf``
+``projet/sprint<N>/audit/audit.pdf``
+
+Les différentes capture d'écran réalisée au cours de projet doivent
+servir de base pour le contenu de la présentation.
 
 
 (B) Présentation
 ----------------
 
-La présentation doit être faite à partir de la dernière version sur
-GitHub.
+Lors de la présentation effective les transparents présentés doivent
+être ceux présent dans la dernière version de GitHub.
 
 Chaque membre du groupe doit parler.
 
 Un "secrétaire" doit être nommé afin de prendre des notes tout au long
-de l'audit. Ces notes serviront pour le résumé d'audit. Perdre des
-informations ou remarques faites pendant l'audit est une faute.
+de l'audit. Ces notes serviront pour le résumé d'audit.
+
+..  attention::
+
+    Perdre des informations ou remarques faites pendant l'audit
+    est une faute grave.
 
 (C) Compte rendu
 ----------------
@@ -67,11 +77,11 @@ de l'équipe.
 
 Etablir ensuite un compte rendu faisant état des principales
 remarques faites lors de l'audit, suivi des actions à entreprendre.
-Le compte rendu d'audit doit se faire immédiatement après l'audir,
+Le compte rendu d'audit doit se faire immédiatement après l'audit,
 au moins pour la partie "remarques effectuées".
 
 Le compte rendu doit être réalisé sous forme de texte dans le fichier
-``project/sprint<N>/audit/audi-summary``. Il peut s'agir simplement
+``projet/sprint<N>/audit/resume.md``. Il peut s'agir simplement
 de quelques lignes. Utiliser un style télégraphique,
 une liste de points. Il ne s'agit pas d'un document formel mais simplement
 d'un memo principalement à destination de l'équipe. La forme n'est pas
@@ -79,4 +89,4 @@ primordiale mais le contenu est par contre particulièrement important
 car c'est lui qui défini l'orientation du prochain sprint.
 
 Si des décisions importantes ont été prises, les consigner dans le
-fichier ``tracks/tracks.trs``.
+fichier ``suivis/suivis.trs``.

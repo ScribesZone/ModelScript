@@ -12,11 +12,10 @@ tâche projet.livraison
 Introduction
 ------------
 
-La livraison est une opération formelle (qui peut contractuelle) dans
+La livraison est une opération formelle (qui peut être contractuelle) dans
 laquelle l'équipe de développement délivre l'état le plus avancé
 du logiciel au client. Le logiciel passe typiquement d'un environement
-de développemment à un environnement de test, de pre-production ou
-autre.
+de développemment à un environnement de pre-production ou de production.
 
 (A) Tests
 ---------

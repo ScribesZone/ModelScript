@@ -43,8 +43,11 @@ par la suite. Tous ces rôles seront associés à la personne en
 mentionnant si nécessaire ces changements la description de la personne.
 Par exemple ``| Integration Manager du 12/03/2020 au 17/03/2020``.
 
-Dans le cadre d'un projet "exploratoire", du point de vue de la
-méthodologie, les rôles peuvent être définis au fur et à mesure du projet,
+..  note::
+
+    Dans le cadre d'un projet "exploratoire", du point de vue de la
+    méthodologie, les rôles peuvent être définis au fur et à mesure du
+    projet,
 
 (B) Personnes
 -------------
@@ -52,7 +55,8 @@ méthodologie, les rôles peuvent être définis au fur et à mesure du projet,
 Les membres de l'équipe doivent être brièvement décrits : nom et trigramme.
 Utiliser le mot clé ``person``. Indiquer le ou les rôles que chaque
 personne a ou va jouer. Définir également les éventuels consultants
-extérieurs ou toute autre personne impliquée dans le projet.
+extérieurs ou toute autre personne impliquée dans le projet, dans son
+évaluation, etc.
 
 (Z) Suivi et status
 -------------------
