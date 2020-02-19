@@ -17,7 +17,7 @@ correspondant à chaque modèle de tâches (MdT). Pour chaque modèle
 un document ``ui-abstract/<MdT>/<MdT>.pdf`` doit être produit. Il peut
 s'agir d'une copie d'écran, d'une photographie ou d'un diagramme
 réalisé avec un outil. Si d'autres fichiers sont produits ils porteront
-des noms tel que ``ui-abstract/<MdT>/<MdT>.<XXX>``.
+des noms tel que ``ui-abstract/<MdT>/<MdT>.<ZZZ>``.
 
 (B) Alignement
 --------------
