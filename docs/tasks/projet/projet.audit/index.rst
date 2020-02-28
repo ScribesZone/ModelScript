@@ -12,13 +12,13 @@ tâche projet.audit
 Introduction
 ------------
 
-L'objectif d'un audit est de faire le bilan, le plus objectif possible
+L'objectif d'un audit est de faire le bilan, le plus objectif possible,
 des résultats obtenus pendant un incrément ainsi que du processus
 méthodologique menant à ces résultats.
 
 Il s'agit pour l'équipe de développement d'indiquer :
 
-* ce qui a été fait, doit ếtre amélioré, reste à faire,
+* ce qui a été fait, doit être amélioré, reste à faire,
   (se baser sur les fichers ``status.md``),
 
 * quels résultats ont été produits,
@@ -31,18 +31,17 @@ Il s'agit pour l'équipe de développement d'indiquer :
 
 Il ne s'agit pas de "vendre" ce qui a été fait en en exagérant
 les mérites, mais plutôt de convaincre que ce qui a été fait est
-solide et que l'équipe est suffisemment fiable pour mériter le
+solide et que l'équipe est suffisemment fiable pour mériter
 l'octroi des ressources nécessaires à un nouvel incrément.
 
 L'objectif de l'audit lui-même est d'intéragir avec le comité d'audit,
-de l'informer, mais aussi de recueillir les recommendations émises
+de l'informer, mais aussi de recueillir les recommandations émises
 afin d'établir un rapport d'audit suivi d'actions précises.
 
 ..  note::
 
     En Scrum le "sprint review" et la cérémonie correspondant
-    le plus aux audits, bien que l'esprit ne soit pas exactement
-    le même.
+    le plus aux audits.
 
 (A) Transparents
 ----------------
@@ -72,7 +71,7 @@ cette rétrospective dans la présentation.
 ----------
 
 Les éléments du modèle de suivis doivent être utilisés dans la présentation
-pour montrer quelles décisions, hypothèses ont été faites, quelles
+pour montrer quelles décisions ou hypothèses ont été faites, quelles
 questions sont à l'ordre du jour et quels empéchements ont freiné le
 projet. Faire référence à chaque suivi par son identifiant (par
 exemple ``Q3``) et par son titre.
@@ -81,7 +80,7 @@ exemple ``Q3``) et par son titre.
 -------------
 
 Les transparents doivent impérativement faire référence aux termes du
-glossaire. Autant que faire se peut utiliser les backquotes "`" pour
+glossaire. Lorsque possible utiliser les backquotes "`" pour
 faire référence à ces termes.
 
 (E) Traçabilité
@@ -97,7 +96,7 @@ artefacts par leur nom court (p.e. ``classes.cl1``).
 ..  attention::
 
     La possibilité d'identifier de manière précise "de quoi on parle"
-    est un critère important d'évaluation de l'audit.
+    est un critère important d'évaluation.
 
 (F) Présentation
 ----------------
@@ -110,10 +109,12 @@ et répondre aux questions qui lui sont posées (les questions
 peuvent être "nominatives")
 
 Un ou deux "secrétaires" doivent être nommés afin de prendre des notes
-tout au long de l'audit. Le deuxième secrétaire n'est là que pour
+tout au long de l'audit. Il peut être intéresant d'avoir deux secrétaires
+pour avoir "plus de notes". Ce peut être utile lors d'échanges rapides
+avec l'auditoire. Le deuxième secrétaire est là aussi pour
 se substituer au premier lorsque celui-ci intervient.
 
-Ces notes prises pendant l'audit serviront de résumé d'audit.
+Les notes prises pendant l'audit serviront de résumé d'audit.
 
 ..  attention::
 
@@ -122,7 +123,30 @@ Ces notes prises pendant l'audit serviront de résumé d'audit.
     une fois de plus ce qui a été déjà dit lors d'une précédente
     réunion. Cela démontre un manque de professionalisme.
 
-(G) Documents
+(G) Démonstration
+-----------------
+
+Une démonstration du produit pendant l'audit est la bienvuenue.
+Cependant une telle démonstration n'a pas de caractère obligatoire.
+
+Se reporter à la section
+:ref:`Démonstration<projet.soutenance.demonstration>` de la tâche
+``projet.soutenance`` pour plus de détails sur la manière d'organiser
+une présentation.
+
+..  note::
+
+    Les démonstrations d'audits n'ont pas le caractère formel que
+    l'on trouve dans la démonstration de soutenance. Certains élements
+    mentionnés pourront donc être simplifiés.
+
+Si une démonstration est faite pendant une audit et qu'une autre
+démonstration a été faite précédemment, il est judicieux de montrer
+de manière explicite les différences entre les fonctionnalités
+successives. Ceci peut se faire sous la forme de phrases comme
+"Avant ici il y avait ...".
+
+(H) Documents
 -------------
 
 Il peut être utile (mais en général pas nécessaire) de distribuer
@@ -131,14 +155,14 @@ C'est le cas notamment si certains transparents sont
 difficilement lisibles (p.e. les diagrammes de classes ou modèles
 de tâches).
 
-(H) Compte rendu
+(I) Compte rendu
 ----------------
 
 Après l'audit faire tout d'abord un débriefing entre les membres
 de l'équipe.
 
 Etablir ensuite un compte rendu faisant état des principales
-remarques faites lors de l'audit, suivi des actions à entreprendre.
+remarques faites lors de l'audit, suivies des actions à entreprendre.
 Le compte rendu d'audit doit se faire immédiatement après l'audit,
 au moins pour la partie "remarques effectuées".
 
@@ -146,7 +170,7 @@ Le compte rendu doit être réalisé sous forme de texte dans le fichier
 ``projet/sprint<N>/audit/resume.md``. Il peut s'agir simplement
 de quelques lignes. Utiliser un style télégraphique,
 une liste de points. Il ne s'agit pas d'un document formel mais simplement
-d'un memo principalement à destination de l'équipe. La forme n'est pas
+d'un mémo principalement à destination de l'équipe. La forme n'est pas
 primordiale mais le contenu est par contre particulièrement important
 car c'est lui qui défini l'orientation du prochain sprint.
 
