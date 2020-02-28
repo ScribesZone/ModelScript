@@ -105,7 +105,9 @@ artefacts par leur nom court (p.e. ``classes.cl1``).
 Lors de la présentation effective, c'est la dernière version des
 transparents sur GitHub qui doit être présenté.
 
-Chaque membre du groupe doit parler.
+Pendant la présentation chaque membre du groupe doit parler
+et répondre aux questions qui lui sont posées (les questions
+peuvent être "nominatives")
 
 Un ou deux "secrétaires" doivent être nommés afin de prendre des notes
 tout au long de l'audit. Le deuxième secrétaire n'est là que pour
@@ -120,7 +122,16 @@ Ces notes prises pendant l'audit serviront de résumé d'audit.
     une fois de plus ce qui a été déjà dit lors d'une précédente
     réunion. Cela démontre un manque de professionalisme.
 
-(D) Compte rendu
+(G) Documents
+-------------
+
+Il peut être utile (mais en général pas nécessaire) de distribuer
+aux membres du comité d'audit des documents.
+C'est le cas notamment si certains transparents sont
+difficilement lisibles (p.e. les diagrammes de classes ou modèles
+de tâches).
+
+(H) Compte rendu
 ----------------
 
 Après l'audit faire tout d'abord un débriefing entre les membres
