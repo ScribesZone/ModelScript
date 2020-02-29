@@ -100,7 +100,8 @@ artefacts par leur nom court (p.e. ``classes.cl1``).
 
     La possibilité d'identifier de manière précise "de quoi parle" chaque
     transparent, chaque phrase, chaque image est un critère important
-    d'évaluation.
+    d'évaluation. Chaque transparent devrait donc comporter plusieurs
+    voir de nombreuses références.
 
 (F) Présentation
 ----------------
