@@ -103,6 +103,12 @@ artefacts par leur nom court (p.e. ``classes.cl1``).
     d'évaluation. Chaque transparent devrait donc comporter plusieurs
     voir de nombreuses références.
 
+Il peut être utile, mais pas indispensable ni facilement faisable,
+de donner un document à l'auditoire indiquant à quoi correspondent
+les références principales. Dans tout les cas, quelqu'un lisant les
+transparents avant ou après la soutenance devrait
+pouvoir retrouver tous les éléments cités.
+
 (F) Présentation
 ----------------
 
