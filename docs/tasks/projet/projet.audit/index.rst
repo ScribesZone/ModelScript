@@ -83,6 +83,8 @@ Les transparents doivent impérativement faire référence aux termes du
 glossaire. Lorsque possible utiliser les backquotes "`" pour
 faire référence à ces termes.
 
+..  _`projet.audit.tracabilite`:
+
 (E) Traçabilité
 ---------------
 
@@ -95,8 +97,9 @@ artefacts par leur nom court (p.e. ``classes.cl1``).
 
 ..  attention::
 
-    La possibilité d'identifier de manière précise "de quoi on parle"
-    est un critère important d'évaluation.
+    La possibilité d'identifier de manière précise "de quoi parle" chaque
+    transparent, chaque phrase, chaque image est un critère important
+    d'évaluation.
 
 (F) Présentation
 ----------------
