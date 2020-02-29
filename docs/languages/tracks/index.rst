@@ -36,7 +36,7 @@ Exemples
     question Q2: Rendu en retard
         | Aucune information n'est fournie sur le mode de `Rendu`
         | dans le cas ou celui-ci se fait en retard. Le contenu
-        | de la ligne [A4] doit être précisé avant de pouvoir réalisé
+        | de la ligne [A4] doit être précisé avant de pouvoir réaliser
         | la définition du cas d'utilisation `RendreUnItem`.
         status: open
         who: KET MER
@@ -44,8 +44,8 @@ Exemples
     hypothesis H1: Transfert de stocks
         | On suppose que le transfert de `Stocks` se fait "en dehors"
         | de `CyberBibliotheque` [A31][A32] et que la seule fonctionnalité
-        | qui doit ếtre développée est le faire que les `Magaziniers`
-        | incrémente/décrémente les `Stocks` de leur `Bibliotheque`
+        | qui doit être développée est le fait que les `Magaziniers`
+        | incrémentent/décrémentent les `Stocks` de leur `Bibliotheque`
         | respective [A33].
         github: #12
         status: validated
@@ -53,14 +53,14 @@ Exemples
         who: NZW
 
     hypothesis H2: Emprunt enseignant de 30 jours
-        | Les lignes [A23] et [A26] semble contradictoire. Il semble
+        | Les lignes [A23] et [A26] semblent contradictoires. Il semble
         | logique de ne pas restreindre le `Personel` à la contrainte
-        | des 15 jours indiquée en [A23]?
+        | des 15 jours indiquée en [A23].
         priority: low
         status: open
 
     decision D1: Pas de transfert des livres
-        | La gestion gestion du `Transfert` des `Livres` ne sera
+        | La gestion du `Transfert` des `Livres` ne sera
         | pas prise en compte avant la version v2.
         date: 2020-05-21
         who: ADZ NZW PGI ZSE
@@ -78,6 +78,7 @@ Exemples
         | à ce stade de créer des diagrammes de classes et des
         | diagrammes d'objets. Les tâches concepts.classes.diag
         | et concepts.objets.diag sont en attente.
+        action: A1
         date: 2020-03-18
         who: ADZ JFE
 
@@ -87,39 +88,61 @@ Exemples
         date: 2020-03-20
         who: NZW
 
+    action A1: Contacter le service informatique pour USE OCL
+        impediment: I1
+        who: JFE
+
+    action A2: Restructurer le fichier classes.cl1 et ob1.ob1
+        | Les noms des classes doivent être revus et alignés
+        | au glossaire
+        github: #15
+
 
 TaskScript
 ----------
 
-Un projet le modèle de suivi peut être utilisé dans de multiples
-contextes. Par exemple :
+Le modèle de suivi peut être utilisé dans de multiples contextes :
 
 *   **ordres du jour** de réunions. Le client n'étant pas disponible
     en permanence, les questions et hypothèses doivent être consignées
-    et sérialisées. Ces différents points peuvent ensuite être soulevés lors
-    d'une prochaine réunion avec le "client". Un tel modèle peut donc être
-    utilisé pour établir l'ordre du jour d'une réunion future.
+    et sérialisées. Ces différents points peuvent ensuite être soulevés
+    lors d'une prochaine réunion avec le "client". Un tel modèle peut
+    donc être utilisé pour établir l'ordre du jour d'une réunion future.
 
 *   **compte rendus**. Il est possible de définir des
-    "décisions" dans le modèle de suivi. Bon nombre de décisions
-    sont prises lors de réunions, et ces décisions peuvent être
-    référencées dans les comptes rendus de réunions.
+    "décisions" et des "actions" dans le modèle de suivi. Bon nombre de
+    décisions sont prises lors de réunions, et ces décisions peuvent être
+    référencées dans les comptes rendus de réunions. Les actions à
+    entreprendre font aussi partie des conclusions des réunions.
 
 *   **traçabilité**. Le modèle de suivi sert de support à la traçabilité
     tout au long du projet. Il est par exemple possible de déterminer
     quelles personnes, quelles parties prenantes sont ou ont été impliquées
     dans telle ou telle décision.
 
+..  note::
+
+    Notons que TaskScript recouvre partiellement ce qui peut être exprimé
+    habituellement via des issues GitHub. Autrement dit
+    certains éléments de suivis (questions, hypothèses, actions, etc.)
+    peuvent être matérialisés sous forme d'issues. Il s'agit alors de
+    définir quel est la source d'information principale, GitHub ou
+    le modèle ``suivis.trs``, et pour quelle catégorie de suivis.
+    Dans certain cas il est pertinent de faire référence aux
+    issues GitHub à partir du modèle de suivis (via une référence
+    comme ``#13``).
+
 Concepts
 --------
 
-Le modèle de suivi a pour objectifs de de consigner différents
+Le modèle de suivi a pour objectifs de consigner différents
 *points de suivis* :
 
 *   des **questions**,
 *   des **hypothèses**,
 *   des **décisions**,
 *   des **empêchements**,
+*   des **actions**,
 *   des **problèmes**.
 
 La différence entre ces différents points de suivi sont définis ci-dessous.
@@ -153,7 +176,7 @@ moments du cycle de vie. Ce peut être le cas lors de réunions entre
 différentes parties prenantes. Il est essentiel de rendre explicite
 le contenu de la décision, la date à laquelle elle a été prise,
 qui a pris cette décision, qui l'a validé, etc. Un compte rendu
-de réunion fait typiquement référence à une série de décision.
+de réunion fait typiquement référence à une série de décisions.
 D'autres décisions peuvent être prises à d'autres moments par
 le client ou l'équipe de développement.
 
@@ -170,7 +193,17 @@ que cela devienne un caractère bloquant, etc. Un *empêchement*
 signale à un interlocuteur (tel qu'un chef de projet par exemple)
 qu'une action doit être menée pour contrecarrer cet *empêchment*.
 Identifier et lister les *empêchements* est un élément important
-de la méthode Scrum.
+de la méthode Scrum. Les *empêchements* sont typiquement identifiés
+au cours des :ref:`standup meetings<tâche projet.standup>`
+
+Actions
+-------
+
+Les actions correspondent aux actions devant être réalisées
+et étanr typiquement consignées suite à une réunion, comme parexemple
+un :ref:`standup meeting<tâche projet.standup>`,
+une :ref:`retrospective<tâche projet.retrospective>`
+ou une :ref:`audit<tâche projet.audit>`.
 
 Problèmes
 ---------
@@ -179,8 +212,7 @@ Le développement de tout projet soulève, à un moment ou à un autre,
 différents **problèmes**. Ces *problèmes* doivent être identifiés,
 décrits, traités, suivis, etc. Le terme "problème" est volontairement
 générique. Tombent dans cette catégorie tous les éléments de suivis
-n'étant pas dans une autre catégorie plus spécifique (en particulier
-les *questions* et les *empêchements*.
+n'étant pas dans une autre catégorie plus spécifique.
 
 ..  _Suivi_Règles:
 
@@ -188,21 +220,27 @@ Règles
 ------
 
 *   Chaque point de suivi doit être identifié de
-    manière unique. Par exemple D3, Q3 et H12, I2, P2, etc.
+    manière unique. Par exemple ``D3``, ``Q3``,
+    ``H12``, ``I2``, ``P2``, etc.
 
 *   Réferencer ces identificateurs entre crochets (e.g. ``[H12]``)
-    dans le(s) modèle(s) impactés. En commentaire ou autre selon
-    les langages.
+    dans le(s) modèle(s) impactés. En commentaire ou via tout
+    autre moyen adapté au langage utilisé.
 
 *   La formulation des points de suivis doit impérativement être
     précise et faire référence aux termes définis dans le glossaire
-    (entre backquotes).
+    (entre backquotes "`"). C'est le cas notamment des questions et
+    hypothèses qui sont à destination du client.
 
 *   Les points de suivis doivent avoir un titre court mais le plus
     explicatif possible.
 
 *   Les points de suivis doivent être aussi pertinents que possible
-    du point de de vue des différentes parties prenantes impliquées.
+    du point de vue des différentes parties prenantes impliquées.
     Par exemple ne pas utiliser de vocabulaire technique si un
     point de suivi est adressé à un client.
 
+*   Les points de suivis doivent se référencer entre eux lorsque
+    nécessaire (par exemple une action fera peut être "suite" à
+    une décision). Les références vers les issues GitHub peuvent
+    aussi être utiles.
