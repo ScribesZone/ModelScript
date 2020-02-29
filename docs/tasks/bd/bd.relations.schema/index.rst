@@ -1,6 +1,6 @@
-..  _`tâche bd.relations.schema`:
-
 .. highlight:: RelationScript
+
+..  _`tâche bd.relations.schema`:
 
 tâche bd.relations.schema
 =========================
