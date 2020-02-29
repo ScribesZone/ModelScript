@@ -92,7 +92,8 @@ Chaque transparent, chaque élément de présentation doit faire référence,
 autant que faire se peut, aux entités définies dans les modèles ou plus
 généralement dans le projet. Faire référence aux scénarios (p.e. ``S1``),
 aux incréments (p.e. ``I3``), aux questions (p.e. ``Q2``),
-aux tâches (p.e. ``concepts.glossaires``), etc. Faire référence aux
+aux tâches (p.e. ``concepts.glossaires``), aux issues
+GithHub (p.e. ``#12``), etc. Faire référence aux
 artefacts par leur nom court (p.e. ``classes.cl1``).
 
 ..  attention::
