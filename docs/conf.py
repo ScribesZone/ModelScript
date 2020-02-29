@@ -451,6 +451,8 @@ TrackScriptKeywords = """
     question        question
     hypothesis      hypothese
     decision        decision
+    impediment      empechement
+    action          action
     problem         probleme
     
     github
