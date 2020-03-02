@@ -3,8 +3,8 @@
 tâche projet.suivis
 ===================
 
-:résumé: Cette tâche a pour objectif de s'assurer que le modèle
-    de suivi est compris.
+:résumé: Cette tâche a pour objectif de prendre connaissance du modèle
+    modèle de suivis et de son utilité.
 
 :langage: :ref:`TrackScript`
 :artefacts:
@@ -13,18 +13,21 @@ tâche projet.suivis
 Introduction
 ------------
 
+Tout au long du cycle de vie d'un projet il est souhaitable de consigner
+par écrit différents points de suivis ;
+
+*   questions,
+*   hypothèses,
+*   empêchements,
+*   etc.
+
 L'objectif de cette tâche est de s'assurer que le modèle de suivis
-est compris. Avec le modèle de suivis il s'agit d'augmenter les
-modèles existants avec les questions/hypothèses/décisions qui y sont
-associées.
+est compris.
 
-(A) Suivis
-----------
+(A) TrackScript
+---------------
 
-Consigner dans le modèle de suivis toutes les
-questions/hypothèses/décisions pouvant apparaître lors du projet.
+Lire la page décrivant le langage de :ref:`TrackScript`.
 
-Se référer langage :ref:`TrackScript` pour voir des exemples/
-
-Consulter si nécessaire la section faisant référence aux
-:ref:`règles associées au modèle de suivi <Suivi_Règles>`.
+Tout au long du projet consigner dans le modèle de suivis toutes les
+les points de suivis apparaissant au fil de l'eau du projet.
