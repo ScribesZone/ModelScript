@@ -192,7 +192,7 @@ FlowBlock:
 //---- extension ----------------------------------------------------------
 
 ExtensionBlock:
-    'extension' name=ID 'at' step=INT
+    'extension' name=ID 'at' 'step' step=INT
     (o_
         when = ExtensionWhen
         flow = ExtensionFlow ?
