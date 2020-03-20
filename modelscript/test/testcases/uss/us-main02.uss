@@ -1,7 +1,6 @@
 usecase model CyberDepartment
 
-import glossary model from '../gls/glossaries.gls'
-import usecase model from '../uss/usecases.uss'
+import glossary model from '../gls/gl-in-us-main02.gls'
 
                             // actors imported from the usecase model:
                             //    CEO, Employee, Manager, Secretary
@@ -12,6 +11,7 @@ interactions
     a Secretary can AddAnEmployee
     a CEO can BrowseTheBudget
     a Manager can SetTheBudget
+    a Manager can SetAnEmployee
     an Employee can BrowseADepartment
 
 usecase BrowseTheBudget

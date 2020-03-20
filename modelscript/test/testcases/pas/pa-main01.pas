@@ -11,7 +11,7 @@
 
 participant model Demo
 
-import glossary model from '../glossaries/glossaries.gls'
+import glossary model from '../gls/gl-in-pa-main01.gls'
 
 //=========================================================================
 // "Class" level participants
@@ -37,7 +37,7 @@ actor HighCashier < Cashier
 actor Client
     | Clients are people that interact with the web interface
     | of the system or that take their `Ticket` at a
-    | `VendingMaching`. Most of them do not know the system,
+    | `VendingMachine`. Most of them do not know the system,
     | or experienced have less than
 
 
@@ -46,7 +46,7 @@ actor Client
 //--- stakeholders --------------------------------------------------------
 
 stakeholder role Treasurer
-    | The role of treasurers is to check that all `FinancialTransactionq`
+    | The role of treasurers is to check that all `FinancialTransactions`
     | processed by the system are accurate.
 
 stakeholder role SecurityManager
