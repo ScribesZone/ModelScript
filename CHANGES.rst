@@ -1,8 +1,10 @@
-:version: 2018.0.8.1
+:version: 2018.0.9.0
 
 Change History
 ==============
 
+:2020.0.9.0:
+    Fix bugs in testcases
 :2019.0.8.1:
     Update tasks *.*
 :2019.0.8.0:
