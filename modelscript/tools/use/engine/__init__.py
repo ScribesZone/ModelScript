@@ -51,13 +51,15 @@ DEBUG=4
 #          r'c:\Path\To\UseCommand\bin\use'
 
 USE_SYSTEM_INSTALLED_USE=False
+USE_LOCAL_VERSION='use-5.2.0'
+
 
 if USE_SYSTEM_INSTALLED_USE:
     USE_OCL_COMMAND = 'use'
 else:
     USE_OCL_COMMAND=os.path.join(
         os.path.dirname(os.path.realpath(__file__)),
-        'res','use-4.1.1','bin', 'modelscript-use')
+        'res',USE_LOCAL_VERSION,'bin', 'modelscript-use')
 
 
 class USEEngine(object):
