@@ -96,7 +96,7 @@ class ASTBasedModelSourceFile(SourceFile):
             super(ASTBasedModelSourceFile, self).__init__(
                 fileName=fileName)
         except FatalError:
-            # An issue as already been registered.
+            # An issue has already been registered.
             # So there is nothing to do here.
             pass
         # super(ASTBasedModelSourceFile, self).__init__(
