@@ -9,12 +9,12 @@ from textx.export import (
     metamodel_export,
     model_export
 )
-# future versions of textx use get_model
-# instead of model_root
-from textx.model import model_root as get_model
+
+from textx.model import get_model
 
 from modelscript.base.brackets import (
     BracketedScript)
+
 from modelscript.base.issues import (
     IssueBox,
     FatalError,
@@ -46,10 +46,12 @@ INCLUDES= (
     '../scripts/stories/parser/grammar.tx'
 )
 
+
 def _read_file(filename):
     with open(filename, 'r') as content_file:
         content = content_file.read()
     return content
+
 
 class Grammar(object):
     def __init__(self, grammarFile):
@@ -57,10 +59,10 @@ class Grammar(object):
         full_grammar_text=self._get_grammar_str()
         self.metamodel=metamodel_from_str(full_grammar_text)
         self.metamodel.auto_init_attributes=False
-        self.parser=self.metamodel.parser
 
     def _read_file(self, filename):
-        with open(filename, 'r') as content_file:
+        import codecs
+        with codecs.open(filename, 'r', encoding='utf-8') as content_file:
             content = content_file.read()
         return content
 
@@ -78,11 +80,13 @@ class Grammar(object):
         metamodel_export(self.metamodel, dot_file)
         os.system('dot -Tpng -O %s' % dot_file)
 
+
 class SyntaxicError(object):
     def __init__(self, message, line, column):
         self.line=line
         self.column=column
         self.message=message
+
 
 class TokenBasedSyntaxicError(SyntaxicError):
 
@@ -95,6 +99,7 @@ class TokenBasedSyntaxicError(SyntaxicError):
             '_o': 'CloseBlock',
             'X': 'EndOfLine'
         }
+
         def cleaned_tokens(tokens):
             # eliminate duplicates
             ts = list(set(tokens))
@@ -168,7 +173,6 @@ class AST(object):
                 column=e.column,
             )
 
-
     def __init__(self, grammar, file):
         #type: (Grammar, Text) -> None
         """
@@ -190,11 +194,11 @@ class AST(object):
         #     self.bracketedtext)
 
     def pos(self, astNode):
-        return self.grammar.parser.pos_to_linecol(
+        return self.model._tx_parser.pos_to_linecol(
             astNode._tx_position)
 
     def posEnd(self, astNode):
-        return self.grammar.parser.pos_to_linecol(
+        return self.model._tx_parser.pos_to_linecol(
             astNode._tx_position_end)
 
     def line(self, astNode):
@@ -213,13 +217,10 @@ class AST(object):
         (l,c)=self.posEnd(astNode)
         return l
 
-
     def visualize(self):
         dot_file=self.file+'.dot'
         model_export(self.model, dot_file)
         os.system('dot -Tpng -O %s' % dot_file)
-
-
 
 
 class ModelSourceAST(AST):
