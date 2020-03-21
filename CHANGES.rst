@@ -3,6 +3,8 @@
 Change History
 ==============
 
+:2020.0.9.1:
+    Migrate to TextX 2.1
 :2020.0.9.0:
     Fix bugs in testcases
 :2019.0.8.1:
