@@ -3,6 +3,8 @@
 Change History
 ==============
 
+:2020.0.10.0:
+    Migrate to python 3.6
 :2020.0.9.1:
     Migrate to TextX 2.1
 :2020.0.9.0:
