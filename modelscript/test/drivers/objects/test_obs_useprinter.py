@@ -1,5 +1,5 @@
 # coding=utf-8
-from __future__ import print_function
+
 import logging
 
 from modelscript.interfaces.environment import Environment
@@ -80,7 +80,7 @@ def doPrintUse(filename):
                 for inv_output in checkPoint.invariantOutputs:
                     print(inv_output.className
                           +'.'+inv_output.invariantName
-                          +' '+unicode(inv_output.hasFailed))
+                          +' '+str(inv_output.hasFailed))
                     # if inv_output.hasFailed:
                     #     print('TST:    ',inv_output.violatingObjectNames)
                     #     print('TST:    ',inv_output.violatingObjectType)

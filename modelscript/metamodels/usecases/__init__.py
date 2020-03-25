@@ -1,5 +1,5 @@
 # coding=utf-8
-from __future__ import print_function
+
 
 import collections
 
@@ -61,7 +61,7 @@ class UsecaseModel(Model):
 
     @property
     def actors(self):
-        return self.actorNamed.values()
+        return list(self.actorNamed.values())
 
     @property
     def nbOfInteractions(self):
@@ -115,7 +115,7 @@ class System(SourceModelElement):
 
     @property
     def usecases(self):
-        return self.usecaseNamed.values()
+        return list(self.usecaseNamed.values())
 
 
 #TODO:3 it could make sense to have superSubject for superActor

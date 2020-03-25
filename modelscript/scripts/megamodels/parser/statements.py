@@ -8,8 +8,7 @@ from modelscript.megamodels.metamodels import (
 ModelSourceFile='ModelOldSourceFile'
 ASTNode='ASTNode'
 
-class MegamodelStatement(object):
-    __metaclass__ = ABCMeta
+class MegamodelStatement(object, metaclass=ABCMeta):
     def __init__(self,
                  astNode,
                  metamodel,

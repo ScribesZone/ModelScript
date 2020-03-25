@@ -10,7 +10,7 @@ The violation objects are first created, and then at the end the
 violations are converted to issues.
 """
 
-from __future__ import print_function
+
 from collections import OrderedDict, Counter
 from typing import List, Optional, Dict, Text, Union, Tuple
 from abc import ABCMeta, abstractmethod, abstractproperty
@@ -63,7 +63,7 @@ def icode(ilabel):
     return ISSUES[ilabel]
 
 
-class ConformityViolation(object):
+class ConformityViolation(object, metaclass=ABCMeta):
     """
     Abstract class for all sort of violations that can occur
     when checking a state. This ranges from Cardinalityviolations to
@@ -72,7 +72,6 @@ class ConformityViolation(object):
     related to the issue to generate: a message, a code and a
     issue level.
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self, stateCheck):
         self.stateCheck=stateCheck
@@ -127,7 +126,7 @@ class LinkRoleTypeViolation(ConformityViolation):
             'The %s of the link %s is of type "%s"'
             + ' instead of "%s".') % (
                     self.linkRole.position,
-                    unicode(self.linkRole.link),
+                    str(self.linkRole.link),
                     self.linkRole.objectType.name,
                     self.linkRole.roleType.name)
 
@@ -566,7 +565,7 @@ class StateCheck(object):
     def _check_cardinalities(self):
         for object in self.objectModel.objects:
             print('HH'*10, 'check card for %s' % object)
-            for role in object._link_roles_per_role.keys():
+            for role in list(object._link_roles_per_role.keys()):
                 actual=object.cardinality(role)
                 ok=role.acceptCardinality(actual)
                 print('HH'*10, '    %s[%s]=%s -> %s' % (role, role.cardinalityLabel, actual, ok))
@@ -592,7 +591,7 @@ class StateCheck(object):
         #     (a, R, b)
         # only one side is considered.
         for object in self.objectModel.objects:
-            for role in object._link_roles_per_role.keys():
+            for role in list(object._link_roles_per_role.keys()):
                 if role.isTarget:
                     links_per_object = dict()
                     if ( len(object._link_roles_per_role[role]) >= 2):
@@ -602,7 +601,7 @@ class StateCheck(object):
                             if o not in links_per_object:
                                 links_per_object[o] = []
                             links_per_object[o].append(link_role.link)
-                        for o in links_per_object.keys():
+                        for o in list(links_per_object.keys()):
                             if len(links_per_object[o]) >= 2:
                                 UniqueLinkViolation(
                                     stateCheck=self,
@@ -619,13 +618,13 @@ class StateCheck(object):
 
     def XXX(self):
         for object in self.objectModel.objects:
-            for role in object._link_roles_per_role.keys():
+            for role in list(object._link_roles_per_role.keys()):
                 print('GG'*20, '%s.%s=%s' % (
                     object.name,
                     role.name,
                     object.cardinality(role)))
                 for link_role in object._link_roles_per_role[role]:
-                    print('GG'*20,' '*10, unicode(link_role), link_role.object)
+                    print('GG'*20,' '*10, str(link_role), link_role.object)
 
 
     @property

@@ -1,5 +1,5 @@
 # coding=utf-8
-from __future__ import print_function
+
 import os
 from modelscript.scripts.classes.parser import ClassModelSource
 from modelscript.test.framework import getTestFile

@@ -210,11 +210,11 @@ class ScenarioModel(Model, Subject):
 
     @property
     def actorInstances(self):
-        return self.actorInstanceNamed.values()
+        return list(self.actorInstanceNamed.values())
 
     @property
     def actorInstanceNames(self):
-        return self.actorInstanceNamed.keys()
+        return list(self.actorInstanceNamed.keys())
 
     def addContainer(self, kind, name, container):
         self.containerCollection.add(kind, name, container)
@@ -259,13 +259,12 @@ class ActorInstance(SourceModelElement, Subject):
 STORY_KIND=['objectModel', 'context', 'scenario', 'fragment']
 
 
-class StoryContainer(SourceModelElement, Subject):
+class StoryContainer(SourceModelElement, Subject, metaclass=ABCMeta):
     """
     Container of a story. This abstract class is useful to
     deal with common characteristics of Context, Fragment and
     Scenario at the same time. These are basically just story block.
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self,
                  model, name,
@@ -443,13 +442,13 @@ class StoryContainerCollection(AbstractStoryCollection):
         if kind not in self.storyContainerByKindName:
             return []
         else:
-            return self.storyContainerByKindName[kind].keys()
+            return list(self.storyContainerByKindName[kind].keys())
 
     def storyContainers(self, kind):
         if kind not in self.storyContainerByKindName:
             return []
         else:
-            return self.storyContainerByKindName[kind].values()
+            return list(self.storyContainerByKindName[kind].values())
 
     def story(self, storyId):
         #type: (StoryId) -> Optional[Story]

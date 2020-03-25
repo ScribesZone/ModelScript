@@ -17,7 +17,7 @@
 
 """
 
-from __future__ import print_function
+
 from collections import OrderedDict
 from typing import List, Optional, Dict, Text
 from abc import ABCMeta
@@ -132,11 +132,11 @@ class ObjectModel(Model):
 
     @property
     def plainObjects(self):
-        return self._plainObjectNamed.values()
+        return list(self._plainObjectNamed.values())
 
     @property
     def plainObjectNames(self):
-        return self._plainObjectNamed.keys()
+        return list(self._plainObjectNamed.keys())
 
     def plainObject(self, name):
         if name in self._plainObjectNamed:
@@ -150,11 +150,11 @@ class ObjectModel(Model):
 
     @property
     def linkObjects(self):
-        return self._linkObjectNamed.values()
+        return list(self._linkObjectNamed.values())
 
     @property
     def linkObjectNames(self):
-        return self._linkObjectNamed.keys()
+        return list(self._linkObjectNamed.keys())
 
     def linkObject(self, name):
         if name in self._linkObjectNamed:
@@ -249,7 +249,7 @@ class ShadowObjectModel(ObjectModel):
         self._classModel=classModel
 
 
-class ElementFromOptionalStep(SourceModelElement):
+class ElementFromOptionalStep(SourceModelElement, metaclass=ABCMeta):
     """
     Superclass of all source model elements that can (optionaly)
     originates from a story step (hence "FromOriginalStep').
@@ -259,7 +259,6 @@ class ElementFromOptionalStep(SourceModelElement):
     In practice this clas basically serves to add a "step" attribute
     to all subclasses and to compute location attributes accordingly.
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self,
                  name,
@@ -302,11 +301,10 @@ class ElementFromOptionalStep(SourceModelElement):
         self.step=step
 
 
-class PackagableElement(ElementFromOptionalStep):
+class PackagableElement(ElementFromOptionalStep, metaclass=ABCMeta):
     """
     Top level element.
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self,
                  name,
@@ -334,8 +332,7 @@ class PackagableElement(ElementFromOptionalStep):
             return self.name
 
 
-class ResourceInstance(object):
-    __metaclass__ = ABCMeta
+class ResourceInstance(object, metaclass=ABCMeta):
     """ 
     Currently not used, but can be useful to describes
     access instances. 
@@ -344,12 +341,12 @@ class ResourceInstance(object):
     """
 
 
-class Entity(ResourceInstance):
-    __metaclass__ = ABCMeta
+class Entity(ResourceInstance, metaclass=ABCMeta):
+    pass
 
 
-class Member(ResourceInstance):
-    __metaclass__ = ABCMeta
+class Member(ResourceInstance, metaclass=ABCMeta):
+    pass
 
 
 # TODO:3 generalize and improve "package" management over languages

@@ -141,9 +141,9 @@ class ScenarioModelPrinter(ModelPrinter):
             self.doDescriptor(d)
 
         #---- actor instances
-        if len(scenarioModel.actorInstanceNamed.values())>=1:
+        if len(list(scenarioModel.actorInstanceNamed.values()))>=1:
             self.outLine(self.kwd('actor instances'))
-            for ai in scenarioModel.actorInstanceNamed.values():
+            for ai in list(scenarioModel.actorInstanceNamed.values()):
                 self.doActorInstance(ai)
 
         #---- contexts

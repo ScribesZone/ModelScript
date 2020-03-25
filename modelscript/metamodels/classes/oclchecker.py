@@ -94,7 +94,7 @@ class ClassOCLChecker(object):
         See example of USE error format at the end of this
         very file.
         """
-        print('||'*10, error_line)
+        print(('||'*10, error_line))
 
 
         p = r'^(?P<filename>.*)' \

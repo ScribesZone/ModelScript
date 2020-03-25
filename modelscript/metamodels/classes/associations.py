@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 import abc
 import collections
 
@@ -31,12 +31,10 @@ def opposite(rolePosition):
             "Role position '%s' doesn't exists." % rolePosition)
 
 
-class Association(PackagableElement, Entity):
+class Association(PackagableElement, Entity, metaclass=abc.ABCMeta):
     """
     Associations.
     """
-
-    __metaclass__ = abc.ABCMeta
 
     META_COMPOSITIONS = [
         'roles',
@@ -60,11 +58,13 @@ class Association(PackagableElement, Entity):
 
     @property
     def roles(self):
-        return self.roleNamed.values()
+        # TODO:4 2to3 add list
+        return list(self.roleNamed.values())
 
     @property
     def roleNames(self):
-        return self.roleNamed.keys()
+        # TODO:4 2to3 add list
+        return list(self.roleNamed.keys())
 
     @MAttribute('Integer')
     def arity(self):
@@ -249,12 +249,12 @@ class Role(SourceModelElement, Member):
         if self.cardinalityMin is None and self.cardinalityMax is None:
             return None
         if self.cardinalityMin == self.cardinalityMax:
-            return unicode(self.cardinalityMin)
+            return str(self.cardinalityMin)
         if self.cardinalityMin == 0 and self.cardinalityMax is None:
             return '*'
         return ('%s..%s' % (
-            unicode(self.cardinalityMin),
-            '*' if self.cardinalityMax is None else unicode(
+            str(self.cardinalityMin),
+            '*' if self.cardinalityMax is None else str(
                 self.cardinalityMax)
 
         ))

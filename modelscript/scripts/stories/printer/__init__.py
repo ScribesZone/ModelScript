@@ -2,7 +2,7 @@
 """
 
 """
-from __future__ import unicode_literals, print_function, absolute_import, division
+
 from typing import Optional
 from modelscript.base.printers import (
     AbstractPrinter,
@@ -157,13 +157,13 @@ class StoryPrinter(AbstractPrinter):
         else:
             action=''
         self.outLine(
-            u'%s%s%s%s %s %s' % (
+            '%s%s%s%s %s %s' % (
                 self.kwd(action),
                 step.objectName,
                 self.kwd('.'),
                 step.attributeName,
                 self.kwd('='),
-                unicode(step.simpleValue)),
+                str(step.simpleValue)),
             indent=indent)
         return self.output
 

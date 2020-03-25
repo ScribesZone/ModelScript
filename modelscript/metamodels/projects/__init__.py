@@ -1,5 +1,5 @@
 # coding=utf-8
-from __future__ import print_function
+
 
 from modelscript.megamodels.models import Model
 from modelscript.megamodels.metamodels import Metamodel

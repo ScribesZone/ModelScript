@@ -33,7 +33,7 @@ class ModelElementIssue(Issue):
             locationElement if locationElement is not None
             else modelElement)
         if DEBUG>=2:
-            print('ISM: %s ' % self.locationElement)
+            print(('ISM: %s ' % self.locationElement))
         #type: 'ModelElement'
         if hasattr(self.locationElement, 'lineNo'):
             line_no=self.locationElement.lineNo
@@ -41,7 +41,7 @@ class ModelElementIssue(Issue):
             line_no=None
         if line_no is None:
             if DEBUG>=1:
-                print('ISM: Unlocated Model Issue %s' % message)
+                print(('ISM: Unlocated Model Issue %s' % message))
             issue=Issue(
                 origin=modelElement.model,
                 code=code,
@@ -49,9 +49,9 @@ class ModelElementIssue(Issue):
                 message=message)
         else:
             if DEBUG>=1:
-                print('ISM: Localized Model Issue at %s %s' % (
+                print(('ISM: Localized Model Issue at %s %s' % (
                     line_no,
-                    message))
+                    message)))
             issue=LocalizedSourceIssue(
                 code=code,
                 sourceFile=self.locationElement.model.source,
@@ -105,9 +105,7 @@ class ModelElementIssue(Issue):
     #     )
 
 
-class WithIssueModel(WithIssueList):
-    __metaclass__ = ABCMeta
-
+class WithIssueModel(WithIssueList, metaclass=ABCMeta):
     def __init__(self, parents=()):
         #type: (List[IssueBox]) -> None
         super(WithIssueModel, self).__init__(parents=parents)

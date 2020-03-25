@@ -123,7 +123,7 @@ class UsecaseModelSource(ASTBasedModelSourceFile):
 
 
         if DEBUG>=1:
-            print('\nParsing %s\n' % self.fileName)
+            print(('\nParsing %s\n' % self.fileName))
 
 
         # self.usecaseModel.system.setInfo(

@@ -1,6 +1,5 @@
 # coding=utf-8
-from __future__ import unicode_literals, print_function, absolute_import, \
-    division
+
 
 from typing import Optional
 
@@ -40,7 +39,7 @@ class GlossaryModelPrinter(ModelPrinter):
 
     def doGlossaryModel(self, glossary):
         self.doModelTextBlock(glossary.description)
-        for package in glossary.packageNamed.values():
+        for package in list(glossary.packageNamed.values()):
             self.doPackage(package)
         return self.output
 
@@ -53,7 +52,7 @@ class GlossaryModelPrinter(ModelPrinter):
             lineNo=package.lineNo,
             linesBefore=1)
         self.doModelTextBlock(package.description)
-        for entry in package.entryNamed.values():
+        for entry in list(package.entryNamed.values()):
             self.doEntry(entry)
         return self.output
 
@@ -82,7 +81,7 @@ class GlossaryModelPrinter(ModelPrinter):
 
         if len(entry.translations)>0:
             self.outLine(self.kwd('translations'))
-            for (language, label) in entry.translations.items():
+            for (language, label) in list(entry.translations.items()):
                 self.outLine(
                     '%s: "%s"' % (language, label))
         return self.output

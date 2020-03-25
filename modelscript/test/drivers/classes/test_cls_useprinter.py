@@ -47,9 +47,9 @@ def doPrintUse(filename):
     source = modelscript.scripts.classes.parser.ClassModelSource(
         fileName=filename,)
     if not source.isValid:
-        print(('##'*40+'\n')*10)
+        print((('##'*40+'\n')*10))
         print('==> IGNORING INVALID MODEL')
-        print(('##'*40+'\n')*10)
+        print((('##'*40+'\n')*10))
     else:
         scm = source.classModel
 
@@ -57,9 +57,9 @@ def doPrintUse(filename):
             filename,
             extension='.use')
 
-        print('TST: '+'='*80)
-        print('TST: result in %s' % use_file_path)
-        print('TST: '+'='*80)
+        print(('TST: '+'='*80))
+        print(('TST: result in %s' % use_file_path))
+        print(('TST: '+'='*80))
         usePrinter = UseClassPrinter(scm)
         usePrinter.do()
         usePrinter.save(use_file_path)

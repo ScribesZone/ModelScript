@@ -38,7 +38,7 @@ def doBuildDiagram(filename):
         usecaseFileName=filename,
     )
     if not source.isValid:
-        print('#'*10+' ignore invalid file  %s' % filename )
+        print(('#'*10+' ignore invalid file  %s' % filename ))
     else:
         usm = source.usecaseModel
 
@@ -53,14 +53,14 @@ def doBuildDiagram(filename):
             filename,
             extension='.usd.puml')
 
-        print('TST: '+'='*80)
-        print('TST: result in %s' % puml_file_path)
-        print('TST: '+'='*80)
+        print(('TST: '+'='*80))
+        print(('TST: result in %s' % puml_file_path))
+        print(('TST: '+'='*80))
         gen = UsecasePlantUMLPrinter(usm)
         # print(gen.do(outputFile=puml_file_path))
         # #--- plantuml: .puml -> .svg ----------------------
         # puml_engine.generate(puml_file_path)
         gen.generate(puml_file_path, format='png' )
         print('TST: .png generated')
-        print('TST: '+'='*80)
+        print(('TST: '+'='*80))
 

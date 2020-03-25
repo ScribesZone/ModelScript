@@ -73,7 +73,8 @@ class AUIModel(Model):
     @property
     def spaces(self):
         #type: () -> List[Space]
-        return self._spaceNamed.values()
+        #TODO:4 2to3 was cls._listadded
+        return list(self._spaceNamed.values())
 
     @property
     def metrics(self):

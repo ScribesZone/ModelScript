@@ -46,7 +46,7 @@ __all__=(
 )
 
 
-class ASTBasedModelSourceFile(SourceFile):
+class ASTBasedModelSourceFile(SourceFile, metaclass=ABCMeta):
 
     """
     A source file with a model, and an AST.
@@ -58,7 +58,6 @@ class ASTBasedModelSourceFile(SourceFile):
     * an importBox and
     * an AST
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self,
                  fileName,
@@ -191,7 +190,7 @@ class ASTBasedModelSourceFile(SourceFile):
                 code='src.syn',
                 sourceFile=self,
                 level=Levels.Fatal,
-                message='Syntax error. %s' % err.message,
+                message='Syntax error. %s' % str(err),
                 line=err.line,
                 column=err.column)
         except BracketError as e:
@@ -199,7 +198,7 @@ class ASTBasedModelSourceFile(SourceFile):
                 code='src.bra',
                 sourceFile=self,
                 level=Levels.Fatal,
-                message='Wrong indentation. %s' % e.message,
+                message='Wrong indentation. %s' % str(e),
                 line=e.line)
 
     @abstractmethod

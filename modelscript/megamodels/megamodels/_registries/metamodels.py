@@ -73,7 +73,8 @@ class _MetamodelRegistry(object):
         """
         List all registered metamodels.
         """
-        return cls._metamodelById.values()
+        # TODO:4 2to3 was cls._metamodelById.values()
+        return list(cls._metamodelById.values())
 
     @classmethod
     def metamodelExtensions(cls):
@@ -81,7 +82,8 @@ class _MetamodelRegistry(object):
         """
         List all registered extensions.
         """
-        return cls._metamodelByExtension.keys()
+        # TODO:4 2to3 was cls._metamodelByExtension.keys()
+        return list(cls._metamodelByExtension.keys())
 
     @classmethod
     def theMetamodel(cls, id=None, label=None, ext=None):

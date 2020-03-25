@@ -60,11 +60,10 @@ from modelscript.metamodels.stories import (
 )
 
 
-class StepEvaluation(SourceModelElement, Subject):
+class StepEvaluation(SourceModelElement, Subject, metaclass=ABCMeta):
     """
     The evaluation of a step.
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self,
                  parent,

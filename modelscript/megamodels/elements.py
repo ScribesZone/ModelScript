@@ -14,11 +14,10 @@ from modelscript.megamodels.checkers import (
     CheckList
 )
 
-class SourceElement(object):
+class SourceElement(object, metaclass=ABCMeta):
     """
     Element of a source file.
     """
-    __metaclass__ = ABCMeta
     def __init__(self,
                  name=None,
                  astNode=None,
@@ -49,9 +48,7 @@ class Descriptor(object):
 
 
 
-class ModelElement(object):
-    __metaclass__ = ABCMeta
-
+class ModelElement(object, metaclass=ABCMeta):
     def __init__(self, model):
         assert model is not None
         self._model=model
@@ -73,7 +70,8 @@ class ModelElement(object):
 
     @property
     def descriptors(self):
-        return self.descriptorNamed.values()
+        #TODO:4 2to3 was return self.descriptorNamed.values()
+        return list(self.descriptorNamed.values())
 
     @model.setter
     def model(self, model):
@@ -98,10 +96,7 @@ class ModelElement(object):
 
 
 
-class SourceModelElement(ModelElement, SourceElement):
-    __metaclass__ = ABCMeta
-
-
+class SourceModelElement(ModelElement, SourceElement, metaclass=ABCMeta):
     def __init__(self,
                  model,
                  name=None,

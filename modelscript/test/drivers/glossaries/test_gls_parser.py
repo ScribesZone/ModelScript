@@ -1,5 +1,5 @@
 # coding=utf-8
-from __future__ import print_function
+
 from modelscript.test.framework.assertions import (
     simpleTestDeneratorAssertions)
 from modelscript.scripts.megamodels.printer.megamodels import \

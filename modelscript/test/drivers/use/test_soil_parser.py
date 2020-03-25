@@ -44,16 +44,16 @@ def doPrintUse(filename):
         fileName=filename,)
 
     if not source.isValid:
-        print(('##'*40+'\n')*10)
+        print((('##'*40+'\n')*10))
         print('==> IGNORING INVALID MODEL')
-        print(('##'*40+'\n')*10)
+        print((('##'*40+'\n')*10))
         return
 
     obm = source.objectModel
     if not obm.hasClassModel:
-        print(('##'*40+'\n')*10)
+        print((('##'*40+'\n')*10))
         print('==> OBJECTY MODEL HAS NO CLASS MODEL : IGNORED')
-        print(('##'*40+'\n')*10)
+        print((('##'*40+'\n')*10))
         return
 
     #------------ generate .soil ----------------------
@@ -65,13 +65,13 @@ def doPrintUse(filename):
     usePrinter = UseStoryPrinter(story)
     usePrinter.do()
     usePrinter.save(soil_file_path)
-    print('TST: '+'='*80)
-    print('TST: result in %s' % soil_file_path)
-    print('TST: '+'='*80)
+    print(('TST: '+'='*80))
+    print(('TST: result in %s' % soil_file_path))
+    print(('TST: '+'='*80))
 
     clm = obm.classModel
     class_ocl_checker=clm.classOCLChecker
-    print('TST:', class_ocl_checker.withUSE, not obm.hasBigIssues)
+    print(('TST:', class_ocl_checker.withUSE, not obm.hasBigIssues))
     if class_ocl_checker.withUSE and not obm.hasBigIssues:
         use_file_path=class_ocl_checker.useFileName
         engine=USEEngine

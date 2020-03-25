@@ -25,7 +25,7 @@ class MetaPackage(MetaModelElement):
         super(MetaPackage, self).__init__(qname=qname)
         self.pyPackageName = 'modelscript.metamodels.' + qname
         if DEBUG>=1:
-            print('MM3: import metapackage %s' % self.pyPackageName)
+            print(('MM3: import metapackage %s' % self.pyPackageName))
         self.pyModule=importlib.import_module(
             self.pyPackageName)
         #type: types.ModuleType
@@ -42,7 +42,7 @@ class MetaCheckerPackage(MetaModelElement):
         super(MetaCheckerPackage, self).__init__(qname=qname)
         self.pyPackageName = 'modelscript.metamodels.' + qname
         if DEBUG>=1:
-            print('MM3: import metacheckerpackage %s' % self.pyPackageName)
+            print(('MM3: import metacheckerpackage %s' % self.pyPackageName))
         self.pyModule=importlib.import_module(
             self.pyPackageName)
         #type: types.ModuleType
@@ -73,20 +73,21 @@ class MetaClass(MetaModelElement):
 
     @property
     def metaAttributes(self):
-        return self.metaAttributeNamed.values()
+        #TODO:4 2to3 was return self.metaAttributeNamed.values()
+        return list(self.metaAttributeNamed.values())
 
     @property
     def metaReferences(self):
-        return self.metaReferenceNamed.values()
+        #TODO:4 2to3 was return self.metaReferenceNamed.values()
+        return list(self.metaReferenceNamed.values())
 
     @property
     def metaOperations(self):
-        return self.metaOperationNamed.values()
+        #TODO:4 2to3 was return self.metaOperationNamed.values()
+        return list(self.metaOperationNamed.values())
 
 
-class MetaFeature(MetaModelElement):
-    __metaclass__ = abc.ABCMeta
-
+class MetaFeature(MetaModelElement, metaclass=abc.ABCMeta):
     def __init__(self, qname, metaClass, pyMethod):
         super(MetaFeature, self).__init__(qname)
 

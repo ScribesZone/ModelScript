@@ -23,7 +23,7 @@
         --* subexpressions
 """
 
-from __future__ import print_function
+
 from typing import List, Text, Optional
 import re
 from collections import OrderedDict

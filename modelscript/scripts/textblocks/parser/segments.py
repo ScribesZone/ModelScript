@@ -5,7 +5,7 @@ multiple segments.
 A segment is either regular piece of text or a reference.
 The module is only used by the text parser.
 """
-from __future__ import unicode_literals, print_function, absolute_import, division
+
 from typing import Text, List, Optional, Tuple
 import re
 

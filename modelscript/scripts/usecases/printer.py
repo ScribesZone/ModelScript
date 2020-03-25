@@ -1,6 +1,5 @@
 # coding=utf-8
-from __future__ import unicode_literals, print_function, absolute_import, \
-    division
+
 
 from typing import Optional
 
@@ -39,7 +38,7 @@ class UsecaseModelPrinter(ModelPrinter):
         if usecaseModel.isSystemDefined:
             self.doSystem(usecaseModel.system)
 
-        for actor in usecaseModel.actorNamed.values():
+        for actor in list(usecaseModel.actorNamed.values()):
             self.doActor(actor)
 
         self.doInteractions(usecaseModel)

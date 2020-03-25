@@ -1,5 +1,5 @@
 # coding=utf-8
-from __future__ import print_function
+
 from typing import Dict, List
 import collections
 from abc import ABCMeta, abstractmethod
@@ -72,9 +72,7 @@ class CheckList(object):
                 print('-> []')
 
 
-class Checker(object):
-    __metaclass__ = ABCMeta
-
+class Checker(object, metaclass=ABCMeta):
     def __init__(self, **params):
         # type : (List['MetaClass'], Text, Level, Optional[Dict[Text, Any]]) -> None
         self.params=params
@@ -103,9 +101,7 @@ class PassChecker(Checker):
         pass
 
 
-class NamingChecker(Checker):
-    __metaclass__ = ABCMeta
-
+class NamingChecker(Checker, metaclass=ABCMeta):
     def __init__(self, fun, namingName, **params):
         Checker.__init__(self, **params)
         self.fun=fun
@@ -127,9 +123,7 @@ class NamingChecker(Checker):
         return e
 
 
-class LimitsChecker(Checker):
-    __metaclass__ = ABCMeta
-
+class LimitsChecker(Checker, metaclass=ABCMeta):
     def __init__(self, label, **params):
         Checker.__init__(self, label=label, **params)
         self.label=label

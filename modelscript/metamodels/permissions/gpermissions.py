@@ -82,13 +82,12 @@ class Permission(SAR):
 
 
 
-class Control(object):
+class Control(object, metaclass=ABCMeta):
     """
     A control is the result of checking that a permission
     accept or not a access. A control is either an Authorisation
     or a Denial.
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self, access):
         #type: ('Access') -> None
@@ -160,11 +159,10 @@ class PermissionSet(object):
 #                    Generic permission model
 #--------------------------------------------------------------------
 
-class PermissionModel(Model):
+class PermissionModel(Model, metaclass=ABCMeta):
     """
     Abstract permission model.
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self):
         super(PermissionModel, self).__init__()
@@ -173,9 +171,7 @@ class PermissionModel(Model):
         #type: List[PermissionRule]
 
 
-class PermissionRule(SourceModelElement):
-    __metaclass__ = ABCMeta
-
+class PermissionRule(SourceModelElement, metaclass=ABCMeta):
     def __init__(self,
                  model,
                  lineNo=None,

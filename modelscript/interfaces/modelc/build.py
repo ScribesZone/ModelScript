@@ -41,16 +41,16 @@ class BuildContext(WithIssueList):
             +[self])
 
     def _displayVersion(self):
-        print('ModelScript - version %s' % Megamodel.model.version)
+        print(('ModelScript - version %s' % Megamodel.model.version))
 
     def _processSource(self, path):
         if os.path.isdir(path):
             extensions=Megamodel.model.metamodelExtensions()
             filenames=filesInTree(path, suffix=extensions)
             if self.options.verbose:
-                print('%s/  %i model files found.'
-                      % (path, len(filenames)))
-                print('    '+'\n    '.join(filenames))
+                print(('%s/  %i model files found.'
+                      % (path, len(filenames))))
+                print(('    '+'\n    '.join(filenames)))
             for filename in filenames:
                 self._processSource(filename)
         else:
@@ -64,11 +64,11 @@ class BuildContext(WithIssueList):
             self._displayVersion()
 
         #--- deal with --mode ---------------------------------------------
-        print(
+        print((
             {'justAST':'Checking syntax',
              'justASTDep':'Checking syntax and dependencies',
              'full':'Checking models'}
-            [self.options.mode] )
+            [self.options.mode] ))
         Megamodel.analysisLevel=self.options.mode
 
         #--- deal with source files or source dir
@@ -78,7 +78,7 @@ class BuildContext(WithIssueList):
     @property
     def validSourceFiles(self):
         return (
-            s for s in self.sourceMap.values()
+            s for s in list(self.sourceMap.values())
             if s is not None)
 
     @property
@@ -100,7 +100,7 @@ class BuildContext(WithIssueList):
 
     def display(self, styled=True):
         # print(self.issueBoxList.nbIssues)
-        print(self.issueBoxList.str(styled=styled))
+        print((self.issueBoxList.str(styled=styled)))
         # displayIssueBoxContainers(
         #     self.allSourceFileList+[self]
         # )

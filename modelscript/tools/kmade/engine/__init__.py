@@ -204,8 +204,8 @@ class KmadeReader(object):
             name,
             modality,
             executant,
-            unicode(optional),
-            unicode(interruptible),
+            str(optional),
+            str(interruptible),
             '(#%s)' % str()
         ])
         print(_)
@@ -225,9 +225,9 @@ if __name__ == '__main__':
     for file in sys.argv:
         if file.endswith('.kxml'):
             if os.path.isfile(file):
-                print('PROCESSING %s' % file)
+                print(('PROCESSING %s' % file))
                 reader=KmadeReader(file)
                 model=reader.taskModel()
-                print(TaskModelPrinter(model).doModelContent())
+                print((TaskModelPrinter(model).doModelContent()))
             else:
-                print('IGNORING %s (file does not exist)' % file )
+                print(('IGNORING %s (file does not exist)' % file ))

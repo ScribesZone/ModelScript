@@ -21,7 +21,7 @@ class Metric(object):
             return ('1', self.label)
         else:
             return (
-                unicode(self.n),
+                str(self.n),
                 self.plural if self.plural is not None
                             else self.label+'s')
 
@@ -40,7 +40,8 @@ class Metrics(object):
 
     @property
     def all(self):
-        _=self.metricNamed.values()
+        #TODO:4 2to3 was self.metricNamed.values()
+        _=list(self.metricNamed.values())
         return _
 
     def add(self, metric):
@@ -82,15 +83,15 @@ class Metrics(object):
     def collect(self, elements):
         #type: (List[Any])->Metrics
         for e in elements:
-            print('CC'*15, type(e))
-            print('CC'*15, 'metrics' in dir(e))
+            print(('CC'*15, type(e)))
+            print(('CC'*15, 'metrics' in dir(e)))
         metrics_list=[
             e.metrics for e in elements
             # hasattr does not work
             # see
             if 'metrics' in dir(e)]
         self.addMetricsList(metrics_list)
-        print('CC'*10, len(elements), len(metrics_list))
+        print(('CC'*10, len(elements), len(metrics_list)))
 
         return self
 
@@ -99,7 +100,7 @@ class Metrics(object):
 
     def __str__(self):
         return ''.join(
-            [unicode(m)+'\n' for m in self.all])
+            [str(m)+'\n' for m in self.all])
 
     def __repr__(self):
         return 'Metrics(%s)' % \

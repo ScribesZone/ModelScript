@@ -17,15 +17,15 @@ def test_display_megamodel():
     print('Metamodels:')
 
     print('  Metamodels by id')
-    for (id,mm) in Megamodel._metamodelById.items():
-        print('    %s -> %s' % (id, unicode(mm)))
+    for (id,mm) in list(Megamodel._metamodelById.items()):
+        print(('    %s -> %s' % (id, str(mm))))
 
     print('  Via metamodels()')
     for mm in Megamodel.metamodels():
-        print('    %s' % mm.id)
+        print(('    %s' % mm.id))
 
     print('Metamodel dependencies:')
     for mmd in Megamodel.metamodelDependencies():
-        print('  %s' % repr(mmd))
+        print(('  %s' % repr(mmd)))
 
     Megamodel.checkMetamodelLevel()

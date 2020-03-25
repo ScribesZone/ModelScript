@@ -1,6 +1,5 @@
 # coding=utf-8
-from __future__ import unicode_literals, print_function, absolute_import, \
-    division
+
 
 from typing import Optional
 
@@ -125,18 +124,17 @@ class ClassModelPrinter(ModelPrinter):
         self.doModelTextBlock(class_.description)
         if class_.superclasses:
             sc = (self.kwd('extends ')
-                  +self.kwd(',').join(map(
-                        lambda s:s.name, class_.superclasses)))
+                  +self.kwd(',').join([s.name for s in class_.superclasses]))
         else:
             sc = ''
         if class_.isAbstract:
             abstract='abstract '
         abstract='abstract' if class_.isAbstract else None
-        self.outLine(' '.join(filter(None,[
+        self.outLine(' '.join([_f for _f in [
             (self.kwd('abstract') if class_.isAbstract else ''),
             self.kwd('class'),
             self.qualified(class_),
-            sc])))
+            sc] if _f]))
 
         # self.doModelTextBlock(class_.description)
         if class_.attributes:
@@ -217,17 +215,17 @@ class ClassModelPrinter(ModelPrinter):
         tags='{%s}' % ','.join(attribute.tags) \
                 if attribute.tags \
                 else ''
-        _=' '.join(filter(None,[
+        _=' '.join([_f for _f in [
                 id,
                 read_only,
                 derived,
                 visibility,
                 attribute.name,
                 self.kwd(':'),
-                unicode(attribute.type),
+                str(attribute.type),
                 optional,
                 stereotypes,
-                tags]))
+                tags] if _f])
         self.outLine(_, indent=2)
         self.doModelTextBlock(attribute.description, indent=3)
         # if attribute.isDerived:
@@ -292,19 +290,19 @@ class ClassModelPrinter(ModelPrinter):
                     else role.navigability
         cardinalities=''.join([
             self.kwd('['),
-            unicode(role.cardinalityMin),
+            str(role.cardinalityMin),
             self.kwd('..'),
             '*' if role.cardinalityMax is None
-                else unicode(role.cardinalityMax),
+                else str(role.cardinalityMax),
             self.kwd(']')])
-        _=' '.join(filter(None,[
+        _=' '.join([_f for _f in [
             navigabilty,
             role.name,
             self.kwd(':'),
-            unicode(role.type),
+            str(role.type),
             cardinalities,
             stereotypes,
-            tags]))
+            tags] if _f])
         self.outLine(_, indent=2)
         self.doModelTextBlock(role.description)
         return self.output

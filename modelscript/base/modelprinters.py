@@ -2,7 +2,7 @@
 """
 Base classes for printers and string/color utilities.
 """
-from __future__ import unicode_literals, print_function, absolute_import, division
+
 from abc import ABCMeta
 from typing import Optional
 
@@ -57,9 +57,7 @@ class ModelPrinterConfig(ContentPrinterConfig):
         )
 
 
-class ModelPrinter(ContentPrinter):
-    __metaclass__ = ABCMeta
-
+class ModelPrinter(ContentPrinter, metaclass=ABCMeta):
     def __init__(self,
                  theModel,
                  config=None):
@@ -162,9 +160,7 @@ class ModelSourcePrinterConfig(ContentPrinterConfig):
         )
 
 
-class ModelSourcePrinter(ContentPrinter):
-    __metaclass__ = ABCMeta
-
+class ModelSourcePrinter(ContentPrinter, metaclass=ABCMeta):
     def __init__(self,
                  theSource,
                  config=None):
@@ -226,7 +222,7 @@ class ModelSourcePrinter(ContentPrinter):
         super(ModelSourcePrinter, self).doSummary()
         self.out(
             Styles.comment.do(
-                unicode(self.theSource.fullMetrics),
+                str(self.theSource.fullMetrics),
                 self.config.styled)
         )
         return self.output

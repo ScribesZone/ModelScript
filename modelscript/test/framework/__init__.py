@@ -70,7 +70,7 @@ def getTestFiles(
             m=re.search(pattern, core)
             if not m:
                 return False
-        if isinstance(extension, (str, unicode)):
+        if isinstance(extension, str):
             return ext==extension
         elif isinstance(extension, list):
             return ext in extension
@@ -105,12 +105,12 @@ def getSoilFile(name):
 
 
 def getSoilFileList(nameOrList):
-    if isinstance(nameOrList, (str, unicode)):
+    if isinstance(nameOrList, str):
         # add the prefix if necessary
         with_prefix = getFile(nameOrList, ['soil'])
         return glob.glob(with_prefix)
     else:
-        return map(getSoilFile, nameOrList)
+        return list(map(getSoilFile, nameOrList))
 
 
 def getZipFile(name):

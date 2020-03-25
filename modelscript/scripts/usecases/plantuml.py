@@ -40,7 +40,7 @@ class UsecasePlantUMLPrinter(object):
         self._out('skinparam packageStyle rectangle\n')
         self._out('left to right direction\n')
 
-        for a in self.usecaseModel.actorNamed.values():
+        for a in list(self.usecaseModel.actorNamed.values()):
             self._out('actor %s\n' % a.name)
 
         self._out('rectangle %s {\n' % (

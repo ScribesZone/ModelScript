@@ -13,7 +13,7 @@ class TestGraph(object):
         assert list(genPaths(succs, 1,4))==[[1,3,4],[1,2,4]]
         assert list(genPaths(succs, 1,1))==[]
         assert list(genPaths(succs, 4,4))==[]
-        assert cycles(graph.keys(), succs)== []
+        assert cycles(list(graph.keys()), succs)== []
 
     def testGraph2(self):
         graph = {1: [2, 3, 5], 2: [1], 3: [1], 4: [2], 5: [2]}
@@ -25,7 +25,7 @@ class TestGraph(object):
                [[1, 5, 2, 1], [1, 3, 1], [1, 2, 1]]
         assert list(genPaths(succs, 1,2))==\
                [[1, 5, 2], [1, 3, 1, 5, 2], [1, 3, 1, 2], [1, 2]]
-        assert cycles(graph.keys(), succs)== \
+        assert cycles(list(graph.keys()), succs)== \
                [[1, 5, 2, 1], [1, 3, 1], [1, 2, 1],
                 [2, 1, 5, 2], [2, 1, 2],
                 [3, 1, 3],
@@ -35,7 +35,7 @@ class TestGraph(object):
         graph = {1: [1]}
         succs=lambda x:graph[x]
         assert list(genPaths(succs, 1,1))==[[1,1]]
-        assert cycles(graph.keys(), succs)== [[1,1]]
+        assert cycles(list(graph.keys()), succs)== [[1,1]]
 
 
 # graph1={ 1: [2, 3, 5], 2: [1], 3: [1], 4: [2], 5: [2] }

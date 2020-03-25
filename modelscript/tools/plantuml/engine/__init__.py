@@ -47,14 +47,14 @@ class PlantUMLEngine(object):
             into
                 /outputdir/file.puml.png
             """
-            print('FF'*10, 'file', outputdir)
-            print('FF'*10, 'ouputdir', outputdir)
+            print(('FF'*10, 'file', outputdir))
+            print(('FF'*10, 'ouputdir', outputdir))
 
             abs_outputdir=os.path.abspath(
                 os.path.join(
                     os.path.dirname(file),
                     outputdir))
-            print('FF'*10, 'abs_outputdir', outputdir)
+            print(('FF'*10, 'abs_outputdir', outputdir))
             base_file=os.path.splitext(
                 os.path.basename(file))[0]
             generated_file_name=os.path.join(
@@ -64,7 +64,7 @@ class PlantUMLEngine(object):
                 abs_outputdir,
                 base_file+'.puml.'+ format
             )
-            print('FF'*10, generated_file_name)
+            print(('FF'*10, generated_file_name))
             assert os.path.isfile(generated_file_name)
             os.rename(generated_file_name, new_file_name)
 
@@ -80,7 +80,7 @@ class PlantUMLEngine(object):
             outputDir
         )
         errno=os.system(cmd)
-        print('FF' * 10, 'outputDir',outputDir)
+        print(('FF' * 10, 'outputDir',outputDir))
 
         # TODO:3 check how to get errors from generation
         if errno != 0:

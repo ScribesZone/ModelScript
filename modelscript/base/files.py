@@ -117,7 +117,7 @@ def filesInTree(directory, suffix):
     :param suffix: a string or a list of string serving as suffixes
     :return: the lst of filenames ending with the suffix(es)
     """
-    if isinstance(suffix,basestring):
+    if isinstance(suffix,str):
         suffixes=[suffix]
     else:
         suffixes=suffix

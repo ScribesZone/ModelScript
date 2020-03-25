@@ -1,7 +1,7 @@
 # coding=utf-8
 
 
-from __future__ import unicode_literals, print_function, absolute_import, division
+
 
 from abc import abstractmethod, ABCMeta
 from typing import Text, Optional, List
@@ -22,9 +22,7 @@ DEBUG=3
 #  Line transfos
 #-----------------------------------------------------
 
-class Transfo(object):
-    __metaclass__ = ABCMeta
-
+class Transfo(object, metaclass=ABCMeta):
     def __init__(self, stop=False):
         self.stop=stop
         """ Indicate if other transformations are applied after this one """

@@ -33,7 +33,7 @@ The structure of this package is::
     <|--  Enumeration
 
 """
-from __future__ import print_function
+
 
 import abc
 import collections
@@ -201,11 +201,13 @@ class ClassModel(Model):
 
     @property
     def packages(self):
-        return self._packageNamed.values()
+        #TODO:4 2to3 add list
+        return list(self._packageNamed.values())
 
     @property
     def packageNames(self):
-        return self._packageNamed.keys()
+        #TODO:4 2to3 add list
+        return list(self._packageNamed.keys())
 
     def package(self, name):
         if name in self._packageNamed:
@@ -225,19 +227,23 @@ class ClassModel(Model):
 
     @property
     def simpleTypes(self):
-        return self.simpleTypeNamed.values()
+        #TODO:4 2to3 add list
+        return list(self.simpleTypeNamed.values())
 
     @property
     def simpleTypeNames(self):
-        return self.simpleTypeNamed.keys()
+        #TODO:4 2to3 add list
+        return list(self.simpleTypeNamed.keys())
 
     @MComposition('DataType[*] inv model')
     def dataTypes(self):
-        return self._dataTypeNamed.values()
+        #TODO:4 2to3 add list
+        return list(self._dataTypeNamed.values())
 
     @property
     def dataTypeNames(self):
-        return self._dataTypeNamed.keys()
+        #TODO:4 2to3 add list
+        return list(self._dataTypeNamed.keys())
 
     def dataType(self, name):
         if name in self._dataTypeNamed:
@@ -247,11 +253,13 @@ class ClassModel(Model):
 
     @property
     def enumerations(self):
-        return self._enumerationNamed.values()
+        #TODO:4 2to3 add list
+        return list(self._enumerationNamed.values())
 
     @property
     def enumerationNames(self):
-        return self._enumerationNamed.keys()
+        #TODO:4 2to3 add list
+        return list(self._enumerationNamed.keys())
 
     def enumeration(self, name):
         if name in self._enumerationNamed:
@@ -265,11 +273,13 @@ class ClassModel(Model):
 
     @property
     def plainClasses(self):
-        return self._plainClassNamed.values()
+        #TODO:4 2to3 add list
+        return list(self._plainClassNamed.values())
 
     @property
     def plainClassNames(self):
-        return self._plainClassNamed.keys()
+        #TODO:4 2to3 add list
+        return list(self._plainClassNamed.keys())
 
     def plainClass(self, name):
         if name in self._plainClassNamed:
@@ -301,11 +311,13 @@ class ClassModel(Model):
 
     @property
     def plainAssociations(self):
-        return self._plainAssociationNamed.values()
+        #TODO:4 2to3 add list
+        return list(self._plainAssociationNamed.values())
 
     @property
     def plainAssociationNames(self):
-        return self._plainAssociationNamed.keys()
+        #TODO:4 2to3 add list
+        return list(self._plainAssociationNamed.keys())
 
     def plainAssociation(self, name):
         if name in self._plainAssociationNamed:
@@ -337,11 +349,13 @@ class ClassModel(Model):
 
     @property
     def associationClasses(self):
-        return self._associationClassNamed.values()
+        #TODO:4 2to3 add list
+        return list(self._associationClassNamed.values())
 
     @property
     def associationClassNames(self):
-        return self._associationClassNamed.keys()
+        #TODO:4 2to3 add list
+        return list(self._associationClassNamed.keys())
 
     def associationClass(self, name):
         if name in self._associationClassNamed:
@@ -355,11 +369,13 @@ class ClassModel(Model):
 
     @property
     def invariants(self):
-        return self._invariantNamed.values()
+        #TODO:4 2to3 add list
+        return list(self._invariantNamed.values())
 
     @property
     def invariantNames(self):
-        return self._invariantNamed.keys()
+        #TODO:4 2to3 add list
+        return list(self._invariantNamed.keys())
 
     def invariant(self, name):
         if name in self._invariantNamed:
@@ -503,7 +519,7 @@ class ClassModel(Model):
                         'The inheritance graphs is cyclic.'))
 
         def add_inherited_attributes():
-            # Dill the attribute class._inheritedAttributeNamed
+            # Fill the attribute class._inheritedAttributeNamed
             # Implement the inheritance algorithm with
             # multiple inheritance.
 
@@ -523,9 +539,11 @@ class ClassModel(Model):
                         # if the attribute was already inherited
                         # do not care.
                         # Otherwise prepare to add it
-                        if sc_att not in inh_att_named.values():
+                        # TODO:4 2to3 add list
+                        if sc_att not in list(inh_att_named.values()):
                             name=sc_att.name
-                            if name in inh_att_named.keys():
+                            # TODO:4 2to3 add list
+                            if name in list(inh_att_named.keys()):
                                 # two inherited attribute have the same
                                 # name.
                                 ASTNodeSourceIssue(
@@ -544,7 +562,7 @@ class ClassModel(Model):
                     print('WW' * 10, '    %s' % a)
 
             def _check_no_vertical_conflicts(class_):
-                for name in class_._inheritedAttributeNamed.keys():
+                for name in list(class_._inheritedAttributeNamed.keys()):
                     if name in class_.ownedAttributeNames:
                         ASTNodeSourceIssue(
                             code=icode('SUPER_ATT_INH_VERT'),
@@ -650,11 +668,10 @@ class ClassModel(Model):
 
 
 
-class PackagableElement(SourceModelElement):
+class PackagableElement(SourceModelElement, metaclass=abc.ABCMeta):
     """
     Top level element.
     """
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self,
                  name,
@@ -682,7 +699,7 @@ class PackagableElement(SourceModelElement):
             return self.name
 
 
-class Item(object):
+class Item(object, metaclass=abc.ABCMeta):
     """
     Either an entity or a member.
     Useful for instance to define "scope" of invariants.
@@ -695,17 +712,15 @@ class Item(object):
     Y can be a enumeration literal, attribute or role
     """
 
-    __metaclass__ = abc.ABCMeta
+
+class Entity(Resource, Item, metaclass=abc.ABCMeta):
+
+    pass
 
 
-class Entity(Resource, Item):
+class Member(Resource, Item, metaclass=abc.ABCMeta):
 
-    __metaclass__ = abc.ABCMeta
-
-
-class Member(Resource, Item):
-
-    __metaclass__ = abc.ABCMeta
+    pass
 
 
 class Package(PackagableElement, Entity):

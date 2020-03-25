@@ -28,7 +28,7 @@
 
 """ANSII Color formatting for output in terminal."""
 
-from __future__ import print_function
+
 import os
 
 

@@ -1,5 +1,5 @@
 # coding=utf-8
-from __future__ import print_function
+
 import os
 from modelscript.scripts.objects.parser import ObjectModelSource
 from modelscript.test.framework import getTestFile
@@ -28,7 +28,7 @@ class TestObjectModel(object):
     def testSlot(self):
         o=self.model.object('zoe')
         assert len(o.slots)==2
-        assert unicode(o.slot('name').simpleValue)=="'Zoe Zarwin'"
+        assert str(o.slot('name').simpleValue)=="'Zoe Zarwin'"
         assert o.slot('name').simpleValue.stringRepr=="'Zoe Zarwin'"
         assert o.slot('name').simpleValue.value=="Zoe Zarwin"
         assert o.slot('name').attribute.name=='name'

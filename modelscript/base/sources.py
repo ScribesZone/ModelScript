@@ -28,11 +28,10 @@ from modelscript.base.issues import (
 from modelscript.megamodels.issues import WithIssueModel
 
 
-class SourceElement(object):
+class SourceElement(object, metaclass=ABCMeta):
     """
     Element of a source file.
     """
-    __metaclass__ = ABCMeta
     def __init__(self,
                  name=None,
                  astNode=None,
@@ -45,13 +44,12 @@ class SourceElement(object):
 
 
 
-class SourceFile(WithIssueModel):  # TODO:3 should be WithIssueList
+class SourceFile(WithIssueModel, metaclass=abc.ABCMeta):  # TODO:3 should be WithIssueList
     """
     A source file seen as as sequence of lines.
     Subclasses may add more elements such as a Model.
     The source file may contains some list of errors.
     """
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self, fileName):
         #type: (Text) -> None

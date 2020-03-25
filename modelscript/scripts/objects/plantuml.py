@@ -53,7 +53,7 @@ class ObjectPlantUMLPrinter(object):
         self.out('@enduml')
 
     def doObject(self, o):
-        print('$'*30+str(type(o)))
+        print(('$'*30+str(type(o))))
         _header='"%s : %s" as %s' % (
             '' if o.name is None else o.name,
             o.class_.name,
@@ -64,7 +64,7 @@ class ObjectPlantUMLPrinter(object):
             for slot_name in o.slotNames:
                 self.out('    %s = %s\n' % (
                     slot_name,
-                    unicode(o.slot(slot_name).simpleValue)))
+                    str(o.slot(slot_name).simpleValue)))
             self.out('}\n\n')
         else:
             self.out('object %s\n' % _header)

@@ -52,7 +52,7 @@ __all__=META_CLASSES
 DEBUG=3
 
 
-class Step(SourceModelElement, Subject):
+class Step(SourceModelElement, Subject, metaclass=ABCMeta):
     """
     Abstract class for all steps.
     This class deal with
@@ -62,7 +62,6 @@ class Step(SourceModelElement, Subject):
         operation or if (b) there is an operation in its
         substeps (if any).
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self,
                  model,
@@ -108,7 +107,7 @@ class Step(SourceModelElement, Subject):
             return self.parent.story
 
 
-class CompositeStep(Step):
+class CompositeStep(Step, metaclass=ABCMeta):
     """
     Composite steps have substeps and therefore a "steps"
     attribute.
@@ -116,7 +115,6 @@ class CompositeStep(Step):
     a parent (see Steps).
     The parent of step is None for Stories.
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self,
                  model,
@@ -284,7 +282,7 @@ class VerbStep(CompositeStep):
         self.verbName=verbName
 
 
-class AbstractStoryId(object):
+class AbstractStoryId(object, metaclass=ABCMeta):
     """
     Identifier of a story. Concrete classes must
     be defined in metamodel reusing "stories".
@@ -292,7 +290,6 @@ class AbstractStoryId(object):
     to identify which story should be included.
     This class is also used by AbstractStoryCollection.
     """
-    __metaclass__ = ABCMeta
 
     pass
 

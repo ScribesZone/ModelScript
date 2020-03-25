@@ -41,7 +41,7 @@ class Model(
     MegamodelElement,
     ModelElement,
     WithIssueModel,
-    WithTextBlocks):
+    WithTextBlocks, metaclass=abc.ABCMeta):
     """
     The root class for all models.
 
@@ -56,7 +56,6 @@ class Model(
       The _issueBox has as a parent the sourceFile'
       issue box if any.
     """
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self):
         #type: () -> None
@@ -156,13 +155,13 @@ class Model(
         """
         if DEBUG>=1:
             _=(' RESOLVE MODEL'+self.label+' ').center(70, '.')
-            print('MOD: '+_)
+            print(('MOD: '+_))
         self.resolveTextBlocks()
 
     def finalize(self):
         if DEBUG>=1:
             _=(' FINALIZE MODEL'+self.label+' ').center(70, '.')
-            print('MOD: '+_)
+            print(('MOD: '+_))
         self.check()
 
     def str( self,

@@ -48,7 +48,7 @@ class OCLInvariant(SourceModelElement):
 
         # add nth to invariant name except for 1st
         nth=len(invariant.oclInvariants)+1
-        suffix=unicode(nth) if nth>=2 else ''
+        suffix=str(nth) if nth>=2 else ''
 
         super(OCLInvariant, self).__init__(
             name=invariant.name+suffix,
@@ -97,7 +97,7 @@ class OCLLine(SourceModelElement):
     def __init__(self, oclInvariant, textLine,
                     astNode=None):
         # add nth to ocl invariant name
-        suffix='_'+unicode(len(oclInvariant.oclLines)+1)
+        suffix='_'+str(len(oclInvariant.oclLines)+1)
         super(OCLLine, self).__init__(
             name=oclInvariant.name+suffix,
             model=oclInvariant.model,

@@ -1,5 +1,5 @@
 typing
-textX==1.6.1
+textX
 
 #------ optional packages -----------------------
 graphviz
@@ -7,4 +7,4 @@ nose                 # for testing
 sphinx               # for generating docs/.build
 sphinx_rtd_theme     # for generating docs/.build
 
-ipython==5.0         # for use in pycharm for instance
+ipython              # for use in pycharm for instance

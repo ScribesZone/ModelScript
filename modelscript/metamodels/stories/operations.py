@@ -55,9 +55,7 @@ __all__=META_CLASSES
 #   Abstract classes
 #--------------------------------------------------------------
 
-class OperationStep(Step):
-    __metaclass__ = ABCMeta
-
+class OperationStep(Step, metaclass=ABCMeta):
     def __init__(self,
         parent,
         astNode=None,
@@ -76,10 +74,7 @@ class OperationStep(Step):
         return True
 
 
-class UpdateOperationStep(OperationStep):
-    __metaclass__ = ABCMeta
-
-
+class UpdateOperationStep(OperationStep, metaclass=ABCMeta):
     def __init__(self,
                     parent, isAction, 
                     astNode=None, lineNo=None,
@@ -95,10 +90,7 @@ class UpdateOperationStep(OperationStep):
         #type: bool
 
 
-class ConsultOperationStep(OperationStep):
-    __metaclass__ = ABCMeta
-
-
+class ConsultOperationStep(OperationStep, metaclass=ABCMeta):
     def __init__(self,
                     parent,
                     astNode=None, lineNo=None,

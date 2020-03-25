@@ -91,7 +91,7 @@ class RelationModel(Model):
     @property
     def relations(self):
         #type: () -> List[Relation]
-        return self._relationNamed.values()
+        return list(self._relationNamed.values())
 
     @property
     def metrics(self):
@@ -112,12 +112,12 @@ class RelationModel(Model):
 
 
 
-class Entity(Resource):
-    __metaclass__ = ABCMeta
+class Entity(Resource, metaclass=ABCMeta):
+    pass
 
 
-class Member(Resource):
-    __metaclass__ = ABCMeta
+class Member(Resource, metaclass=ABCMeta):
+    pass
 
 
 class Relation(SourceModelElement, Entity):
@@ -140,7 +140,7 @@ class Relation(SourceModelElement, Entity):
 
     @property
     def columns(self):
-        return self._columnNamed.values()
+        return list(self._columnNamed.values())
 
     def column(self, name):
         if name in self._columnNamed:
@@ -150,7 +150,7 @@ class Relation(SourceModelElement, Entity):
 
     @property
     def columnNames(self):
-        return self.columnNames.keys()
+        return list(self.columnNames.keys())
 
 
 class Column(SourceModelElement, Member):

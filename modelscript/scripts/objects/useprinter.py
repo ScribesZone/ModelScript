@@ -1,6 +1,5 @@
 # coding=utf-8
-from __future__ import unicode_literals, print_function, absolute_import, \
-    division
+
 
 from typing import Optional
 
@@ -93,7 +92,7 @@ class ObjectModelPrinter(ModelPrinter):
 
     def doObjectDefinition(self, o, indent=0):
         class_name=(
-            unicode(o.class_)
+            str(o.class_)
                 if isinstance(o.class_, Placeholder)
             else o.class_.name)
         self.outLine('%s %s %s' % (
@@ -111,19 +110,19 @@ class ObjectModelPrinter(ModelPrinter):
 
     def doNestedSlot(self, slot, indent=0):
         attribute_name=(
-            unicode(slot.attribute)
+            str(slot.attribute)
             if isinstance(slot.attribute, Placeholder)
             else slot.attribute.name)
         self.outLine('%s %s %s' % (
                     attribute_name,
                     self.kwd('='),
-                    unicode(slot.value)),
+                    str(slot.value)),
                 indent=indent)
         return self.output
 
     def doSlotDefinition(self, slot, indent=0):
         attribute_name=(
-            unicode(slot.attribute)
+            str(slot.attribute)
             if isinstance(slot.attribute, Placeholder)
             else slot.attribute.name)
         self.outLine('%s%s%s %s %s' % (
@@ -131,13 +130,13 @@ class ObjectModelPrinter(ModelPrinter):
                 self.kwd('.'),
                 attribute_name,
                 self.kwd('='),
-                unicode(slot.value)),
+                str(slot.value)),
             indent=indent)
         return self.output
 
     def doLinkDefinition(self, l, indent=0):
         association_name=(
-            unicode(l.association)
+            str(l.association)
                 if isinstance(l.association, Placeholder)
             else l.association.name)
         self.outLine('%s%s%s %s%s %s%s' % (

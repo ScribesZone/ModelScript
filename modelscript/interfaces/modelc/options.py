@@ -111,7 +111,7 @@ def _updateConfig(options):
         val = getattr(options, parameter)
         if val is not None:
             # update config only if value is specified
-            print('%s(%s)=%s' % (configOption, parameter, val))
+            print(('%s(%s)=%s' % (configOption, parameter, val)))
             setattr(Config, configOption, val)
 
 def getOptions(args):

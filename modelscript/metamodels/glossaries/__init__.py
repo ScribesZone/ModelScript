@@ -7,7 +7,7 @@ Glossary metamodel.
         <>--* Package
             <>--* Entry (indexed by name)
 """
-from __future__ import print_function
+
 
 import collections
 
@@ -72,19 +72,19 @@ class GlossaryModel(Model):
         #type: (Text) -> Optional[Entry]
 
         # search first as the main term
-        for packages in self.packageNamed.values():
+        for packages in list(self.packageNamed.values()):
             if term in packages.entryNamed:
                 return packages.entryNamed[term]
 
         # search then in inflections
-        for packages in self.packageNamed.values():
-            for entry in packages.entryNamed.values():
+        for packages in list(self.packageNamed.values()):
+            for entry in list(packages.entryNamed.values()):
                 if term in entry.inflections:
                     return entry
 
         # search then in synonyms
-        for packages in self.packageNamed.values():
-            for entry in packages.entryNamed.values():
+        for packages in list(self.packageNamed.values()):
+            for entry in list(packages.entryNamed.values()):
                 if term in entry.synonyms:
                     return entry
 
@@ -132,7 +132,7 @@ class Package(SourceModelElement):
 
     @property
     def entries(self):
-        return self.entryNamed.values()
+        return list(self.entryNamed.values())
 
 
 class Entry(SourceModelElement):

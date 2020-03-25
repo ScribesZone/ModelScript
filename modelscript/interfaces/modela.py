@@ -6,7 +6,7 @@ This script can be called either
 It first remove the annotations from the file given, then process
 the file.
 """
-from __future__ import print_function
+
 import os
 import sys
 import traceback
@@ -93,7 +93,7 @@ try:
     source = Megamodel.loadFile(filename)
 except Exception as e:
     traceback.print_exc(e)
-    print(unicode(e))
+    print(str(e))
 
 # annotated the source
 #TODO:2 Find the class AnnotatedSourcePrinter

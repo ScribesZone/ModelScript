@@ -47,8 +47,8 @@ class T(object):
     def checkIssues(self):
         if self.buildContext.nbIssues != self.issueNb:
             print('Nb of issues differs:')
-            print('Found:    %s' % self.buildContext.nbIssues)
-            print('Expected: %s' % self.issueNb)
+            print(('Found:    %s' % self.buildContext.nbIssues))
+            print(('Expected: %s' % self.issueNb))
             assert False
 
     def checkSourceList(self):
@@ -57,8 +57,8 @@ class T(object):
             for f in self.buildContext.allSourceFileList ]
         if basenames != self.sourceFileList() :
             print('Source list differs :')
-            print('Found:    %s' % basenames)
-            print('Expected: %s' % self.sourceFileList())
+            print(('Found:    %s' % basenames))
+            print(('Expected: %s' % self.sourceFileList()))
             assert False
 
     def check(self, buildContext):
@@ -159,21 +159,21 @@ def doModelc(cmd, testCase):
     # enter the testcases directory and perform the test
     with pushDirectory(TEST_CASES_DIRECTORY):
         title=' modelc %s ' % cmd
-        print('='*80)
-        print('='*80)
+        print(('='*80))
+        print(('='*80))
         if len(title)<=60:
-            print(title.center(80, '='))
+            print((title.center(80, '=')))
         for arg in testCase.args:
-            print('##  %s' % arg)
-        print('='*80)
-        print('='*80)
+            print(('##  %s' % arg))
+        print(('='*80))
+        print(('='*80))
         print('')
         bc=BuildContext(testCase.args)
         bc.display()
         testCase.check(bc)
         from modelscript.megamodels import Megamodel
         m=Megamodel.model
-        print('\n'*4)
+        print(('\n'*4))
 
 
 def testFinalMegamodel():

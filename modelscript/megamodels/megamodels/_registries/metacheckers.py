@@ -20,4 +20,5 @@ class _MetaCheckerPackageRegistry(object):
 
     @classmethod
     def metaCheckerPackages(cls):
-        return cls._metaCheckerPackageNamed.values()
+        # TODO:4 2to3 was cls._metaCheckerPackageNamed.values()
+        return list(cls._metaCheckerPackageNamed.values())

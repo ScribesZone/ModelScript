@@ -48,6 +48,9 @@ class Level(object):
     def __eq__(self, other):
         return self.rank == other.rank
 
+    def __hash__(self):
+        return hash(self.rank)
+
     def cmp(self, other, op='='):
         #type: (Level, Text) -> bool
         if op=='=':
@@ -126,12 +129,12 @@ class Issue(object):
         self.origin._issueBox._add(self)
 
         if DEBUG>=1:
-            print('ISS: ****NEW %s%s IN %s **** -> %s'  % (
+            print(('ISS: ****NEW %s%s IN %s **** -> %s'  % (
                 type(self).__name__,
                 '' if self.code is None else ':'+self.code,
                 self.origin._issueBox.label,
-                unicode(self)
-            ))
+                str(self)
+            )))
 
         if level==Levels.Fatal:
             # Raise a real exception for Fatal issue so that
@@ -186,12 +189,12 @@ class Issue(object):
         if pattern is None:
             pattern=(
                 Annotations.prefix
-                + u'{kind}:{level}:{origin}:{message}')
+                + '{kind}:{level}:{origin}:{message}')
         text=pattern.format(
             origin=self.originLabel,
             level=self.level.str(),
             kind=self.kind,
-            location=u'-',
+            location='-',
             line='-',
             message=self.message
         )
@@ -321,12 +324,12 @@ class LocalizedSourceIssue(Issue):
         if pattern is None:
             pattern=(
                 Annotations.prefix
-                + u'{kind}:{level}:{origin}:{line}:{message}')
+                + '{kind}:{level}:{origin}:{line}:{message}')
         text=pattern.format(
             origin=self.location.sourceFile.basename,
             level=self.level.str(),
             kind=self.kind,
-            line=unicode(self.location.line),
+            line=str(self.location.line),
             message=self.message
         )
         return self.level.style.do(
@@ -386,9 +389,9 @@ class IssueBox(object):
         """
 
         if DEBUG>=1:
-            print(u'ISS: New issue box for %s -> %s' % (
+            print(('ISS: New issue box for %s -> %s' % (
                 type(self.origin).__name__,
-                self.label))
+                self.label)))
 
     def _add(self, issue):
         #type: (Issue) -> None
@@ -412,9 +415,9 @@ class IssueBox(object):
         if not issueBox in self.parents:
             self.parents.append(issueBox)
             if DEBUG >= 1:
-                print(u'ISS: Add parent "%s" -> "%s"' % (
+                print(('ISS: Add parent "%s" -> "%s"' % (
                         self.label,
-                        issueBox.label))
+                        issueBox.label)))
 
     def at(self, lineNo, parentsFirst=True):
         """
@@ -533,17 +536,17 @@ class IssueBox(object):
     @property
     def summaryLine(self):
 
-        def times(n, word, pattern=u'%i %s'):
+        def times(n, word, pattern='%i %s'):
             if n==0:
                 return ''
             else:
                 return (pattern % (
                     n,
-                    word + (u's' if n>=2 else u'')
+                    word + ('s' if n>=2 else '')
                 ))
 
         if self.nb==0:
-            return u''
+            return ''
         level_msgs=[]
         m=self.summaryLevelMap
         for l in m:
@@ -554,9 +557,9 @@ class IssueBox(object):
         if len(level_msgs)==1:
             text=level_msgs[0]
         else:
-            text= u'%s (%s)' % (
-                    times(self.nb, u'Issue'),
-                    u', '.join(level_msgs)
+            text= '%s (%s)' % (
+                    times(self.nb, 'Issue'),
+                    ', '.join(level_msgs)
                 )
         return Annotations.fullLine(text)
 
@@ -576,7 +579,7 @@ class IssueBox(object):
             +self.summaryLine+'\n'
             +(Annotations.full if annotations else '')
                 if summary else '')
-        return '\n'.join(filter(None,(
+        return '\n'.join([_f for _f in (
             [header]
             + [
                 i.str(
@@ -584,7 +587,7 @@ class IssueBox(object):
                     pattern=pattern,
                     prefix='')
                 for i in self.select(level,op)]
-            + [Annotations.full+'\n' if annotations else ''])))
+            + [Annotations.full+'\n' if annotations else '']) if _f])
 
     def __str__(self):
         return self.str()
@@ -633,9 +636,7 @@ class OrderedIssueBoxList(object):
         return sum(box.nb for box in self.issueBoxes)
 
 
-class WithIssueList(object):
-    __metaclass__ = ABCMeta
-
+class WithIssueList(object, metaclass=ABCMeta):
     def __init__(self, parents=()):
         #type: (List[IssueBox]) -> None
         assert(isinstance(parents, (list, tuple)))

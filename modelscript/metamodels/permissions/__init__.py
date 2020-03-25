@@ -4,7 +4,7 @@
 """
 
 
-from __future__ import absolute_import, division, print_function, unicode_literals
+
 from typing import List, Optional
 from modelscript.megamodels.dependencies.metamodels import (
     MetamodelDependency
@@ -157,7 +157,7 @@ class UCPermissionModel(PermissionModel):
                         rule.permissions.append(p)
 
     def __str__(self):
-        return '\n'.join([unicode(r) for r in self.rules])
+        return '\n'.join([str(r) for r in self.rules])
 
 
 METAMODEL=Metamodel(

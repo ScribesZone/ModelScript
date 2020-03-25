@@ -1,6 +1,5 @@
 # coding=utf-8
-from __future__ import unicode_literals, print_function, absolute_import, \
-    division
+
 
 from typing import Optional, Dict
 from collections import OrderedDict
@@ -134,16 +133,15 @@ class UseClassPrinter(AbstractPrinter):
         enum_line=self._putElement(class_)
         if class_.superclasses:
             sc = ('< '
-                  +','.join(map(
-                        lambda s:s.name, class_.superclasses)))
+                  +','.join([s.name for s in class_.superclasses]))
         else:
             sc = ''
-        self.outLine(' '.join(filter(None,[
+        self.outLine(' '.join([_f for _f in [
             ('abstract' if class_.isAbstract else None),
             'class',
             class_.name,
             sc,
-            ' --<<< %i' % enum_line])))
+            ' --<<< %i' % enum_line] if _f]))
 
         if class_.ownedAttributes:
             self.outLine(
@@ -184,10 +182,10 @@ class UseClassPrinter(AbstractPrinter):
         role_line=self._putElement(role)
         cardinalities=''.join([
             '[',
-            unicode(role.cardinalityMin),
+            str(role.cardinalityMin),
             '..',
             '*' if role.cardinalityMax is None
-                else unicode(role.cardinalityMax),
+                else str(role.cardinalityMax),
             ']'])
         self.outLine('%s%s role %s --<<< %i' % (
                      role.type.name,

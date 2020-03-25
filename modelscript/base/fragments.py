@@ -104,11 +104,10 @@ class Fragment(object):
 from abc import ABCMeta, abstractmethod
 
 
-class Fragmenter(object):
+class Fragmenter(object, metaclass=ABCMeta):
     """
     Abstract base class for fragmenters.
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self, sequence, mainValue=None, firstPosition=1 ):
         """

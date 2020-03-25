@@ -52,7 +52,7 @@ class _ClassPrint(object):
                 if s is None:
                     self.attVal[att.name]=UNSPECIFIED
                 else:
-                    self.attVal[att.name]=unicode(s.simpleValue)
+                    self.attVal[att.name]=str(s.simpleValue)
 
     def equals(self, classPrint2):
         """
@@ -61,7 +61,7 @@ class _ClassPrint(object):
         Otherwise return false.
         """
         has_unspecified=False
-        for att in self.attVal.keys():
+        for att in list(self.attVal.keys()):
             v1=self.attVal[att]
             v2=classPrint2.attVal[att]
             if (v1 is not UNSPECIFIED
@@ -80,20 +80,19 @@ class _ClassPrint(object):
         if len(self.attVal)==0:
             return ()
         elif len(self.attVal)==1:
-            return unicode(self.attVal[self.attVal.keys()[0]])
+            return str(self.attVal[list(self.attVal.keys())[0]])
         else:
             return '(%s)' % (','.join([
-                '%s=%s' % (att, unicode(val))
-                for (att, val) in self.attVal.items()
+                '%s=%s' % (att, str(val))
+                for (att, val) in list(self.attVal.items())
             ]))
 
 
-class Object(PackagableElement, Entity):
+class Object(PackagableElement, Entity, metaclass=ABCMeta):
     """
     An object. Either a plain object or a link object.
     Link object
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self, model, name, class_,
                  package=None,
@@ -253,5 +252,5 @@ class Slot(ElementFromOptionalStep, Member):
         return '%s.%s=%s' % (
             self.object.name,
             self.attribute.name,
-            unicode(self.simpleValue)
+            str(self.simpleValue)
         )

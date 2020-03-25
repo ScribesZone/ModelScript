@@ -6,7 +6,7 @@ an initial state (an ObjectModel). This state is updated
 inplace.
 """
 
-from __future__  import print_function
+
 from typing import Union, Optional, Dict, Text
 from modelscript.base.grammars import (
     ASTNodeSourceIssue

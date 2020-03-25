@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from __future__ import print_function
+
 from typing import Text, Union
 import os
 
@@ -465,7 +465,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 if ast_ocl_line.textLine is not None:
                     OCLLine(
                         oclInvariant=ocl_inv,
-                        textLine=unicode(ast_ocl_line.textLine),
+                        textLine=str(ast_ocl_line.textLine),
                         astNode=ast_ocl_line
                     )
                 for ast_sublines in ast_ocl_line.oclLines:

@@ -7,9 +7,7 @@ from modelscript.base.exceptions import (
 
 
 MegamodelElement='MegamodelElement'
-class Dependency(object):
-    __metaclass__ = ABCMeta
-
+class Dependency(object, metaclass=ABCMeta):
     @abstractproperty
     def source(self):
         #type: () -> MegamodelElement

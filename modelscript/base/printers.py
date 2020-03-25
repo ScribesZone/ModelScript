@@ -2,7 +2,7 @@
 """
 Base classes for printers and string/color utilities.
 """
-from __future__ import unicode_literals, print_function, absolute_import, division
+
 
 from abc import ABCMeta, abstractmethod
 
@@ -90,9 +90,7 @@ class AbstractPrinterConfigs(object):
     default=AbstractPrinterConfig()
     
 
-class AbstractPrinter(object):
-    __metaclass__ = ABCMeta
-
+class AbstractPrinter(object, metaclass=ABCMeta):
     def __init__(self, config=None):
         #type: (Optional[AbstractPrinterConfig]) -> None
         if config is None:
@@ -247,7 +245,7 @@ class StructuredPrinterConfigs(object):
     default=StructuredPrinterConfig()
 
 
-class StructuredPrinter(AbstractPrinter):
+class StructuredPrinter(AbstractPrinter, metaclass=ABCMeta):
     """
     A printer with different predefined zones
     (top, body, bottom) with predefined nested zone
@@ -267,7 +265,6 @@ class StructuredPrinter(AbstractPrinter):
             doIssueSummary
             doBottomTitle
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self,
                  config=None):
@@ -447,9 +444,7 @@ class ContentPrinterConfigs(object):
     default=ContentPrinterConfig()
 
 
-class ContentPrinter(StructuredPrinter):
-    __metaclass__ = ABCMeta
-
+class ContentPrinter(StructuredPrinter, metaclass=ABCMeta):
     def __init__(self,
                  config=None):
         #type: (Optional[ContentPrinterConfig]) -> None

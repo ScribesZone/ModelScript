@@ -1,4 +1,4 @@
-from __future__ import print_function
+
 from typing import List, Optional, Dict, Text
 import abc
 import collections
@@ -15,12 +15,10 @@ from modelscript.base.exceptions import (
     MethodToBeDefined)
 
 
-class Class(PackagableElement, Entity):
+class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
     """
     Classes.
     """
-
-    __metaclass__ = abc.ABCMeta
 
     META_COMPOSITIONS = [
     #    'attributes', TODO:3 restore, raise an exception
@@ -113,7 +111,8 @@ class Class(PackagableElement, Entity):
 
     @property
     def ownedAttributes(self):
-        return self._ownedAttributeNamed.values()
+        # TODO:4 2to3 add list
+        return list(self._ownedAttributeNamed.values())
 
     def ownedAttribute(self, name):
         if name in self._ownedAttributeNamed:
@@ -123,7 +122,8 @@ class Class(PackagableElement, Entity):
 
     @property
     def ownedAttributeNames(self):
-        return self._ownedAttributeNamed.keys()
+        # TODO:4 2to3 add list
+        return list(self._ownedAttributeNamed.keys())
 
     @property
     def inheritedAttributes(self):
@@ -140,7 +140,8 @@ class Class(PackagableElement, Entity):
             # nice to require client to check which attributes
             # are defined or not.
             return []
-        return self._inheritedAttributeNamed.values()
+        # TODO:4 2to3 add list
+        return list(self._inheritedAttributeNamed.values())
 
     def inheritedAttribute(self, name):
         if self._inheritedAttributeNamed is None:
@@ -156,7 +157,8 @@ class Class(PackagableElement, Entity):
         if self._inheritedAttributeNamed is None:
             # see inheritedAttributes
             return []
-        return self._inheritedAttributeNamed.keys()
+        # TODO:4 2to3 add list
+        return list(self._inheritedAttributeNamed.keys())
 
     @property
     def attributes(self):
@@ -177,7 +179,8 @@ class Class(PackagableElement, Entity):
 
     @property
     def ownedOppositeRoles(self):
-        return self._ownedOppositeRoleNamed.values()
+        # TODO:4 2to3 add list
+        return list(self._ownedOppositeRoleNamed.values())
 
     def ownedOppositeRole(self, name):
         if name in self._ownedOppositeRoleNamed:
@@ -187,7 +190,8 @@ class Class(PackagableElement, Entity):
 
     @property
     def ownedOppositeRoleNames(self):
-        return self._ownedOppositeRoleNamed.keys()
+        # TODO:4 2to3 add list
+        return list(self._ownedOppositeRoleNamed.keys())
 
     @property
     def inheritedOppositeRoles(self):
@@ -205,7 +209,8 @@ class Class(PackagableElement, Entity):
             # nice to require client to check which attributes
             # are defined or not.
             return []
-        return self._inheritedAttributeNamed.values()
+        # TODO:4 2to3 add list
+        return list(self._inheritedAttributeNamed.values())
 
     def inheritedOppositeRole(self, name):
         if self._inheritedOppositeRoleNamed is None:
@@ -221,7 +226,7 @@ class Class(PackagableElement, Entity):
         if self._inheritedOppositeRoleNamed is None:
             # see inheritedAttributes
             return []
-        return self._inheritedOppositeRoleNamed.keys()
+        return list(self._inheritedOppositeRoleNamed.keys())
 
     @property
     def oppositeRoles(self):
@@ -437,10 +442,12 @@ class Operation(SourceModelElement, Member):
 
     @MComposition('Condition[*]')
     def conditions(self):
-        return self.conditionNamed.values()
+        # TODO:4 2to3 add list
+        return list(self.conditionNamed.values())
 
     def conditionNames(self):
-        return self.conditionNamed.keys()
+        # TODO:4 2to3 add list
+        return list(self.conditionNamed.keys())
 
 
     @MAttribute('Boolean')

@@ -10,7 +10,7 @@ class PyMetamodelParser(object):
     def parsePyModule(self, module):
 
         classes=_PyHelper.moduleClasses(module)
-        print('metamodel %s' % module.__name__)
+        print(('metamodel %s' % module.__name__))
         print('')
         for c in classes:
             self.parsePyClass(c)
@@ -19,9 +19,9 @@ class PyMetamodelParser(object):
     def parsePyClass(self, class_):
         superc=', '.join(
             [c.__name__ for c in _PyHelper.classSuperclasses(class_)])
-        print('    class %s %s' % (
+        print(('    class %s %s' % (
             class_.__name__,
-            '' if superc is '' else ' < %s' % superc))
+            '' if superc is '' else ' < %s' % superc)))
         props=_PyHelper.classProperties(class_)
         if len(props)>0:
             # print('    attributes')
@@ -37,10 +37,10 @@ class PyMetamodelParser(object):
 
     def parsePyProperty(self, p):
         mi=_PyHelper.classPropertyMetaInfo(p)
-        print('        %s %s : %s' % (mi.kind, mi.name, mi.spec))
+        print(('        %s %s : %s' % (mi.kind, mi.name, mi.spec)))
 
     def parsePyMethod(self, m):
-        print('        operation %s()' % m.__name__)
+        print(('        operation %s()' % m.__name__))
 
 
 
@@ -58,13 +58,11 @@ class _PyHelper(object):
         classes = seconds(
             inspect.getmembers(module, inspect.isclass))
         if hasattr(module, '__all__'):
-            classes = filter(
-                lambda c: c.__name__ in module.__all__,
-                classes)
+            classes = [c for c in classes if c.__name__ in module.__all__]
         # classes = filter(
         #         lambda c: hasattr(c, 'meta'),
         #         classes)
-        classes = filter(isNotHidden, classes)
+        classes = list(filter(isNotHidden, classes))
         return classes
 
     @classmethod
@@ -104,20 +102,16 @@ class _PyHelper(object):
 
     @classmethod
     def classProperties(cls, class_, mode='direct'):
-        properties = filter(
-            lambda m: isinstance(m, property),
-            _PyHelper.classMembers(class_, mode=mode))
-        properties = filter(
-            lambda m: hasattr(m.fget, 'metainfo'),
-            properties)
-        return filter(isNotHidden, properties)
+        properties = [m for m in _PyHelper.classMembers(class_, mode=mode) if isinstance(m, property)]
+        properties = [m for m in properties if hasattr(m.fget, 'metainfo')]
+        return list(filter(isNotHidden, properties))
 
     @classmethod
     def classMethods(cls, class_, mode='direct'):
-        methods = filter(
+        methods = list(filter(
             inspect.ismethod,
-            _PyHelper.classMembers(class_, mode=mode))
-        return filter(isNotHidden, methods)
+            _PyHelper.classMembers(class_, mode=mode)))
+        return list(filter(isNotHidden, methods))
 
     @classmethod
     def classPropertyMetaInfo(cls, property):
@@ -136,7 +130,7 @@ def nameOf(e):
     elif hasattr(e, 'fget'):
         return e.fget.__name__
     else:
-        print('NO NAME FOR ELEMENT %s' % type(e).__name__)
+        print(('NO NAME FOR ELEMENT %s' % type(e).__name__))
         return '_NO_NAME'
         # raise NotImplementedError()
 

@@ -6,9 +6,7 @@ from modelscript.metamodels.objects import PackagableElement, Entity
 from modelscript.base.exceptions import (
     UnexpectedCase,
     MethodToBeDefined)
-class Link(PackagableElement, Entity):
-    __metaclass__ = ABCMeta
-
+class Link(PackagableElement, Entity, metaclass=ABCMeta):
     def __init__(self,
                  model, association,
                  sourceObject, targetObject,

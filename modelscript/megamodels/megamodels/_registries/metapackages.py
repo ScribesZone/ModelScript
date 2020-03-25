@@ -20,4 +20,5 @@ class _MetaPackageRegistry(object):
 
     @classmethod
     def metaPackages(cls):
-        return cls._metaPackageNamed.values()
+        #TODO:4 2to3 was cls._metaPackageNamed.values()
+        return list(cls._metaPackageNamed.values())

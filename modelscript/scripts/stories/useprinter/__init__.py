@@ -1,5 +1,5 @@
 # coding=utf-8
-from __future__ import unicode_literals, print_function, absolute_import, division
+
 from typing import Optional
 
 from modelscript.base.exceptions import (
@@ -144,7 +144,7 @@ class UseStoryPrinter(AbstractPrinter):
             '! %s.%s := %s' % (
                 step.objectName,
                 step.attributeName,
-                unicode(step.simpleValue)),
+                str(step.simpleValue)),
             indent=indent)
         return self.output
 

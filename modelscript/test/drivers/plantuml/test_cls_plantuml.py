@@ -37,9 +37,9 @@ def doBuildDiagram(filename):
     source = modelscript.scripts.classes.parser.ClassModelSource(
         fileName=filename,)
     if not source.isValid:
-        print(('##'*40+'\n')*10)
+        print((('##'*40+'\n')*10))
         print('==> IGNORING INVALID MODEL')
-        print(('##'*40+'\n')*10)
+        print((('##'*40+'\n')*10))
     else:
         obm = source.classModel
 
@@ -47,11 +47,11 @@ def doBuildDiagram(filename):
             filename,
             extension='.cls.puml')
 
-        print('TST: '+'='*80)
-        print('TST: result in %s' % puml_file_path)
-        print('TST: '+'='*80)
+        print(('TST: '+'='*80))
+        print(('TST: result in %s' % puml_file_path))
+        print(('TST: '+'='*80))
         gen = ClassPlantUMLPrinter(obm)
         gen.generate(puml_file_path, format='png' )
         print('TST: .png generated')
-        print('TST: '+'='*80)
+        print(('TST: '+'='*80))
 

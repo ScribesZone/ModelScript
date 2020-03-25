@@ -38,15 +38,15 @@ def doBuildDiagram(filename):
         taskFileName=filename,
     )
     if not source.isValid:
-        print('#'*10+' ignore invalid file  %s' % filename )
+        print(('#'*10+' ignore invalid file  %s' % filename ))
     else:
         model = source.model
         graphviz_file_path=Environment.getWorkerFileName(
             filename,
             extension='.tas.gv')
-        print('TST: '+'='*80)
-        print('TST: result in %s' % graphviz_file_path)
-        print('TST: '+'='*80)
+        print(('TST: '+'='*80))
+        print(('TST: result in %s' % graphviz_file_path))
+        print(('TST: '+'='*80))
         gen = TaskGraphvizPrinter(model)
         # print(gen.do(outputFile=puml_file_path))
         # #--- plantuml: .puml -> .svg ----------------------
@@ -54,5 +54,5 @@ def doBuildDiagram(filename):
         gen.generate(graphviz_file_path, format='png')
         # gen.generate(puml_file_path, format='svg' )
         print('TST: generated')
-        print('TST: '+'='*80)
+        print(('TST: '+'='*80))
 

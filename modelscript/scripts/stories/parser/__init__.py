@@ -16,7 +16,7 @@ Both modules call the StoryFiller to parse the subset(s) of
 the AST corresponding to the story. Parameters makes it possible
 to control a proprt subset of the (more general) language.
 """
-from __future__ import print_function
+
 from typing import Union, Text, Callable, Optional, List
 from modelscript.base.grammars import AST
 from modelscript.base.grammars import (
@@ -440,7 +440,7 @@ class StoryFiller():
                         code=icode('BAD_VALUE'),
                         astNode=astStep,
                         level=Levels.Fatal,
-                        message=e.message)
+                        message=str(e))
 
         self._is_check_needed=True
         self._check_definition_action(astStep)

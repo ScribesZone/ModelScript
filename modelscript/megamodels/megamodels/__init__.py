@@ -38,9 +38,7 @@ SourceFileDependency='SourceFileDependency'
 OptSource=Optional[ModelSourceFile]
 
 
-class MegamodelElement(object):
-    __metaclass__ = ABCMeta
-
+class MegamodelElement(object, metaclass=ABCMeta):
     @abstractproperty
     def outgoingDependencies(self):
         #type: () -> List[Dependency]

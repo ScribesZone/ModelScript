@@ -12,9 +12,7 @@ def _getNaming(o):
     return id(o)
 
 
-class Subject(object):
-    __metaclass__ = ABCMeta
-
+class Subject(object, metaclass=ABCMeta):
     @property
     def superSubjects(self):
         """ Direct parents """
@@ -72,9 +70,7 @@ class Action(object):
         return self.actionLabel
 
 
-class Resource(object):
-    __metaclass__ = abc.ABCMeta
-
+class Resource(object, metaclass=abc.ABCMeta):
     @property
     def resourceLabel(self):
         return _getNaming(self)
@@ -96,12 +92,10 @@ class Resource(object):
         return self.resourceLabel
 
 
-class SAR(object):
+class SAR(object, metaclass=ABCMeta):
     """
     Subject-Action-Resource triplet.
     """
-
-    __metaclass__ = ABCMeta
 
     def __init__(self, subject, action, resource):
         #type: (Subject, Action, Resource) -> None

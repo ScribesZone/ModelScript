@@ -57,7 +57,7 @@ class _SourceFileRegistry(object):
         Register a source. Register the model as well.
         """
         if DEBUG>=1:
-            print('RSC: registerSourceFile(%s)' % source.fileName)
+            print(('RSC: registerSourceFile(%s)' % source.fileName))
         if source.path not in cls._sourceFileByPath:
             cls._allSourceFiles.append(source)
             # ByPath

@@ -44,12 +44,11 @@ __all__ = (
 )
 
 
-class SourceFileDependency(Dependency):
+class SourceFileDependency(Dependency, metaclass=ABCMeta):
     """
     A pair of source files representing a dependency between
     these two files.
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self, importingSourceFile, importedSourceFile):
         #type: (ModelSourceFile, ModelSourceFile) -> None
@@ -192,9 +191,7 @@ class SourceImport(SourceFileDependency):
 
 
 
-class ModelDescriptor(object):
-    __metaclass__ = ABCMeta
-
+class ModelDescriptor(object, metaclass=ABCMeta):
     def __init__(self):
 
         self._modelName=None #type: Optional[Text]
@@ -288,7 +285,8 @@ class ImportBox(ModelDescriptor):
         ModelOldSourceFile.
         """
         return [
-            i for ilist in self._importsByMetamodelId.values()
+            #TODO:4 2to3 was self._importsByMetamodelId.values()
+            i for ilist in list(self._importsByMetamodelId.values())
                 for i in ilist ]
 
     def setModelInfo(self, modelName, modelKinds, modelDescription):

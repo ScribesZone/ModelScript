@@ -33,7 +33,7 @@ This merger aims to take execution results from the trace
 
 #TODO:3 add support for errors as well as corresponding test cases
 
-from __future__ import  print_function
+
 from typing import Text, Optional
 import re
 import os

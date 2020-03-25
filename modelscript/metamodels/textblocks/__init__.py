@@ -12,7 +12,7 @@ The structure of the meta elements ::
                         <|-- Reference
 
 """
-from __future__ import print_function
+
 from abc import ABCMeta
 from typing import (
     Text, Optional, List, Any)
@@ -229,12 +229,11 @@ class TextLine(SourceModelElement):
         return self.textTokens.append(token)
 
 
-class TextToken(SourceModelElement):
+class TextToken(SourceModelElement, metaclass=ABCMeta):
     """
     A TextToken is part of a TextLine. Either
     a PlainText or a Reference.
     """
-    __metaclass__ = ABCMeta
 
     def __init__(self,
                  textLine,
@@ -277,9 +276,7 @@ class PlainText(TextToken):
         self.isResolved=True
 
 
-class TextReference(TextToken):
-    __metaclass__ = ABCMeta
-
+class TextReference(TextToken, metaclass=ABCMeta):
     def __init__(self,
                  textLine,
                  text,

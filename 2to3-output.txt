@@ -1,0 +1,3823 @@
+RefactoringTool: Skipping optional fixer: buffer
+RefactoringTool: Skipping optional fixer: idioms
+RefactoringTool: Skipping optional fixer: set_literal
+RefactoringTool: Skipping optional fixer: ws_comma
+RefactoringTool: No changes to modelscript/__init__.py
+RefactoringTool: No changes to modelscript/config.py
+RefactoringTool: No changes to modelscript/base/annotations.py
+RefactoringTool: No changes to modelscript/base/brackets.py
+RefactoringTool: Refactored modelscript/base/files.py
+RefactoringTool: Refactored modelscript/base/fragments.py
+RefactoringTool: Refactored modelscript/base/grammars.py
+RefactoringTool: No changes to modelscript/base/graphs.py
+RefactoringTool: Refactored modelscript/base/issues.py
+RefactoringTool: Refactored modelscript/base/locations.py
+RefactoringTool: Refactored modelscript/base/metrics.py
+RefactoringTool: Refactored modelscript/base/modelprinters.py
+RefactoringTool: Refactored modelscript/base/preprocessors.py
+RefactoringTool: Refactored modelscript/base/printers.py
+RefactoringTool: No changes to modelscript/base/py.py
+RefactoringTool: Refactored modelscript/base/sources.py
+RefactoringTool: No changes to modelscript/base/styles.py
+RefactoringTool: No changes to modelscript/base/symbols.py
+RefactoringTool: No changes to modelscript/interfaces/environment.py
+RefactoringTool: Refactored modelscript/interfaces/modela.py
+RefactoringTool: No changes to modelscript/interfaces/modeli.py
+RefactoringTool: Refactored modelscript/interfaces/modelc/build.py
+RefactoringTool: Refactored modelscript/interfaces/modelc/options.py
+RefactoringTool: Refactored modelscript/interfaces/modelc/shell.py
+RefactoringTool: Refactored modelscript/libs/termcolor.py
+RefactoringTool: No changes to modelscript/megamodels/__init__.py
+RefactoringTool: Refactored modelscript/megamodels/checkers.py
+RefactoringTool: Refactored modelscript/megamodels/elements.py
+RefactoringTool: No changes to modelscript/megamodels/py.py
+RefactoringTool: Refactored modelscript/megamodels/sources.py
+RefactoringTool: Refactored modelscript/megamodels/dependencies/__init__.py
+RefactoringTool: No changes to modelscript/megamodels/dependencies/metamodels.py
+RefactoringTool: No changes to modelscript/megamodels/dependencies/models.py
+RefactoringTool: Refactored modelscript/megamodels/dependencies/sources.py
+RefactoringTool: Refactored modelscript/megamodels/megamodels/__init__.py
+RefactoringTool: No changes to modelscript/megamodels/megamodels/_registries/issues.py
+RefactoringTool: Refactored modelscript/megamodels/megamodels/_registries/metacheckers.py
+RefactoringTool: Refactored modelscript/megamodels/megamodels/_registries/metamodels.py
+RefactoringTool: Refactored modelscript/megamodels/megamodels/_registries/metapackages.py
+RefactoringTool: No changes to modelscript/megamodels/megamodels/_registries/models.py
+RefactoringTool: Refactored modelscript/megamodels/megamodels/_registries/sources.py
+RefactoringTool: No changes to modelscript/metamodels/__init__.py
+RefactoringTool: Refactored modelscript/metamodels/aui/__init__.py
+RefactoringTool: Refactored modelscript/metamodels/classes/__init__.py
+RefactoringTool: No changes to modelscript/metamodels/classes/assocclasses.py
+RefactoringTool: Refactored modelscript/metamodels/classes/associations.py
+RefactoringTool: No changes to modelscript/metamodels/classes/checkers.py
+RefactoringTool: Refactored modelscript/metamodels/classes/classes.py
+RefactoringTool: No changes to modelscript/metamodels/classes/core.py
+RefactoringTool: Refactored modelscript/metamodels/classes/invariants.py
+RefactoringTool: Refactored modelscript/metamodels/classes/oclchecker.py
+RefactoringTool: No changes to modelscript/metamodels/objects/copier.py
+RefactoringTool: Refactored modelscript/metamodels/objects/linkobjects.py
+RefactoringTool: Refactored modelscript/metamodels/objects/links.py
+RefactoringTool: Refactored modelscript/metamodels/objects/objects.py
+Refactored modelscript/metamodels/classes/types.py
+RefactoringTool: Refactored modelscript/metamodels/classes1/__init__.py
+RefactoringTool: Refactored modelscript/metamodels/glossaries/__init__.py
+RefactoringTool: Refactored modelscript/metamodels/objects/__init__.py
+RefactoringTool: No changes to modelscript/metamodels/objects/oclchecker.py
+RefactoringTool: Refactored modelscript/metamodels/objects/statechecker.py
+RefactoringTool: Refactored modelscript/metamodels/participants/__init__.py
+RefactoringTool: Refactored modelscript/metamodels/permissions/__init__.py
+RefactoringTool: No changes to modelscript/metamodels/permissions/accesses.py
+RefactoringTool: Refactored modelscript/metamodels/permissions/gpermissions.py
+RefactoringTool: Refactored modelscript/metamodels/permissions/sar.py
+RefactoringTool: Refactored modelscript/metamodels/projects/__init__.py
+RefactoringTool: Refactored modelscript/metamodels/qa/__init__.py
+RefactoringTool: Refactored modelscript/metamodels/qc/__init__.py
+RefactoringTool: Refactored modelscript/metamodels/relations/__init__.py
+RefactoringTool: Refactored modelscript/metamodels/stories/evaluations/__init__.py
+RefactoringTool: Refactored modelscript/metamodels/stories/evaluations/evaluator.py
+RefactoringTool: No changes to modelscript/metamodels/stories/evaluations/operations.py
+RefactoringTool: Refactored modelscript/metamodels/tasks/__init__.py
+RefactoringTool: Refactored modelscript/metamodels/textblocks/__init__.py
+RefactoringTool: Refactored modelscript/metamodels/usecases/__init__.py
+RefactoringTool: No changes to modelscript/metamodels/usecases/checkers.py
+RefactoringTool: Refactored modelscript/scripts/accesses/printer.py
+RefactoringTool: Refactored modelscript/scripts/aui/printer.py
+RefactoringTool: No changes to modelscript/scripts/aui/parser/__init__.py
+RefactoringTool: No changes to modelscript/scripts/classes/plantuml.py
+RefactoringTool: Refactored modelscript/scripts/classes/printer.py
+RefactoringTool: Refactored modelscript/scripts/classes/useprinter.py
+RefactoringTool: Refactored modelscript/scripts/classes/parser/__init__.py
+RefactoringTool: Refactored modelscript/scripts/classes1/printer.py
+RefactoringTool: No changes to modelscript/scripts/classes1/parser/__init__.py
+RefactoringTool: Refactored modelscript/scripts/glossaries/printer.py
+RefactoringTool: Refactored modelscript/scripts/glossaries/parser/__init__.py
+RefactoringTool: Refactored modelscript/scripts/megamodels/parser/__init__.py
+RefactoringTool: Refactored modelscript/scripts/megamodels/parser/statements.py
+RefactoringTool: No changes to modelscript/scripts/megamodels/printer/imports.py
+RefactoringTool: No changes to modelscript/scripts/megamodels/printer/megamodels.py
+RefactoringTool: Refactored modelscript/scripts/metamodels/parser.py
+RefactoringTool: Refactored modelscript/scripts/objects/useprinter.py
+RefactoringTool: Refactored modelscript/scripts/objects/parser/__init__.py
+RefactoringTool: Refactored modelscript/scripts/participants/printer.py
+RefactoringTool: No changes to modelscript/scripts/participants/parser/__init__.py
+RefactoringTool: Refactored modelscript/scripts/permissions/printer.py
+RefactoringTool: Refactored modelscript/scripts/permissions/parser/__init__.py
+Refactored modelscript/scripts/relations/printer.py
+RefactoringTool: No changes to modelscript/scripts/relations/parser/__init__.py
+RefactoringTool: Refactored modelscript/scripts/scenarios/printer.py
+RefactoringTool: Refactored modelscript/scripts/scenarios/parser/__init__.py
+RefactoringTool: Refactored modelscript/scripts/stories/parser/__init__.py
+RefactoringTool: Refactored modelscript/scripts/stories/printer/__init__.py
+RefactoringTool: Refactored modelscript/scripts/stories/printer/evaluation.py
+RefactoringTool: Refactored modelscript/scripts/stories/useprinter/__init__.py
+RefactoringTool: Refactored modelscript/scripts/stories/useprinter/evaluation.py
+RefactoringTool: No changes to modelscript/scripts/tasks/graphviz.py
+RefactoringTool: Refactored modelscript/scripts/tasks/printer.py
+RefactoringTool: No changes to modelscript/scripts/tasks/parser/__init__.py
+RefactoringTool: Refactored modelscript/scripts/textblocks/printer.py
+RefactoringTool: No changes to modelscript/scripts/textblocks/parser/__init__.py
+RefactoringTool: Refactored modelscript/scripts/textblocks/parser/segments.py
+RefactoringTool: No changes to modelscript/scripts/usecases/graphviz.py
+RefactoringTool: Refactored modelscript/scripts/usecases/plantuml.py
+RefactoringTool: Refactored modelscript/scripts/usecases/printer.py
+RefactoringTool: Refactored modelscript/scripts/usecases/parser/__init__.py
+RefactoringTool: Refactored modelscript/test/drivers/aui/test_aus_parser.py
+RefactoringTool: Refactored modelscript/test/drivers/base/test_graphs.py
+RefactoringTool: Refactored modelscript/test/drivers/classes/test_cls_model.py
+RefactoringTool: Refactored modelscript/test/drivers/classes/test_cls_parser.py
+RefactoringTool: Refactored modelscript/test/drivers/classes/test_cls_useprinter.py
+RefactoringTool: Refactored modelscript/test/drivers/glossaries/test_gls_parser.py
+RefactoringTool: Refactored modelscript/test/drivers/graphviz/test_tas_graphviz.py
+RefactoringTool: Refactored modelscript/test/drivers/graphviz/test_uss_graphviz.py
+RefactoringTool: Refactored modelscript/test/drivers/objects/test_obs_parser.py
+RefactoringTool: Refactored modelscript/test/drivers/objects/test_obs_useprinter.py
+RefactoringTool: Refactored modelscript/test/drivers/participants/test_pas_parser.py
+RefactoringTool: Refactored modelscript/test/drivers/permissions/test_pes_parser.py
+RefactoringTool: Refactored modelscript/test/drivers/plantuml/test_cls_plantuml.py
+RefactoringTool: Refactored modelscript/test/drivers/plantuml/test_obs_plantuml.py
+RefactoringTool: Refactored modelscript/test/drivers/plantuml/test_uss_plantuml.py
+RefactoringTool: Refactored modelscript/test/drivers/relations/test_res_parser.py
+RefactoringTool: Refactored modelscript/test/drivers/scenarios/test_scs_parser.py
+RefactoringTool: Refactored modelscript/test/drivers/tasks/test_tas_parser.py
+RefactoringTool: Refactored modelscript/test/drivers/use/test_soil_parser.py
+RefactoringTool: Refactored modelscript/test/drivers/usecases/test_uss_parser.py
+RefactoringTool: Refactored modelscript/test/framework/assertions.py
+RefactoringTool: Refactored modelscript/tools/graphviz/__init__.py
+RefactoringTool: Refactored modelscript/tools/kmade/engine/__init__.py
+RefactoringTool: Refactored modelscript/tools/plantuml/engine/__init__.py
+RefactoringTool: Refactored modelscript/tools/use/checkparser.py
+RefactoringTool: Refactored modelscript/tools/use/engine/__init__.py
+RefactoringTool: Refactored modelscript/test/framework/__init__.py
+RefactoringTool: Refactored modelscript/tools/use/engine/merger.py
+RefactoringTool: Files that were modified:
+RefactoringTool: modelscript/__init__.py
+RefactoringTool: modelscript/config.py
+RefactoringTool: modelscript/base/annotations.py
+RefactoringTool: modelscript/base/brackets.py
+RefactoringTool: modelscript/base/files.py
+RefactoringTool: modelscript/base/fragments.py
+RefactoringTool: modelscript/base/grammars.py
+RefactoringTool: modelscript/base/graphs.py
+RefactoringTool: modelscript/base/issues.py
+RefactoringTool: modelscript/base/locations.py
+RefactoringTool: modelscript/base/metrics.py
+RefactoringTool: modelscript/base/modelprinters.py
+RefactoringTool: modelscript/base/preprocessors.py
+RefactoringTool: modelscript/base/printers.py
+RefactoringTool: modelscript/base/py.py
+RefactoringTool: modelscript/base/sources.py
+RefactoringTool: modelscript/base/styles.py
+RefactoringTool: modelscript/base/symbols.py
+RefactoringTool: modelscript/interfaces/environment.py
+RefactoringTool: modelscript/interfaces/modela.py
+RefactoringTool: modelscript/interfaces/modeli.py
+RefactoringTool: modelscript/interfaces/modelc/build.py
+RefactoringTool: modelscript/interfaces/modelc/options.py
+RefactoringTool: modelscript/interfaces/modelc/shell.py
+RefactoringTool: modelscript/libs/termcolor.py
+RefactoringTool: modelscript/megamodels/__init__.py
+RefactoringTool: modelscript/megamodels/checkers.py
+RefactoringTool: modelscript/megamodels/elements.py
+RefactoringTool: modelscript/megamodels/issues.py
+RefactoringTool: modelscript/megamodels/metametamodel.py
+RefactoringTool: modelscript/megamodels/metamodels.py
+RefactoringTool: modelscript/megamodels/models.py
+RefactoringTool: modelscript/megamodels/py.py
+RefactoringTool: modelscript/megamodels/sources.py
+RefactoringTool: modelscript/megamodels/dependencies/__init__.py
+RefactoringTool: modelscript/megamodels/dependencies/metamodels.py
+RefactoringTool: modelscript/megamodels/dependencies/models.py
+RefactoringTool: modelscript/megamodels/dependencies/sources.py
+RefactoringTool: modelscript/megamodels/megamodels/__init__.py
+RefactoringTool: modelscript/megamodels/megamodels/_registries/issues.py
+RefactoringTool: modelscript/megamodels/megamodels/_registries/metacheckers.py
+RefactoringTool: modelscript/megamodels/megamodels/_registries/metamodels.py
+RefactoringTool: modelscript/megamodels/megamodels/_registries/metapackages.py
+RefactoringTool: modelscript/megamodels/megamodels/_registries/models.py
+RefactoringTool: modelscript/megamodels/megamodels/_registries/sources.py
+RefactoringTool: modelscript/metamodels/__init__.py
+RefactoringTool: modelscript/metamodels/aui/__init__.py
+RefactoringTool: modelscript/metamodels/classes/__init__.py
+RefactoringTool: modelscript/metamodels/classes/assocclasses.py
+RefactoringTool: modelscript/metamodels/classes/associations.py
+RefactoringTool: modelscript/metamodels/classes/checkers.py
+RefactoringTool: modelscript/metamodels/classes/classes.py
+RefactoringTool: modelscript/metamodels/classes/core.py
+RefactoringTool: modelscript/metamodels/classes/invariants.py
+RefactoringTool: modelscript/metamodels/classes/oclchecker.py
+RefactoringTool: modelscript/metamodels/classes/types.py
+RefactoringTool: modelscript/metamodels/classes1/__init__.py
+RefactoringTool: modelscript/metamodels/glossaries/__init__.py
+RefactoringTool: modelscript/metamodels/objects/__init__.py
+RefactoringTool: modelscript/metamodels/objects/copier.py
+RefactoringTool: modelscript/metamodels/objects/linkobjects.py
+RefactoringTool: modelscript/metamodels/objects/links.py
+RefactoringTool: modelscript/metamodels/objects/objects.py
+RefactoringTool: modelscript/metamodels/objects/oclchecker.py
+RefactoringTool: modelscript/metamodels/objects/statechecker.py
+RefactoringTool: modelscript/metamodels/participants/__init__.py
+RefactoringTool: modelscript/metamodels/permissions/__init__.py
+RefactoringTool: modelscript/metamodels/permissions/accesses.py
+RefactoringTool: modelscript/metamodels/permissions/gpermissions.py
+RefactoringTool: modelscript/metamodels/permissions/sar.py
+RefactoringTool: modelscript/metamodels/projects/__init__.py
+RefactoringTool: modelscript/metamodels/qa/__init__.py
+RefactoringTool: modelscript/metamodels/qc/__init__.py
+RefactoringTool: modelscript/metamodels/relations/__init__.py
+RefactoringTool: modelscript/metamodels/scenarios/__init__.py
+RefactoringTool: modelscript/metamodels/stories/__init__.py
+RefactoringTool: modelscript/metamodels/stories/operations.py
+RefactoringTool: modelscript/metamodels/stories/evaluations/__init__.py
+RefactoringTool: modelscript/metamodels/stories/evaluations/evaluator.py
+RefactoringTool: modelscript/metamodels/stories/evaluations/operations.py
+RefactoringTool: modelscript/metamodels/tasks/__init__.py
+RefactoringTool: modelscript/metamodels/textblocks/__init__.py
+RefactoringTool: modelscript/metamodels/usecases/__init__.py
+RefactoringTool: modelscript/metamodels/usecases/checkers.py
+RefactoringTool: modelscript/scripts/accesses/printer.py
+RefactoringTool: modelscript/scripts/aui/printer.py
+RefactoringTool: modelscript/scripts/aui/parser/__init__.py
+RefactoringTool: modelscript/scripts/classes/plantuml.py
+RefactoringTool: modelscript/scripts/classes/printer.py
+RefactoringTool: modelscript/scripts/classes/useprinter.py
+RefactoringTool: modelscript/scripts/classes/parser/__init__.py
+RefactoringTool: modelscript/scripts/classes1/printer.py
+RefactoringTool: modelscript/scripts/classes1/parser/__init__.py
+RefactoringTool: modelscript/scripts/glossaries/printer.py
+RefactoringTool: modelscript/scripts/glossaries/parser/__init__.py
+RefactoringTool: modelscript/scripts/megamodels/parser/__init__.py
+RefactoringTool: modelscript/scripts/megamodels/parser/statements.py
+RefactoringTool: modelscript/scripts/megamodels/printer/imports.py
+RefactoringTool: modelscript/scripts/megamodels/printer/megamodels.py
+RefactoringTool: modelscript/scripts/metamodels/parser.py
+RefactoringTool: modelscript/scripts/objects/plantuml.py
+RefactoringTool: modelscript/scripts/objects/printer.py
+RefactoringTool: modelscript/scripts/objects/useprinter.py
+RefactoringTool: modelscript/scripts/objects/parser/__init__.py
+RefactoringTool: modelscript/scripts/participants/printer.py
+RefactoringTool: modelscript/scripts/participants/parser/__init__.py
+RefactoringTool: modelscript/scripts/permissions/printer.py
+RefactoringTool: modelscript/scripts/permissions/parser/__init__.py
+RefactoringTool: modelscript/scripts/relations/printer.py
+RefactoringTool: modelscript/scripts/relations/parser/__init__.py
+RefactoringTool: modelscript/scripts/scenarios/printer.py
+RefactoringTool: modelscript/scripts/scenarios/parser/__init__.py
+RefactoringTool: modelscript/scripts/stories/parser/__init__.py
+RefactoringTool: modelscript/scripts/stories/printer/__init__.py
+RefactoringTool: modelscript/scripts/stories/printer/evaluation.py
+RefactoringTool: modelscript/scripts/stories/useprinter/__init__.py
+RefactoringTool: modelscript/scripts/stories/useprinter/evaluation.py
+RefactoringTool: modelscript/scripts/tasks/graphviz.py
+RefactoringTool: modelscript/scripts/tasks/printer.py
+RefactoringTool: modelscript/scripts/tasks/parser/__init__.py
+RefactoringTool: modelscript/scripts/textblocks/printer.py
+RefactoringTool: modelscript/scripts/textblocks/parser/__init__.py
+RefactoringTool: modelscript/scripts/textblocks/parser/segments.py
+RefactoringTool: modelscript/scripts/usecases/graphviz.py
+RefactoringTool: modelscript/scripts/usecases/plantuml.py
+RefactoringTool: modelscript/scripts/usecases/printer.py
+RefactoringTool: modelscript/scripts/usecases/parser/__init__.py
+RefactoringTool: modelscript/test/drivers/aui/test_aus_parser.py
+RefactoringTool: modelscript/test/drivers/base/test_graphs.py
+RefactoringTool: modelscript/test/drivers/classes/test_cls_model.py
+RefactoringTool: modelscript/test/drivers/classes/test_cls_parser.py
+RefactoringTool: modelscript/test/drivers/classes/test_cls_useprinter.py
+RefactoringTool: modelscript/test/drivers/glossaries/test_gls_parser.py
+RefactoringTool: modelscript/test/drivers/graphviz/test_tas_graphviz.py
+RefactoringTool: modelscript/test/drivers/graphviz/test_uss_graphviz.py
+RefactoringTool: modelscript/test/drivers/kmade/test_kmade.py
+RefactoringTool: modelscript/test/drivers/megamodels/test_metamodel_graph.py
+RefactoringTool: modelscript/test/drivers/modelc/test_modelc.py
+RefactoringTool: modelscript/test/drivers/objects/test_obs_model.py
+RefactoringTool: modelscript/test/drivers/objects/test_obs_parser.py
+RefactoringTool: modelscript/test/drivers/objects/test_obs_useprinter.py
+RefactoringTool: modelscript/test/drivers/participants/test_pas_parser.py
+RefactoringTool: modelscript/test/drivers/permissions/test_pes_parser.py
+RefactoringTool: modelscript/test/drivers/plantuml/test_cls_plantuml.py
+RefactoringTool: modelscript/test/drivers/plantuml/test_obs_plantuml.py
+RefactoringTool: modelscript/test/drivers/plantuml/test_uss_plantuml.py
+RefactoringTool: modelscript/test/drivers/relations/test_res_parser.py
+RefactoringTool: modelscript/test/drivers/scenarios/test_scs_parser.py
+RefactoringTool: modelscript/test/drivers/tasks/test_tas_parser.py
+RefactoringTool: modelscript/test/drivers/use/test_soil_parser.py
+RefactoringTool: modelscript/test/drivers/usecases/test_uss_parser.py
+RefactoringTool: modelscript/test/framework/__init__.py
+RefactoringTool: modelscript/test/framework/assertions.py
+RefactoringTool: modelscript/tools/graphviz/__init__.py
+RefactoringTool: modelscript/tools/kmade/engine/__init__.py
+RefactoringTool: modelscript/tools/plantuml/engine/__init__.py
+RefactoringTool: modelscript/tools/use/checkparser.py
+RefactoringTool: modelscript/tools/use/engine/__init__.py
+RefactoringTool: modelscript/tools/use/engine/merger.py
+RefactoringTool: Refactored modelscript/megamodels/issues.py
+RefactoringTool: Refactored modelscript/megamodels/metametamodel.py
+RefactoringTool: No changes to modelscript/megamodels/metamodels.py
+RefactoringTool: Refactored modelscript/megamodels/models.py
+RefactoringTool: Refactored modelscript/metamodels/scenarios/__init__.py
+RefactoringTool: Refactored modelscript/metamodels/stories/__init__.py
+RefactoringTool: Refactored modelscript/metamodels/stories/operations.py
+RefactoringTool: Refactored modelscript/scripts/objects/plantuml.py
+RefactoringTool: Refactored modelscript/scripts/objects/printer.py
+RefactoringTool: Refactored modelscript/test/drivers/kmade/test_kmade.py
+RefactoringTool: Refactored modelscript/test/drivers/megamodels/test_metamodel_graph.py
+RefactoringTool: Refactored modelscript/test/drivers/modelc/test_modelc.py
+RefactoringTool: Refactored modelscript/test/drivers/objects/test_obs_model.py
+    --- modelscript/base/files.py	(original)
+    +++ modelscript/base/files.py	(refactored)
+    @@ -117,7 +117,7 @@
+         :param suffix: a string or a list of string serving as suffixes
+         :return: the lst of filenames ending with the suffix(es)
+         """
+    -    if isinstance(suffix,basestring):
+    +    if isinstance(suffix,str):
+             suffixes=[suffix]
+         else:
+             suffixes=suffix
+    --- modelscript/base/fragments.py	(original)
+    +++ modelscript/base/fragments.py	(refactored)
+    @@ -104,11 +104,10 @@
+     from abc import ABCMeta, abstractmethod
+
+
+    -class Fragmenter(object):
+    +class Fragmenter(object, metaclass=ABCMeta):
+         """
+         Abstract base class for fragmenters.
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self, sequence, mainValue=None, firstPosition=1 ):
+             """
+    --- modelscript/base/grammars.py	(original)
+    +++ modelscript/base/grammars.py	(refactored)
+    @@ -1,4 +1,4 @@
+    -from __future__  import print_function
+    +
+     import os
+     import sys
+     import re
+    --- modelscript/base/issues.py	(original)
+    +++ modelscript/base/issues.py	(refactored)
+    @@ -126,12 +126,12 @@
+             self.origin._issueBox._add(self)
+
+             if DEBUG>=1:
+    -            print('ISS: ****NEW %s%s IN %s **** -> %s'  % (
+    +            print(('ISS: ****NEW %s%s IN %s **** -> %s'  % (
+                     type(self).__name__,
+                     '' if self.code is None else ':'+self.code,
+                     self.origin._issueBox.label,
+    -                unicode(self)
+    -            ))
+    +                str(self)
+    +            )))
+
+             if level==Levels.Fatal:
+                 # Raise a real exception for Fatal issue so that
+    @@ -186,12 +186,12 @@
+             if pattern is None:
+                 pattern=(
+                     Annotations.prefix
+    -                + u'{kind}:{level}:{origin}:{message}')
+    +                + '{kind}:{level}:{origin}:{message}')
+             text=pattern.format(
+                 origin=self.originLabel,
+                 level=self.level.str(),
+                 kind=self.kind,
+    -            location=u'-',
+    +            location='-',
+                 line='-',
+                 message=self.message
+             )
+    @@ -321,12 +321,12 @@
+             if pattern is None:
+                 pattern=(
+                     Annotations.prefix
+    -                + u'{kind}:{level}:{origin}:{line}:{message}')
+    +                + '{kind}:{level}:{origin}:{line}:{message}')
+             text=pattern.format(
+                 origin=self.location.sourceFile.basename,
+                 level=self.level.str(),
+                 kind=self.kind,
+    -            line=unicode(self.location.line),
+    +            line=str(self.location.line),
+                 message=self.message
+             )
+             return self.level.style.do(
+    @@ -386,9 +386,9 @@
+             """
+
+             if DEBUG>=1:
+    -            print(u'ISS: New issue box for %s -> %s' % (
+    +            print(('ISS: New issue box for %s -> %s' % (
+                     type(self.origin).__name__,
+    -                self.label))
+    +                self.label)))
+
+         def _add(self, issue):
+             #type: (Issue) -> None
+    @@ -412,9 +412,9 @@
+             if not issueBox in self.parents:
+                 self.parents.append(issueBox)
+                 if DEBUG >= 1:
+    -                print(u'ISS: Add parent "%s" -> "%s"' % (
+    +                print(('ISS: Add parent "%s" -> "%s"' % (
+                             self.label,
+    -                        issueBox.label))
+    +                        issueBox.label)))
+
+         def at(self, lineNo, parentsFirst=True):
+             """
+    @@ -533,17 +533,17 @@
+         @property
+         def summaryLine(self):
+
+    -        def times(n, word, pattern=u'%i %s'):
+    +        def times(n, word, pattern='%i %s'):
+                 if n==0:
+                     return ''
+                 else:
+                     return (pattern % (
+                         n,
+    -                    word + (u's' if n>=2 else u'')
+    +                    word + ('s' if n>=2 else '')
+                     ))
+
+             if self.nb==0:
+    -            return u''
+    +            return ''
+             level_msgs=[]
+             m=self.summaryLevelMap
+             for l in m:
+    @@ -554,9 +554,9 @@
+             if len(level_msgs)==1:
+                 text=level_msgs[0]
+             else:
+    -            text= u'%s (%s
+        )' % (
+    -                    times(self.nb, u'Issue'),
+    -                    u', '.join(level_msgs)
+    +            text= '%s (%s)' % (
+    +                    times(self.nb, 'Issue'),
+    +                    ', '.join(level_msgs)
+                     )
+             return Annotations.fullLine(text)
+
+    @@ -576,7 +576,7 @@
+                 +self.summaryLine+'\n'
+                 +(Annotations.full if annotations else '')
+                     if summary else '')
+    -        return '\n'.join(filter(None,(
+    +        return '\n'.join([_f for _f in (
+                 [header]
+                 + [
+                     i.str(
+    @@ -584,7 +584,7 @@
+                         pattern=pattern,
+                         prefix='')
+                     for i in self.select(level,op)]
+    -            + [Annotations.full+'\n' if annotations else ''])))
+    +            + [Annotations.full+'\n' if annotations else '']) if _f])
+
+         def __str__(self):
+             return self.str()
+    @@ -633,9 +633,7 @@
+             return sum(box.nb for box in self.issueBoxes)
+
+
+    -class WithIssueList(object):
+    -    __metaclass__ = ABCMeta
+    -
+    +class WithIssueList(object, metaclass=ABCMeta):
+         def __init__(self, parents=()):
+             #type: (List[IssueBox]) -> None
+             assert(isinstance(parents, (list, tuple)))
+    --- modelscript/base/locations.py	(original)
+    +++ modelscript/base/locations.py	(refactored)
+    @@ -2,9 +2,7 @@
+     from abc import ABCMeta, abstractmethod
+     from typing import Optional, Text
+
+    -class Location(object):
+    -    __metaclass__ = ABCMeta
+    -
+    +class Location(object, metaclass=ABCMeta):
+         def __init__(self):
+             pass
+
+    @@ -39,9 +37,9 @@
+             if self.fileName is not None:
+                 _.append(self.fileName)
+             if self.line is not None:
+    -            _.append(unicode(self.line))
+    +            _.append(str(self.line))
+             if self.column is not None and self.line is not None:
+    -            _.append(unicode(self.line))
+    +            _.append(str(self.line))
+             return ':'.join(_)
+
+         def __str__(self):
+    --- modelscript/base/metrics.py	(original)
+    +++ modelscript/base/metrics.py	(refactored)
+    @@ -21,7 +21,7 @@
+                 return ('1', self.label)
+             else:
+                 return (
+    -                unicode(self.n),
+    +                str(self.n),
+                     self.plural if self.plural is not None
+                                 else self.label+'s')
+
+    @@ -40,7 +40,7 @@
+
+         @property
+         def all(self):
+    -        _=self.metricNamed.values()
+    +        _=list(self.metricNamed.values())
+             return _
+
+         def add(self, metric):
+    @@ -82,15 +82,15 @@
+         def collect(self, elements):
+             #type: (List[Any])->Metrics
+             for e in elements:
+    -            print('CC'*15, type(e))
+    -            print('CC'*15, 'metrics' in dir(e))
+    +            print(('CC'*15, type(e)))
+    +            print(('CC'*15, 'metrics' in dir(e)))
+             metrics_list=[
+                 e.metrics for e in elements
+                 # hasattr does not work
+                 # see
+                 if 'metrics' in dir(e)]
+             self.addMetricsList(metrics_list)
+    -        print('CC'*10, len(elements), len(metrics_list))
+    +        print(('CC'*10, len(elements), len(metrics_list)))
+
+             return self
+
+    @@ -99,7 +99,7 @@
+
+         def __str__(self):
+             return ''.join(
+    -            [unicode(m)+'\n' for m in self.all])
+    +            [str(m)+'\n' for m in self.all])
+
+         def __repr__(self):
+             return 'Metrics(%s)' % \
+    --- modelscript/base/modelprinters.py	(original)
+    +++ modelscript/base/modelprinters.py	(refactored)
+    @@ -2,7 +2,7 @@
+     """
+     Base classes for printers and string/color utilities.
+     """
+    -from __future__ import unicode_literals, print_function, absolute_import, division
+    +
+     from abc import ABCMeta
+     from typing import Optional
+
+    @@ -57,9 +57,7 @@
+         )
+
+
+    -class ModelPrinter(ContentPrinter):
+    -    __metaclass__ = ABCMeta
+    -
+    +class ModelPrinter(ContentPrinter, metaclass=ABCMeta):
+         def __init__(self,
+                      theModel,
+                      config=None):
+    @@ -162,9 +160,7 @@
+             )
+
+
+    -class ModelSourcePrinter(ContentPrinter):
+    -    __metaclass__ = ABCMeta
+    -
+    +class ModelSourcePrinter(ContentPrinter, metaclass=ABCMeta):
+
+   def __init__(self,
+                  theSource,
+                  config=None):
+    @@ -226,7 +222,7 @@
+             super(ModelSourcePrinter, self).doSummary()
+             self.out(
+                 Styles.comment.do(
+    -                unicode(self.theSource.fullMetrics),
+    +                str(self.theSource.fullMetrics),
+                     self.config.styled)
+             )
+             return self.output
+    --- modelscript/base/preprocessors.py	(original)
+    +++ modelscript/base/preprocessors.py	(refactored)
+    @@ -1,7 +1,7 @@
+     # coding=utf-8
+
+
+    -from __future__ import unicode_literals, print_function, absolute_import, division
+    +
+
+     from abc import abstractmethod, ABCMeta
+     from typing import Text, Optional, List
+    @@ -22,9 +22,7 @@
+     #  Line transfos
+     #-----------------------------------------------------
+
+    -class Transfo(object):
+    -    __metaclass__ = ABCMeta
+    -
+    +class Transfo(object, metaclass=ABCMeta):
+         def __init__(self, stop=False):
+             self.stop=stop
+             """ Indicate if other transformations are applied after this one """
+    --- modelscript/base/printers.py	(original)
+    +++ modelscript/base/printers.py	(refactored)
+    @@ -2,7 +2,7 @@
+     """
+     Base classes for printers and string/color utilities.
+     """
+    -from __future__ import unicode_literals, print_function, absolute_import, division
+    +
+
+     from abc import ABCMeta, abstractmethod
+
+    @@ -90,9 +90,7 @@
+         default=AbstractPrinterConfig()
+
+
+    -class AbstractPrinter(object):
+    -    __metaclass__ = ABCMeta
+    -
+    +class AbstractPrinter(object, metaclass=ABCMeta):
+         def __init__(self, config=None):
+             #type: (Optional[AbstractPrinterConfig]) -> None
+             if config is None:
+    @@ -247,7 +245,7 @@
+         default=StructuredPrinterConfig()
+
+
+    -class StructuredPrinter(AbstractPrinter):
+    +class StructuredPrinter(AbstractPrinter, metaclass=ABCMeta):
+         """
+         A printer with different predefined zones
+         (top, body, bottom) with predefined nested zone
+    @@ -267,7 +265,6 @@
+                 doIssueSummary
+                 doBottomTitle
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self,
+                      config=None):
+    @@ -447,9 +444,7 @@
+         default=ContentPrinterConfig()
+
+
+    -class ContentPrinter(StructuredPrinter):
+    -    __metaclass__ = ABCMeta
+    -
+    +class ContentPrinter(StructuredPrinter, metaclass=ABCMeta):
+         def __init__(self,
+                      config=None):
+             #type: (Optional[ContentPrinterConfig]) -> None
+    --- modelscript/base/sources.py	(original)
+    +++ modelscript/base/sources.py	(refactored)
+    @@ -28,11 +28,10 @@
+     from modelscript.megamodels.issues import WithIssueModel
+
+
+    -class SourceElement(object):
+    +class SourceElement(object, metaclass=ABCMeta):
+         """
+         Element of a source file.
+         """
+    -    __metaclass__ = ABCMeta
+         def __init__(self,
+                      name=None,
+                      astNode=None,
+    @@ -45,13 +44,12 @@
+
+
+
+    -class SourceFile(WithIssueModel):  # TODO:3 should be WithIssueList
+    +class SourceFile(WithIssueModel, metaclass=abc.ABCMeta):  # TODO:3 should be WithIssueList
+         """
+         A source file seen as as sequence of lines.
+         Subclasses may add more elements such as a Model.
+         The source file may contains some list of errors.
+         """
+    -    __metaclass__ = abc.ABCMeta
+
+         def __init__(self, fileName):
+             #type: (Text) -> None
+    --- modelscript/interfaces/modela.py	(original)
+    +++ modelscript/interfaces/modela.py	(refactored)
+    @@ -6,7 +6,7 @@
+     It first remove the annotations from the file given, then process
+     the file.
+     """
+    -from __future__ import print_function
+    +
+     import os
+     import sys
+     import traceback
+    @@ -93,7 +93,7 @@
+         source = Megamodel.loadFile(filename)
+     except Exception as e:
+         traceback.print_exc(e)
+    -    print(unicode(e))
+    +    print(str(e))
+
+     # annotated the source
+     #TODO:2 Find the class AnnotatedSourcePrinter
+    --- modelscript/interfaces/modelc/build.py	(original)
+    +++ modelscript/interfaces/modelc/build.py	(refactored)
+    @@ -41,16 +41,16 @@
+                 +[self])
+
+         def _displayVersion(self):
+    -        print('ModelScript - version %s' % Megamodel.model.version)
+    +        print(('ModelScript - version %s' % Megamodel.model.version))
+
+
+       def _processSource(self, path):
+             if os.path.isdir(path):
+                 extensions=Megamodel.model.metamodelExtensions()
+                 filenames=filesInTree(path, suffix=extensions)
+                 if self.options.verbose:
+    -                print('%s/  %i model files found.'
+    -                      % (path, len(filenames)))
+    -                print('    '+'\n    '.join(filenames))
+    +                print(('%s/  %i model files found.'
+    +                      % (path, len(filenames))))
+    +                print(('    '+'\n    '.join(filenames)))
+                 for filename in filenames:
+                     self._processSource(filename)
+             else:
+    @@ -64,11 +64,11 @@
+                 self._displayVersion()
+
+             #--- deal with --mode ---------------------------------------------
+    -        print(
+    +        print((
+                 {'justAST':'Checking syntax',
+                  'justASTDep':'Checking syntax and dependencies',
+                  'full':'Checking models'}
+    -            [self.options.mode] )
+    +            [self.options.mode] ))
+             Megamodel.analysisLevel=self.options.mode
+
+             #--- deal with source files or source dir
+    @@ -78,7 +78,7 @@
+         @property
+         def validSourceFiles(self):
+             return (
+    -            s for s in self.sourceMap.values()
+    +            s for s in list(self.sourceMap.values())
+                 if s is not None)
+
+         @property
+    @@ -100,7 +100,7 @@
+
+         def display(self, styled=True):
+             # print(self.issueBoxList.nbIssues)
+    -        print(self.issueBoxList.str(styled=styled))
+    +        print((self.issueBoxList.str(styled=styled)))
+             # displayIssueBoxContainers(
+             #     self.allSourceFileList+[self]
+             # )
+    --- modelscript/interfaces/modelc/options.py	(original)
+    +++ modelscript/interfaces/modelc/options.py	(refactored)
+    @@ -111,7 +111,7 @@
+             val = getattr(options, parameter)
+             if val is not None:
+                 # update config only if value is specified
+    -            print('%s(%s)=%s' % (configOption, parameter, val))
+    +            print(('%s(%s)=%s' % (configOption, parameter, val)))
+                 setattr(Config, configOption, val)
+
+     def getOptions(args):
+    --- modelscript/interfaces/modelc/shell.py	(original)
+    +++ modelscript/interfaces/modelc/shell.py	(refactored)
+    @@ -26,7 +26,7 @@
+     except Exception as ex:
+         title = ' SYSTEM ERROR in %s '
+         cprint(title.center(80, '!'), 'red')
+    -    cprint(unicode(ex), 'red')
+    +    cprint(str(ex), 'red')
+         traceback.print_exc(ex)
+         cprint('!' * 80, 'red')
+
+    --- modelscript/libs/termcolor.py	(original)
+    +++ modelscript/libs/termcolor.py	(refactored)
+    @@ -28,7 +28,7 @@
+
+     """ANSII Color formatting for output in terminal."""
+
+    -from __future__ import print_function
+    +
+     import os
+
+
+    --- modelscript/megamodels/checkers.py	(original)
+    +++ modelscript/megamodels/checkers.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     from typing import Dict, List
+     import collections
+     from abc import ABCMeta, abstractmethod
+    @@ -72,9 +72,7 @@
+                     print('-> []')
+
+
+    -class Checker(object):
+    -    __metaclass__ = ABCMeta
+    -
+    +class Checker(object, metaclass=ABCMeta):
+         def __init__(self, **params):
+             # type : (List['MetaClass'], Text, Level, Optional[Dict[Text, Any]]) -> None
+             self.params=params
+    @@ -103,9 +101,7 @@
+             pass
+
+
+    -class NamingChecker(Checker):
+    -    __metaclass__ = ABCMeta
+    -
+    +class NamingChecker(Checker, metaclass=ABCMeta):
+         def __init__(self, fun, namingName, **params):
+             Checker.__init__(self, **params)
+             self.fun=fun
+    @@ -127,9 +123,7 @@
+             return e
+
+
+    -class LimitsChecker(Checker):
+    -    __metaclass__ = ABCMeta
+    -
+    +class LimitsChecker(Checker, metaclass=ABCMeta):
+         def __init__(self, label, **params):
+             Checker.__init__(self, label=label, **params)
+             self.label=label
+    --- modelscript/megamodels/elements.py	(original)
+    +++ modelscript/megamodels/elements.py	(refactored)
+    @@ -14,11 +14,10 @@
+         CheckList
+     )
+
+    -class SourceElement(object):
+    +class SourceElement(object, metaclass=ABCMeta):
+         """
+         Element of a source file.
+      """
+    -    __metaclass__ = ABCMeta
+         def __init__(self,
+                      name=None,
+                      astNode=None,
+    @@ -49,9 +48,7 @@
+
+
+
+    -class ModelElement(object):
+    -    __metaclass__ = ABCMeta
+    -
+    +class ModelElement(object, metaclass=ABCMeta):
+         def __init__(self, model):
+             assert model is not None
+             self._model=model
+    @@ -73,7 +70,7 @@
+
+         @property
+         def descriptors(self):
+    -        return self.descriptorNamed.values()
+    +        return list(self.descriptorNamed.values())
+
+         @model.setter
+         def model(self, model):
+    @@ -98,10 +95,7 @@
+
+
+
+    -class SourceModelElement(ModelElement, SourceElement):
+    -    __metaclass__ = ABCMeta
+    -
+    -
+    +class SourceModelElement(ModelElement, SourceElement, metaclass=ABCMeta):
+         def __init__(self,
+                      model,
+                      name=None,
+    --- modelscript/megamodels/issues.py	(original)
+    +++ modelscript/megamodels/issues.py	(refactored)
+    @@ -33,7 +33,7 @@
+                 locationElement if locationElement is not None
+                 else modelElement)
+             if DEBUG>=2:
+    -            print('ISM: %s ' % self.locationElement)
+    +            print(('ISM: %s ' % self.locationElement))
+             #type: 'ModelElement'
+             if hasattr(self.locationElement, 'lineNo'):
+                 line_no=self.locationElement.lineNo
+    @@ -41,7 +41,7 @@
+                 line_no=None
+             if line_no is None:
+                 if DEBUG>=1:
+    -                print('ISM: Unlocated Model Issue %s' % message)
+    +                print(('ISM: Unlocated Model Issue %s' % message))
+                 issue=Issue(
+                     origin=modelElement.model,
+                     code=code,
+    @@ -49,9 +49,9 @@
+                     message=message)
+             else:
+                 if DEBUG>=1:
+    -                print('ISM: Localized Model Issue at %s %s' % (
+    +                print(('ISM: Localized Model Issue at %s %s' % (
+                         line_no,
+    -                    message))
+    +                    message)))
+                 issue=LocalizedSourceIssue(
+                     code=code,
+                     sourceFile=self.locationElement.model.source,
+    @@ -105,9 +105,7 @@
+         #     )
+
+
+    -class WithIssueModel(WithIssueList):
+    -    __metaclass__ = ABCMeta
+    -
+    +class WithIssueModel(WithIssueList, metaclass=ABCMeta):
+         def __init__(self, parents=()):
+             #type: (List[IssueBox]) -> None
+             super(WithIssueModel, self).__init__(parents=parents)
+    --- modelscript/megamodels/metametamodel.py	(original)
+    +++ modelscript/megamodels/metametamodel.py	(refactored)
+    @@ -25,7 +25,7 @@
+             super(MetaPackage, self).__init__(qname=qname)
+             self.pyPackageName = 'modelscript.metamodels.' + qname
+             if DEBUG>=1:
+    -            print('MM3: import metapackage %s' % self.pyPackageName)
+    +            print(('MM3: import metapackage %s' % self.pyPackageName))
+             self.pyModule=importlib.import_module(
+                 self.pyPackageName)
+             #type: types.ModuleType
+    @@ -42,7 +42,7 @@
+             super(MetaCheckerPackage, self).__init__(qname=qname)
+             self.pyPackageName = 'modelscript.metamodels.' + qname
+             if DEBUG>=1:
+    -            print('MM3: import metacheckerpackage %s' % self.pyPackageName)
+    +            print(('MM3: import metacheckerpackage %s' % self.pyPackageName))
+             self.pyModule=importlib.import_module(
+                 self.pyPackageName)
+             #type: types.ModuleType
+    @@ -73,20 +73,18 @@
+
+         @property
+         def metaAttributes(self):
+    -        return self.metaAttributeNamed.values()
+    +        return list(self.metaAttributeNamed.values())
+
+         @property
+         def metaReferences(self):
+    -        return self.metaReferenceNamed.values()
+    +        return list(self.metaReferenceNamed.values())
+
+         @property
+         def metaOperations(self):
+    -        return self.metaOperationNamed.values()
+    +        return list(self.metaOperationNamed.values())
+
+
+    -class MetaFeature(MetaModelElement):
+    -    __metaclass__ = abc.ABCMeta
+    -
+    +class MetaFeature(MetaModelElement, metaclass=abc.ABCMeta):
+         def __init__(self, qname, metaClass, pyMethod):
+             super(MetaFeature, self).__init__(qname)
+
+
+
+    --- modelscript/megamodels/models.py	(original)
+    +++ modelscript/megamodels/models.py	(refactored)
+    @@ -41,7 +41,7 @@
+         MegamodelElement,
+         ModelElement,
+         WithIssueModel,
+    -    WithTextBlocks):
+    +    WithTextBlocks, metaclass=abc.ABCMeta):
+         """
+         The root class for all models.
+
+    @@ -56,7 +56,6 @@
+           The _issueBox has as a parent the sourceFile'
+           issue box if any.
+         """
+    -    __metaclass__ = abc.ABCMeta
+
+         def __init__(self):
+             #type: () -> None
+    @@ -156,13 +155,13 @@
+             """
+             if DEBUG>=1:
+                 _=(' RESOLVE MODEL'+self.label+' ').center(70, '.')
+    -            print('MOD: '+_)
+    +            print(('MOD: '+_))
+             self.resolveTextBlocks()
+
+         def finalize(self):
+             if DEBUG>=1:
+                 _=(' FINALIZE MODEL'+self.label+' ').center(70, '.')
+    -            print('MOD: '+_)
+    +            print(('MOD: '+_))
+             self.check()
+
+         def str( self,
+    --- modelscript/megamodels/sources.py	(original)
+    +++ modelscript/megamodels/sources.py	(refactored)
+    @@ -46,7 +46,7 @@
+     )
+
+
+    -class ASTBasedModelSourceFile(SourceFile):
+    +class ASTBasedModelSourceFile(SourceFile, metaclass=ABCMeta):
+
+         """
+         A source file with a model, and an AST.
+    @@ -58,7 +58,6 @@
+         * an importBox and
+         * an AST
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self,
+                      fileName,
+    --- modelscript/megamodels/dependencies/__init__.py	(original)
+    +++ modelscript/megamodels/dependencies/__init__.py	(refactored)
+    @@ -7,9 +7,7 @@
+
+
+     MegamodelElement='MegamodelElement'
+    -class Dependency(object):
+    -    __metaclass__ = ABCMeta
+    -
+    +class Dependency(object, metaclass=ABCMeta):
+         @abstractproperty
+         def source(self):
+             #type: () -> MegamodelElement
+    --- modelscript/megamodels/dependencies/sources.py	(original)
+    +++ modelscript/megamodels/dependencies/sources.py	(refactored)
+    @@ -44,12 +44,11 @@
+     )
+
+
+    -class SourceFileDependency(Dependency):
+    +class SourceFileDependency(Dependency, metaclass=ABCMeta):
+         """
+         A pair of source files representing a dependency between
+         these two files.
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self, importingSourceFile, importedSourceFile):
+             #type: (ModelSourceFile, ModelSourceFile) -> None
+    @@ -192,9 +191,7 @@
+
+
+
+    -class ModelDescriptor(object):
+    -    __metaclass__ = ABCMeta
+    -
+    +class ModelDescriptor(object, metaclass=ABCMeta):
+         def __init__(self):
+
+             self._modelName=None #type: Optional[Text]
+    @@ -288,7 +285,7 @@
+             ModelOldSourceFile.
+             """
+             return [
+    -            i for ilist in self._importsByMetamodelId.values()
+    +            i for ilist in list(self._importsByMetamodelId.values())
+                     for i in ilist ]
+
+         def setModelInfo(self, modelName, modelKinds, modelDescription):
+    --- modelscript/megamodels/megamodels/__init__.py	(original)
+    +++ modelscript/megamodels/megamodels/__init__.py	(refactored)
+    @@ -38,9 +38,7 @@
+     OptSource=Optional[ModelSourceFile]
+
+
+    -class MegamodelElement(object):
+    -    __metaclass__ = ABCMeta
+    -
+    +class MegamodelElement(object, metaclass=ABCMeta):
+         @abstractproperty
+         def outgoingDependencies(self):
+             #type: () -> List[Dependency]
+    --- modelscript/megamodels/megamodels/_registries/metacheckers.py	(original)
+    +++ modelscript/megamodels/megamodels/_registries/metacheckers.py	(refactored)
+    @@ -20,4 +20,4 @@
+
+         @classmethod
+         def metaCheckerPackages(cls):
+    -        return cls._metaCheckerPackageNamed.values()
+    +        return list(cls._metaCheckerPackageNamed.values())
+    --- modelscript/megamodels/megamodels/_registries/metamodels.py	(original)
+    +++ modelscript/megamodels/megamodels/_registries/metamodels.py	(refactored)
+    @@ -73,7 +73,7 @@
+             """
+             List all registered metamodels.
+             """
+    -        return cls._metamodelById.values()
+    +        return list(cls._metamodelById.values())
+
+         @classmethod
+         def metamodelExtensions(cls):
+    @@ -81,7 +81,7 @@
+             """
+             List all registered extensions.
+             """
+    -        return cls._metamodelByExtension.keys()
+    +        return list(cls._metamodelByExtension.keys())
+
+     @classmethod
+     def theMetamodel(cls, id=None, label=None, ext=None):
+
+    --- modelscript/megamodels/megamodels/_registries/metapackages.py	(original)
+    +++ modelscript/megamodels/megamodels/_registries/metapackages.py	(refactored)
+    @@ -20,4 +20,4 @@
+
+         @classmethod
+         def metaPackages(cls):
+    -        return cls._metaPackageNamed.values()
+    +        return list(cls._metaPackageNamed.values())
+    --- modelscript/megamodels/megamodels/_registries/sources.py	(original)
+    +++ modelscript/megamodels/megamodels/_registries/sources.py	(refactored)
+    @@ -57,7 +57,7 @@
+             Register a source. Register the model as well.
+             """
+             if DEBUG>=1:
+    -            print('RSC: registerSourceFile(%s)' % source.fileName)
+    +            print(('RSC: registerSourceFile(%s)' % source.fileName))
+             if source.path not in cls._sourceFileByPath:
+                 cls._allSourceFiles.append(source)
+                 # ByPath
+    --- modelscript/metamodels/aui/__init__.py	(original)
+    +++ modelscript/metamodels/aui/__init__.py	(refactored)
+    @@ -73,7 +73,7 @@
+         @property
+         def spaces(self):
+             #type: () -> List[Space]
+    -        return self._spaceNamed.values()
+    +        return list(self._spaceNamed.values())
+
+         @property
+         def metrics(self):
+    --- modelscript/metamodels/classes/__init__.py	(original)
+    +++ modelscript/metamodels/classes/__init__.py	(refactored)
+    @@ -33,7 +33,7 @@
+         <|--  Enumeration
+
+     """
+    -from __future__ import print_function
+    +
+
+     import abc
+     import collections
+    @@ -201,11 +201,11 @@
+
+         @property
+         def packages(self):
+    -        return self._packageNamed.values()
+    +        return list(self._packageNamed.values())
+
+         @property
+         def packageNames(self):
+    -        return self._packageNamed.keys()
+    +        return list(self._packageNamed.keys())
+
+         def package(self, name):
+             if name in self._packageNamed:
+    @@ -225,19 +225,19 @@
+
+         @property
+         def simpleTypes(self):
+    -        return self.simpleTypeNamed.values()
+    +        return list(self.simpleTypeNamed.values())
+
+         @property
+         def simpleTypeNames(self):
+    -        return self.simpleTypeNamed.keys()
+    +        return list(self.simpleTypeNamed.keys())
+
+         @MComposition('DataType[*] inv model')
+         def dataTypes(self):
+    -        return self._dataTypeNamed.values()
+    +        return list(self._dataTypeNamed.values())
+
+         @property
+         def dataTypeNames(self):
+    -        return self._dataTypeNamed.keys()
+    +        return list(self._dataTypeNamed.keys())
+
+         def dataType(self, name):
+             if name in self._dataTypeNamed:
+    @@ -247,11 +247,11 @@
+
+         @property
+         def enumerations(self):
+    -        return self._enumerationNamed.values()
+    +        return list(self._enumerationNamed.values())
+
+         @property
+         def enumerationNames(self):
+    -        return self._enumerationNamed.keys()
+    +        return list(self._enumerationNamed.keys())
+
+         def enumeration(self, name):
+             if name in self._enumerationNamed:
+    @@ -265,11 +265,11 @@
+
+         @property
+         def plainClasses(self):
+    -        return self._plainClassNamed.values()
+    +        return list(self._plainClassNamed.values())
+
+         @property
+         def plainClassNames(self):
+    -        return self._plainClassNamed.keys()
+    +        return list(self._plainClassNamed.keys())
+
+         def plainClass(self, name):
+             if name in self._plainClassNamed:
+    @@ -301,11 +301,11 @@
+
+         @property
+         def plainAssociations(self):
+    -        return self._plainAssociationNamed.values()
+    +        return list(self._plainAssociationNamed.values())
+
+         @property
+         def plainAssociationNames(self):
+    -        return self._plainAssociationNamed.keys()
+    +        return list(self._plainAssociationNamed.keys())
+
+         def plainAssociation(self, name):
+             if name in self._plainAssociationNamed:
+    @@ -337,11 +337,11 @@
+
+         @property
+         def associationClasses(self):
+    -        return self._associationClassNamed.values()
+    +        return list(self._associationClassNamed.values())
+
+         @property
+         def associationClassNames(self):
+    -        return self._associationClassNamed.keys()
+    +        return list(self._associationClassNamed.keys())
+
+
+         def associationClass(self, name):
+             if name in self._associationClassNamed:
+
+    @@ -355,11 +355,11 @@
+
+         @property
+         def invariants(self):
+    -        return self._invariantNamed.values()
+    +        return list(self._invariantNamed.values())
+
+         @property
+         def invariantNames(self):
+    -        return self._invariantNamed.keys()
+    +        return list(self._invariantNamed.keys())
+
+         def invariant(self, name):
+             if name in self._invariantNamed:
+    @@ -523,9 +523,9 @@
+                             # if the attribute was already inherited
+                             # do not care.
+                             # Otherwise prepare to add it
+    -                        if sc_att not in inh_att_named.values():
+    +                        if sc_att not in list(inh_att_named.values()):
+                                 name=sc_att.name
+    -                            if name in inh_att_named.keys():
+    +                            if name in list(inh_att_named.keys()):
+                                     # two inherited attribute have the same
+                                     # name.
+                                     ASTNodeSourceIssue(
+    @@ -544,7 +544,7 @@
+                         print('WW' * 10, '    %s' % a)
+
+                 def _check_no_vertical_conflicts(class_):
+    -                for name in class_._inheritedAttributeNamed.keys():
+    +                for name in list(class_._inheritedAttributeNamed.keys()):
+                         if name in class_.ownedAttributeNames:
+                             ASTNodeSourceIssue(
+                                 code=icode('SUPER_ATT_INH_VERT'),
+    @@ -650,11 +650,10 @@
+
+
+
+    -class PackagableElement(SourceModelElement):
+    +class PackagableElement(SourceModelElement, metaclass=abc.ABCMeta):
+         """
+         Top level element.
+         """
+    -    __metaclass__ = abc.ABCMeta
+
+         def __init__(self,
+                      name,
+    @@ -682,7 +681,7 @@
+                 return self.name
+
+
+    -class Item(object):
+    +class Item(object, metaclass=abc.ABCMeta):
+         """
+         Either an entity or a member.
+         Useful for instance to define "scope" of invariants.
+    @@ -695,17 +694,15 @@
+         Y can be a enumeration literal, attribute or role
+         """
+
+    -    __metaclass__ = abc.ABCMeta
+    -
+    -
+    -class Entity(Resource, Item):
+    -
+    -    __metaclass__ = abc.ABCMeta
+    -
+    -
+    -class Member(Resource, Item):
+    -
+    -    __metaclass__ = abc.ABCMeta
+    +
+    +class Entity(Resource, Item, metaclass=abc.ABCMeta):
+    +
+    +    pass
+    +
+    +
+    +class Member(Resource, Item, metaclass=abc.ABCMeta):
+    +
+    +    pass
+
+
+     class Package(PackagableElement, Entity):
+    --- modelscript/metamodels/classes/associations.py	(original)
+    +++ modelscript/metamodels/classes/associations.py	(refactored)
+    @@ -1,4 +1,4 @@
+    -from __future__ import print_function
+    +
+     import abc
+     import collections
+
+    @@ -31,12 +31,10 @@
+                 "Role position '%s' doesn't exists." % rolePosition)
+
+
+    -class Association(PackagableElement, Entity):
+    +class Association(PackagableElement, Entity, metaclass=abc.ABCMeta):
+         """
+         Associations.
+         """
+    -
+    -    __metaclass__ = abc.ABCMeta
+
+         META_COMPOSITIONS = [
+             'roles',
+    @@ -60,11 +58,11 @@
+
+         @property
+         def roles(self):
+    -        return self.roleNamed.values()
+    +        return list(self.roleNamed.values())
+
+         @property
+         def roleNames(self):
+    -        return self.roleNamed.keys()
+    +        return list(self.roleNamed.keys())
+
+         @MAttribute('Integer')
+         def arity(self):
+    @@ -249,12 +247,12 @@
+             if self.cardinalityMin is None and self.cardinalityMax is None:
+                 return None
+             if self.cardinalityMin == self.cardinalityMax:
+    -            return unicode(self.cardinalityMin)
+    +            return str(self.cardinalityMin)
+             if self.cardinalityMin == 0 and self.cardinalityMax is None:
+                 return '*'
+             return ('%s..%s' % (
+    -            unicode(self.cardinalityMin),
+    -            '*' if self.cardinalityMax is None else unicode(
+    +            str(self.cardinalityMin),
+    +            '*' if self.cardinalityMax is None else str(
+                     self.cardinalityMax)
+
+             ))
+
+    --- modelscript/metamodels/classes/classes.py	(original)
+    +++ modelscript/metamodels/classes/classes.py	(refactored)
+    @@ -1,4 +1,4 @@
+    -from __future__ import print_function
+    +
+     from typing import List, Optional, Dict, Text
+     import abc
+     import collections
+    @@ -15,12 +15,10 @@
+         MethodToBeDefined)
+
+
+    -class Class(PackagableElement, Entity):
+    +class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
+         """
+         Classes.
+         """
+    -
+    -    __metaclass__ = abc.ABCMeta
+
+         META_COMPOSITIONS = [
+         #    'attributes', TODO:3 restore, raise an exception
+    @@ -113,7 +111,7 @@
+
+         @property
+         def ownedAttributes(self):
+    -        return self._ownedAttributeNamed.values()
+    +        return list(self._ownedAttributeNamed.values())
+
+         def ownedAttribute(self, name):
+             if name in self._ownedAttributeNamed:
+    @@ -123,7 +121,7 @@
+
+         @property
+         def ownedAttributeNames(self):
+    -        return self._ownedAttributeNamed.keys()
+    +        return list(self._ownedAttributeNamed.keys())
+
+         @property
+         def inheritedAttributes(self):
+    @@ -140,7 +138,7 @@
+                 # nice to require client to check which attributes
+                 # are defined or not.
+                 return []
+    -        return self._inheritedAttributeNamed.values()
+    +        return list(self._inheritedAttributeNamed.values())
+
+         def inheritedAttribute(self, name):
+             if self._inheritedAttributeNamed is None:
+    @@ -156,7 +154,7 @@
+             if self._inheritedAttributeNamed is None:
+                 # see inheritedAttributes
+                 return []
+    -        return self._inheritedAttributeNamed.keys()
+    +        return list(self._inheritedAttributeNamed.keys())
+
+         @property
+         def attributes(self):
+    @@ -177,7 +175,7 @@
+
+         @property
+         def ownedOppositeRoles(self):
+    -        return self._ownedOppositeRoleNamed.values()
+    +        return list(self._ownedOppositeRoleNamed.values())
+
+         def ownedOppositeRole(self, name):
+             if name in self._ownedOppositeRoleNamed:
+    @@ -187,7 +185,7 @@
+
+         @property
+         def ownedOppositeRoleNames(self):
+    -        return self._ownedOppositeRoleNamed.keys()
+    +        return list(self._ownedOppositeRoleNamed.keys())
+
+         @property
+         def inheritedOppositeRoles(self):
+    @@ -205,7 +203,7 @@
+                 # nice to require client to check which attributes
+                 # are defined or not.
+                 return []
+    -        return self._inheritedAttributeNamed.values()
+    +        return list(self._inheritedAttributeNamed.values())
+
+         def inheritedOppositeRole(self, name):
+             if self._inheritedOppositeRoleNamed is None:
+    @@ -221,7 +219,7 @@
+             if self._inheritedOppositeRoleNamed is None:
+                 # see inheritedAttributes
+                 return []
+    -        return self._inheritedOppositeRoleNamed.keys()
+    +        return list(self._inheritedOppositeRoleNamed.keys())
+
+         @property
+         def oppositeRoles(self):
+    @@ -437,10 +435,10 @@
+
+         @MComposition('Condition[*]')
+         def conditions(self):
+    -        return self.conditionNamed.values()
+    +        return list(self.conditionNamed.values())
+
+         def conditionNames(self):
+    -        return self.conditionNamed.keys()
+    +        return list(self.conditionNamed.keys())
+
+
+         @MAttribute('Boolean')
+
+    --- modelscript/metamodels/classes/invariants.py	(original)
+    +++ modelscript/metamodels/classes/invariants.py	(refactored)
+    @@ -48,7 +48,7 @@
+
+             # add nth to invariant name except for 1st
+             nth=len(invariant.oclInvariants)+1
+    -        suffix=unicode(nth) if nth>=2 else ''
+    +        suffix=str(nth) if nth>=2 else ''
+
+             super(OCLInvariant, self).__init__(
+                 name=invariant.name+suffix,
+    @@ -97,7 +97,7 @@
+         def __init__(self, oclInvariant, textLine,
+                         astNode=None):
+             # add nth to ocl invariant name
+    -        suffix='_'+unicode(len(oclInvariant.oclLines)+1)
+    +        suffix='_'+str(len(oclInvariant.oclLines)+1)
+             super(OCLLine, self).__init__(
+                 name=oclInvariant.name+suffix,
+                 model=oclInvariant.model,
+    --- modelscript/metamodels/classes/oclchecker.py	(original)
+    +++ modelscript/metamodels/classes/oclchecker.py	(refactored)
+    @@ -94,7 +94,7 @@
+             See example of USE error format at the end of this
+             very file.
+             """
+    -        print('||'*10, error_line)
+    +        print(('||'*10, error_line))
+
+
+             p = r'^(?P<filename>.*)' \
+    --- modelscript/metamodels/classes/types.py	(original)
+    +++ modelscript/metamodels/classes/types.py	(refactored)
+    @@ -8,11 +8,10 @@
+     from modelscript.base.exceptions import (
+         MethodToBeDefined)
+
+    -class SimpleType(PackagableElement, Item):
+    +class SimpleType(PackagableElement, Item, metaclass=abc.ABCMeta):
+         """
+         Simple types.
+         """
+    -    __metaclass__ = abc.ABCMeta
+
+         def __init__(self,
+                      name,
+    @@ -95,7 +94,7 @@
+
+         def __str__(self):
+             return (
+    -              unicode(self.simpleType)
+    +              str(self.simpleType)
+                 + ('[0..1]' if self.isOptional else '')
+             )
+
+    @@ -112,9 +111,7 @@
+     UNSPECIFIED=UnspecifiedValue()
+
+
+    -class SimpleValue(object):
+    -
+    -    __metaclass__ = abc.ABCMeta
+    +class SimpleValue(object, metaclass=abc.ABCMeta):
+
+         @abc.abstractproperty
+         def type(self):
+    @@ -146,9 +143,7 @@
+             return self.value==enumValue.value
+
+
+    -class DataValue(SimpleValue):
+    -
+    -    __metaclass__ = abc.ABCMeta
+    +class DataValue(SimpleValue, metaclass=abc.ABCMeta):
+
+         def __init__(self, stringRepr, value, type):
+             self.stringRepr=stringRepr
+    --- modelscript/metamodels/classes1/__init__.py	(original)
+    +++ modelscript/metamodels/classes1/__init__.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     from collections import OrderedDict
+     from typing import List, Optional, Dict, Text, Union
+     from abc import ABCMeta, abstractmethod
+    --- modelscript/metamodels/glossaries/__init__.py	(original)
+    +++ modelscript/metamodels/glossaries/__init__.py	(refactored)
+    @@ -7,7 +7,7 @@
+             <>--* Package
+                 <>--* Entry (indexed by name)
+     """
+    -from __future__ import print_function
+    +
+
+     import collections
+
+    @@ -72,19 +72,19 @@
+             #type: (Text) -> Optional[Entry]
+
+             # search first as the main term
+    -        for packages in self.packageNamed.values():
+    +        for packages in list(self.packageNamed.values()):
+                 if term in packages.entryNamed:
+                     return packages.entryNamed[term]
+
+             # search then in inflections
+    -        for packages in self.packageNamed.values():
+    -            for entry in packages.entryNamed.values():
+    +        for packages in list(self.packageNamed.values()):
+    +            for entry in list(packages.entryNamed.values()):
+                     if term in entry.inflections:
+                         return entry
+
+             # search then in synonyms
+    -        for packages in self.packageNamed.values():
+    -            for entry in packages.entryNamed.values():
+    +        for packages in list(self.packageNamed.values()):
+    +            for entry in list(packages.entryNamed.values()):
+                     if term in entry.synonyms:
+                         return entry
+
+    @@ -132,7 +132,7 @@
+
+         @property
+         def entries(self):
+    -        return self.entryNamed.values()
+    +        return list(self.entryNamed.values())
+
+
+     class Entry(SourceModelElement):
+    --- modelscript/metamodels/objects/__init__.py	(original)
+    +++ modelscript/metamodels/objects/__init__.py	(refactored)
+    @@ -17,7 +17,7 @@
+
+     """
+
+    -from __future__ import print_function
+    +
+     from collections import OrderedDict
+     from typing import List, Optional, Dict, Text
+     from abc import ABCMeta
+    @@ -132,11 +132,11 @@
+
+         @property
+         def plainObjects(self):
+    -        return self._plainObjectNamed.values()
+    +        return list(self._plainObjectNamed.values())
+
+         @property
+         def plainObjectNames(self):
+    -        return self._plainObjectNamed.keys()
+    +        return list(self._plainObjectNamed.keys())
+
+         def plainObject(self, name):
+             if name in self._plainObjectNamed:
+    @@ -150,11 +150,11 @@
+
+         @property
+         def linkObjects(self):
+    -        return self._linkObjectNamed.values()
+    +        return list(self._linkObjectNamed.values())
+
+         @property
+         def linkObjectNames(self):
+    -        return self._linkObjectNamed.keys()
+    +        return list(self._linkObjectNamed.keys())
+
+     def linkObject(self, name):
+         if name in self._linkObjectNamed:
+    @@ -249,7 +249,7 @@
+         self._classModel=classModel
+
+
+    -class ElementFromOptionalStep(SourceModelElement):
+    +class ElementFromOptionalStep(SourceModelElement, metaclass=ABCMeta):
+         """
+         Superclass of all source model elements that can (optionaly)
+         originates from a story step (hence "FromOriginalStep').
+    @@ -259,7 +259,6 @@
+         In practice this clas basically serves to add a "step" attribute
+         to all subclasses and to compute location attributes accordingly.
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self,
+                      name,
+    @@ -302,11 +301,10 @@
+             self.step=step
+
+
+    -class PackagableElement(ElementFromOptionalStep):
+    +class PackagableElement(ElementFromOptionalStep, metaclass=ABCMeta):
+         """
+         Top level element.
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self,
+                      name,
+    @@ -334,8 +332,7 @@
+                 return self.name
+
+
+    -class ResourceInstance(object):
+    -    __metaclass__ = ABCMeta
+    +class ResourceInstance(object, metaclass=ABCMeta):
+         """
+         Currently not used, but can be useful to describes
+         access instances.
+    @@ -344,12 +341,12 @@
+         """
+
+
+    -class Entity(ResourceInstance):
+    -    __metaclass__ = ABCMeta
+    -
+    -
+    -class Member(ResourceInstance):
+    -    __metaclass__ = ABCMeta
+    +class Entity(ResourceInstance, metaclass=ABCMeta):
+    +    pass
+    +
+    +
+    +class Member(ResourceInstance, metaclass=ABCMeta):
+    +    pass
+
+
+     # TODO:3 generalize and improve "package" management over languages
+    --- modelscript/metamodels/objects/linkobjects.py	(original)
+    +++ modelscript/metamodels/objects/linkobjects.py	(refactored)
+    @@ -49,7 +49,7 @@
+             # This could be an issue otherwize since link have no name.
+             self.name=name
+             model._linkObjectNamed[self.name]=self
+    -        print('TT'*10, 'adding object', model._linkObjectNamed)
+    +        print(('TT'*10, 'adding object', model._linkObjectNamed))
+
+
+         # def delete(self):
+    --- modelscript/metamodels/objects/links.py	(original)
+    +++ modelscript/metamodels/objects/links.py	(refactored)
+    @@ -6,9 +6,7 @@
+     from modelscript.base.exceptions import (
+         UnexpectedCase,
+         MethodToBeDefined)
+    -class Link(PackagableElement, Entity):
+    -    __metaclass__ = ABCMeta
+    -
+    +class Link(PackagableElement, Entity, metaclass=ABCMeta):
+         def __init__(self,
+                      model, association,
+                      sourceObject, targetObject,
+    --- modelscript/metamodels/objects/objects.py	(original)
+    +++ modelscript/metamodels/objects/objects.py	(refactored)
+    @@ -52,7 +52,7 @@
+                     if s is None:
+                         self.attVal[att.name]=UNSPECIFIED
+                     else:
+    -                    self.attVal[att.name]=unicode(s.simpleValue)
+    +                    self.attVal[att.name]=str(s.simpleValue)
+
+         def equals(self, classPrint2):
+             """
+    @@ -61,7 +61,7 @@
+             Otherwise return false.
+             """
+             has_unspecified=False
+    -        for att in self.attVal.keys():
+    +        for att in list(self.attVal.keys()):
+                 v1=self.attVal[att]
+                 v2=classPrint2.attVal[att]
+                 if (v1 is not UNSPECIFIED
+    @@ -80,20 +80,19 @@
+             if len(self.attVal)==0:
+                 return ()
+             elif len(self.attVal)==1:
+    -            return unicode(self.attVal[self.attVal.keys()[0]])
+    +            return str(self.attVal[list(self.attVal.keys())[0]])
+             else:
+                 return '(%s)' % (','.join([
+    -                '%s=%s' % (att, unicode(val))
+    -                for (att, val) in self.attVal.items()
+    +                '%s=%s' % (att, str(val))
+    +                for (att, val) in list(self.attVal.items())
+                 ]))
+
+
+
+
+    -class Object(PackagableElement, Entity):
+    +class Object(PackagableElement, Entity, metaclass=ABCMeta):
+         """
+         An object. Either a plain object or a link object.
+         Link object
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self, model, name, class_,
+                      package=None,
+    @@ -253,5 +252,5 @@
+             return '%s.%s=%s' % (
+                 self.object.
+    name,
+                 self.attribute.name,
+    -            unicode(self.simpleValue)
+    -        )
+    +            str(self.simpleValue)
+    +        )
+    --- modelscript/metamodels/objects/statechecker.py	(original)
+    +++ modelscript/metamodels/objects/statechecker.py	(refactored)
+    @@ -10,7 +10,7 @@
+     violations are converted to issues.
+     """
+
+    -from __future__ import print_function
+    +
+     from collections import OrderedDict, Counter
+     from typing import List, Optional, Dict, Text, Union, Tuple
+     from abc import ABCMeta, abstractmethod, abstractproperty
+    @@ -63,7 +63,7 @@
+         return ISSUES[ilabel]
+
+
+    -class ConformityViolation(object):
+    +class ConformityViolation(object, metaclass=ABCMeta):
+         """
+         Abstract class for all sort of violations that can occur
+         when checking a state. This ranges from Cardinalityviolations to
+    @@ -72,7 +72,6 @@
+         related to the issue to generate: a message, a code and a
+         issue level.
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self, stateCheck):
+             self.stateCheck=stateCheck
+    @@ -127,7 +126,7 @@
+                 'The %s of the link %s is of type "%s"'
+                 + ' instead of "%s".') % (
+                         self.linkRole.position,
+    -                    unicode(self.linkRole.link),
+    +                    str(self.linkRole.link),
+                         self.linkRole.objectType.name,
+                         self.linkRole.roleType.name)
+
+    @@ -566,7 +565,7 @@
+         def _check_cardinalities(self):
+             for object in self.objectModel.objects:
+                 print('HH'*10, 'check card for %s' % object)
+    -            for role in object._link_roles_per_role.keys():
+    +            for role in list(object._link_roles_per_role.keys()):
+                     actual=object.cardinality(role)
+                     ok=role.acceptCardinality(actual)
+                     print('HH'*10, '    %s[%s]=%s -> %s' % (role, role.cardinalityLabel, actual, ok))
+    @@ -592,7 +591,7 @@
+             #     (a, R, b)
+             # only one side is considered.
+             for object in self.objectModel.objects:
+    -            for role in object._link_roles_per_role.keys():
+    +            for role in list(object._link_roles_per_role.keys()):
+                     if role.isTarget:
+                         links_per_object = dict()
+                         if ( len(object._link_roles_per_role[role]) >= 2):
+    @@ -602,7 +601,7 @@
+                                 if o not in links_per_object:
+                                     links_per_object[o] = []
+                                 links_per_object[o].append(link_role.link)
+    -                        for o in links_per_object.keys():
+    +                        for o in list(links_per_object.keys()):
+                                 if len(links_per_object[o]) >= 2:
+                                     UniqueLinkViolation(
+                                         stateCheck=self,
+    @@ -619,13 +618,13 @@
+
+         def XXX(self):
+             for object in self.objectModel.objects:
+    -            for role in object._link_roles_per_role.keys():
+    +            for role in list(object._link_roles_per_role.keys()):
+                     print('GG'*20, '%s.%s=%s' % (
+                         object.name,
+                         role.name,
+                         object.cardinality(role)))
+                     for link_role in object._link_roles_per_role[role]:
+    -                    print('GG'*20,' '*10, unicode(link_role), link_role.object)
+    +                    print('GG'*20,' '*10, str(link_role), link_role.object)
+
+
+         @property
+    --- modelscript/metamodels/participants/__init__.py	(original)
+    +++ modelscript/metamodels/participants/__init__.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     from collections import OrderedDict
+     from typing import List, Optional, Dict, Text, Union
+ from abc import ABCMeta, abstractmethod
+    --- modelscript/metamodels/permissions/__init__.py	(original)
+    +++ modelscript/metamodels/permissions/__init__.py	(refactored)
+    @@ -4,7 +4,7 @@
+     """
+
+
+    -from __future__ import absolute_import, division, print_function, unicode_literals
+    +
+     from typing import List, Optional
+     from modelscript.megamodels.dependencies.metamodels import (
+         Met amodelDependency
+    @@ -157,7 +157,7 @@
+                             rule.permissions.append(p)
+
+         def __str__(self):
+    -        return '\n'.join([unicode(r) for r in self.rules])
+    +        return '\n'.join([str(r) for r in self.rules])
+
+
+     METAMODEL=Metamodel(
+    --- modelscript/metamodels/permissions/gpermissions.py	(original)
+    +++ modelscript/metamodels/permissions/gpermissions.py	(refactored)
+    @@ -82,13 +82,12 @@
+
+
+
+    -class Control(object):
+    +class Control(object, metaclass=ABCMeta):
+         """
+         A control is the result of checking that a permission
+         accept or not a access. A control is either an Authorisation
+         or a Denial.
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self, access):
+             #type: ('Access') -> None
+    @@ -160,11 +159,10 @@
+     #                    Generic permission model
+     #--------------------------------------------------------------------
+
+    -class PermissionModel(Model):
+    +class PermissionModel(Model, metaclass=ABCMeta):
+         """
+         Abstract permission model.
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self):
+             super(PermissionModel, self).__init__()
+    @@ -173,9 +171,7 @@
+             #type: List[PermissionRule]
+
+
+    -class PermissionRule(SourceModelElement):
+    -    __metaclass__ = ABCMeta
+    -
+    +class PermissionRule(SourceModelElement, metaclass=ABCMeta):
+         def __init__(self,
+                      model,
+                      lineNo=None,
+    --- modelscript/metamodels/permissions/sar.py	(original)
+    +++ modelscript/metamodels/permissions/sar.py	(refactored)
+    @@ -12,9 +12,7 @@
+         return id(o)
+
+
+    -class Subject(object):
+    -    __metaclass__ = ABCMeta
+    -
+    +class Subject(object, metaclass=ABCMeta):
+         @property
+         def superSubjects(self):
+             """ Direct parents """
+    @@ -72,9 +70,7 @@
+             return self.actionLabel
+
+
+    -class Resource(object):
+    -    __metaclass__ = abc.ABCMeta
+    -
+    +class Resource(object, metaclass=abc.ABCMeta):
+         @property
+         def resourceLabel(self):
+             return _getNaming(self)
+    @@ -96,12 +92,10 @@
+             return self.resourceLabel
+
+
+    -class SAR(object):
+    +class SAR(object, metaclass=ABCMeta):
+         """
+         Subject-Action-Resource triplet.
+         """
+    -
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self, subject, action, resource):
+             #type: (Subject, Action, Resource) -> None
+    --- modelscript/metamodels/projects/__init__.py	(original)
+    +++ modelscript/metamodels/projects/__init__.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+
+     from modelscript.megamodels.models import Model
+     from modelscript.megamodels.metamodels import Metamodel
+    --- modelscript/metamodels/qa/__init__.py	(original)
+    +++ modelscript/metamodels/qa/__init__.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+
+     from modelscript.megamodels.models import Model
+     from modelscript.megamodels.metamodels import Metamodel
+    --- modelscript/metamodels/qc/__init__.py	(original)
+    +++ modelscript/metamodels/qc/__init__.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+
+     from modelscript.megamodels.models import Model
+     from modelscript.megamodels.metamodels import Metamodel
+    --- modelscript/metamodels/relations/__init__.py	(original)
+    +++ modelscript/metamodels/relations/__init__.py	(refactored)
+    @@ -91,7 +91,7 @@
+         @property
+         def relations(self):
+             #type: () -> List[Relation]
+    -        return self._relationNamed.values()
+    +        return list(self._relationNamed.values())
+
+         @property
+         def metrics(self):
+    @@ -112,12 +112,12 @@
+
+
+
+    -class Entity(Resource):
+    -    __metaclass__ = ABCMeta
+    -
+    -
+    -class Member(Resource):
+    -    __metaclass__ = ABCMeta
+    +class Entity(Resource, metaclass=ABCMeta):
+    +    pass
+    +
+    +
+    +class Member(Resource, metaclass=ABCMeta):
+    +    pass
+
+
+     class Relation(SourceModelElement, Entity):
+    @@ -140,7 +140,7 @@
+
+         @property
+         def columns(self):
+    -        return self._columnNamed.values()
+    +        return list(self._columnNamed.values())
+
+         def column(self, name):
+             if name in self._columnNamed:
+    @@ -150,7 +150,7 @@
+
+         @property
+         def columnNames(self):
+    -        return self.columnNames.keys()
+    +        return list(self.columnNames.keys())
+
+
+     class Column(SourceModelElement, Member):
+    --- modelscript/metamodels/scenarios/__init__.py	(original)
+    +++ modelscript/metamodels/scenarios/__init__.py	(refactored)
+    @@ -210,11 +210,11 @@
+
+         @property
+         def actorInstances(self):
+    -        return self.actorInstanceNamed.values()
+    +        return list(self.actorInstanceNamed.values())
+
+         @property
+         def actorInstanceNames(self):
+    -        return self.actorInstanceNamed.keys()
+    +        return list(self.actorInstanceNamed.keys())
+
+         def addContainer(self, kind, name, container):
+             self.containerCollection.add(kind, name, container)
+    @@ -259,13 +259,12 @@
+     STORY_KIND=['objectModel', 'context', 'scenario', 'fragment']
+
+
+    -class StoryContainer(SourceModelElement, Subject):
+    +class StoryContainer(SourceModelElement, Subject, metaclass=ABCMeta):
+         """
+         Container of a story. This abstract class is useful to
+         deal with common characteristics of Context, Fragment and
+         Scenario at the same time. These are basically just story block.
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self,
+                      model, name,
+    @@ -443,13 +442,13 @@
+             if kind not in self.storyContainerByKindName:
+                 return []
+             else:
+    -            return self.storyContainerByKindName[kind].keys()
+    +            return list(self.storyContainerByKindName[kind].keys())
+
+         def storyContainers(self, kind):
+             if kind not in self.storyContainerByKindName:
+                 return []
+             else:
+    -            return self.storyContainerByKindName[kind].values()
+    +            return list(self.storyContainerByKindName[kind].values())
+
+         def story(self, storyId):
+             #type: (StoryId) -> Optional[Story]
+    --- modelscript/metamodels/stories/__init__.py	(original)
+    +++ modelscript/metamodels/stories/__init__.py	(refactored)
+    @@ -52,7 +52,7 @@
+     DEBUG=3
+
+
+    -class Step(SourceModelElement, Subject):
+    +class Step(SourceModelElement, Subject, metaclass=ABCMeta):
+         """
+         Abstract class for all steps.
+         This class deal with
+    @@ -62,7 +62,6 @@
+             operation or if (b) there is an operation in its
+             substeps (if any).
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self,
+                      model,
+    @@ -108,7 +107,7 @@
+                 return self.parent.story
+
+
+    -class CompositeStep(Step):
+    +class CompositeStep(Step, metaclass=ABCMeta):
+         """
+         Composite steps have substeps and therefore a "steps"
+         attribute.
+    @@ -116,7 +115,6 @@
+         a parent (see Steps).
+         The parent of step is None for Stories.
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self,
+                      model,
+    @@ -284,7 +282,7 @@
+             self.verbName=verbName
+
+
+    -class AbstractStoryId(object):
+    +class AbstractStoryId(object, metaclass=ABCMeta):
+         """
+         Identifier of a story. Concrete classes must
+         be defined in metamodel reusing "stories".
+    @@ -292,7 +290,6 @@
+         to identify which story should be included.
+         This class is also used by AbstractStoryCollection.
+         """
+    -    __metaclass__ = ABCMeta
+
+         pass
+
+    --- modelscript/metamodels/stories/operations.py	(original)
+    +++ modelscript/metamodels/stories/operations.py	(refactored)
+    @@ -55,9 +55,7 @@
+     #   Abstract classes
+     #--------------------------------------------------------------
+
+    -class OperationStep(Step):
+    -    __metaclass__ = ABCMeta
+    -
+    +class OperationStep(Step, metaclass=ABCMeta):
+         def __init__(self,
+             parent,
+             astNode=None,
+    @@ -76,10 +74,7 @@
+             return True
+
+
+    -class UpdateOperationStep(OperationStep):
+    -    __metaclass__ = ABCMeta
+    -
+    -
+    +class UpdateOperationStep(OperationStep, metaclass=ABCMeta):
+         def __init__(self,
+                         parent, isAction,
+                         astNode=None, lineNo=None,
+    @@ -95,10 +90,7 @@
+             #type: bool
+
+
+    -class ConsultOperationStep(OperationStep):
+    -    __metaclass__ = ABCMeta
+    -
+    -
+    +class ConsultOperationStep(OperationStep, metaclass=ABCMeta):
+         def __init__(self,
+                         parent,
+        astNode=None, lineNo=None,
+    --- modelscript/metamodels/stories/evaluations/__init__.py	(original)
+    +++ modelscript/metamodels/stories/evaluations/__init__.py	(refactored)
+    @@ -60,11 +60,10 @@
+     )
+
+
+    -class StepEvaluation(SourceModelElement, Subject):
+    +class StepEvaluation(SourceModelElement, Subject, metaclass=ABCMeta):
+         """
+         The evaluation of a step.
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self,
+                      parent,
+    --- modelscript/metamodels/stories/evaluations/evaluator.py	(original)
+    +++ modelscript/metamodels/stories/evaluations/evaluator.py	(refactored)
+    @@ -6,7 +6,7 @@
+     inplace.
+     """
+
+    -from __future__  import print_function
+    +
+     from typing import Union, Optional, Dict, Text
+     from modelscript.base.grammars import (
+         ASTNodeSourceIssue
+    --- modelscript/metamodels/tasks/__init__.py	(original)
+    +++ modelscript/metamodels/tasks/__init__.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+
+     import collections
+
+    --- modelscript/metamodels/textblocks/__init__.py	(original)
+    +++ modelscript/metamodels/textblocks/__init__.py	(refactored)
+    @@ -12,7 +12,7 @@
+                             <|-- Reference
+
+     """
+    -from __future__ import print_function
+    +
+     from abc import ABCMeta
+     from typing import (
+         Text, Optional, List, Any)
+    @@ -229,12 +229,11 @@
+             return self.textTokens.append(token)
+
+
+    -class TextToken(SourceModelElement):
+    +class TextToken(SourceModelElement, metaclass=ABCMeta):
+         """
+         A TextToken is part of a TextLine. Either
+         a PlainText or a Reference.
+         """
+    -    __metaclass__ = ABCMeta
+
+         def __init__(self,
+                      textLine,
+    @@ -277,9 +276,7 @@
+             self.isResolved=True
+
+
+    -class TextReference(TextToken):
+    -    __metaclass__ = ABCMeta
+    -
+    +class TextReference(TextToken, metaclass=ABCMeta):
+         def __init__(self,
+                      textLine,
+                      text,
+    --- modelscript/metamodels/usecases/__init__.py	(original)
+    +++ modelscript/metamodels/usecases/__init__.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+
+     import collections
+
+    @@ -61,7 +61,7 @@
+
+         @property
+         def actors(self):
+    -        return self.actorNamed.values()
+    +        return list(self.actorNamed.values())
+
+         @property
+         def nbOfInteractions(self):
+    @@ -115,7 +115,7 @@
+
+         @property
+         def usecases(self):
+    -        return self.usecaseNamed.values()
+    +        return list(self.usecaseNamed.values())
+
+
+     #TODO:3 it could make sense to have superSubject for superActor
+    --- modelscript/scripts/accesses/printer.py	(original)
+    +++ modelscript/scripts/accesses/printer.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, division
+    +
+
+     from modelscript.base.printers import (
+         AbstractPrinter
+    --- modelscript/scripts/aui/printer.py	(original)
+    +++ modelscript/scripts/aui/printer.py	(refactored)
+    @@ -1,6 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, \
+    -    division
+    +
+
+     from typing import Optional
+
+    --- modelscript/scripts/classes/printer.py	(original)
+    +++ modelscript/scripts/classes/printer.py	(refactored)
+    @@ -1,6 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, \
+    -    division
+    +
+
+     from typing import Optional
+
+    @@ -125,18 +124,17 @@
+             self.doModelTextBlock(class_.description)
+             if class_.superclasses:
+                 sc = (self.kwd('extends ')
+    -                  +self.kwd(',').join(map(
+    -                        lambda s:s.name, class_.superclasses)))
+    +                  +self.kwd(',').join([s.name for s in class_.superclasses]))
+             else:
+                 sc = ''
+             if class_.isAbstract:
+                 abstract='abstract '
+             abstract='abstract' if class_.isAbstract else None
+    -        self.outLine(' '.join(filter(None,[
+    +        self.outLine(' '.join([_f for _f in [
+                 (self.kwd('abstract') if class_.isAbstract else ''),
+                 self.kwd('class'),
+                 self.qualified(class_),
+    -            sc])
+    ))
+    +            sc] if _f]))
+         # self.doModelTextBlock(class_.description)
+         if class_.attributes:
+    @@ -217,17 +215,17 @@
+             tags='{%s}' % ','.join(attribute.tags) \
+                     if attribute.tags \
+                     else ''
+    -        _=' '.join(filter(None,[
+    +        _=' '.join([_f for _f in [
+                     id,
+                     read_only,
+                     derived,
+                     visibility,
+                     attribute.name,
+                     self.kwd(':'),
+    -                unicode(attribute.type),
+    +                str(attribute.type),
+                     optional,
+                     stereotypes,
+    -                tags]))
+    +                tags] if _f])
+             self.outLine(_, indent=2)
+             self.doModelTextBlock(attribute.description, indent=3)
+             # if attribute.isDerived:
+    @@ -292,19 +290,19 @@
+                         else role.navigability
+             cardinalities=''.join([
+                 self.kwd('['),
+    -            unicode(role.cardinalityMin),
+    +            str(role.cardinalityMin),
+                 self.kwd('..'),
+                 '*' if role.cardinalityMax is None
+    -                else unicode(role.cardinalityMax),
+    +                else str(role.cardinalityMax),
+                 self.kwd(']')])
+    -        _=' '.join(filter(None,[
+    +        _=' '.join([_f for _f in [
+                 navigabilty,
+                 role.name,
+                 self.kwd(':'),
+    -            unicode(role.type),
+    +            str(role.type),
+                 cardinalities,
+                 stereotypes,
+    -            tags]))
+    +            tags] if _f])
+             self.outLine(_, indent=2)
+             self.doModelTextBlock(role.description)
+             return self.output
+    --- modelscript/scripts/classes/useprinter.py	(original)
+    +++ modelscript/scripts/classes/useprinter.py	(refactored)
+    @@ -1,6 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, \
+    -    division
+    +
+
+     from typing import Optional, Dict
+     from collections import OrderedDict
+    @@ -134,16 +133,15 @@
+             enum_line=self._putElement(class_)
+             if class_.superclasses:
+                 sc = ('< '
+    -                  +','.join(map(
+    -                        lambda s:s.name, class_.superclasses)))
+    +                  +','.join([s.name for s in class_.superclasses]))
+             else:
+                 sc = ''
+    -        self.outLine(' '.join(filter(None,[
+    +        self.outLine(' '.join([_f for _f in [
+                 ('abstract' if class_.isAbstract else None),
+                 'class',
+                 class_.name,
+                 sc,
+    -            ' --<<< %i' % enum_line])))
+    +            ' --<<< %i' % enum_line] if _f]))
+
+             if class_.ownedAttributes:
+                 self.outLine(
+    @@ -184,10 +182,10 @@
+             role_line=self._putElement(role)
+             cardinalities=''.join([
+                 '[',
+    -            unicode(role.cardinalityMin),
+    +            str(role.cardinalityMin),
+                 '..',
+                 '*' if role.cardinalityMax is None
+    -                else unicode(role.cardinalityMax),
+    +                else str(role.cardinalityMax),
+                 ']'])
+             self.outLine('%s%s role %s --<<< %i' % (
+                          role.type.name,
+    --- modelscript/scripts/classes/parser/__init__.py	(original)
+    +++ modelscript/scripts/classes/parser/__init__.py	(refactored)
+    @@ -1,6 +1,6 @@
+     # coding=utf-8
+
+    -from __future__ import print_function
+    +
+     from typing import Text, Union
+     import os
+
+    @@ -465,7 +465,7 @@
+                     if ast_ocl_line.textLine is not None:
+                         OCLLine(
+                             oclInvariant=ocl_inv,
+    -                        textLine=unicode(ast_ocl_line.textLine),
+    +                        textLine=str(ast_ocl_line.textLine),
+                             astNode=ast_ocl_line
+                         )
+                     for ast_sublines in ast_ocl_line.oclLines:
+    --- modelscript/scripts/classes1/printer.py	(original)
+    +++ modelscript/scripts/classes1/printer.py	(refactored)
+    @@ -1,6 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, \
+    -    division
+    +
+
+     from typing import Optional
+    --- modelscript/scripts/glossaries/p rinter.py	(original)
+    +++ modelscript/scripts/glossaries/printer.py	(refactored)
+    @@ -1,6 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, \
+    -    division
+    +
+
+     from typing import Optional
+
+    @@ -40,7 +39,7 @@
+
+         def doGlossaryModel(self, glossary):
+             self.doModelTextBlock(glossary.description)
+    -        for package in glossary.packageNamed.values():
+    +        for package in list(glossary.packageNamed.values()):
+                 self.doPackage(package)
+             return self.output
+
+    @@ -53,7 +52,7 @@
+                 lineNo=package.lineNo,
+                 linesBefore=1)
+             self.doModelTextBlock(package.description)
+    -        for entry in package.entryNamed.values():
+    +        for entry in list(package.entryNamed.values()):
+                 self.doEntry(entry)
+             return self.output
+
+    @@ -82,7 +81,7 @@
+
+             if len(entry.translations)>0:
+                 self.outLine(self.kwd('translations'))
+    -            for (language, label) in entry.translations.items():
+    +            for (language, label) in list(entry.translations.items()):
+                     self.outLine(
+                         '%s: "%s"' % (language, label))
+             return self.output
+    --- modelscript/scripts/glossaries/parser/__init__.py	(original)
+    +++ modelscript/scripts/glossaries/parser/__init__.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, division
+    +
+     from typing import Text, Union, Optional, Dict, List
+     import re
+     import os
+    --- modelscript/scripts/megamodels/parser/__init__.py	(original)
+    +++ modelscript/scripts/megamodels/parser/__init__.py	(refactored)
+    @@ -4,7 +4,7 @@
+     Megamodel statements are always extracted from
+     RAW UNPROCESSED ORIGINAL source file.
+     """
+    -from __future__ import print_function
+    +
+
+     import os
+
+    @@ -74,7 +74,7 @@
+             astTextBlock=astModelDefinition.textBlock)
+         if DEBUG>=3:
+             print('MEG: Defining %s %s model %s' %
+    -              (unicode(model_kinds), metamodel_label, modelName))
+    +              (str(model_kinds), metamodel_label, modelName))
+
+         # get the actual metamodel based on the metamodel label
+         try:
+    @@ -87,7 +87,7 @@
+                 code=icode('DEFINITION_EXCEPTION'),
+                 astNode=astModelDefinition,
+                 level=Levels.Fatal, # could be error with some work
+    -            message=unicode(e))
+    +            message=str(e))
+
+         # check that model_kinds are all available with the metamodel
+         # noinspection PyUnboundLocalVariable
+    @@ -102,7 +102,7 @@
+                         ' Choose one of %s.' % (
+                             metamodel_label,
+                             model_kind,
+    -                        unicode(metamodel.modelKinds))))
+    +                        str(metamodel.modelKinds))))
+
+         if CHECK_FILENAMES_AND_MODELS:
+
+    @@ -155,7 +155,7 @@
+                 code=icode('IMPORT_EXCEPTION'),
+                 astNode=astModelImport,
+                 level=Levels.Fatal,  # could be error with some work
+    -            message=unicode(e))
+    +            message=str(e))
+
+         # Check that metamodel dependency is allowed
+         target_mms = source_metamodel.outMetamodels
+    --- modelscript/scripts/megamodels/parser/statements.py	(original)
+    +++ modelscript/scripts/megamodels/parser/statements.py	(refactored)
+    @@ -8,8 +8,7 @@
+     ModelSourceFile='ModelOldSourceFile'
+     ASTNode='ASTNode'
+
+    -class MegamodelStatement(object):
+    -    __metaclass__ = ABCMeta
+    +class MegamodelStatement(object, metaclass=ABCMeta):
+         def __init__(self,
+                      astNode,
+                      metamodel,
+    --- modelscript/scripts/metamodels/parser.py	(original)
+    +++ modelscript/scripts/metamodels/parser.py	(refactored)
+    @@ -10,7 +10,7 @@
+         def parsePyModule(self, module):
+
+             classes=_PyHelper.moduleClasses(module)
+    -        print('metamodel %s' % module.__name__)
+    +        print(('metamodel %s' % module.__name__))
+             print('')
+             for c in classes:
+                 self.parsePyClass(c)
+    @@ -19,9 +19,9 @@
+         def parsePyClass(self, class_):
+             superc=', '.join(
+                 [c.__name__ for c in _PyHelper.classSuperclasses(class_)])
+    -        print('    class %s %s' % (
+    +        print(('    class %s %s' % (
+                 class_.__name__,
+    -            '' if superc is '' else ' < %s' % superc))
+    +            '' if superc is '' else ' < %s' % superc)))
+             props=_PyHelper.classProperties(class_)
+             if len(props)>0:
+                 # print('    attributes')
+    @@ -37,10 +37,10 @@
+
+         def parsePyProperty(self, p):
+             mi=_PyHelper.classPropertyMetaInfo(p)
+    -        print('        %s %s : %s' % (mi.kind, mi.name, mi.spec))
+    +        print(('        %s %s : %s' % (mi.kind, mi.name, mi.spec)))
+
+         def parsePyMethod(self, m):
+    -        print('        operation %s()' % m.__name__)
+    +        print(('        operation %s()' % m.__name__))
+
+
+
+    @@ -58,13 +58,11 @@
+             classes = seconds(
+                 inspect.getmembers(module, inspect.isclass))
+             if hasattr(module, '__all__'):
+    -            classes = filter(
+    -                lambda c: c.__name__ in module.__all__,
+    -                classes)
+    +            classes = [c for c in classes if c.__name__ in module.__all__]
+             # classes = filter(
+             #         lambda c: hasattr(c, 'meta'),
+             #         classes)
+    -        classes = filter(isNotHidden, classes)
+    +        classes = list(filter(isNotHidden, classes))
+             return classes
+
+         @classmethod
+    @@ -104,20 +102,16 @@
+
+         @classmethod
+         def classProperties(cls, class_, mode='direct'):
+    -        properties = filter(
+    -            lambda m: isinstance(m, property),
+    -            _PyHelper.classMembers(class_, mode=mode))
+    -        properties = filter(
+    -            lambda m: hasattr(m.fget, 'metainfo'),
+    -            properties)
+    -        return filter(isNotHidden, properties)
+    +        properties = [m for m in _PyHelper.classMembers(class_, mode=mode) if isinstance(m, property)]
+    +        properties = [m for m in properties if hasattr(m.fget, 'metainfo')]
+    +        return list(filter(isNotHidden, properties))
+
+         @classmethod
+         def classMethods(cls, class_, mode='direct'):
+    -        methods = filter(
+    +        methods = list(filter(
+                 inspect.ismethod,
+    -            _PyHelper.classMembers(class_, mode=mode))
+    -        return filter(isNotHidden, methods)
+    +            _PyHelper.classMembers(class_, mode=mode)))
+    +        return list(filter(isNotHidden, methods))
+
+         @classmethod
+         def classPropertyMetaInfo(cls, property):
+    @@ -136,7 +130,7 @@
+         elif hasattr(e, 'fget'):
+             return e.fget.__name__
+         else:
+    -        print('NO NAME FOR ELEMENT %s' % type(e).__name__)
+    +        print(('NO NAME FOR ELEMENT %s' % type(e).__name__))
+             return '_NO_NAME'
+             # raise NotImplementedError()
+
+    --- modelscript/scripts/objects/plantuml.py	(original)
+    +++ modelscript/scripts/objects/plantuml.py	(refactored)
+    @@ -53,7 +53,7 @@
+             self.out('@enduml')
+
+         def doObject(self, o):
+    -        print('$'*30+str(type(o)))
+    +        print(('$'*30+str(type(o))))
+             _header='"%s : %s" as %s' % (
+                 '' if o.name is None else o.name,
+                 o.class_.name,
+    @@ -64,7 +64,7 @@
+                 for slot_name in o.slotNames:
+                     self.out('    %s = %s\n' % (
+                         slot_name,
+    -                    unicode(o.slot(slot_name).simpleValue)))
+    +                    str(o.slot(slot_name).simpleValue)))
+                 self.out('}\n\n')
+             else:
+                 self.out('object %s\n' % _header)
+    --- modelscript/scripts/objects/printer.py	(original)
+    +++ modelscript/scripts/objects/printer.py	(refactored)
+    @@ -1,6 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, \
+    -    division
+    +
+     from typing import Optional
+
+     from modelscript.base.modelprinters import (
+    @@ -97,7 +96,7 @@
+
+         def doObjectDefinition(self, o, indent=0):
+             class_name=(
+    -            unicode(o.class_)
+    +            str(o.class_)
+                     if isinstance(o.class_, Placeholder)
+                 else o.class_.name)
+             self.outLine('%s %s %s' % (
+    @@ -115,19 +114,19 @@
+
+         def doNestedSlot(self, slot, indent=0):
+             attribute_name=(
+    -            unicode(slot.att ribute)
+    +            str(slot.attribute)
+                 if isinstance(slot.attribute, Placeholder)
+                 else slot.attribute.name)
+             self.outLine('%s %s %s' % (
+                         attribute_name,
+                         self.kwd('='),
+    -                    unicode(slot.value)),
+    +                    str(slot.value)),
+                     indent=indent)
+             return self.output
+
+         def doSlotDefinition(self, slot, indent=0):
+             attribute_name=(
+    -            unicode(slot.attribute)
+    +            str(slot.attribute)
+                 if isinstance(slot.attribute, Placeholder)
+                 else slot.attribute.name)
+             self.outLine('%s%s%s %s %s' % (
+    @@ -135,13 +134,13 @@
+                     self.kwd('.'),
+                     attribute_name,
+                     self.kwd('='),
+    -                unicode(slot.value)),
+    +                str(slot.value)),
+                 indent=indent)
+             return self.output
+
+         def doLinkDefinition(self, l, indent=0):
+             association_name=(
+    -            unicode(l.association)
+    +            str(l.association)
+                     if isinstance(l.association, Placeholder)
+                 else l.association.name)
+             self.outLine('%s%s%s %s%s %s%s' % (
+    --- modelscript/scripts/objects/useprinter.py	(original)
+    +++ modelscript/scripts/objects/useprinter.py	(refactored)
+    @@ -1,6 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, \
+    -    division
+    +
+
+     from typing import Optional
+
+    @@ -93,7 +92,7 @@
+
+         def doObjectDefinition(self, o, indent=0):
+             class_name=(
+    -            unicode(o.class_)
+    +            str(o.class_)
+                     if isinstance(o.class_, Placeholder)
+                 else o.class_.name)
+             self.outLine('%s %s %s' % (
+    @@ -111,19 +110,19 @@
+
+         def doNestedSlot(self, slot, indent=0):
+             attribute_name=(
+    -            unicode(slot.attribute)
+    +            str(slot.attribute)
+                 if isinstance(slot.attribute, Placeholder)
+                 else slot.attribute.name)
+             self.outLine('%s %s %s' % (
+                         attribute_name,
+                         self.kwd('='),
+    -                    unicode(slot.value)),
+    +                    str(slot.value)),
+                     indent=indent)
+             return self.output
+
+         def doSlotDefinition(self, slot, indent=0):
+             attribute_name=(
+    -            unicode(slot.attribute)
+    +            str(slot.attribute)
+                 if isinstance(slot.attribute, Placeholder)
+                 else slot.attribute.name)
+             self.outLine('%s%s%s %s %s' % (
+    @@ -131,13 +130,13 @@
+                     self.kwd('.'),
+                     attribute_name,
+                     self.kwd('='),
+    -                unicode(slot.value)),
+    +                str(slot.value)),
+                 indent=indent)
+             return self.output
+
+         def doLinkDefinition(self, l, indent=0):
+             association_name=(
+    -            unicode(l.association)
+    +            str(l.association)
+                     if isinstance(l.association, Placeholder)
+                 else l.association.name)
+             self.outLine('%s%s%s %s%s %s%s' % (
+    --- modelscript/scripts/objects/parser/__init__.py	(original)
+    +++ modelscript/scripts/objects/parser/__init__.py	(refactored)
+    @@ -1,6 +1,6 @@
+     # coding=utf-8
+
+    -from __future__ import unicode_literals, print_function, absolute_import, division
+    +
+     from typing import Text, Union, Optional
+     import os
+
+    --- modelscript/scripts/participants/printer.py	(original)
+    +++ modelscript/scripts/participants/printer.py	(refactored)
+    @@ -1,6 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, \
+    -    division
+    +
+
+     from typing import Optional
+
+    --- modelscript/scripts/permissions/printer.py	(original)
+    +++ modelscript/scripts/permissions/printer.py	(refactored)
+    @@ -1,6 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, \
+    -    division
+    +
+
+     from typing import Text, List, Optional
+
+    --- modelscript/scripts/permissions/parser/__init__.py	(original)
+    +++ modelscript/scripts/permissions/parser/__init__.py	(refactored)
+    @@ -1,6 +1,6 RefactoringTool: @@
+     # coding=utf-8
+
+    -from __future__ import unicode_literals, print_function, absolute_import, division
+    +
+     from typing import Text, Union, List, Optional
+     import os
+
+    --- modelscript/scripts/relations/printer.py	(original)
+    +++ modelscript/scripts/relations/printer.py	(refactored)
+    @@ -1,6 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, \
+    -    division
+    +
+
+     from typing import Optional
+
+    --- modelscript/scripts/scenarios/printer.py	(original)
+    +++ modelscript/scripts/scenarios/printer.py	(refactored)
+    @@ -141,9 +141,9 @@
+                 self.doDescriptor(d)
+
+             #---- actor instances
+    -        if len(scenarioModel.actorInstanceNamed.values())>=1:
+    +        if len(list(scenarioModel.actorInstanceNamed.values()))>=1:
+                 self.outLine(self.kwd('actor instances'))
+    -            for ai in scenarioModel.actorInstanceNamed.values():
+    +            for ai in list(scenarioModel.actorInstanceNamed.values()):
+                     self.doActorInstance(ai)
+
+             #---- contexts
+    --- modelscript/scripts/scenarios/parser/__init__.py	(original)
+    +++ modelscript/scripts/scenarios/parser/__init__.py	(refactored)
+    @@ -3,7 +3,7 @@
+     Parser of scenario. This parser package creates ScenarioModelSource.
+     """
+
+    -from __future__ import unicode_literals, print_function, absolute_import, division
+    +
+     from typing import Text, Union, Optional
+     import os
+
+    --- modelscript/scripts/stories/parser/__init__.py	(original)
+    +++ modelscript/scripts/stories/parser/__init__.py	(refactored)
+    @@ -16,7 +16,7 @@
+     the AST corresponding to the story. Parameters makes it possible
+     to control a proprt subset of the (more general) language.
+     """
+    -from __future__ import print_function
+    +
+     from typing import Union, Text, Callable, Optional, List
+     from modelscript.base.grammars import AST
+     from modelscript.base.grammars import (
+    --- modelscript/scripts/stories/printer/__init__.py	(original)
+    +++ modelscript/scripts/stories/printer/__init__.py	(refactored)
+    @@ -2,7 +2,7 @@
+     """
+
+     """
+    -from __future__ import unicode_literals, print_function, absolute_import, division
+    +
+     from typing import Optional
+     from modelscript.base.printers import (
+         AbstractPrinter,
+    @@ -157,13 +157,13 @@
+             else:
+                 action=''
+             self.outLine(
+    -            u'%s%s%s%s %s %s' % (
+    +            '%s%s%s%s %s %s' % (
+                     self.kwd(action),
+                     step.objectName,
+                     self.kwd('.'),
+                     step.attributeName,
+                     self.kwd('='),
+    -                unicode(step.simpleValue)),
+    +                str(step.simpleValue)),
+                 indent=indent)
+             return self.output
+
+    --- modelscript/scripts/stories/printer/evaluation.py	(original)
+    +++ modelscript/scripts/stories/printer/evaluation.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, division
+    +
+     from typing import Optional
+
+     from modelscript.base.exceptions import (
+    @@ -92,7 +92,7 @@
+
+         def doCheckStepEvaluation(self, stepEval, indent):
+             self.outLine('CHECK ---------------- >>>', indent)
+    -        self.outLine(unicode(stepEval.metrics), indent)
+    +        self.outLine(str(stepEval.metrics), indent)
+             analysis_messages=stepEval.frozenState.stateCheck.messages
+             self.outLine('%s analysis issues' % len(analysis_messages))
+             self.outLine('\n    ->  '.join(analysis_messages))
+    --- modelscript/scripts/stories/useprinter/__init__.py	(original)
+    +++ modelscript/scripts/stories/useprinter/__init__.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, division
+    +
+     from typing import Optional
+
+     from modelscript.base.exceptions import (
+    @@ -144,7 +144,7 @@
+                 '! %s.%s := %s' % (
+                     step.objectName,
+                     step.attributeName,
+    -                unicode(step.simpleValue)),
+    +                str(step.simpleValue)),
+                 indent=indent)
+             return self.output
+
+    --- modelscript/scripts/stories/useprinter/evaluation.py	(original)
+    +++ modelscript/scripts/stories/useprinter/evaluation.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, division
+    +
+     from typing import Optional
+
+     from modelscript.base.printers import (
+    @@ -97,7 +97,7 @@
+
+         def doCheckStepEvaluation(self, stepEval, indent):
+             self.outLine('CHECK ---------------- >>>', indent)
+    -        self.outLine(unicode(stepEval.metrics), indent)
+    +        self.outLine(str(stepEval.metrics), indent)
+             analysis_messages=stepEval.frozenState.stateCheck.messages
+             self.outLine('%s analysis issues' % len(analysis_messages))
+             self.outLine('\n    ->  '.join(analysis_messages))
+    --- modelscript/scripts/tasks/printer.py	(original)
+    +++ modelscript/scripts/tasks/printer.py	(refactored)
+    @@ -1,6 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, \
+    -    division
+    +
+
+     from typing import Optional
+
+    --- modelscript/scripts/textblocks/printer.py	(original)
+    +++ modelscript/scripts/textblocks/printer.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, division
+    +
+     from typing import Optional
+
+     from modelscript.base.printers import (
+    --- modelscript/scripts/textblocks/parser/segments.py	(original)
+    +++ modelscript/scripts/textblocks/parser/segments.py	(refactored)
+    @@ -5,7 +5,7 @@
+     A segment is either regular piece of text or a reference.
+     The module is only used by the text parser.
+     """
+    -from __future__ import unicode_literals, print_function, absolute_import, division
+    +
+     from typing import Text, List, Optional, Tuple
+     import re
+
+    --- modelscript/scripts/usecases/plantuml.py	(original)
+    +++ modelscript/scripts/usecases/plantuml.py	(refactored)
+    @@ -40,7 +40,7 @@
+             self._out('skinparam packageStyle rectangle\n')
+             self._out('left to right direction\n')
+
+    -        for a in self.usecaseModel.actorNamed.values():
+    +        for a in list(self.usecaseModel.actorNamed.values()):
+                 self._out('actor %s\n' % a.name)
+
+             self._out('rectangle %s {\n' % (
+    --- modelscript/scripts/usecases/printer.py	(original)
+    +++ modelscript/scripts/usecases/printer.py	(refactored)
+    @@ -1,6 +1,5 @@
+     # coding=utf-8
+    -from __future__ import unicode_literals, print_function, absolute_import, \
+    -    division
+    +
+
+     from typing import Optional
+
+    @@ -39,7 +38,7 @@
+             if usecaseModel.isSystemDefined:
+                 self.doSystem(usecaseModel.system)
+
+    -        for actor in usecaseModel.actorNamed.values():
+    +        for actor in list(usecaseModel.actorNamed.values()):
+                 self.doActor(actor)
+
+             self.doInteractions(usecaseModel)
+    --- modelscript/scripts/usecases/parser/__init__.py	(original)
+    +++ modelscript/scripts/usecases/parser/__init__.py	(refactored)
+    @@ -123,7 +123,7 @@
+
+
+             if DEBUG>=1:
+    -            print('\nParsing %s\n' % self.fileName)
+    +            print(('\nParsing %s\n' % self.fileName))
+
+
+             # self.usecaseModel.system.setInfo(
+    --- modelscript/test/drivers/aui/test_aus_parser.py	(original)
+    +++ modelscript/test/drivers/aui/test_aus_parser.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     from modelscript.test.framework.assertions import (
+         simpleTestDeneratorAssertions)
+     from modelscript.scripts.megamodels.printer.megamodels import \
+    --- modelscript/test/drivers/base/test_graphs.py	(original)
+    +++ modelscript/test/drivers/base/test_graphs.py	(refactored)
+    @@ -13,7 +13,7 @@
+             assert list(genPaths(succs, 1,4))==[[1,3,4],[1,2,4]]
+             assert list(genPaths(succs, 1,1))==[]
+             assert list(genPaths(succs, 4,4))==[]
+    -        assert cycles(graph.keys(), succs)== []
+    +        assert cycles(list(graph.keys()), succs)== []
+
+         def testGraph2(self):
+             graph = {1: [2, 3, 5], 2: [1], 3: [1], 4: [2], 5: [2]}
+    @@ -25,7 +25,7 @@
+                    [[1, 5, 2, 1], [1, 3, 1], [1, 2, 1]]
+             assert list(genPaths(succs, 1,2))==\
+                    [[1, 5, 2], [1, 3, 1, 5, 2], [1, 3, 1, 2], [1, 2]]
+    -        assert cycles(graph.keys(), succs )== \
+    +        assert cycles(list(graph.keys()), succs)== \
+                    [[1, 5, 2, 1], [1, 3, 1], [1, 2, 1],
+                     [2, 1, 5, 2], [2, 1, 2],
+                     [3, 1, 3],
+
+    @@ -35,7 +35,7 @@
+             graph = {1: [1]}
+             succs=lambda x:graph[x]
+             assert list(genPaths(succs, 1,1))==[[1,1]]
+    -        assert cycles(graph.keys(), succs)== [[1,1]]
+    +        assert cycles(list(graph.keys()), succs)== [[1,1]]
+
+
+     # graph1={ 1: [2, 3, 5], 2: [1], 3: [1], 4: [2], 5: [2] }
+    --- modelscript/test/drivers/classes/test_cls_model.py	(original)
+    +++ modelscript/test/drivers/classes/test_cls_model.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     import os
+     from modelscript.scripts.classes.parser import ClassModelSource
+     from modelscript.test.framework import getTestFile
+    --- modelscript/test/drivers/classes/test_cls_parser.py	(original)
+    +++ modelscript/test/drivers/classes/test_cls_parser.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     from modelscript.test.framework.assertions import (
+         simpleTestDeneratorAssertions)
+     from modelscript.scripts.megamodels.printer.megamodels import \
+    --- modelscript/test/drivers/classes/test_cls_useprinter.py	(original)
+    +++ modelscript/test/drivers/classes/test_cls_useprinter.py	(refactored)
+    @@ -47,9 +47,9 @@
+         source = modelscript.scripts.classes.parser.ClassModelSource(
+             fileName=filename,)
+         if not source.isValid:
+    -        print(('##'*40+'\n')*10)
+    +        print((('##'*40+'\n')*10))
+             print('==> IGNORING INVALID MODEL')
+    -        print(('##'*40+'\n')*10)
+    +        print((('##'*40+'\n')*10))
+         else:
+             scm = source.classModel
+
+    @@ -57,9 +57,9 @@
+                 filename,
+                 extension='.use')
+
+    -        print('TST: '+'='*80)
+    -        print('TST: result in %s' % use_file_path)
+    -        print('TST: '+'='*80)
+    +        print(('TST: '+'='*80))
+    +        print(('TST: result in %s' % use_file_path))
+    +        print(('TST: '+'='*80))
+             usePrinter = UseClassPrinter(scm)
+             usePrinter.do()
+             usePrinter.save(use_file_path)
+    --- modelscript/test/drivers/glossaries/test_gls_parser.py	(original)
+    +++ modelscript/test/drivers/glossaries/test_gls_parser.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     from modelscript.test.framework.assertions import (
+         simpleTestDeneratorAssertions)
+     from modelscript.scripts.megamodels.printer.megamodels import \
+    --- modelscript/test/drivers/graphviz/test_tas_graphviz.py	(original)
+    +++ modelscript/test/drivers/graphviz/test_tas_graphviz.py	(refactored)
+    @@ -38,15 +38,15 @@
+             taskFileName=filename,
+         )
+         if not source.isValid:
+    -        print('#'*10+' ignore invalid file  %s' % filename )
+    +        print(('#'*10+' ignore invalid file  %s' % filename ))
+         else:
+             model = source.model
+             graphviz_file_path=Environment.getWorkerFileName(
+                 filename,
+                 extension='.tas.gv')
+    -        print('TST: '+'='*80)
+    -        print('TST: result in %s' % graphviz_file_path)
+    -        print('TST: '+'='*80)
+    +        print(('TST: '+'='*80))
+    +        print(('TST: result in %s' % graphviz_file_path))
+    +        print(('TST: '+'='*80))
+             gen = TaskGraphvizPrinter(model)
+             # print(gen.do(outputFile=puml_file_path))
+             # #--- plantuml: .puml -> .svg ----------------------
+    @@ -54,5 +54,5 @@
+             gen.generate(graphviz_file_path, format='png')
+             # gen.generate(puml_file_path, format='svg' )
+             print('TST: generated')
+    -        print('TST: '+'='*80)
+    +        print(('TST: '+'='*80))
+
+    --- modelscript/test/drivers/graphviz/test_uss_graphviz.py	(original)
+    +++ modelscript/test/drivers/graphviz/test_uss_graphviz.py	(refactored)
+    @@ -39,7 +39,7 @@
+             usecaseFileName=filename,
+         )
+         if not source.isValid:
+    -        print('#'*10+' ignore invalid file  %s' % filename )
+    +        print(('#'*10+' ignore invalid file  %s' % filename ))
+         else:
+             usm = source.usecaseModel
+
+    @@ -53,9 +53,9 @@
+             graphviz_file_path=Environment.getWorkerFileName(
+                 filename,
+                 extension='.usd.gv')
+    -        print('TST: '+'='*80)
+    -        print('TST: result in %s' % graphviz_file_path)
+    -        print('TST: '+'='*80)
+    +        print(('TST: '+'='*80))
+    +        print(('TST: result in %s' % graphviz_file_path))
+    +        print(('TST: '+'='*80))
+             gen = UsecaseGraphvizPrinter(usm)
+             # print(gen.do(outputFile=puml_file_path))
+             # #--- plantuml: .puml -> .svg ----------------------
+    @@ -63,5 +63,5 @@
+             gen.generate(graphviz_file_path, format='png')
+             # gen.generate(puml_file_path, format='svg' )
+             print('TST: generated')
+    -        print('TST: '+'='*80)
+    +        print(('TST: '+'='*80))
+
+    --- modelscript/test/drivers/kmade/test_kmade.py	(original)
+    +++ modelscript/test/drivers/kmade/test_kmade.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+
+     from modelscript.scripts.tasks.printer import (
+         TaskModelPrinter
+    --- modelscript/test/drivers/megamodels/test_metamodel_graph.py	(original)
+    +++ modelscript/test/drivers/megamodels/test_metamodel_graph.py	(refactored)
+    @@ -17,15 +17,15 @@
+         print('Metamodels:')
+
+         print('  Metamodels by id')
+    -    for (id,mm) in Megamodel._metamodelById.items():
+    -        print('    %s -> %s' % (id, unicode(mm)))
+    +    for (id,mm) in list(Megamodel._metamodelById.items()):
+    +        print(('    %s -> %s' % (id, str(mm))))
+
+         print('  Via metamodels()')
+         for mm in Megamodel.metamodels():
+    -        print('    %s' % mm.id)
+    +        print(('    %s' % mm.id))
+
+         print('Metamodel dependencies:')
+         for mmd in Megamodel.metamodelDependencies():
+    -        print('  %s' % repr(mmd))
+    +        print(('  %s' % repr(mmd)))
+
+         Megamodel.checkMetamodelLevel()
+    --- modelscript/test/drivers/modelc/test_modelc.py	(original)
+    +++ modelscript/test/drivers/modelc/test_modelc.py	(refactored)
+    @@ -47,8 +47,8 @@
+         def checkIssues(self):
+             if self.buildContext.nbIssues != self.issueNb:
+                 print('Nb of issues differs:')
+    -            print('Found:    %s' % self.buildContext.nbIssues)
+    -            print('Expected: %s' % self.issueNb)
+    +            print(('Found:    %s' % self.buildContext.nbIssues))
+    +            print(('Expected: %s' % self.issueNb))
+                 assert False
+
+         def checkSourceList(self):
+    @@ -57,8 +57,8 @@
+                 for f in self.buildContext.allSourceFileList ]
+             if basenames != self.sourceFileList() :
+                 print('Source list differs :')
+    -            print('Found:    %s' % basenames)
+    -            print('Expected: %s' % self.sourceFileList())
+    +            print(('Found:    %s' % basenames))
+    +            print(('Expected: %s' % self.sourceFileList()))
+                 assert False
+
+         def check(self, buildContext):
+    @@ -159,21 +159,21 @@
+         # enter the testcases directory and perform the test
+         with pushDirectory(TEST_CASES_DIRECTORY):
+             title=' modelc %s ' % cmd
+    -        print('='*80)
+    -        print('='*80)
+    +        print(('='*80))
+    +        print(('='*80))
+             if len(title)<=60:
+    -            print(title.center(80, '='))
+    +            print((title.center(80, '=')))
+             for arg in testCase.args:
+    -            print('##  %s' % arg)
+    -        print('='*80)
+    -        print('='*80)
+    +            print(('##  %s' % arg))
+    +        print(('='*80))
+    +        print(('='*80))
+             print('')
+             bc=BuildContext(testCase.args)
+             bc.display()
+             testCase.check(bc)
+             from modelscript.megamodels import Megamodel
+             m=Megamodel.model
+    -        print('\n'*4)
+    +        print(('\n'*4))
+
+
+     def testFinalMegamodel():
+    --- modelscript/test/drivers/objects/test_obs_model.py	(original)
+    +++ modelscript/test/drivers/objects/test_obs_model.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     import os
+     from modelscript.scripts.objects.parser import ObjectModelSource
+     from modelscript.test.framework import getTestFile
+    @@ -28,7 +28,7 @@
+         def testSlot(self):
+             o=self.model.object('zoe')
+             assert len(o.slots)==2
+    -        assert unicode(o.slo t('name').simpleValue)=="'Zoe Zarwin'"
+    +        assert str(o.slot('name').simpleValue)=="'Zoe Zarwin'"
+             assert o.slot('name').simpleValue.stringRepr=="'Zoe Zarwin'"
+             assert o.slot('name').simpleValue.value=="Zoe Zarwin"
+             assert o.slot('name').attribute.name=='name'
+    --- modelscript/test/drivers/objects/test_obs_parser.py	(original)
+    +++ modelscript/test/drivers/objects/test_obs_parser.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     from modelscript.test.framework.assertions import (
+         simpleTestDeneratorAssertions)
+     from modelscript.scripts.megamodels.printer.megamodels import \
+    --- modelscript/test/drivers/objects/test_obs_useprinter.py	(original)
+    +++ modelscript/test/drivers/objects/test_obs_useprinter.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     import logging
+
+     from modelscript.interfaces.environment import Environment
+    @@ -80,7 +80,7 @@
+                     for inv_output in checkPoint.invariantOutputs:
+                         print(inv_output.className
+                               +'.'+inv_output.invariantName
+    -                          +' '+unicode(inv_output.hasFailed))
+    +                          +' '+str(inv_output.hasFailed))
+                         # if inv_output.hasFailed:
+                         #     print('TST:    ',inv_output.violatingObjectNames)
+                         #     print('TST:    ',inv_output.violatingObjectType)
+    --- modelscript/test/drivers/participants/test_pas_parser.py	(original)
+    +++ modelscript/test/drivers/participants/test_pas_parser.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     from modelscript.test.framework.assertions import (
+         simpleTestDeneratorAssertions)
+     from modelscript.scripts.megamodels.printer.megamodels import \
+    --- modelscript/test/drivers/permissions/test_pes_parser.py	(original)
+    +++ modelscript/test/drivers/permissions/test_pes_parser.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     from modelscript.test.framework.assertions import (
+         simpleTestDeneratorAssertions)
+     from modelscript.scripts.megamodels.printer.megamodels import \
+    --- modelscript/test/drivers/plantuml/test_cls_plantuml.py	(original)
+    +++ modelscript/test/drivers/plantuml/test_cls_plantuml.py	(refactored)
+    @@ -37,9 +37,9 @@
+         source = modelscript.scripts.classes.parser.ClassModelSource(
+             fileName=filename,)
+         if not source.isValid:
+    -        print(('##'*40+'\n')*10)
+    +        print((('##'*40+'\n')*10))
+             print('==> IGNORING INVALID MODEL')
+    -        print(('##'*40+'\n')*10)
+    +        print((('##'*40+'\n')*10))
+         else:
+             obm = source.classModel
+
+    @@ -47,11 +47,11 @@
+                 filename,
+                 extension='.cls.puml')
+
+    -        print('TST: '+'='*80)
+    -        print('TST: result in %s' % puml_file_path)
+    -        print('TST: '+'='*80)
+    +        print(('TST: '+'='*80))
+    +        print(('TST: result in %s' % puml_file_path))
+    +        print(('TST: '+'='*80))
+             gen = ClassPlantUMLPrinter(obm)
+             gen.generate(puml_file_path, format='png' )
+             print('TST: .png generated')
+    -        print('TST: '+'='*80)
+    +        print(('TST: '+'='*80))
+
+    --- modelscript/test/drivers/plantuml/test_obs_plantuml.py	(original)
+    +++ modelscript/test/drivers/plantuml/test_obs_plantuml.py	(refactored)
+    @@ -38,7 +38,7 @@
+             fileName=filename,
+         )
+         if not source.isValid:
+    -        print('#'*10+' ignore invalid file  %s' % filename )
+    +        print(('#'*10+' ignore invalid file  %s' % filename ))
+         else:
+             obm = source.objectModel
+
+    @@ -46,11 +46,11 @@
+                 filename,
+                 extension='.obs.puml')
+
+    -        print('TST: '+'='*80)
+    -        print('TST: result in %s' % puml_file_path)
+    -        print('TST: '+'='*80)
+    +        print(('TST: '+'='*80))
+    +        print(('TST: result in %s' % puml_file_path))
+    +        print(('TST: '+'='*80))
+             gen = ObjectPlantUMLPrinter(obm)
+             gen.generate(puml_file_path, format='png' )
+             print('TST: .png generated')
+    -        print('TST: '+'='*80)
+    +        print(('TST: '+'='*80))
+    --- modelscript/test/drivers/plantuml/test_uss_plantuml.py	(original)
+    +++ modelscript/test/drivers/plantuml/test_uss_plantuml.py	(refactored)
+    @@ -38,7 +38,7 @@
+             usecaseFileName=filename,
+         )
+         if not source.isValid:
+    -        print('#'*10+' ignore invalid file  %s' % filename )
+    +        print(('#'*10+' ignore invalid file  %s' % filename ))
+         else:
+             usm = source.usecaseModel
+
+    @@ -53,14 +53,14 @@
+                 filename,
+                 extension='.usd.puml')
+
+    -        print('TST: '+'='*80)
+    -        print('TST: result in %s' % puml_file_path)
+    -        print('TST: '+'='*80)
+    +        print(('TST: '+'='*80))
+    +        print(('TST: result in %s' % puml_file_path))
+    +        print(('TST: '+'='*80))
+             gen = UsecasePlantUMLPrinter(usm)
+             # print(gen.do(outputFile=puml_file_path))
+             # #--- plantuml: .puml -> .svg ----------------------
+             # puml_engine.generate(puml_file_path)
+             gen.generate(puml_file_path, format='png' )
+             print('TST: .png generated')
+    -        print('TST: '+'='*80)
+    +        print(('TST: '+'='*80))
+
+    --- modelscript/test/drivers/relations/test_res_parser.py	(original)
+    +++ modelscript/test/drivers/relations/test_res_parser.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     from modelscript.test.framework.assertions import (
+         simpleTestDeneratorAssertions)
+     from modelscript.scripts.megamodels.printer.megamodels import \
+    --- modelscript/test/drivers/scenarios/test_scs_parser.py	(original)
+    +++ modelscript/test/drivers/scenarios/test_scs_parser.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     from modelscript.test.framework.assertions import (
+         simpleTestDeneratorAssertions)
+     from modelscript.scripts.megamodels.printer.megamodels import \
+    --- modelscript/test/drivers/tasks/test_tas_parser.py	(original)
+    +++ modelscript/test/drivers/tasks/test_tas_parser.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     from modelscript.test.framework.assertions import (
+         simpleTestDeneratorAssertions)
+     from modelscript.scripts.megamodels.printer.megamodels import \
+    --- modelscript/test/drivers/use/test_soil_parser.py	(original)
+    +++ modelscript/test/drivers/use/test_soil_parser.py	(refactored)
+    @@ -44,16 +44,16 @@
+             fileName=filename,)
+
+         if not source.isValid:
+    -        print(('##'*40+'\n')*10)
+    +        print((('##'*40+'\n')*10))
+             print('==> IGNORING INVALID MODEL')
+    -        print(('##'*40+'\n')*10)
+    +        print((('##'*40+'\n')*10))
+             return
+
+         obm = source.objectModel
+         if not obm.hasClassModel:
+    -        print(('##'*40+'\n')*10)
+    +        print((('##'*40+'\n')*10))
+             print('==> OBJECTY MODEL HAS NO CLASS MODEL : IGNORED')
+    -        print(('##'*40+'\n')*10)
+    +        print((('##'*40+'\n')*10))
+             return
+
+         #------------ generate .soil ----------------------
+    @@ -65,13 +65,13 @@
+         usePrinter = UseStoryPrinter(story)
+         usePrinter.do()
+         usePrinter.save(soil_file_path)
+    -    print('TST: '+'='*80)
+    -    print('TST: result in %s' % soil_file_path)
+    -    print('TST: '+'='*80)
+    +    print(('TST: '+'='*80))
+    +    print(('TST: result in %s' % soil_file_path))
+    +    print(('TST: '+'='*80))
+
+         clm = obm.classModel
+         class_ocl_checker=clm.classOCLChecker
+    -    print('TST:', class_ocl_checker.withUSE, not obm.hasBigIssues)
+    +    print(('TST:', class_ocl_checker.withUSE, not obm.hasBigIssues))
+         if class_ocl_checker.withUSE and not obm.hasBigIssues:
+             use_file_path=class_ocl_checker.useFileName
+             engine=USEEngine
+    --- modelscript/test/drivers/usecases/test_uss_parser.py	(original)
+    +++ modelscript/test/drivers/usecases/test_uss_parser.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__ import print_function
+    +
+     from modelscript.test.framework.assertions import (
+         simpleTestDeneratorAssertions)
+     from modelscript.scripts.megamodels.printer.megamodels import \
+    --- modelscript/test/framework/__init__.py	(original)
+    +++ modelscript/test/framework/__init__.py	(refactored)
+    @@ -70,7 +70,7 @@
+                 m=re.search(pattern, core)
+                 if not m:
+                     return False
+    -        if isinstance(extension, (str, unicode)):
+    +        if isinstance(extension, str):
+                 return ext==extension
+             elif isinstance(extension, list):
+                 return ext in extension
+    @@ -105,12 +105,12 @@
+
+
+     def getSoilFileList(nameOrList):
+    -    if isinstance(nameOrList, (str, unicode)):
+    +    if isinstance(nameOrList, str):
+             # add the prefix if necessary
+             with_prefix = getFile(nameOrList, ['soil'])
+             return glob.glob(with_prefix)
+         else:
+    -        return map(getSoilFile, nameOrList)
+    +        return list(map(getSoilFile, nameOrList))
+
+
+     def getZipFile(name):
+    --- modelscript/test/framework/assertions.py	(original)
+    +++ modelscript/test/framework/assertions.py	(refactored)
+    @@ -1,5 +1,5 @@
+     # coding=utf-8
+    -from __future__  import print_function
+    +
+
+     from typing import Text, Dict, Optional
+     import os
+    --- modelscript/tools/graphviz/__init__.py	(original)
+    +++ modelscript/tools/graphviz/__init__.py	(refactored)
+    @@ -1,4 +1,4 @@
+    -from __future__ import absolute_import
+    +
+     import os
+     from typing import Dict, Text, Optional
+     from graphviz import (
+    --- modelscript/tools/kmade/engine/__init__.py	(original)
+    +++ modelscript/tools/kmade/engine/__init__.py	(refactored)
+    @@ -204,8 +204,8 @@
+                 name,
+                 modality,
+                 executant,
+    -            unicode(optional),
+    -            unicode(interruptible),
+    +            str(optional),
+    +            str(interruptible),
+                 '(#%s)' % str()
+             ])
+             print(_)
+    @@ -225,9 +225,9 @@
+         for file in sys.argv:
+             if file.endswith('.kxml'):
+                 if os.path.isfile(file):
+    -                print('PROCESSING %s' % file)
+    +                print(('PROCESSING %s' % file))
+                     reader=KmadeReader(file)
+                     model=reader.taskModel()
+    -                print(TaskModelPrinter(model).doModelContent())
+    +                print((TaskModelPrinter(model).doModelContent()))
+                 else:
+    -                print('IGNORING %s (file does not exist)' % file )
+    +                print(('IGNORING %s (file does not exist)' % file ))
+    --- modelscript/tools/plantuml/engine/__init__.py	(original)
+    +++ modelscript/tools/plantuml/engine/__init__.py	(refactored)
+    @@ -47,14 +47,14 @@
+                 into
+                     /outputdir/file.puml.png
+                 """
+    -            print('FF'*10, 'file', outputdir)
+    -            print('FF'*10, 'ouputdir', outputdir)
+    +            print(('FF'*10, 'file', outputdir))
+    +            print(('FF'*10, 'ouputdir', outputdir))
+
+                 abs_outputdir=os.path.abspath(
+                     os.path.join(
+                         os.path.dirname(file),
+                         outputdir))
+    -            print('FF'*10, 'abs_outputdir', outputdir)
+    +            print(('FF'*10, 'abs_outputdir', outputdir))
+                 base_file=os.path.splitext(
+                     os.path.basename(file))[0]
+                 generated_file_name=os.path.join(
+    @@ -64,7 +64,7 @@
+                     abs_outputdir,
+                     base_file+'.puml.'+ format
+                 )
+    -            print('FF'*10, generated_file_name)
+    +            print(('FF'*10, generated_file_name))
+                 assert os.path.isfile(generated_file_name)
+                 os.rename(generated_file_name, new_file_name)
+
+    @@ -80,7 +80,7 @@
+                 outputDir
+             )
+             errno=os.system(cmd)
+    -        print('FF' * 10, 'outputDir',outputDir)
+    +        print(('FF' * 10, 'outputDir',outputDir))
+
+             # TODO:3 check how to get errors from generation
+             if errno != 0:
+    --- modelscript/tools/use/checkparser.py	(original)
+    +++ modelscript/tools/use/checkparser.py	(refactored)
+    @@ -23,7 +23,7 @@
+             --* subexpressions
+     """
+
+    -from __future__ import print_function
+    +
+     from typing import List, Text, Optional
+     import re
+     from collections import OrderedDict
+    --- modelscript/tools/use/engine/__init__.py	(original)
+    +++ modelscript/tools/use/engine/__init__.py	(refactored)
+    @@ -205,8 +205,8 @@
+                 useSource,
+                 soilSource))
+             if DEBUG>=3 or Config.realtimeUSE>=1:
+    -            print('USE: '+'.'*80)
+    -            print('USE:    USE EXECUTION %s' % cls.command)
+    +            print(('USE: '+'.'*80))
+    +            print(('USE:    USE EXECUTION %s' % cls.command))
+             cls.directory = executionDirectory if executionDirectory is not None \
+                          else os.getcwd()
+             # cls.directory = executionDirectory if executionDirectory is not None \
+    @@ -217,19 +217,19 @@
+             # log.info('Execute USE OCL in %s: %s', cls.directory, cls.command)
+             if DEBUG>=2 or Config.realtimeUSE>=1:
+                 print('USE:    Execute USE OCL')
+    -            print('USE:        working dir: %s' % cls.directory)
+    -            print('USE:        use file   : %s' % useSource)
+    -            print('USE:        soil file  : %s' % soilSource)
+    -            print('USE:        errWithOut : %s' % errWithOut)
+    -            print('USE:        output     : %s' % output_filename)
+    +            print(('USE:        working dir: %s' % cls.directory))
+    +            print(('USE:        use file   : %s' % useSource))
+    +            print(('USE:        soil file  : %s' % soilSource))
+    +            print(('USE:        errWithOut : %s' % errWithOut))
+    +            print(('USE:        output     : %s' % output_filename))
+                 if cls.outAndErr:
+    -                print('USE:        output     : %s' % errors_filename)
+    +                print(('USE:        output     : %s' % errors_filename))
+
+             os.chdir(cls.directory)
+             cls.commandExitCode = os.system(cls.command)
+             os.chdir(previousDirectory)
+             if DEBUG>=2 or Config.realtimeUSE>=1:
+    -            print('USE:        exit code  : %s' % cls.commandExitCode)
+    +            print(('USE:        exit code  : %s' % cls.commandExitCode))
+             if errWithOut:
+                  if cls.commandExitCode != 0:
+                      #FIXME:- was != 0 but  with a bug
+    @@ -239,8 +239,8 @@
+             else:
+                 cls.out = readAndRemove(output_filename)
+                 if DEBUG >= 2 or Config.realtimeUSE >= 1:
+    -                print('USE:        output of %s lines' %
+    -                      len(cls.out.split('\n')))
+    +                print(('USE:        output of %s lines' %
+    +                      len(cls.out.split('\n'))))
+                 # log.debug('----- output -----')
+                 # log.debug(cls.out)
+                 # log.debug('----- end of output ------')
+    @@ -248,14 +248,14 @@
+                 cls.err = readAndRemove(errors_filename)
+                 if len(cls.err) > 0:
+                     if DEBUG >= 2 or Config.realtimeUSE >= 1:
+    -                    print('USE:        WITH ERRORS of %s lines:'
+    +                    print(('USE:        WITH ERRORS of %s lines:'
+                               '(first lines below)' %
+    -                        len(cls.err.split('\n'))   )
+    +                        len(cls.err.split('\n'))   ))
+                     LINE_COUNT = 3
+                     for err_line in cls.err.split('\n')[:LINE_COUNT]:
+                         if err_line != '':
+                             if DEBUG >= 2 or Config.realtimeUSE >= 1:
+    -                            print('USE:         ERROR: %s' % err_line)
+    +                            print(('USE:         ERROR: %s' % err_line))
+                 else:
+                     if DEBUG >= 2 or Config.realtimeUSE >= 1:
+                         print('USE:        without anything in stderr')
+    @@ -264,7 +264,7 @@
+                 # log.debug(cls.err)
+                 # log.debug('----- end of errors ------')
+             if DEBUG >= 2 or Config.realtimeUSE >= 1:
+    -            print('USE: ' + '.' * 80)
+    +            print(('USE: ' + '.' * 80))
+             return cls.commandExitCode
+
+         @classmethod
+    @@ -324,14 +324,14 @@
+                 prequelFileName=useFileName
+             soil=cls._soilHelper('infoModelAndQuit.soil')
+             if DEBUG>=2:
+    -            print('USE: '+' analyzeUSEModel '.center(80,'#'))
+    +            print(('USE: '+' analyzeUSEModel '.center(80,'#')))
+             cls._execute(
+                 useFileName,
+                 soil,
+                 basicFileName=prequelFileName,
+                 workerSpace=workerSpace)
+             if DEBUG>=2:
+    -            print('USE: '+' END analyzeUSEModel '.center(80,'#'))
+    +            print(('USE: '+' END analyzeUSEModel '.center(80,'#')))
+             return cls.commandExitCode
+
+         @classmethod
+    @@ -450,8 +450,8 @@
+                 Create a trace (-> .stc) and then perform a merge (-> .sex)
+                 """
+                 if DEBUG>=3:
+    -                print('USE: executeSoilFileAsSex: Soil file: %s'
+    -                      % abs_soil_file)
+    +                print(('USE: executeSoilFileAsSex: Soil file: %s'
+    +                      % abs_soil_file))
+                     displayFileContent(abs_soil_file)
+                     print('USE: executeSoilFileAsSex: executeSoilFileAsTrace')
+                 trace_filename = cls.executeSoilFileAsTrace(
+    @@ -459,10 +459,10 @@
+                     abs_soil_file,
+                     prequelFileName=prequel_file_name)
+                 if DEBUG>=3:
+    -                print(
+    +                print((
+                         'USE: executeSoilFileAsSex: '
+                         'TRACE RESULT saved in %s'
+    -                    % trace_filename)
+    +                    % trace_filename))
+                     displayFileContent(trace_filename, prefix='USE:    ')
+                     print('USE: executeSoilFileAsSex: now merging')
+                 from modelscript.tools.use.engine.merger import merge
+    @@ -471,13 +471,13 @@
+                     trace_filename,
+                     prequelFileName=prequel_file_name)
+                 if DEBUG>=3:
+    -                print('USE: executeSoilFileAsSex: '
+    -                    'SEX FILE saved in %s' % sex_filename)
+    +                print(('USE: executeSoilFileAsSex: '
+    +                    'SEX FILE saved in %s' % sex_filename))
+                     displayFileContent(sex_filename)
+                 return sex_filename
+
+             if DEBUG>=2:
+    -            print('USE: '+' executeSoilFileAsSex '.center(80,'#'))
+    +            print(('USE: '+' executeSoilFileAsSex '.center(80,'#')))
+             if prequelFileName is None:
+                 prequelFileName=soilFile
+             abs_use_file=os.path.realpath(useFile)
+    @@ -497,7 +497,7 @@
+             with open(sex_filename, 'rU') as f:
+                 cls.outAndErr=f.read()
+             if DEBUG >= 2:
+    -            print('USE: ' + ' END executeSoilFileAsSex '.center(80, '#'))
+    +            print(('USE: ' + ' END executeSoilFileAsSex '.center(80, '#')))
+             return sex_filename
+
+     def displayFileContent(filename, prefix='    ', length=5):
+    @@ -508,13 +508,13 @@
+             lines = list(
+                 line.rstrip() for line in f.readlines())
+
+    -    print(prefix+'%i line(s) in %s :' % (len(lines), filename))
+    +    print((prefix+'%i line(s) in %s :' % (len(lines), filename)))
+         prefixed_lines=[
+    -        prefix+unicode(n+1)+' | ' +l
+    +        prefix+str(n+1)+' | ' +l
+             for (n,l) in enumerate(lines[:length])]
+    -    print('\n'.join(prefixed_lines))
+    +    print(('\n'.join(prefixed_lines)))
+         if len(lines)>length:
+    -        print(prefix+'  | ... %s more lines ...' %(len(lines)-length))
+    +        print((prefix+'  | ... %s more lines ...' %(len(lines)-length)))
+
+
+
+    --- modelscript/tools/use/engine/merger.py	(original)
+    +++ modelscript/tools/use/engine/merger.py	(refactored)
+    @@ -33,7 +33,7 @@
+
+     #TODO:3 add support for errors as well as corresponding test cases
+
+    -from __future__ import  print_function
+    +
+     from typing import Text, Optional
+     import re
+     import os

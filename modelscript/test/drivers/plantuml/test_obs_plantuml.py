@@ -38,7 +38,7 @@ def doBuildDiagram(filename):
         fileName=filename,
     )
     if not source.isValid:
-        print('#'*10+' ignore invalid file  %s' % filename )
+        print(('#'*10+' ignore invalid file  %s' % filename ))
     else:
         obm = source.objectModel
 
@@ -46,11 +46,11 @@ def doBuildDiagram(filename):
             filename,
             extension='.obs.puml')
 
-        print('TST: '+'='*80)
-        print('TST: result in %s' % puml_file_path)
-        print('TST: '+'='*80)
+        print(('TST: '+'='*80))
+        print(('TST: result in %s' % puml_file_path))
+        print(('TST: '+'='*80))
         gen = ObjectPlantUMLPrinter(obm)
         gen.generate(puml_file_path, format='png' )
         print('TST: .png generated')
-        print('TST: '+'='*80)
+        print(('TST: '+'='*80))
 

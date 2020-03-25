@@ -49,7 +49,7 @@ class LinkObject(Object, Link):
         # This could be an issue otherwize since link have no name.
         self.name=name
         model._linkObjectNamed[self.name]=self
-        print('TT'*10, 'adding object', model._linkObjectNamed)
+        print(('TT'*10, 'adding object', model._linkObjectNamed))
 
 
     # def delete(self):

@@ -42,7 +42,7 @@ play/
 *.svg
 
 _ARCHIVES/
-.venv/
+.venv*/
 *.old
 
 # Python / Jython

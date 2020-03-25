@@ -8,11 +8,10 @@ from modelscript.metamodels.classes import (
 from modelscript.base.exceptions import (
     MethodToBeDefined)
 
-class SimpleType(PackagableElement, Item):
+class SimpleType(PackagableElement, Item, metaclass=abc.ABCMeta):
     """
     Simple types.
     """
-    __metaclass__ = abc.ABCMeta
 
     def __init__(self,
                  name,
@@ -95,7 +94,7 @@ class AttributeType(object):
 
     def __str__(self):
         return (
-              unicode(self.simpleType)
+              str(self.simpleType)
             + ('[0..1]' if self.isOptional else '')
         )
 
@@ -112,9 +111,7 @@ class UnspecifiedValue(object):
 UNSPECIFIED=UnspecifiedValue()
 
 
-class SimpleValue(object):
-
-    __metaclass__ = abc.ABCMeta
+class SimpleValue(object, metaclass=abc.ABCMeta):
 
     @abc.abstractproperty
     def type(self):
@@ -146,9 +143,7 @@ class EnumerationValue(object):
         return self.value==enumValue.value
 
 
-class DataValue(SimpleValue):
-
-    __metaclass__ = abc.ABCMeta
+class DataValue(SimpleValue, metaclass=abc.ABCMeta):
 
     def __init__(self, stringRepr, value, type):
         self.stringRepr=stringRepr
