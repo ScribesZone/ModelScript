@@ -1,3 +1,7 @@
+    //@Metric "actor" 1
+    //@Metric "system" 0
+    //@Metric "usecase" 3
+
 usecase model Us_interactions01
 
 
