@@ -1,6 +1,9 @@
     //@Issue cck.UsecaseModel.ActorLimitsChecker 1
     //@Issue cck.System.UsecaseLimitsChecker 1
     //@Issue else *
+    //@Metric "actor" 0
+    //@Metric "system" 0
+    //@Metric "usecase" 3
 
 -- this is a comment
 usecase model Us_comment01
