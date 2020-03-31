@@ -1,5 +1,83 @@
 # coding=utf-8
 
+"""Assertions checking testcases against expected issues and metrics.
+
+Issuebox can be tested with a set of pairs like
+* (1) cl.syn.Association.AttRole 3
+* (2) else *
+* (3) level *
+
+The first line checks that there a 3 issues for the given issue code.
+The second line means that there can be any other issues.
+The third line means that any issues of any levels can exist.
+
+NOTE: the usage of "level" is not clear. This documentation should be
+improved.
+
+If not specified the "else" value is 0 meaning that no others issues
+could exist. Otherwise the "else" value must be "*" meaning that some
+other issues may exist.
+
+The specification of expected issues/metrics can be either :
+
+*   comment-based: expected results are embedded in testcases as comments.
+
+*   code-based: expected results are represented as
+    datastructures in the test drivers.
+
+comment-based assertions
+------------------------
+
+Assertions are represented as comments in testcases as following :
+
+    //@Issue cl.syn.Association.AttRole 1
+    //@Issue else *
+
+    //@Metric "class" 6
+    //@Metric "plain class" 5
+    //@Metric "association" 1
+
+code-based assertions
+---------------------
+
+This package allows to check assertions against test case.
+Tests can be written as following ::
+
+    EXPECTED_ISSUES={
+        'gl-mega01.gls':    {
+            #'mgm.sem.Import.Allowed':1,
+            E:2,
+              level:'*',
+              'else':0
+        },
+    }
+    EXPECTED_METRICS={
+        'myFile.gls': {
+            'myIssueLabel' : 3
+        }
+    }
+
+    def testGenerator_Assertions():
+        res = checkAllAssertionsForDirectory(
+            relTestcaseDir='gls',
+            extension=['.gls'],
+            expectedIssuesFileMap=EXPECTED_ISSUES,
+            expectedMetricsFileMap=EXPECTED_METRICS)
+
+        for (file , expected_issue_map, expected_metrics_map) in res:
+            yield (
+                checkValidIssues,
+                file,
+                glossaries.METAMODEL,
+                expected_issue_map,
+                expected_metrics_map)
+
+"""
+
+__all__=(
+    "checkAllAssertionsForDirectory",
+    "simpleTestDeneratorAssertions"
+)
 
 from typing import Text, Dict, Optional
 import os
@@ -14,44 +92,6 @@ from modelscript.base.issues import (
 from modelscript.test.framework import getTestFile, patternFromArgV, \
     getTestFiles
 from modelscript.megamodels import Megamodel
-
-#------------------------------------------------------------------------
-# This package allows to check assertions against test case.
-# The test can be written like that.
-
-        # EXPECTED_ISSUES={
-        #     # 'gl-mega01.gls':    {
-        #     #     #'mgm.sem.Import.Allowed':1,
-        #     #     E:2,
-        #     #       level:'*',
-        #     #       'else':0
-        #     # },
-        # }
-        # EXPECTED_METRICS={
-        #     #     'myFile.gls': {
-        #     #         'myIssueLabel' : 3
-        #     #     }
-        # }
-        #
-        # def testGenerator_Assertions():
-        #     res = checkAllAssertionsForDirectory(
-        #         relTestcaseDir='gls',
-        #         extension=['.gls'],
-        #         expectedIssuesFileMap=EXPECTED_ISSUES,
-        #         expectedMetricsFileMap=EXPECTED_METRICS)
-        #
-        #     for (file , expected_issue_map, expected_metrics_map) in res:
-        #         yield (
-        #             checkValidIssues,
-        #             file,
-        #             glossaries.METAMODEL,
-        #             expected_issue_map,
-        #             expected_metrics_map)
-
-
-# If no assertions are provided in code then it is
-# assertions can be written in directly in files.
-#------------------------------------------------------------------------
 
 
 F=Levels.Fatal
@@ -69,13 +109,13 @@ def assertIssueBox(
         issueBox,
         expectedSummaryMap=None):
     #type: (IssueBox, ExpectedIssueDict) -> None
-
-    # Assert that an issuebox match an expected map.
-    #
-    # A map is like this
-    #
-    # {F: 0, E:1, 'mgm.sem.Import.Allowed':1 'else': 0},
-    # {F: 0, E:1, 'mgm.sem.Import.Allowed':2 'else': '*'},
+    """Assert that an issuebox match an expected map.
+    A map is as following::
+        {F: 0, E:1, 'mgm.sem.Import.Allowed':1 'else': 0},
+        {F: 0, E:1, 'mgm.sem.Import.Allowed':2 'else': '*'},
+    :param issueBox:
+    :param expectedSummaryMap:
+    """
 
     def printError(nbFound, label, nbExpected):
         print(
@@ -187,19 +227,18 @@ def assertIssueBox(
         if unexpected:
             printActualSummaries()
 
-        assert not unexpected, 'Unexpected number of issues'
+        assert not unexpected, \
+            'Unexpected number of issues. See above message for details'
+
 
 def assertMetrics(
         metrics,
         expectedMetricsMap=None):
-
-
-    # Assert that an issuebox match an expected map.
-    #
-    # A map is like this
-    #
-    # {F: 0, E:1, 'mgm.sem.Import.Allowed':1 'else': 0},
-    # {F: 0, E:1, 'mgm.sem.Import.Allowed':2 'else': '*'},
+    """Assert that an set of metrics match an expected map.
+    :param metrics: modelscript.base.metrics.Metrics
+    :param expectedMetricsMap:
+    :return:
+    """
 
 
     def printError(nbFound, label, nbExpected):
@@ -230,7 +269,8 @@ def assertMetrics(
 
     printActualSummary()
 
-    assert not unexpected, 'Unexpected metrics'
+    assert not unexpected, \
+        'Unexpected metrics. Check message above for moore details'
 
 RE_ISSUE_HEADER=r'^ *// *@ *Issue'
 RE_ISSUE_LABEL=r'(?P<label>[\w.]+)'
@@ -244,7 +284,10 @@ RE_METRIC_COUNT=r'(?P<count>([\d]+|\*))'
 RE_METRIC_SPEC='%s +%s +%s' % (
     RE_METRIC_HEADER, RE_METRIC_LABEL, RE_METRIC_COUNT)
 
-def extractExpectedIssuesMapFromFile(fileName):
+
+def _extractExpectedIssuesMapFromFile(fileName):
+    """Parse a source file and extract the issue specification.
+    """
 
     def error(lineNo, message):
         text='%s:%i. Error: %s' % (fileName, lineNo, message)
@@ -278,7 +321,7 @@ def extractExpectedIssuesMapFromFile(fileName):
                 error(line_index+1,'Pattern do not match')
     return expectedIssuesMap
 
-def extractExpectedMetricsMapFromFile(fileName):
+def _extractExpectedMetricsMapFromFile(fileName):
 
     def error(lineNo, message):
         print('TST: %s:%i. Error: %s' % (fileName, lineNo, message))
@@ -311,6 +354,7 @@ def checkAllAssertionsForDirectory(
     If the expected map are given, search first in this
     map for assertion otherwise the assertion will be extracted
     from each file.
+    This function is called by simpleTestDeneratorAssertions.
     :param relTestcaseDir: directory relative to testcases
     :param extension: the extension of the files to check
     :param pattern: a pattern to select files via re.search
@@ -336,14 +380,14 @@ def checkAllAssertionsForDirectory(
         else:
             full_filename=getTestFile(test_file)
             # extract issues map from file, could be None
-            issuemap=extractExpectedIssuesMapFromFile(full_filename)
+            issuemap=_extractExpectedIssuesMapFromFile(full_filename)
         if basename in expectedMetricsFileMap:
             # first look in the map provided as code
             metricsmap = expectedMetricsFileMap[basename]
         else:
             full_filename = getTestFile(test_file)
             # extract issues map from file, could be None
-            metricsmap = extractExpectedMetricsMapFromFile(full_filename)
+            metricsmap = _extractExpectedMetricsMapFromFile(full_filename)
         l.append((test_file, issuemap, metricsmap))
     return l
 #
@@ -370,17 +414,19 @@ def checkAllAssertionsForDirectory(
 #         l.append((test_file, expected_issues))
 #     return l
 
-# def extractExpectedIssueMapFromFile(fileName):
+# def exractExpectedIssueMapFromFile(fileName):
 
 
 
-def checkValidIssues(
+def checkIssuesAndMetrics(
         reltestfile,
         metamodel,
         expectedIssues=None,
         expectedMetrics=None ):
     #type: (Text, Metamodel, ExpectedIssueDict, ExpectedMetricDict) -> None
     """
+    Check issues/metrics assertion for a given file. This function is
+    called by the simpleTestDeneratorAssertions generator.
     :param reltestfile: the file to test
     :param metamodel: the metamodel of the file
     :param expectedIssues: the map of issue expected
@@ -406,7 +452,7 @@ def checkValidIssues(
     assertIssueBox(source.fullIssueBox, expectedIssues)
     assertMetrics(source.fullMetrics, expectedMetrics)
 
-    print('\n'+'TST:'+'==' *10 + ' printing model '+'='*40+'\n')
+    print('\n'+'TST:'+'==' *10 + ' printing metrics '+'='*40+'\n')
     print(source.fullMetrics)
     print('TST:'+'=='*10+' tested '+file+'='*35+'\n' )
 
@@ -420,6 +466,24 @@ def checkValidIssues(
 #         expectedIssues)
 
 def simpleTestDeneratorAssertions(metamodel):
+    """
+    Check issues/metrics assertions for all testcases corresponding
+    to a given metamodel. To be more precise this method returns a
+    generator used for tests. The test generator can be used as following :!
+
+        from modelscript.test.framework.assertions import (
+            simpleTestDeneratorAssertions)
+        from modelscript.metamodels.aui import METAMODEL
+
+        def testGenerator_Assertions():
+            for (v,f,m,eim, emm) in \
+                    simpleTestDeneratorAssertions(METAMODEL):
+                yield (v,f,m,eim, emm)
+
+    :param metamodel: the metamodel of interest. The metamodel is used
+        to select the testcase directory.
+    :return:
+    """
     extension=metamodel.extension
     test_rel_dir=extension[1:]
     print('RR'*10, extension)
@@ -432,7 +496,7 @@ def simpleTestDeneratorAssertions(metamodel):
 
     for (file , expected_issue_map, expected_metrics_map) in res:
         yield (
-            checkValidIssues,
+            checkIssuesAndMetrics,
             file,
             metamodel,
             expected_issue_map,
