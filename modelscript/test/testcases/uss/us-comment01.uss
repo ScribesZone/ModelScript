@@ -3,7 +3,7 @@
     //@Issue else *
     //@Metric "actor" 0
     //@Metric "system" 0
-    //@Metric "usecase" 3
+    //@Metric "usecase" 0
 
 -- this is a comment
 usecase model Us_comment01
