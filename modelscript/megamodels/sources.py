@@ -13,7 +13,9 @@ from typing import Text, Optional, List, Any, Union, Dict, Set
 from abc import ABCMeta, abstractproperty, abstractmethod
 import collections
 import sys
+
 from textx.exceptions import TextXSyntaxError
+
 from modelscript.base.sources import SourceFile
 from modelscript.base.metrics import (
     Metrics,
@@ -178,8 +180,10 @@ class ASTBasedModelSourceFile(SourceFile, metaclass=ABCMeta):
         return self.importBox.modelName
 
     def fillAST(self):
-        from modelscript.base.grammars import (Grammar, ModelSourceAST)
-        self.grammar=Grammar(self.grammarFile)
+        from modelscript.base.grammars import (
+            Grammars,
+            ModelSourceAST)
+        self.grammar=Grammars.get(self.grammarFile)
         #type: Grammar
         try:
             self.ast = ModelSourceAST(self.grammar, self, self.fileName)
