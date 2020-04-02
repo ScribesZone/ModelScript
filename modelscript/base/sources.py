@@ -1,19 +1,21 @@
 # coding=utf-8
-
 """
 Source files and annotated source files.
 """
-
+__all__=(
+    'SourceElement',
+    'SourceFile',
+)
 import abc
 import os
 from abc import ABCMeta
-
 from typing import List, Optional, Any
+
 from modelscript.base.files import (
     readFileLines
 )
 
-# TODO:3 This dependency should be removed
+# TODO:3 The dependency below should be removed
 # With inheritance this is not so easy because
 # the __init__ method would call WithIssueList wihch
 # do not register the issue box in the megamodel
@@ -21,11 +23,10 @@ from modelscript.megamodels.issues import WithIssueModel
 
 
 class SourceElement(object, metaclass=ABCMeta):
-    """
-    Element of a source file.
+    """Element of a source file.
     """
     name: Optional[str]
-    astNode: Optional[Any]  # TODO: 3 to be more precise ASTNode or so
+    astNode: Optional['TextXNode']
     lineNo: Optional[int]
     description: Optional[str]
 
@@ -38,7 +39,6 @@ class SourceElement(object, metaclass=ABCMeta):
         self.astNode = astNode
         self.lineNo = lineNo
         self.description = description
-
 
 
 class SourceFile(WithIssueModel, metaclass=abc.ABCMeta):  # TODO:3 should be WithIssueList
