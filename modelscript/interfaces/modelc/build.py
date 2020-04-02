@@ -1,9 +1,15 @@
 # coding=utf-8
+""""""
+
+__all__ = (
+    'BuildContext'
+)
+
 import argparse
 import os
 import sys
 import traceback
-from typing import List, Text, Dict, Optional
+from typing import List, Any, Dict, Optional
 from collections import OrderedDict
 
 # initialize the megamodel with metamodels and scripts
@@ -17,26 +23,31 @@ from modelscript.base.issues import WithIssueList, OrderedIssueBoxList
 
 
 class BuildContext(WithIssueList):
+    """"""
+
+    args: List[str]
+    """The list of command line arguments"""
+
+    options: Any  # TODO:4 check type
+    """The options derived from args"""
+
+    sourceMap: Dict[str, Optional['SourceFile']]
+    """For each source file name, the corresponding SourceFile
+    or None if there was an error
+    """
+
+    issueBoxList: OrderedIssueBoxList
 
     def __init__(self, args):
         super(BuildContext, self).__init__()
 
-        self.args=args
-        # The list of command line arguments
-
-        self.options=getOptions(args)
-        # The options derived from args
-
+        assert args is not None
+        self.args = args
+        self.options = getOptions(args)
         # self.hasManySourceFiles=len(self.options.sources)>=2
-
-        self.sourceMap=OrderedDict()
-        #type: Dict[Text, Optional['SourceFile']]
-        # For each source file name, the corresponding SourceFile
-        # or None if there was an error
-
+        self.sourceMap = OrderedDict()
         self._build()
-
-        self.issueBoxList=OrderedIssueBoxList(
+        self.issueBoxList = OrderedIssueBoxList(
             self.allSourceFileList
             +[self])
 
@@ -45,8 +56,8 @@ class BuildContext(WithIssueList):
 
     def _processSource(self, path):
         if os.path.isdir(path):
-            extensions=Megamodel.model.metamodelExtensions()
-            filenames=filesInTree(path, suffix=extensions)
+            extensions = Megamodel.model.metamodelExtensions()
+            filenames = filesInTree(path, suffix=extensions)
             if self.options.verbose:
                 print(('%s/  %i model files found.'
                       % (path, len(filenames))))
@@ -59,11 +70,11 @@ class BuildContext(WithIssueList):
 
     def _build(self):
 
-        #--- deal with --version ------------------------------------------
+        # --- deal with --version -----------------------------------------
         if self.options.version:
             self._displayVersion()
 
-        #--- deal with --mode ---------------------------------------------
+        # --- deal with --mode --------------------------------------------
         print((
             {'justAST':'Checking syntax',
              'justASTDep':'Checking syntax and dependencies',
@@ -71,7 +82,7 @@ class BuildContext(WithIssueList):
             [self.options.mode] ))
         Megamodel.analysisLevel=self.options.mode
 
-        #--- deal with source files or source dir
+        # --- deal with source files or source dir
         for path in self.options.sources:
             self._processSource(path)
 

@@ -6,7 +6,6 @@ __all__=(
     'extension',
     'withoutExtension',
     'replaceExtension',
-    'raiseIssueOrException',
     'readFileLines',
     'writeFile',
     'writeFileLines'
@@ -19,8 +18,9 @@ from distutils.dir_util import mkpath
 
 from modelscript.base.issues import (
     Levels,
-    Issue
-)
+    Issue,
+    WithIssueList)
+
 
 
 
@@ -82,11 +82,14 @@ def filesInTree(
     return _
 
 
+# -------------------------------------------------------------------------
+# Issue-based file operations
+# -------------------------------------------------------------------------
 
-def raiseIssueOrException(
+def _raiseIssueOrException(
         exception: Exception,
         message: str,
-        issueOrigin: Optional[Issue]) -> Issue:
+        origin: Optional[WithIssueList]) -> Issue:
     """Raise an issue or an exception depending on the issue of origin.
     If the issue of origin is None, the raise the given exception.
     Otherwise raise a fatal issue with the given message and the given
@@ -95,7 +98,7 @@ def raiseIssueOrException(
     Args:
         exception: The exception to raise if necessary.
         message: The message of the issue to be raised if necessary.
-        issueOrigin: The issue of origin used to determine
+        origin: The issue of origin used to determine
             whether to raise an exception or an issue.
     Returns:
         Returns an fatal issue or raise an exception.
@@ -103,11 +106,12 @@ def raiseIssueOrException(
     Raises:
         Raises the provided exception if issueOrigin is none.
     """
-    if issueOrigin is None:
+    if origin is None:
         raise exception  # raise:TODO:1
     else:
+        assert isinstance(origin, WithIssueList)
         Issue(
-            origin=issueOrigin,
+            origin=origin,
             level=Levels.Fatal,
             message=message
         )
@@ -115,7 +119,7 @@ def raiseIssueOrException(
 
 def readFileLines(
         file: str,
-        issueOrigin: Optional[Issue] = None,
+        origin: Optional[WithIssueList] = None,
         message: str = 'Cannot read file %s')\
         -> List[str]:
     """Read a file as a set of lines.
@@ -123,7 +127,7 @@ def readFileLines(
 
     Args:
         file: The name of the file to read.
-        issueOrigin: The issue of origin, if any.
+        origin: The issue of origin, if any.
         message: The message of the issue to create in case of errors.
 
     Returns:
@@ -140,16 +144,16 @@ def readFileLines(
         return lines
     except Exception as e:
         # What happen with issue is not clear
-        raiseIssueOrException(
+        _raiseIssueOrException(
             e,
             message % file,
-            issueOrigin)
+            origin)
 
 
 def writeFile(
         text: str,
         filename: str,
-        issueOrigin: Optional[Issue] = None,
+        origin: Optional[Issue] = None,
         message: str = 'Cannot write file')\
         -> str :
     """Write a file.
@@ -158,7 +162,7 @@ def writeFile(
     Args:
         text: The text to write in the file.
         filename: The name of the file to be written.
-        issueOrigin: The issue of origin, if any.
+        origin: The issue of origin, if any.
         message: The message of the issue to create in case of errors.
 
     Returns:
@@ -173,10 +177,10 @@ def writeFile(
             f.write(text)
         return filename
     except Exception as e:
-        raiseIssueOrException(
+        _raiseIssueOrException(
             exception=e,
             message=message,
-            issueOrigin=issueOrigin)
+            origin=origin)
 
 
 def writeFileLines(
@@ -188,7 +192,7 @@ def writeFileLines(
     return writeFile(
         text='\n'.join(lines),
         filename=filename,
-        issueOrigin=issueOrigin,
+        origin=issueOrigin,
         message=message)
 
 

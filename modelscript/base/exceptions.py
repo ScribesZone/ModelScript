@@ -8,7 +8,10 @@ __all__=(
     'UnexpectedCase',
     'UnexpectedState',
     'UnexpectedValue',
-    'NoSuchFeature'
+    'NoSuchFeature',
+    'MethodToBeDefined',
+    'FileSystemError',
+    'TODO'
 )
 
 class NotFound(Exception):

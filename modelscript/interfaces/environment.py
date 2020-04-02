@@ -177,7 +177,7 @@ class Environment(object):
         writeFile(
             text=text,
             filename=filename,
-            issueOrigin=issueOrigin)
+            origin=issueOrigin)
         return filename
 
     @classmethod

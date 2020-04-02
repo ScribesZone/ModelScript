@@ -3,6 +3,16 @@
 Grammars, abstract syntax trees, syntax errors
 """
 
+__all__ = (
+    'Grammar',
+    'Grammars',
+    'AST',
+    'ModelSourceAST',
+    'SyntaxError',
+    'TokenBasedSyntaxError',
+    'ASTNodeSourceIssue'
+)
+
 import os
 import sys
 import re
@@ -26,16 +36,6 @@ from modelscript.base.issues import (
     LocalizedSourceIssue)
 from modelscript.base.exceptions import (
     UnexpectedCase)
-
-__all__ = (
-    'Grammar',
-    'Grammars',
-    'AST',
-    'ModelSourceAST',
-    'SyntaxError',
-    'TokenBasedSyntaxError',
-    'ASTNodeSourceIssue'
-)
 
 #TODO:4 remove the include grammar kludge
 
@@ -223,7 +223,6 @@ class AST(object):
         # This implementation is based both on the get_model method from
         # textX and the fact that the textX model has been instrumented
         #  with an ast attribute to go from the textX model to AST.
-        print('XX'*100+"\n"*10+str(type(astNode)))
         return get_model(astNode).ast
 
     @classmethod

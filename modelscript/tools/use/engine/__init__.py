@@ -420,7 +420,7 @@ class USEEngine(object):
             """
             lines=readFileLines(
                 file=abs_soil_file,
-                issueOrigin=None)
+                origin=None)
             for line in lines:
                 if re.match(
                     '^ *(!|\?)',
@@ -432,7 +432,7 @@ class USEEngine(object):
 
             lines=readFileLines(
                 file=abs_soil_file,
-                issueOrigin=None)
+                origin=None)
             out_lines=[]
             for (no, line) in enumerate(lines):
                 out_lines.append('%05i:%s' % (

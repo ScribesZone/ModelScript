@@ -62,7 +62,7 @@ class SourceFile(WithIssueModel, metaclass=abc.ABCMeta):  # TODO:3 should be Wit
         self.sourceLines = []
         self.sourceLines = readFileLines(
             file=self.fileName,
-            issueOrigin=self,   #TODO:1 check type
+            origin=self,   #TODO:1 check type
             message='Cannot read source file %s')
 
     @property

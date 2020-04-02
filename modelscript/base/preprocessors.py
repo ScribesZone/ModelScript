@@ -112,7 +112,7 @@ class Preprocessor(object):
             print('\nPRE: '+'='*30+' preprocessing'+'='*30)
         lines=readFileLines(
             file=filename,
-            issueOrigin=issueOrigin,
+            origin=issueOrigin,
             message=
                 'Cannot read '+self.sourceText+' %s.')
         new_lines=[

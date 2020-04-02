@@ -1,43 +1,51 @@
 # coding=utf-8
+"""Issues in source files and issue management."""
 
-"""
-Model errors in source files either localized or not.
-"""
+__all__ = (
+    'FatalError',
+    'Level',
+    'Levels',
+    'Issue',
+    'LocalizedSourceIssue',
+    'IssueBox',
+    'OrderedIssueBoxList',
+    'WithIssueList',
+)
 from abc import ABCMeta, abstractproperty
 from collections import OrderedDict
 from typing import Optional, List, Text, Dict, Tuple, Any, Union
 
 from modelscript.base.annotations import (
-    Annotations
-)
+    Annotations)
 from modelscript.base.locations import (
-    SourceLocation,
-)
+    SourceLocation,)
 # TODO:4 it should be better to remove the printer dependency
-from modelscript.base.styles import Styles
+from modelscript.base.styles import Styles, Style
 from modelscript.base.exceptions import (
     UnexpectedCase,
-    MethodToBeDefined
-)
+    MethodToBeDefined)
 
 DEBUG = 0
 
 
-class FatalError(Exception):
-    """ Fatal error """
-    def __init__(self, SourceError):
-        super(FatalError, self).__init__()
-        self.sourceError=SourceError
-
 
 class Level(object):
-    def __init__(self, label, rank, style):
+    """Level of an issue.
+    A triplet (label, rank, style). The lavel is what is displayed,
+    for instance "WARNING". The rank is an integer value allowing
+    to order the levels of issues. Style allows colored display."""
+    label: str
+    rank: int
+    style: Style
+
+    def __init__(self, label: str, rank: int, style: Style) -> None:
         self.label = label
         self.rank = rank
         self.style = style
 
     @property
     def code(self):
+        """First letter of the level label."""
         return self.label[0]
 
     def __le__(self, other):
@@ -75,61 +83,70 @@ class Level(object):
 
 
 class Levels(object):
-    OK=Level('OK', 00, Styles.smallIssue)
-    Hint=Level('HINT', 10, Styles.smallIssue)
-    Info=Level('INFO', 20, Styles.smallIssue)
-    Warning=Level('WARNING', 30, Styles.mediumIssue)
-    Error=Level('ERROR', 40, Styles.bigIssue)
-    Fatal=Level('FATAL', 50, Styles.bigIssue)
-    System=Level('SYSTEM ERROR', 60, Styles.bigIssue)
+    """List of existing levels : Info, Warning, Error, ..."""
+    OK = Level('OK', 00, Styles.smallIssue)
+    Hint = Level('HINT', 10, Styles.smallIssue)
+    Info = Level('INFO', 20, Styles.smallIssue)
+    Warning = Level('WARNING', 30, Styles.mediumIssue)
+    Error = Level('ERROR', 40, Styles.bigIssue)
+    Fatal = Level('FATAL', 50, Styles.bigIssue)
+    System = Level('SYSTEM ERROR', 60, Styles.bigIssue)
 
-    Levels=[System, Fatal, Error, Warning, Info, Hint]
+    Levels = [System, Fatal, Error, Warning, Info, Hint]
 
     @classmethod
-    def fromCode(cls, code):
-        """
-        Return the level corresponding to a code
+    def fromCode(cls, code: str) -> Optional[Level]:
+        """Return the level corresponding to a code
         or None if the code is not a label.
         """
         for level in Levels.Levels:
-            if level.code==code:
+            if level.code == code:
                 return level
         return None
 
 
 class Issue(object):
-    """
-    An issue in a given entity with issue list (WithIssueList).
+    """An issue in a given issue list (WithIssueList).
     Direct instances of Issue are not localized.
     The class LocalizedSourceIssue must be used instead
     if the error line is known.
     """
+
+    level: Level
+    """Level of the issue"""
+
+    message: str
+    """ The issue message. """
+
+    code: Optional[str]
+
+    origin: 'WithIssueList'
+    """ A source file or a model or a context. """
+
     def __init__(self,
-                 origin,
-                 level,
-                 message,
-                 code=None):
-        #type: (WithIssueList, Level, 'Text', Optional['Text']) -> None
+                 origin: 'WithIssueList',
+                 level: Level,
+                 message: str,
+                 code: Optional[str] = None) \
+            -> None:
         """
-        Create a source error and add it to the given OldSourceFile.
+        Create a source error and add it to the given issue container
+        (an instance of WithIssueList).
         Raise FatalError if the error is fatal and processing could not
         continue.
         """
-        assert message is not None and message!=''
+        assert message is not None and message != ''
+        assert isinstance(origin, WithIssueList)
 
-        self.code=code
-
-        self.origin = origin  #type: WithIssueList
-        """ A source file or a model or a context. """
-
+        self.level = level
         self.message = message
-        """ The issue message. """
+        self.code = code
+        self.origin = origin
 
-        self.level=level  #type:Level
-
+        # register the issue to the issue list provided
         self.origin._issueBox._add(self)
 
-        if DEBUG>=1:
+        if DEBUG >= 1:
             print(('ISS: ****NEW %s%s IN %s **** -> %s'  % (
                 type(self).__name__,
                 '' if self.code is None else ':'+self.code,
@@ -137,16 +154,14 @@ class Issue(object):
                 str(self)
             )))
 
-        if level==Levels.Fatal:
+        if level == Levels.Fatal:
             # Raise a real exception for Fatal issue so that
             # the execution stop immediatly
-            raise FatalError(self) #raise:OK
+            raise FatalError(self)  # raise:OK
 
     @property
     def fromModel(self):
-        """
-        Indicates if the issue comes from a model.
-        """
+        """Indicates if the issue comes from a model. """
         # Since importing the model type generate a cycle,
         # the trick below should be good enough.
         return type(self.origin).__name__.endswith('Model')
@@ -159,7 +174,7 @@ class Issue(object):
     @property
     def originLabel(self):
         if hasattr(self.origin, 'source'):
-            src=self.origin.source
+            src = self.origin.source
             if src is not None:
                 return src.basename
             else:
@@ -176,8 +191,7 @@ class Issue(object):
             styled=False,
             prefix=''): # not used, but in subclasses
 
-        """
-        Display the issue.
+        """Display the issue.
         Since the issue is not localized
         direct instances of this class just display
         the level and the error message.
@@ -188,7 +202,7 @@ class Issue(object):
         #     message=self.message,
         #     level=l)
         if pattern is None:
-            pattern=(
+            pattern = (
                 Annotations.prefix
                 + '{kind}:{level}:{origin}:{message}')
         text=pattern.format(
@@ -200,7 +214,7 @@ class Issue(object):
             message=self.message
         )
         return self.level.style.do(
-            prefix+text,
+            prefix + text,
             styled=styled)
 
     def __str__(self):
@@ -211,65 +225,85 @@ class Issue(object):
         return self.__str__()
 
 
+class FatalError(Exception):
+    """ Exception raised when a "Fatal error" issue is raised. """
+    issue: Issue
+
+    def __init__(self, issue):
+        super(FatalError, self).__init__()
+        assert isinstance(issue, Issue)  # Check the type.as guessed
+        self.issue = issue
+
+
 class LocalizedSourceIssue(Issue):
 
     def __init__(self,
-                 sourceFile,
-                 level,
-                 message,
-                 line,
-                 code=None,
-                 column=None,
-                 fileName=None):
-        #type: ('SourceFile', Level, Text, int, Optional[Text], Optional[int], Optional[Text]) -> None
-        """
-        Create a localized source file and add it to
+                 sourceFile: 'SourceFile',
+                 level: Level,
+                 message: str,
+                 line: int,
+                 code: Optional[str] = None,
+                 column: Optional[int] = None,
+                 fileName: Optional[str] = None)\
+            -> None:
+        """Create a localized source file and add it to
         the given source file.
 
-        :param sourceFile: The Source File
-        :param message: The error message.
-        :param line: The line number of the error
-            starting at 1. If the error is before
-            the first line, it is moved to (1,0)
-            If the error is after the end
-            of the file (typically the last line)
-            the line recorded is assumed to be
-            the last character of the last line.
-        :param column: The column number of the
-            error or None. If the errors is between
-            the previous line and before the
-            first column 0 is an acceptable value.
-        :param fileName: An optional string
-            representing the filename to be output
-            with the error message. If None is
-            given, then this value will be taken
-            from the source file.
+        Args:
+
+            sourceFile: The Source File
+
+            level: The line number of the error
+                starting at 1. If the error is before
+                the first line, it is moved to (1,0)
+                If the error is after the end
+                of the file (typically the last line)
+                the line recorded is assumed to be
+                the last character of the last line.
+            message: The error message.
+
+            line: he column number of the
+                error or None. If the errors is between
+                the previous line and before the
+                first column 0 is an acceptable value.
+
+            code:
+
+            column:
+
+            fileName: An optional string
+                representing the filename to be output
+                with the error message. If None is
+                given, then this value will be taken
+                from the source file.
         """
 
-        def __adjust(sourceFile, line, column):
-            #type: ('SourceFile', int,int) -> Tuple[int,int]
+        def __adjust(sourceFile: 'SourceFile',
+                     line: int ,
+                     column: int) \
+                -> Tuple[int, int]:
             lines = sourceFile.sourceLines
-            nblines = len(lines)
+            nb_lines = len(lines)
             if line == 0:
                 # move error before first line to first line
                 # this could be after the last line if empty
                 l = 1
                 c = 0
-            elif nblines == 0:
+            elif nb_lines == 0:
                 # if no line on the file, line will be 1
                 # that is, after the last line
                 l = 1
                 c = 0
-            elif line > nblines:
+            elif line > nb_lines:
                 # move error after last line to end
                 # of last line
-                l = nblines
-                c = len(lines[nblines - 1])
+                l = nb_lines
+                c = len(lines[nb_lines - 1])
             else:
                 # regular location for a line
                 l = line
                 c = column
-            return(l,c)
+            return (l, c)
 
         (l, c) = __adjust(sourceFile, line, column)
 
@@ -321,9 +355,9 @@ class LocalizedSourceIssue(Issue):
     def str(self,
             pattern=None,
             styled=False,
-            prefix = ''):
+            prefix=''):
         if pattern is None:
-            pattern=(
+            pattern = (
                 Annotations.prefix
                 + '{kind}:{level}:{origin}:{line}:{message}')
         text=pattern.format(
@@ -345,59 +379,59 @@ class LocalizedSourceIssue(Issue):
 
 
 class IssueBox(object):
-    """
-    A collection of issues for a 'WithIssueList'
-    element (so far a Model, a SourceFile or a BuildContext).
-    IssueBoxes can be nested following the import graphs.
+    """ A collection of issues for a 'WithIssueList'
+    container (so far a Model, a SourceFile or a BuildContext).
+    Issue boxes can be nested following the import graphs.
     Issue boxes also provide some query mechanisms.
     """
 
-    def __init__(self, origin, parents=()):
-        #type: (Any, List[IssueBox]) -> None
+    origin: 'WithIssueList'
+    """The container of the issue box, typically a 
+    source file, a model or a build context. 
+    The model can be the megamodel.
+    """
+
+    parents: List['IssueBox']
+    """List of parent issue boxes. 
+    These issues of these boxes will appear in this one.
+    """
+
+    label: str
+    """A label for internal display """
+
+    _issueList: List[Issue]
+    """The list of issue directly in this box.
+    This list is populated by the 'Issue' class.
+    """
+
+    _issuesAtLine: Dict[Optional[int], List[Issue]]
+    """Store for a given line the issues at this line.
+    There is no  entry for lines without issues.
+    _issuesAtLine[0] are for unlocalized issues.
+    """
 
 
-        self.origin=origin
-        #type: Union['SourceFile', 'Model', 'BuildContext']
-        """
-        The container of the issue box, typically a 
-        source file, a model or a build context. 
-        The model can be the megamodel.
-        """
 
-        self.label='issuebox<%s>' % self.origin.label
-        """
-        A label for internal display
-        """
+    def __init__(self,
+                 origin: 'WithIssueList',
+                 parents: List['IssueBox'] = ()):
 
-        self._issueList=[] #type: List[Issue]
-        """ 
-        The list of issue directly in this box.
-        This list is populated by the 'Issue' class.
-        """
+        assert isinstance(origin, WithIssueList)
+        self.origin = origin
+        self.label = 'issuebox<%s>' % self.origin.label
+        self._issueList = []
+        self.parents = list(parents)
+        self._issuesAtLine = OrderedDict()
 
-        self.parents=list(parents) #type:List[IssueBox]
-        """
-        List of parent issue boxes. These issue of these boxes 
-        will appear in this one.
-        """
-
-        self._issuesAtLine=OrderedDict()
-        #type: Dict[Optional[int], List[Issue]]
-        """ 
-        Store for a given line the issues at this line.
-        There is no  entry for lines without issues.
-        _issuesAtLine[0] are for unlocalized issues.
-        """
-
-        if DEBUG>=1:
+        if DEBUG >= 1:
             print(('ISS: New issue box for %s -> %s' % (
                 type(self.origin).__name__,
                 self.label)))
 
-    def _add(self, issue):
-        #type: (Issue) -> None
-        # Add an issue to the box.
-        # This method is called by the issue constructor.
+    def _add(self, issue: Issue) -> None:
+        """Add an issue to the box.
+        This method is called by the issue constructor.
+        """
         self._issueList.append(issue)
         if isinstance(issue, LocalizedSourceIssue):
             index=issue.line
@@ -407,30 +441,29 @@ class IssueBox(object):
             self._issuesAtLine[index]=[]
         self._issuesAtLine[index].append(issue)
 
-    def addParent(self, issueBox):
-        #type: (IssueBox) -> None
-        """
-        Add the issue box as the last parents in the list.
+    def addParent(self, issueBox: 'IssueBox') -> None:
+        """Add the issue box as the last parents in the list.
         If it is already in the list, do nothing.
         """
-        if not issueBox in self.parents:
+        if issueBox not in self.parents:
             self.parents.append(issueBox)
             if DEBUG >= 1:
                 print(('ISS: Add parent "%s" -> "%s"' % (
                         self.label,
                         issueBox.label)))
 
-    def at(self, lineNo, parentsFirst=True):
-        """
-        Return the list of issues at the specified line.
+    def at(self,
+           lineNo: int,
+           parentsFirst: bool = True) \
+            -> List[Issue]:
+        """Return the list of issues at the specified line.
         If the line is 0 then return unlocalized issues.
         Return both local and parents issues recursively.
         """
-        # int -> List[Issue]
-        parent_issues=[
+        parent_issues = [
             i for p in self.parents
                 for i in p.at(lineNo, parentsFirst=parentsFirst) ]
-        self_issues=(
+        self_issues = (
             [] if lineNo not in self._issuesAtLine
             else self._issuesAtLine[lineNo])
         if parentsFirst:
@@ -439,11 +472,8 @@ class IssueBox(object):
             return self_issues+parent_issues
 
     @property
-    def allParents(self):
-        #type: () -> List[IssueBox]
-        """
-        Return all parents recursively.
-        """
+    def allParents(self) -> List['IssueBox']:
+        """Return all parents recursively. """
         return list(
             x
             for p in self.parents
@@ -451,46 +481,44 @@ class IssueBox(object):
 
     @property
     def all(self):
-        """
-        Return both local and parents issues recursively
-        """
+        """Return both local and parents issues recursively"""
         return list(
             [ i for p in self.allParents
                     for i in p._issueList ]
             + self._issueList)
 
     @property
-    def nb(self):
-        """
-        Return the nb of all issues (local and parents)
-        """
+    def nb(self) -> int:
+        """Return the nb of all issues (local and parents)"""
         return len(self.all)
 
     def select(self,
-               level=None, op='=',
-               line=None ):
-        #type: (Optional[Level], str, Optional[bool], Optional[int]) -> List[Issue]
+               level: Optional[Level] = None,
+               op: str = '=',
+               line: Optional[int] = None) \
+            -> List[Issue]:
+        """Select the issues for a given criteria."""
         if level is None and line is None:
             return list(self.all)
-        issues_at=(
+        issues_at = (
             self.all if line is None
             else self.at(line))
         return [
             i for i in issues_at
-            if i.level.cmp(level, op) ]
+            if i.level.cmp(level, op)]
 
     @property
     def bigIssues(self, level=Levels.Error):
-        return self.select(level=level,op='>=')
+        return self.select(level=level, op='>=')
 
     @property
     def smallIssues(self, level=Levels.Warning):
-        return self.select(level=level,op='<=')
+        return self.select(level=level, op='<=')
 
     @property
     def isValid(self):
         # () -> bool
-        return len(self.bigIssues)==0
+        return len(self.bigIssues) == 0
 
     @property
     def hasIssues(self):
@@ -529,9 +557,9 @@ class IssueBox(object):
         map=OrderedDict()
         for i in self.all:
             if i.code in map:
-                map[i.code]+=1
+                map[i.code] += 1
             else:
-                map[i.code]=1
+                map[i.code] = 1
         return map
 
     @property
@@ -546,16 +574,16 @@ class IssueBox(object):
                     word + ('s' if n>=2 else '')
                 ))
 
-        if self.nb==0:
+        if self.nb == 0:
             return ''
-        level_msgs=[]
+        level_msgs = []
         m=self.summaryLevelMap
         for l in m:
             n=m[l]
             if n>0:
                 level_msgs.append(
                     times(n, l.label))
-        if len(level_msgs)==1:
+        if len(level_msgs) == 1:
             text=level_msgs[0]
         else:
             text= '%s (%s)' % (
@@ -577,8 +605,8 @@ class IssueBox(object):
             return ''
         header=(
             (Annotations.full if annotations else '')+'\n'
-            +self.summaryLine+'\n'
-            +(Annotations.full if annotations else '')
+            + self.summaryLine+'\n'
+            + (Annotations.full if annotations else '')
                 if summary else '')
         return '\n'.join([_f for _f in (
             [header]
@@ -638,20 +666,33 @@ class OrderedIssueBoxList(object):
 
 
 class WithIssueList(object, metaclass=ABCMeta):
-    def __init__(self, parents=()):
-        #type: (List[IssueBox]) -> None
+    """Container of a IssueBox, that is something that can generate issues.
+    This is a mixin for classes with a _issueBox attribute.
+    Current subclasses includes:
+    * WithIssueModel
+    * BuildContext
+    * SourceFile
+    * Model
+    """
+
+    _issueBox: IssueBox
+    """Issue box for the WithIssueList container.
+    For property "issues" should be used instead for regular use. """
+
+    def __init__(self, parents: List[IssueBox] = ()) -> None:
         assert(isinstance(parents, (list, tuple)))
-        self._issueBox=IssueBox(
+        self._issueBox = IssueBox(
             origin=self,
             parents=parents)
 
     @property
     def issues(self):
+        """The public issueBox property. Read only."""
         return self._issueBox
 
     @abstractproperty
     def label(self):
-        raise MethodToBeDefined( #raise:OK
+        raise MethodToBeDefined(  # raise:OK
             'ISS: originLabel not defined')
 
     @property
