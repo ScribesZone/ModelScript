@@ -15,15 +15,16 @@ from modelscript.base.locations import (
 )
 # TODO:4 it should be better to remove the printer dependency
 from modelscript.base.styles import Styles
-#from modelscript.config import Config
 from modelscript.base.exceptions import (
     UnexpectedCase,
-    MethodToBeDefined)
+    MethodToBeDefined
+)
 
-DEBUG=0
+DEBUG = 0
 
 
 class FatalError(Exception):
+    """ Fatal error """
     def __init__(self, SourceError):
         super(FatalError, self).__init__()
         self.sourceError=SourceError
@@ -31,9 +32,9 @@ class FatalError(Exception):
 
 class Level(object):
     def __init__(self, label, rank, style):
-        self.label=label
-        self.rank=rank
-        self.style=style
+        self.label = label
+        self.rank = rank
+        self.style = style
 
     @property
     def code(self):
