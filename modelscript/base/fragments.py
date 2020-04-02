@@ -1,15 +1,19 @@
 # coding=utf-8
+"""Text fragments of source files.
 
-"""
-Text fragments of source files.
+This code comes former USE OCL library and it is currently unused.
 """
 
-__all__ =  ['Fragment', 'Fragmenter', 'RegexpFragmenter']
+__all__ =  (
+    'Fragment',
+    'Fragmenter',
+    'RegexpFragmenter'
+)
 
 class Fragment(object):
+    """ A fragment is a decorated
     """
-    A fragment is a decorated
-    """
+
     def __init__(self, start, end=None, value=None,
                  parent=None, children=None):
         self.start = start

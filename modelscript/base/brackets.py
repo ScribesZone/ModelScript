@@ -1,3 +1,4 @@
+# coding=utf-8
 """ Conversion of a regular indented file into a bracketed file.
 This module makes it possible to use regular parser like textX
 with indented based language. Basically BracketedScript is a

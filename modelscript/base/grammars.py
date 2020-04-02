@@ -1,3 +1,4 @@
+# coding=utf-8
 """Syntax related concepts.
 Grammars, abstract syntax trees, syntax errors
 """
@@ -5,7 +6,7 @@ Grammars, abstract syntax trees, syntax errors
 import os
 import sys
 import re
-from typing import Text, Optional, Union, Dict, ClassVar, Tuple
+from typing import  Dict, ClassVar, Tuple
 from typing_extensions import Literal
 
 from textx import metamodel_from_str
@@ -162,11 +163,11 @@ class AST(object):
     grammar: Grammar
     file: str
     bracketedFile: str
-    model: 'TextModel'
+    model: 'TextXModel'
 
     def __init__(self, grammar: Grammar, file: str) -> None:
         """
-        Creeate an abstract syntax tree given a file and its grammar.
+        Create an abstract syntax tree given a file and its grammar.
         * (1) the source file is first bracketed to deal with indentation,
         * (2) the bracketed file is then parsed resulting in a textX model,
         * (3) the resulting model (a textX object) is instrumented with

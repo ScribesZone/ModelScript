@@ -1,4 +1,11 @@
 # coding=utf-8
+"""Annotations in the form of ******** like parts embedded in source code
+for instance to display information about errors.
+"""
+
+__all__ = (
+    'Annotations'
+)
 
 import re
 import os
@@ -6,16 +13,16 @@ import tempfile
 from typing import Text, Optional
 
 class Annotations(object):
-    lineLength=80
-    char='*'
-    full=char*lineLength
-    prefix=char*4+' '
-    cont=  char*2+'   '
+    lineLength = 80
+    char = '*'
+    full = char*lineLength
+    prefix = char*4+' '
+    cont = char*2+'   '
 
     @classmethod
     def fullLine(cls, text):
         """ Full line of * """
-        _=cls.prefix+text+' '
+        _ = cls.prefix+text+' '
         return _+cls.char*(cls.lineLength-len(_))
 
     @classmethod
@@ -50,9 +57,9 @@ class Annotations(object):
             return tmp_filename
 
         with open(filename, 'rU') as f:
-            text=f.read()
-        new_text=cls.filterText(text)
-        has_changed=new_text!=text
+            text = f.read()
+        new_text = cls.filterText(text)
+        has_changed = new_text != text
         if has_changed:
             new_filename=tmp_file() if createTmpFile else filename
             with open(new_filename, 'w') as f:

@@ -1,10 +1,23 @@
-from typing import List, Callable
+# coding=utf-8
+"""Graph management helpers"""
 
-GraphEdgesFun=Callable[['Node'], List['Node']]
-def genPaths(successors, start, end):
-    #type: (GraphEdgesFun, 'Node', 'Node')->List[List['Node']]
-    """
-    Generates all possible paths between a node and another.
+__all__ = (
+    'genPaths',
+    'cycles'
+)
+
+from typing import List, Callable, TypeVar
+
+Node = TypeVar('Node')
+GraphEdgesFun = Callable[[Node], List[Node]]
+
+
+def genPaths(successors: GraphEdgesFun,
+             start: Node,
+             end: Node)\
+        -> List[List[Node]]:
+    """Generates all possible paths between a node and another.
+
     list(genPaths(g,'a','c')) could be like  [[b],[b,c]].
     This is a generator, so it does not return directly a list.
     The graph is represented as a successors function, that is a
@@ -27,8 +40,10 @@ def genPaths(successors, start, end):
                 continue
             fringe.append((next_state, path+[next_state]))
 
-def cycles(nodes, successors):
-    #type: (List['Node'], GraphEdgesFun->List[List['Node']]
+
+def cycles(nodes: List[Node],
+           successors: GraphEdgesFun) \
+        -> List[List[Node]]:
     """
     Return all the cycles that exist in a graph.
     The edges are given via a sucessors function. This function

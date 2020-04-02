@@ -1,4 +1,5 @@
 # coding=utf-8
+"""Helpers dealing with file management."""
 
 __all__=(
     'ensureDir',
@@ -10,6 +11,7 @@ __all__=(
     'writeFile',
     'writeFileLines'
 )
+
 from typing import Optional, List, Union, Iterable
 import io
 import os
