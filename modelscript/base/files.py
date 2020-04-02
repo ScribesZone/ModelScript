@@ -1,15 +1,5 @@
 # coding=utf-8
 
-from typing import Callable, Any
-import io
-import os
-from distutils.dir_util import mkpath
-
-from modelscript.base.issues import (
-    Levels,
-    Issue
-)
-
 __all__=(
     'ensureDir',
     'extension',
@@ -20,33 +10,99 @@ __all__=(
     'writeFile',
     'writeFileLines'
 )
+from typing import Optional, List, Union, Iterable
+import io
+import os
+from distutils.dir_util import mkpath
 
-def ensureDir(dir):
-    """
-    :raises: IOError
+from modelscript.base.issues import (
+    Levels,
+    Issue
+)
+
+
+
+def ensureDir(dir: str) -> None:
+    """ Make sur that a directory exist. Create it if necessary.
+    Raises:
+        IOError
     """
     if not os.path.isdir(dir):
         try:
             mkpath(dir)
-        except Exception: #except:OK
+        except Exception:  # except:OK
             raise IOError(
-                'Cannot create directory %s' % dir) #raise:TODO:3
+                'Cannot create directory %s' % dir)  # raise:TODO:3
 
-def extension(path):
-    filename, file_extension =os.path.splitext(os.path.basename(path))
+
+def extension(path: str) -> str:
+    """ Extension of a file. """
+    filename, file_extension = os.path.splitext(os.path.basename(path))
     return file_extension
 
-def withoutExtension(path):
+
+def withoutExtension(path: str) -> str:
+    """ Filename without the extension """
     filename, file_extension =os.path.splitext(path)
     return filename
 
-def replaceExtension(path, ext):
+
+def replaceExtension(path: str, ext: str) -> str:
+    """ Replace the extension of a file """
     return withoutExtension(path)+ext
 
 
-def raiseIssueOrException(exception, message, issueOrigin):
+def filesInTree(
+        directory: str,
+        suffix: Union[str, Iterable[str]]) \
+        -> List[str]:
+    """Search for all filenames ending with the suffix(es).
+
+    Args:
+        directory: the directory where to search.
+        suffix: a string or a list of string serving as suffixes.
+
+    Returns:
+        The list of filenames ending with the suffix(es).
+    """
+    if isinstance(suffix,str):
+        suffixes = [suffix]
+    else:
+        suffixes = suffix
+    _ = []
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            for s in suffixes:
+                if file.endswith(s):
+                    path = os.path.join(root, file)
+                    _.append(path)
+                    break
+    return _
+
+
+
+def raiseIssueOrException(
+        exception: Exception,
+        message: str,
+        issueOrigin: Optional[Issue]) -> Issue:
+    """Raise an issue or an exception depending on the issue of origin.
+    If the issue of origin is None, the raise the given exception.
+    Otherwise raise a fatal issue with the given message and the given
+    origin of issue.
+
+    Args:
+        exception: The exception to raise if necessary.
+        message: The message of the issue to be raised if necessary.
+        issueOrigin: The issue of origin used to determine
+            whether to raise an exception or an issue.
+    Returns:
+        Returns an fatal issue or raise an exception.
+
+    Raises:
+        Raises the provided exception if issueOrigin is none.
+    """
     if issueOrigin is None:
-        raise exception  #raise:TODO:1
+        raise exception  # raise:TODO:1
     else:
         Issue(
             origin=issueOrigin,
@@ -54,10 +110,25 @@ def raiseIssueOrException(exception, message, issueOrigin):
             message=message
         )
 
+
 def readFileLines(
-        file,
-        issueOrigin=None,
-        message='Cannot read file %s'):
+        file: str,
+        issueOrigin: Optional[Issue] = None,
+        message: str = 'Cannot read file %s')\
+        -> List[str]:
+    """Read a file as a set of lines.
+    This function can raise an issue or exception.
+
+    Args:
+        file: The name of the file to read.
+        issueOrigin: The issue of origin, if any.
+        message: The message of the issue to create in case of errors.
+
+    Returns:
+        The list of lines read from the files.
+        TODO:1 check what happen when an issue is produced
+        Currently the method return None...
+    """
     try:
         with io.open(file,
                      'rU',
@@ -66,25 +137,35 @@ def readFileLines(
                 line.rstrip() for line in f.readlines())
         return lines
     except Exception as e:
+        # What happen with issue is not clear
         raiseIssueOrException(
             e,
             message % file,
             issueOrigin)
 
+
 def writeFile(
-        text,
-        filename,
-        # extension='.txt',
-        issueOrigin=None,
-        message='Cannot write file'):
+        text: str,
+        filename: str,
+        issueOrigin: Optional[Issue] = None,
+        message: str = 'Cannot write file')\
+        -> str :
+    """Write a file.
+    This function can raise an issue or exception.
+
+    Args:
+        text: The text to write in the file.
+        filename: The name of the file to be written.
+        issueOrigin: The issue of origin, if any.
+        message: The message of the issue to create in case of errors.
+
+    Returns:
+        Return the name of the file written.
+        TODO:1 check what happen when an issue is produced
+        Currently the method return None...
+
+    """
     try:
-        # if outputFileName is not None:
-        # else:
-        #     (f, filename) = (
-        #         tempfile.mkstemp(
-        #             suffix=extension,
-        #             text=True))
-        #     os.close(f)
         import codecs
         with codecs.open(filename, "w", "utf-8") as f:
             f.write(text)
@@ -95,39 +176,17 @@ def writeFile(
             message=message,
             issueOrigin=issueOrigin)
 
+
 def writeFileLines(
-        lines,
-        filename,
-        issueOrigin=None,
+        lines: List[str],
+        filename: str,
+        issueOrigin: Optional[Issue] = None,
         message='Cannot write file'):
+
     return writeFile(
         text='\n'.join(lines),
         filename=filename,
         issueOrigin=issueOrigin,
         message=message)
 
-
-
-
-
-def filesInTree(directory, suffix):
-    """
-    Search for all filenames ending with the suffix(es)
-    :param directory: the directory where to search
-    :param suffix: a string or a list of string serving as suffixes
-    :return: the lst of filenames ending with the suffix(es)
-    """
-    if isinstance(suffix,str):
-        suffixes=[suffix]
-    else:
-        suffixes=suffix
-    _=[]
-    for root, dirs, files in os.walk(directory):
-        for file in files:
-            for s in suffixes:
-                if file.endswith(s):
-                    path=os.path.join(root, file)
-                    _.append(path)
-                    break
-    return _
 
