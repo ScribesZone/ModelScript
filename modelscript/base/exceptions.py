@@ -1,5 +1,16 @@
 # coding=utf-8
 
+"""Exceptions
+"""
+
+__all__=(
+    'NotFound',
+    'InternalError',
+    'UnexpectedCase',
+    'UnexpectedState',
+    'UnexpectedValue',
+    'NoSuchFeature'
+)
 
 class NotFound(Exception):
     pass
