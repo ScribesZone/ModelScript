@@ -1,23 +1,37 @@
 # coding=utf-8
-from typing import List, Dict, Text, Any
+"""Metrics"""
+
+__all__ = (
+    'Metric',
+    'Metrics'
+)
+
+from typing import List, Dict, Any, Optional, Iterable, Tuple
 from collections import OrderedDict
 
+
 class Metric(object):
+    """A metric, basically an integer associated with a label."""
+
+    label: str
+    n: int
+    plural: Optional[str]
 
     def __init__(self, label, n, plural=None):
-        self.label=label
-        self.n=n
-        self.plural=plural
+        self.label = label
+        self.n = n
+        self.plural = plural
 
     def add(self, n):
+        """Add a value to the metric."""
         self.n += n
         return self
 
     @property
     def _pair(self):
-        if self.n==0:
+        if self.n == 0:
             return ('no', self.label)
-        elif self.n==1:
+        elif self.n == 1:
             return ('1', self.label)
         else:
             return (
@@ -33,38 +47,40 @@ class Metric(object):
 
 
 class Metrics(object):
+    """Collections of metrics."""
+
+    metricNamed: Dict[str, Metric]
 
     def __init__(self):
         self.metricNamed = OrderedDict()
-        #type: Dict[Text, Metric]
 
     @property
     def all(self):
-        #TODO:4 2to3 was self.metricNamed.values()
-        _=list(self.metricNamed.values())
-        return _
+        """All metrics."""
+        return list(self.metricNamed.values())
 
-    def add(self, metric):
-        #type: (Metric)->Metrics
+    def add(self, metric: Metric) -> 'Metrics':
+        """Add a metric."""
         if metric.label not in self.metricNamed:
-            self.metricNamed[metric.label]=\
-                Metric(metric.label,0)
+            self.metricNamed[metric.label] = \
+                Metric(metric.label, 0)
         self.metricNamed[metric.label].add(metric.n)
         return self
 
-    def addList(self, labelsAndValues):
-        for (l,v) in labelsAndValues:
+    def addList(self,
+                labelsAndValues: Iterable[Tuple[str, int]])\
+            -> 'Metrics':
+        """Add a list of pairs (label, value)"""
+        for (l, v) in labelsAndValues:
             self.add(Metric(label=l, n=v))
         return self
 
-    def addMetrics(self, metrics):
-        #type: (Metrics)->Metrics
+    def addMetrics(self, metrics: 'Metrics') -> 'Metrics':
         for metric in metrics.all:
             self.add(metric)
         return self
 
-    def addMetricsList(self, metricsList):
-        #type: (List[Metrics])->Metrics
+    def addMetricsList(self, metricsList: List['Metrics']) -> 'Metrics':
         """
         Increment all metric with the values in the given
         metrics. Add metric entry in case of new metric.
@@ -80,8 +96,7 @@ class Metrics(object):
             #     else:
             #         self.metricNamed[metric.label]=metric.n
 
-    def collect(self, elements):
-        #type: (List[Any])->Metrics
+    def collect(self, elements: List[Any]) -> 'Metrics':
         for e in elements:
             print(('CC'*15, type(e)))
             print(('CC'*15, 'metrics' in dir(e)))

@@ -1,7 +1,12 @@
 # coding=utf-8
-"""
-Base classes for printers and string/color utilities.
-"""
+"""Base classes for printers and string/color utilities. """
+
+__all__ = (
+    'ModelPrinterConfig',
+    'ModelPrinter',
+    'ModelSourcePrinterConfig',
+    'ModelSourcePrinter'
+)
 
 from abc import ABCMeta
 from typing import Optional
@@ -19,12 +24,6 @@ from modelscript.scripts.textblocks.printer import (
     TextBlockPrinter
 )
 
-__all__ = (
-    'ModelPrinterConfig',
-    'ModelPrinter',
-    'ModelSourcePrinterConfig',
-    'ModelSourcePrinter'
-)
 
 class ModelPrinterConfig(ContentPrinterConfig):
     def __init__(self,
@@ -35,10 +34,10 @@ class ModelPrinterConfig(ContentPrinterConfig):
                  lineNoPadding=' ',
                  verbose=0,
                  quiet=False,
-                 #------------------------
+                 # ------------------------
                  title=None,
                  issuesMode='top',
-                 #------------------------
+                 # ------------------------
                  contentMode='self', #self|source|model|no
                  summaryMode='top', # top | down | no
                 ):

@@ -1,8 +1,17 @@
 # coding=utf-8
+"""Location in a SourceFile"""
+
+__all__ = (
+    'Location',
+    'SourceLocation'
+)
+
 from abc import ABCMeta, abstractmethod
 from typing import Optional, Text
 
+
 class Location(object, metaclass=ABCMeta):
+    """Abstract location."""
     def __init__(self):
         pass
 
@@ -13,24 +22,25 @@ class Location(object, metaclass=ABCMeta):
 
 class SourceLocation(Location):
 
+    sourceFile: Optional['SourceFile']  # from modelscript.base.sources
+    filename: Optional[str]
+    line: Optional[int]
+    column: Optional[int]
+
     def __init__(self,
                  sourceFile=None,
                  fileName=None,
                  line=None,
                  column=None):
         super(SourceLocation, self).__init__()
-
         self.sourceFile = sourceFile
-        #type: Optional['SourceFile']
-
         if sourceFile is not None and fileName is None:
             fn = sourceFile.fileName
         else:
             fn = fileName
-        self.fileName = fn  # type: Optional[Text]
-
-        self.line = line  # type Optional[int]
-        self.column = column  # type Optional[int]
+        self.fileName = fn
+        self.line = line
+        self.column = column
 
     def str(self):
         _ = []
