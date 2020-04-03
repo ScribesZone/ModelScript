@@ -1,6 +1,8 @@
 # coding=utf-8
 
-
+"""Prepocessor.
+Legacy code not used at the time being.
+"""
 
 
 from abc import abstractmethod, ABCMeta
@@ -10,26 +12,23 @@ import re
 from modelscript.config import Config
 from modelscript.base.files import (
     readFileLines,
-    replaceExtension
-)
+    replaceExtension)
 from modelscript.interfaces.environment import (
-    Environment
-)
+    Environment)
 
-DEBUG=3
+DEBUG = 3
 
-#-----------------------------------------------------
+# -----------------------------------------------------
 #  Line transfos
-#-----------------------------------------------------
+# -----------------------------------------------------
 
 class Transfo(object, metaclass=ABCMeta):
     def __init__(self, stop=False):
         self.stop=stop
-        """ Indicate if other transformations are applied after this one """
+        """Indicates if other transformations are applied after this one"""
 
     @abstractmethod
-    def do(self, line):
-        #type: (Text) -> Optional[Text]
+    def do(self, line: str) -> Optional[str]:
         pass
 
 
@@ -37,12 +36,11 @@ class RegexpTransfo(Transfo):
 
     def __init__(self, regexp, result, stop=False):
         super(RegexpTransfo, self).__init__(stop=stop)
-        self.regexp=regexp
-        self.result=result
+        self.regexp = regexp
+        self.result = result
 
-    def do(self, line):
-        #type: (Text) -> Optional[Text]
-        m=re.match(self.regexp, line )
+    def do(self, line: str) -> Optional[str]:
+        m = re.match(self.regexp, line)
         if m:
             return self.result.format(**m.groupdict())
         else:
@@ -52,14 +50,13 @@ class PrefixToCommentTransfo(Transfo):
     def __init__(self, prefixes, stop=False):
         super(PrefixToCommentTransfo, self).__init__(stop=stop)
         self.prefixes = prefixes
-        re_prefix = ( '(%s)' %
+        re_prefix = ('(%s)' %
                          ('|'.join(prefixes)) )
         self.regexp=('^(?P<before> *)(?P<all> *%s.*)'
                      % re_prefix)
 
-    def do(self, line):
-        #type: (Text) -> Optional[Text]
-        m=re.match(self.regexp, line)
+    def do(self, line: str) -> Optional[str]:
+        m = re.match(self.regexp, line)
         if m:
             return '%s--@%s' % (
                 m.group('before'),
@@ -68,20 +65,19 @@ class PrefixToCommentTransfo(Transfo):
             return None
 
 
-#-----------------------------------------------------
+# -----------------------------------------------------
 #  File preprocessor
-#-----------------------------------------------------
+# -----------------------------------------------------
 
 class Preprocessor(object):
     def __init__(self,
-                 sourceText,
-                 targetText,
-                 targetExtension):
-        #type: (Text, Text, Text) -> None
-        self.sourceText=sourceText #type: Text
-        self.targetText=targetText #type: Text
-        self.targetExtension=targetExtension
-        self.transfos=[] #type: List[Transfo]
+                 sourceText: str,
+                 targetText: str,
+                 targetExtension: str) -> None:
+        self.sourceText: str = sourceText
+        self.targetText: str = targetText
+        self.targetExtension: str = targetExtension
+        self.transfos: List[Transfo] = []
 
     def addTransfo(self, transfo):
         self.transfos.append(transfo)
@@ -89,18 +85,18 @@ class Preprocessor(object):
     def transformLine(self, line):
         current=line
         for t in self.transfos:
-            replacement=t.do(current)
+            replacement = t.do(current)
             if replacement is not None:
                 if t.stop:
                     return replacement
                 else:
-                    current=replacement
+                    current = replacement
         return current
 
     def preprocessLine(self, line):
-        newLine=self.transformLine(line)
-        if Config.preprocessorPrint>=1 or DEBUG>=2:
-            if line==newLine:
+        newLine = self.transformLine(line)
+        if Config.preprocessorPrint >= 1 or DEBUG >= 2:
+            if line == newLine:
                 print('PRE:       ', line)
             else:
                 print('PRE: xxxxx ', line)
@@ -113,12 +109,11 @@ class Preprocessor(object):
         lines=readFileLines(
             file=filename,
             origin=issueOrigin,
-            message=
-                'Cannot read '+self.sourceText+' %s.')
+            message='Cannot read '+self.sourceText+' %s.')
         new_lines=[
-            self.preprocessLine(l) for l in lines ]
+            self.preprocessLine(l) for l in lines]
 
-        if Config.preprocessorPrint>=1 or DEBUG>=1:
+        if Config.preprocessorPrint >= 1 or DEBUG >= 1:
             print('PRE: ' + '=' * 30 + ' end preprocessing ' + '=' * 30)
         return Environment.writeWorkerFileLines(
             lines=new_lines,
