@@ -1,25 +1,23 @@
 # coding=utf-8
-"""
-Source files and annotated source files.
-"""
-__all__=(
-    'SourceElement',
-    'SourceFile',
-)
+"""Source files."""
 import abc
 import os
 from abc import ABCMeta
-from typing import List, Optional, Any
+from typing import List, Optional
 
 from modelscript.base.files import (
-    readFileLines
-)
+    readFileLines)
 
 # TODO:3 The dependency below should be removed
 # With inheritance this is not so easy because
 # the __init__ method would call WithIssueList wihch
 # do not register the issue box in the megamodel
 from modelscript.megamodels.issues import WithIssueModel
+
+__all__ = (
+    'SourceElement',
+    'SourceFile',
+)
 
 
 class SourceElement(object, metaclass=ABCMeta):

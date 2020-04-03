@@ -1,12 +1,13 @@
+# coding=utf-8
 """Styles used for pretty printing
 """
+
+from modelscript.libs.termcolor import colored
 
 __all__ = (
     'Style',
     'Styles'
 )
-
-from modelscript.libs.termcolor import colored
 
 
 class Style(object):

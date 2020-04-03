@@ -1,13 +1,19 @@
 # coding=utf-8
+"""Python helpers"""
 
-def getObjectValues(object, name, asList=True):
-    if not hasattr(object, name):
-        raise ValueError('Class %s has not attribute %s' % ( #raise:TODO:4
-            object.__class__.__name__,
+__all__ = (
+    'getObjectValues'
+)
+
+
+def getObjectValues(obj, name, asList=True):
+    if not hasattr(obj, name):
+        raise ValueError('Class %s has not attribute %s' % (  # raise:TODO:4
+            obj.__class__.__name__,
             name))
-    x = getattr(object, name)
+    x = getattr(obj, name)
     if callable(x):
-        x=x()
+        x = x()
     if asList and not isinstance(x, (tuple, list)):
-        x= [] if x is None else [x]
+        x = [] if x is None else [x]
     return x

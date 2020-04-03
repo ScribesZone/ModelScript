@@ -1,19 +1,9 @@
 # coding=utf-8
 """Issues in source files and issue management."""
 
-__all__ = (
-    'FatalError',
-    'Level',
-    'Levels',
-    'Issue',
-    'LocalizedSourceIssue',
-    'IssueBox',
-    'OrderedIssueBoxList',
-    'WithIssueList',
-)
 from abc import ABCMeta, abstractproperty
 from collections import OrderedDict
-from typing import Optional, List, Text, Dict, Tuple, Any, Union
+from typing import Optional, List, Dict, Tuple
 
 from modelscript.base.annotations import (
     Annotations)
@@ -25,8 +15,18 @@ from modelscript.base.exceptions import (
     UnexpectedCase,
     MethodToBeDefined)
 
-DEBUG = 0
+__all__ = (
+    'FatalError',
+    'Level',
+    'Levels',
+    'Issue',
+    'LocalizedSourceIssue',
+    'IssueBox',
+    'OrderedIssueBoxList',
+    'WithIssueList',
+)
 
+DEBUG = 0
 
 
 class Level(object):
@@ -60,13 +60,12 @@ class Level(object):
     def __hash__(self):
         return hash(self.rank)
 
-    def cmp(self, other, op='='):
-        #type: (Level, Text) -> bool
-        if op=='=':
+    def cmp(self, other: 'Level', op: str =  '=') -> bool:
+        if op == '=':
             return self == other
-        elif op=='<=':
+        elif op == '<=':
             return self <= other
-        elif op=='>=':
+        elif op == '>=':
             return self >= other
         else:
             raise UnexpectedCase(  #raise:OK
@@ -325,13 +324,13 @@ class LocalizedSourceIssue(Issue):
         # (l,c)=__adjust(self.sourceFile, line, column)
         # lines=sourceFile.sourceLines
         #
-        # self.line = l #type: int
+        # self.line: int
         # """
         # The line number between 1 and the nb of lines.
         # This values may have been adjusted
         # """
         #
-        # self.column = c #type: Optional[int]
+        # self.column: Optional[int] = c
         # """
         # The column number or None. If defined
         # it could be 0 or 1 more than the length
@@ -533,10 +532,8 @@ class IssueBox(object):
         return
 
     @property
-    def summaryLevelMap(self):
-        #type: () -> Dict[Level, int]
-        """
-        A map that give for each level the
+    def summaryLevelMap(self) -> Dict[Level, int]:
+        """A map that give for each level the
         number of corresponding issues at that level.
         This include levels with 0 issues.
         """
@@ -547,14 +544,12 @@ class IssueBox(object):
         return map
 
     @property
-    def summaryCodeMap(self):
-        # type: () -> Dict[Level, int]
-        """
-        A map that give for each level the
+    def summaryCodeMap(self) -> Dict[Level, int]:
+        """A map that give for each level the
         number of corresponding issues at that level.
         This include levels with 0 issues.
         """
-        map=OrderedDict()
+        map = OrderedDict()
         for i in self.all:
             if i.code in map:
                 map[i.code] += 1
@@ -566,27 +561,27 @@ class IssueBox(object):
     def summaryLine(self):
 
         def times(n, word, pattern='%i %s'):
-            if n==0:
+            if n == 0:
                 return ''
             else:
                 return (pattern % (
                     n,
-                    word + ('s' if n>=2 else '')
+                    word + ('s' if n >= 2 else '')
                 ))
 
         if self.nb == 0:
             return ''
         level_msgs = []
-        m=self.summaryLevelMap
+        m = self.summaryLevelMap
         for l in m:
-            n=m[l]
-            if n>0:
+            n = m[l]
+            if n > 0:
                 level_msgs.append(
                     times(n, l.label))
         if len(level_msgs) == 1:
-            text=level_msgs[0]
+            text = level_msgs[0]
         else:
-            text= '%s (%s)' % (
+            text = '%s (%s)' % (
                     times(self.nb, 'Issue'),
                     ', '.join(level_msgs)
                 )
