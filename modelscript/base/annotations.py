@@ -44,8 +44,10 @@ class Annotations(object):
                 if not cls._match(line) ])
 
     @classmethod
-    def filterFile(cls, filename, createTmpFile=True):
-        #type: (Text, bool) -> Optional[Text]
+    def filterFile(cls,
+                   filename: str,
+                   createTmpFile: bool = True)\
+            -> Optional[str]:
 
         def tmp_file():
             _, extension = os.path.splitext(filename)

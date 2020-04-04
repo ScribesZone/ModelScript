@@ -58,9 +58,8 @@ class ModelPrinterConfig(ContentPrinterConfig):
 
 class ModelPrinter(ContentPrinter, metaclass=ABCMeta):
     def __init__(self,
-                 theModel,
-                 config=None):
-        #type: ('Model', Optional[ModelPrinterConfig]) -> None
+                 theModel: 'Model',
+                 config: Optional[ModelPrinterConfig] = None) -> None:
         assert theModel is not None
         # don't move this line after as getIssueBox
         # is used in __init__
@@ -161,9 +160,8 @@ class ModelSourcePrinterConfig(ContentPrinterConfig):
 
 class ModelSourcePrinter(ContentPrinter, metaclass=ABCMeta):
     def __init__(self,
-                 theSource,
-                 config=None):
-        #type: ('ModelSourceFile', Optional[ContentPrinterConfig]) -> None
+                 theSource: 'ModelSourceFile',
+                 config: Optional[ContentPrinterConfig] = None):
         assert theSource is not None
         if config is None:
             config=ModelSourcePrinterConfig()

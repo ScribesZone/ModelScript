@@ -7,6 +7,7 @@ from typing import List, Optional
 
 from modelscript.base.files import (
     readFileLines)
+from modelscript.base.grammars import TextXNode
 
 # TODO:3 The dependency below should be removed
 # With inheritance this is not so easy because
@@ -24,7 +25,7 @@ class SourceElement(object, metaclass=ABCMeta):
     """Element of a source file.
     """
     name: Optional[str]
-    astNode: Optional['TextXNode']
+    astNode: Optional[TextXNode]
     lineNo: Optional[int]
     description: Optional[str]
 

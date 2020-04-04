@@ -1,6 +1,6 @@
 # coding=utf-8
 
-from abc import ABCMeta, abstractproperty
+from abc import ABCMeta, abstractmethod
 from modelscript.base.exceptions import (
     MethodToBeDefined)
 
@@ -8,13 +8,15 @@ from modelscript.base.exceptions import (
 
 MegamodelElement='MegamodelElement'
 class Dependency(object, metaclass=ABCMeta):
-    @abstractproperty
+    @property
+    @abstractmethod
     def source(self):
         #type: () -> MegamodelElement
         raise MethodToBeDefined( #raise:OK
             'property .source is not implemented')
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def target(self):
         #type: () -> MegamodelElement
         raise MethodToBeDefined( #raise:OK

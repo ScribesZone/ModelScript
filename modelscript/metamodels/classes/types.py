@@ -1,4 +1,4 @@
-import abc
+from abc import abstractmethod, ABCMeta
 
 from modelscript.megamodels.elements import SourceModelElement
 from modelscript.megamodels.py import MAttribute, MComposition
@@ -8,7 +8,7 @@ from modelscript.metamodels.classes import (
 from modelscript.base.exceptions import (
     MethodToBeDefined)
 
-class SimpleType(PackagableElement, Item, metaclass=abc.ABCMeta):
+class SimpleType(PackagableElement, Item, metaclass=ABCMeta):
     """
     Simple types.
     """
@@ -111,14 +111,16 @@ class UnspecifiedValue(object):
 UNSPECIFIED=UnspecifiedValue()
 
 
-class SimpleValue(object, metaclass=abc.ABCMeta):
+class SimpleValue(object, metaclass=ABCMeta):
 
-    @abc.abstractproperty
+    @property
+    @abstractmethod
     def type(self):
         raise MethodToBeDefined( #raise:OK
             'property .type not implemented')
 
-    @abc.abstractmethod
+    @property
+    @abstractmethod
     def equals(self, simpleValue):
         raise MethodToBeDefined( #raise:OK
             'equals() not implemented')
@@ -143,7 +145,7 @@ class EnumerationValue(object):
         return self.value==enumValue.value
 
 
-class DataValue(SimpleValue, metaclass=abc.ABCMeta):
+class DataValue(SimpleValue, metaclass=ABCMeta):
 
     def __init__(self, stringRepr, value, type):
         self.stringRepr=stringRepr

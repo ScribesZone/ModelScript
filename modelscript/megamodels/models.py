@@ -1,73 +1,67 @@
 # coding=utf-8
-"""
-Define models with their features.
+"""Define models with their features.
 """
 
-import abc
-
-from typing import Optional, Text, List
+from abc import abstractmethod, ABCMeta
+from typing import Optional, List
 
 from modelscript.megamodels.issues import WithIssueModel
 from modelscript.base.metrics import (
     Metrics,
-    Metric
-)
+    Metric)
 from modelscript.megamodels.megamodels import (
-    MegamodelElement
-)
+    MegamodelElement)
 from modelscript.megamodels.elements import ModelElement
 from modelscript.metamodels.textblocks import WithTextBlocks
-# from modelscript.megamodels.metamodels import Metamodel
-# from modelscript.megamodels.sources import (
-#     ModelOldSourceFile
-# )
-# from modelscript.megamodels.dependencies.models import ModelDependency
-# from modelscript.megamodels.dependencies.metamodels import MetamodelDependency
-Metamodel='Metamodel'
-ModelSourceFile='ModelOldSourceFile'
-ModelDependency='ModelDependency'
-MetamodelDependency='MetamodelDependency'
 
-__all__=(
+Metamodel = 'Metamodel'
+ModelSourceFile = 'ModelSourceFile'
+ModelDependency = 'ModelDependency'
+MetamodelDependency = 'MetamodelDependency'
+
+__all__ = (
     'Model',
-    'ModelElement',
+    'Placeholder',
 )
-DEBUG=2
 
-
+DEBUG = 2
 
 
 class Model(
-    MegamodelElement,
-    ModelElement,
-    WithIssueModel,
-    WithTextBlocks, metaclass=abc.ABCMeta):
-    """
-    The root class for all models.
+        MegamodelElement,
+        ModelElement,
+        WithIssueModel,
+        WithTextBlocks,
+        metaclass=ABCMeta):
+    """The root class for all models.
 
     Basically a model has:
-    - a name,
-    - possibly a source file if the model is the result
+    * a name,
+    * possibly a source file if the model is the result
       of parsing this file,
-    - a metamodel
-    - an issue box. This issue box stores "semanctical"
+    * a metamodel
+    * an issue box. This issue box stores "semantical"
       errors found on the model, while the source
-      file issuebox stores "syntactical" errors.
+      file issue box stores "syntax" errors.
       The _issueBox has as a parent the sourceFile'
       issue box if any.
     """
 
-    def __init__(self):
-        #type: () -> None
+    name: str
+    source: Optional[ModelSourceFile]
+    kind: str
+    status: str
 
-        self.name='' #type: Text
+    def __init__(self) -> None:
+
+        self.name = ''
         # set later
         # If the model originates from a sourceFile
         # then set by parseToFillImportBox
 
-        self.source=None  #type: Optional[ModelSourceFile]
+        self.source = None
         # Set later if build from a ModelSourceFile.
-        # Set in the constuctor of ModelSourceFile
+        # Set in the constructor of ModelSourceFile
 
         MegamodelElement.__init__(self)
 
@@ -78,7 +72,7 @@ class Model(
 
         WithTextBlocks.__init__(self)
 
-        self.kind='' #type: Text
+        self.kind = ''
         # Set later.
         # A keyword like "conceptual", "preliminary', ...
         # If the model is from a sourceFile then
@@ -86,7 +80,7 @@ class Model(
         # is set by parseToFillImportBox
         # Could be '' if no kind specified
 
-        self.status='' #type: Text
+        self.status = ''
         # Set later
         # a keyword like "draft" | "" | "consolidated"
 
@@ -95,10 +89,9 @@ class Model(
         # The source contains importBox, but
         # here we should have dependency box
 
-    @abc.abstractproperty
-    def metamodel(self):
-        #type: () -> Metamodel
-
+    @property
+    @abstractmethod
+    def metamodel(self) -> Metamodel:
         # Makes it sure that subclasses define metamodel()
         # This should never happened if all model classes
         # are properly defined.

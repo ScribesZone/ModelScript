@@ -7,7 +7,7 @@ Provide a global registery of:
 - metamodel dependencies
 - model dependencies
 """
-from abc import ABCMeta, abstractproperty
+from abc import ABCMeta, abstractmethod
 
 from typing import List, Optional
 
@@ -39,13 +39,15 @@ OptSource=Optional[ModelSourceFile]
 
 
 class MegamodelElement(object, metaclass=ABCMeta):
-    @abstractproperty
+    @property
+    @abstractmethod
     def outgoingDependencies(self):
         #type: () -> List[Dependency]
         raise MethodToBeDefined( #raise:OK
             'outgoingDependencies() is not defined.')
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def incomingDependencies(self):
         #type: () -> List[Dependency]
         raise MethodToBeDefined( #raise:OK

@@ -13,7 +13,7 @@ violations are converted to issues.
 
 from collections import OrderedDict, Counter
 from typing import List, Optional, Dict, Text, Union, Tuple
-from abc import ABCMeta, abstractmethod, abstractproperty
+from abc import ABCMeta, abstractmethod
 
 from modelscript.base.grammars import (
     ASTNodeSourceIssue
@@ -85,11 +85,13 @@ class ConformityViolation(object, metaclass=ABCMeta):
         # itself to the specific violations registry.
         self.stateCheck.allViolations.append(self)
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def message(self):
         pass
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def issueCode(self):
         pass
 

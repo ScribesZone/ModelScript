@@ -1,7 +1,7 @@
 # coding=utf-8
 """Issues in source files and issue management."""
 
-from abc import ABCMeta, abstractproperty
+from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 from typing import Optional, List, Dict, Tuple
 
@@ -685,7 +685,8 @@ class WithIssueList(object, metaclass=ABCMeta):
         """The public issueBox property. Read only."""
         return self._issueBox
 
-    @abstractproperty
+    @property
+    @abstractmethod
     def label(self):
         raise MethodToBeDefined(  # raise:OK
             'ISS: originLabel not defined')

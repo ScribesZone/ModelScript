@@ -1,4 +1,5 @@
 # coding=utf-8
+"""Element of source or models"""
 
 from abc import ABCMeta
 from collections import OrderedDict
@@ -13,32 +14,34 @@ from modelscript.base import py
 from modelscript.megamodels.checkers import (
     CheckList
 )
+from modelscript.base.grammars import (
+    TextXNode
+)
+
 
 class SourceElement(object, metaclass=ABCMeta):
-    """
-    Element of a source file.
+    """ Element of a source file.
     """
     def __init__(self,
-                 name=None,
-                 astNode=None,
-                 lineNo=None,
-                 code=None,
-                 description=None,
-                 eolComment=None):
+                 name: Optional[str] = None,
+                 astNode: TextXNode = None,
+                 lineNo: Optional[int] = None,
+                 code: Optional[str] = None,
+                 description: Optional[str] = None,
+                 eolComment: Optional[str] = None):
         self.name = name
-        self.astNode=astNode
+        self.astNode = astNode
         self.lineNo = lineNo
-        self.code=code
+        self.code = code
         self.description = description
         self.eolComment = eolComment
 
+
 class Descriptor(object):
 
-    def __init__(self, name, value=None):
-        #type: (Text, Any) -> None
-        self.name=name
-        self.value=value
-        #type: Any
+    def __init__(self, name: str, value: Any = None) -> None:
+        self.name: str = name
+        self.value: Any = value
 
     def __repr__(self):
         return '<descriptor:%s:%s>' % (
@@ -47,25 +50,20 @@ class Descriptor(object):
         )
 
 
-
 class ModelElement(object, metaclass=ABCMeta):
     def __init__(self, model):
         assert model is not None
-        self._model=model
-        self.stereotypes=[]
-        self.tags=[]
+        self._model = model
+        self.stereotypes = []
+        self.tags = []
         from modelscript.metamodels.textblocks import (
             TextBlock
         )
-        self.description=None
-        #type: Optional[TextBlock]
-
-        self.descriptorNamed=OrderedDict()
-        #type: Dict[Text, Descriptor]
+        self.description: Optional[TextBlock] = None
+        self.descriptorNamed: Dict[Text, Descriptor] = OrderedDict()
 
     @property
-    def model(self):
-        #type: () -> 'Model'
+    def model(self) -> 'Model':
         return self._model
 
     @property
@@ -75,7 +73,7 @@ class ModelElement(object, metaclass=ABCMeta):
 
     @model.setter
     def model(self, model):
-        self._model=model
+        self._model = model
 
     @property
     def children(self):
@@ -93,7 +91,6 @@ class ModelElement(object, metaclass=ABCMeta):
         CheckList.check(self)
         for child in self.children:
             child.check()
-
 
 
 class SourceModelElement(ModelElement, SourceElement, metaclass=ABCMeta):
@@ -114,7 +111,6 @@ class SourceModelElement(ModelElement, SourceElement, metaclass=ABCMeta):
                                description = description,
                                eolComment = eolComment)
         if model is not None:
-            #assert model is not None
             assert isinstance(model, Model)
             ModelElement.__init__(self, model)
         if self.source is not None:

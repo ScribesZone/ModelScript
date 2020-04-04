@@ -3,16 +3,6 @@
 Grammars, abstract syntax trees, syntax errors
 """
 
-__all__ = (
-    'Grammar',
-    'Grammars',
-    'AST',
-    'ModelSourceAST',
-    'SyntaxError',
-    'TokenBasedSyntaxError',
-    'ASTNodeSourceIssue'
-)
-
 import os
 import sys
 import re
@@ -25,9 +15,6 @@ from textx.export import (
     model_export)
 from textx.model import get_model
 from textx.metamodel import TextXMetaModel
-# NOTE: the type TextXNode and TextXModel used below as types
-# between quotes do not exist since they correspond to classes
-# generated on the fly by textX and that have no superclasses.
 
 from modelscript.base.brackets import (
     BracketedScript)
@@ -37,7 +24,28 @@ from modelscript.base.issues import (
 from modelscript.base.exceptions import (
     UnexpectedCase)
 
-#TODO:4 remove the include grammar kludge
+"""# NOTE: the type TextXNode and TextXModel are to be use for type hints.
+textX generates classes both for models and for metaclass. These classes
+just derive form object and there is no way to get a general type. The
+types below are just alias to object. This is still useful to indicate
+that a variable is a TextXNode.
+"""
+TextXNode = object
+TextXModel = object
+
+__all__ = (
+    'Grammar',
+    'Grammars',
+    'AST',
+    'ModelSourceAST',
+    'SyntaxError',
+    'TokenBasedSyntaxError',
+    'ASTNodeSourceIssue',
+    'TextXNode',
+    'TextXModel'
+)
+
+# TODO:4 remove the include grammar kludge
 
 INCLUDES = (
     '../scripts/megamodels/parser/grammar.tx',
@@ -163,7 +171,7 @@ class AST(object):
     grammar: Grammar
     file: str
     bracketedFile: str
-    model: 'TextXModel'
+    model: TextXModel
 
     def __init__(self, grammar: Grammar, file: str) -> None:
         """
@@ -188,27 +196,27 @@ class AST(object):
         # instrument textx model with a reference back to this object
         self.model.ast = self
 
-    def pos(self, astNode: 'TextXNode') -> Tuple[int, int]:
+    def pos(self, astNode: TextXNode) -> Tuple[int, int]:
         return self.model._tx_parser.pos_to_linecol(
             astNode._tx_position)
 
-    def posEnd(self, astNode: 'TextXNode') -> Tuple[int, int]:
+    def posEnd(self, astNode: TextXNode) -> Tuple[int, int]:
         return self.model._tx_parser.pos_to_linecol(
             astNode._tx_position_end)
 
-    def line(self, astNode: 'TextXNode') -> int:
+    def line(self, astNode: TextXNode) -> int:
         (l,c) = self.pos(astNode)
         return l
 
-    def column(self, astNode: 'TextXNode') -> int:
+    def column(self, astNode: TextXNode) -> int:
         (l,c) = self.pos(astNode)
         return c
 
-    def lineEnd(self, astNode: 'TextXNode') -> int:
+    def lineEnd(self, astNode: TextXNode) -> int:
         (l,c) = self.posEnd(astNode)
         return l
 
-    def columnEnd(self, astNode: 'TextXNode') -> int:
+    def columnEnd(self, astNode: TextXNode) -> int:
         (l,c) = self.posEnd(astNode)
         return l
 
@@ -218,7 +226,7 @@ class AST(object):
         os.system('dot -Tpng -O %s' % dot_file)
 
     @classmethod
-    def ast(cls, astNode: 'TextXNode') -> "TextXModel":
+    def ast(cls, astNode: TextXNode) -> "TextXModel":
         """ Return the AST from a given ast node """
         # This implementation is based both on the get_model method from
         # textX and the fact that the textX model has been instrumented
@@ -226,11 +234,11 @@ class AST(object):
         return get_model(astNode).ast
 
     @classmethod
-    def nodeLine(cls, astNode: 'TextXNode') -> int:
+    def nodeLine(cls, astNode: TextXNode) -> int:
         return AST.ast(astNode).line(astNode)
 
     @classmethod
-    def nodeLineEnd(cls, astNode: 'TextXNode') -> int:
+    def nodeLineEnd(cls, astNode: TextXNode) -> int:
         return AST.ast(astNode).lineEnd(astNode)
 
     @classmethod
@@ -277,7 +285,7 @@ class ASTNodeSourceIssue(LocalizedSourceIssue):
     An issue based on a ASTNode.
     """
     def __init__(self,
-                 astNode: 'TextXNode',
+                 astNode: TextXNode,
                  level: Level,
                  message: str,
                  code=None,
@@ -310,13 +318,11 @@ class ASTNodeSourceIssue(LocalizedSourceIssue):
 #     """
 #     Source file with a model produced via an AST.
 #     """
-#     def __init__(self, fileName, grammarFile):
-#         #type: (Text, Text) -> None
+#     def __init__(self, fileName: str, grammarFile:str):
 #
 #         # self.grammar=Grammar(grammarFile)
-#         # #type:
 #
-#         # self.ast=None  #type: Optional[ModelSourceAST]
+#         # self.ast: Optional[ModelSourceAST] = None
 #
 #         # filled just below
 #         # type: Optional[ModelSourceAST]

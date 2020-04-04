@@ -27,11 +27,11 @@ The hierarchy of step is recursive but Story is the only root.
 """
 
 
-from typing import Optional, List, Text, Union
-from abc import ABCMeta, abstractproperty, abstractmethod
+from typing import Optional, List, Text
+from abc import ABCMeta, abstractmethod
 from modelscript.megamodels.elements import SourceModelElement
 from modelscript.metamodels.permissions.sar import Subject
-from modelscript.base.metrics import Metrics, Metric
+from modelscript.base.metrics import Metrics
 from modelscript.base.exceptions import (
     MethodToBeDefined)
 
