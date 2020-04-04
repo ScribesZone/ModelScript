@@ -1,62 +1,68 @@
 # coding=utf-8
+"""Source registery.
+This module provides a unique mixin _SourceFileRegistry to be
+included in the Megamodel class.
+"""
+
 from collections import OrderedDict
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, ClassVar
 
 from modelscript.base.exceptions import (
     NotFound)
 
-__all__=(
+DEBUG = 0
+
+Metamodel = 'Metamodel'
+MetamodelDependency = 'MetamodelDependency'
+Model = 'Model'
+ModelDependency = 'ModelDependency'
+ModelSourceFile = 'ModelOldSourceFile'
+SourceFileDependency = 'SourceFileDependency'
+
+
+__all__ = (
     '_SourceFileRegistry'
 )
 
-DEBUG=0
 
-Metamodel= 'Metamodel'
-MetamodelDependency='MetamodelDepndency'
-
-Model='Model'
-ModelDependency='ModelDependency'
-
-ModelSourceFile='ModelOldSourceFile'
-SourceFileDependency='SourceFileDependency'
-OptSource=Optional[ModelSourceFile]
 
 
 class _SourceFileRegistry(object):
-    """
-    Part of the megamodel dealing with source files
-    """
+    """ Part of the megamodel dealing with source files. """
 
-    _allSourceFiles=[]
-    #type: List[ModelSourceFile]
+    _allSourceFiles: \
+        ClassVar[List[ModelSourceFile]] \
+        = []
 
-    _sourceFileByPath = OrderedDict()
-    # type:Dict[Metamodel, ModelSourceFile]
+    _sourceFileByPath: \
+        ClassVar[Dict[Metamodel, ModelSourceFile]] \
+        = OrderedDict()
 
-    _sourceFilesByMetamodel = OrderedDict()
-    # type:Dict[Metamodel, List[ModelSourceFile]
+    _sourceFilesByMetamodel: \
+        ClassVar[Dict[Metamodel, List[ModelSourceFile]]] \
+        = OrderedDict()
 
+    _allSourceFileDependencies:\
+        ClassVar[List[SourceFileDependency]] \
+        = []
 
-    _allSourceFileDependencies = []
-    # type: List[SourceFileDependency]
+    _sourceFileDependenciesBySource:\
+        ClassVar[Dict[Metamodel, List[SourceFileDependency]]] \
+        = OrderedDict()
 
-    _sourceFileDependenciesBySource = OrderedDict()
-    # type:Dict[Metamodel, List[SourceFileDependency]
-
-    _sourceFileDependenciesByTarget = {}
-    # type:Dict[Metamodel, List[SourceFileDependency]
+    _sourceFileDependenciesByTarget: \
+        ClassVar[Dict[Metamodel, List[SourceFileDependency]]] \
+        = {}
 
     # --------------------------------------------------
     #    Registering sources and dependencies
     # --------------------------------------------------
 
     @classmethod
-    def registerSourceFile(cls, source):
-        # type: (ModelSourceFile) -> None
+    def registerSourceFile(cls, source: ModelSourceFile) -> None:
+        """ Register a source. Register the corresponding model as well.
         """
-        Register a source. Register the model as well.
-        """
-        if DEBUG>=1:
+        if DEBUG >= 1:
             print(('RSC: registerSourceFile(%s)' % source.fileName))
         if source.path not in cls._sourceFileByPath:
             cls._allSourceFiles.append(source)
@@ -76,11 +82,11 @@ class _SourceFileRegistry(object):
                 Megamodel.registerModel(source.model)
 
     @classmethod
-    def registerSourceFileDependency(cls, sourceDependency):
-        # type: (SourceFileDependency) -> None
-        """
-        Register a source file dependency. Register
-        before the source and target if not done before.
+    def registerSourceFileDependency(
+            cls,
+            sourceDependency: SourceFileDependency) -> None:
+        """ Register a source file dependency.
+        Register before the source and target if not done before.
         Also register the model dependency if needed.
         """
         source = sourceDependency.source
@@ -106,9 +112,7 @@ class _SourceFileRegistry(object):
         cls._sourceFileDependenciesByTarget[target].append(sourceDependency)
 
         # Model dependency creation is done in constructor
-        # of SourceFileDependency. Nothiing to do here
-
-
+        # of SourceFileDependency. Nothing to do here.
 
     # --------------------------------------------------
     #    Retrieving information from the megamodel
@@ -116,12 +120,12 @@ class _SourceFileRegistry(object):
 
     @classmethod
     # The name sourceFile instead of source is due to a conflict
-    # with the method sources() (with targets()) in the
+    # with the method sources() (with "sources" and "targets"()) in the
     # MegamodelElement class.
-    def sourceFiles(cls, metamodel=None):
-        # type: () -> List[ModelSourceFile]
-        """
-        Return all source files for a given metamodel.
+    def sourceFiles(cls,
+                    metamodel: Optional[Metamodel] = None)\
+            -> List[ModelSourceFile]:
+        """Return all source files for a given metamodel.
         If no metamodel is provided, then return all sources.
         """
         if metamodel is None:
@@ -130,45 +134,47 @@ class _SourceFileRegistry(object):
             return cls._sourceFilesByMetamodel[metamodel]
 
     @classmethod
-    def sourceFile(cls, path):
-        # type: () -> Metamodel
-        """
-        Return a source given its path.
+    def sourceFile(cls, path: str) -> Metamodel:
+        """Return a source given its path.
         If the path does not corresponds to this file then
         raise NotFound.
         """
         if path in cls._sourceFileByPath:
             return cls._sourceFileByPath[path]
         else:
-            raise NotFound( #raise:ok
+            raise NotFound(  # raise:ok
                 'No source at "%s"' % path)
 
     @classmethod
-    def _outSourceDependencies(cls, source):
-        # type: (ModelSourceFile) -> List[SourceFileDependency]
-        """ Dependencies from source or None """
+    def _outSourceDependencies(
+            cls,
+            source: ModelSourceFile) \
+            -> List[SourceFileDependency]:
+        """Dependencies from source or None """
         if source not in cls._sourceFileDependenciesBySource:
             return []
         else:
             return cls._sourceFileDependenciesBySource[source]
 
     @classmethod
-    def _inSourceDependencies(cls, target):
-        # type: (ModelSourceFile) -> List[SourceFileDependency]
-        """ Dependencies to target or None """
+    def _inSourceDependencies(
+            cls,
+            target: ModelSourceFile)\
+            -> List[SourceFileDependency]:
+        """Dependencies to target or None """
         if target not in cls._sourceFileDependenciesByTarget:
             return []
         else:
             return cls._sourceFileDependenciesByTarget[target]
 
     @classmethod
-    def sourceDependencies(cls,
-                           source=None,
-                           target=None,
-                           metamodelDependency=None):
-        # type: (OptSource, OptSource, Optional[MetamodelDependency]) -> List[SourceFileDependency]
-        """
-        Return sources dependencies according either to the
+    def sourceDependencies(
+            cls,
+            source: Optional[ModelSourceFile] = None,
+            target: Optional[ModelSourceFile] = None,
+            metamodelDependency: Optional[MetamodelDependency] = None) \
+            -> List[SourceFileDependency]:
+        """Return sources dependencies according either to the
         source source file, target source file, or metamodel
         dependency.
         If no parameter is provided then return all dependencies.
@@ -201,23 +207,23 @@ class _SourceFileRegistry(object):
             ]
 
     @classmethod
-    def sourceDependency(cls, source, target):
-        #type: (ModelSourceFile, ModelSourceFile) -> Optional[SourceFileDependency]
-        """ Return the dependency between source and target"""
-        d=cls.sourceDependencies(source=source, target=target)
-        if len(d)==1:
+    def sourceDependency(cls,
+                         source: ModelSourceFile,
+                         target: ModelSourceFile)\
+            -> Optional[SourceFileDependency]:
+        """Return the dependency between source and target"""
+        d = cls.sourceDependencies(source=source, target=target)
+        if len(d) == 1:
             return d[0]
         else:
             return None
 
     @classmethod
     def sourceFileList(cls, origins=None):
-
         if origins is None:
-            origins=cls.sourceFiles()
-        visited=[]
-        output=[]
-
+            origins = cls.sourceFiles()
+        visited = []
+        output = []
         # def visit(source_file):
         #     if source_file not in visited:
         #         visited.insert(0, source_file)

@@ -1,7 +1,7 @@
 # coding=utf-8
 """Library to define model checkers of various kind."""
 
-from typing import Dict, List, ClassVar
+from typing import Dict, List, ClassVar, Any
 import collections
 from abc import ABCMeta, abstractmethod
 

@@ -1,13 +1,25 @@
+# coding=utf-8
+""" Implement a megamodel as a singleton. """
 
-"""
-Implement a megamodel as a singleton.
-"""
-from typing import Text, Optional
+from typing import Text, Optional, ClassVar, Any
 import os
 import io
 import re
+
 from modelscript.megamodels.models import Model
 from modelscript.megamodels.dependencies import Dependency
+from modelscript.base.exceptions import (
+    MethodToBeDefined)
+from modelscript.base.issues import (
+    Issue,
+    Levels,
+    FatalError)
+from modelscript.megamodels.models import Model
+from modelscript.megamodels.metamodels import Metamodel
+from modelscript.base.exceptions import (
+    NotFound,
+    NoSuchFeature,
+    UnexpectedValue)
 
 # import facets for extending Megamodel
 from modelscript.megamodels.megamodels._registries.metamodels import (
@@ -23,59 +35,47 @@ from modelscript.megamodels.megamodels._registries.metacheckers import (
 from modelscript.megamodels.megamodels._registries.issues import (
     _IssueBoxRegistry)
 
-from modelscript.base.exceptions import (
-    MethodToBeDefined)
-from modelscript.base.issues import (
-    Issue,
-    Levels,
-    FatalError)
-
-from modelscript.megamodels.models import Model
-from modelscript.megamodels.metamodels import Metamodel
-from modelscript.base.exceptions import (
-    NotFound,
-    NoSuchFeature,
-    UnexpectedValue)
+__all__=(
+    'Megamodel',
+    'METAMODEL'
+)
 
 
-ISSUES={
+_ISSUES={
     'NO_FILE': 'mg.FileNotFound',
     'NO_META': 'mg.NoMetamodel',
     'NO_PARSER': 'mg.NoParser',
 }
 
-def icode(ilabel):
-    return ISSUES[ilabel]
+
+def _icode(ilabel):
+    return _ISSUES[ilabel]
+
 
 class Megamodel(
-    Model,
-    # All the classes below make it possible to define related
-    # methods in separated modules. This avoid having a huge class
-    # with hundreds of methods.
-    _MetamodelRegistry,
-    _ModelRegistry,
-    _SourceFileRegistry,
-    _MetaPackageRegistry,
-    _MetaCheckerPackageRegistry,
-    _IssueBoxRegistry):
+        Model,
+        # All the classes below make it possible to define related
+        # methods in separated modules. This avoid having a huge class
+        # with hundreds of methods.
+        _MetamodelRegistry,
+        _ModelRegistry,
+        _SourceFileRegistry,
+        _MetaPackageRegistry,
+        _MetaCheckerPackageRegistry,
+        _IssueBoxRegistry):
 
-    model=None
-    """
-    A unique instance of Megamodel()
-    """
+    model: Optional['MegamodelModel'] = None  # will be not null
+    """A unique instance of Megamodel() """
     # Will be filled later by a unique instance of MegamodelModel()
     # This cannot be done now as this creates a
     # circular dependency between Megamodel and MegamodelModel
 
-
-    """
-    Static class containing a global registry of metamodels
+    """Static class containing a global registry of metamodels
     and models and corresponding dependencies.
     """
 
-    analysisLevel='full'
-    """
-    The analysisLevel attribute can take the following values:
+    analysisLevel: ClassVar[str] = 'full'
+    """The analysisLevel attribute can take the following values:
     *  "justAST": source files are just parsed independently from each 
        others. The "import" statement are not followed.
     *  "justASTDep": source files are parsed and "import" statements are
@@ -92,15 +92,16 @@ class Megamodel(
         Model.__init__(self)
 
     @property
-    def homeDirectory(self):
+    def homeDirectory(self) -> str:
+        """Modelscript home directory."""
         return os.path.realpath(
             os.path.join(
                 os.path.dirname(os.path.realpath(__file__)),
                 '..', '..'))
+
     @property
-    def version(self):
-        """
-        get the version by extracting :version: label from CHANGES.rst
+    def version(self) -> str:
+        """Get the version by extracting :version: label from CHANGES.rst
         """
         VERSION_FILE='CHANGES.rst'
         def read(file):
@@ -120,31 +121,30 @@ class Megamodel(
             "Unable to find version string from file '%s.'" % VERSION_FILE)
 
     @property
-    def metamodel(self):
-        #type: () -> Metamodel
+    def metamodel(self) -> Metamodel:
         return METAMODEL
 
     @classmethod
-    def fileMetamodel(cls, filename):
-        """
-        The metamodel corresponding to a given file or None.
+    def fileMetamodel(cls, filename: str) -> Any:
+        """The metamodel corresponding to a given file or None.
         The extension of the file is used to determine the metamodel.
         If no metamodel is found return None
         """
         try:
             extension = os.path.splitext(filename)[1]
             return cls.theMetamodel(ext=extension)
-        except UnexpectedValue: #except:TODO:4
+        except UnexpectedValue:  # raise except:TODO:4
             return None
 
     #TODO:3 check the difference between loadFile() vs. sourceFile()
     #   not sure if sourceFile contains so different code from
     #   loadFile. It could make sense to extend sourceFile()
     @classmethod
-    def loadFile(cls, filename, withIssueList=None):
-        #type: (Text, 'WithIssueList')->Optional['ModelSource']
-        """
-        Load a given file into the megamodel.
+    def loadFile(cls,
+                 filename: Text,
+                 withIssueList: Optional['WithIssueList'] = None)\
+            ->Optional['ModelSource'] :
+        """Load a given file into the megamodel.
         Return a model source file. This source file can
         naturally contain some issues in its issue box.
         If it not possible at all to create such a source file
@@ -153,7 +153,7 @@ class Megamodel(
         of the givenparameter. If withIssueList is none then
         then the issue goes to issue box of the global megamodel.
         """
-        origin=cls.model if withIssueList is None else withIssueList
+        origin = cls.model if withIssueList is None else withIssueList
         try:
             if not os.path.exists(filename):
                 message='File not found:  %s' % filename
@@ -165,7 +165,7 @@ class Megamodel(
                     # Here it will necessary to catch the Fatal
                     # again. A much simpler way to
                     message=message,
-                    code=icode('NO_FILE'))
+                    code=_icode('NO_FILE'))
             try:
                 path = os.path.realpath(filename)
                 # check if already registered
@@ -180,7 +180,7 @@ class Megamodel(
                         origin=origin,
                         level=Levels.Fatal,
                         message=message,
-                        code=icode('NO_META'))
+                        code=_icode('NO_META'))
                 try:
                     factory = mm.sourceClass
                 except NoSuchFeature:
@@ -190,7 +190,7 @@ class Megamodel(
                         message=
                             'No parser available for %s metamodel'
                             % mm.label,
-                        code=icode('NO_PARSER')
+                        code=_icode('NO_PARSER')
                     )
                 else:
                     return factory(filename)
@@ -238,7 +238,7 @@ class Megamodel(
 
 
 
-METAMODEL=Metamodel(
+METAMODEL = Metamodel(
     id='mg',
     label='megamodel',
     extension='.mgs',

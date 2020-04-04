@@ -1,7 +1,6 @@
 # coding=utf-8
-"""
-Facet of Megamodel class.
-"""
+"""Facet of Megamodel class. """
+
 from collections import OrderedDict
 
 from typing import Dict,  List, Optional
@@ -11,11 +10,9 @@ __all__=(
 )
 
 class _IssueBoxRegistry(object):
-    """
-    Part of the megamodel dealing with issueBoxes
-    """
+    """ Part of the megamodel dealing with issueBoxes """
 
-    _issueBoxes=[]
+    _issueBoxes = []
 
     @classmethod
     def registerIssueBox(cls, issueBox):

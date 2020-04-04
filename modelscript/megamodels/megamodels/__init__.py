@@ -1,7 +1,5 @@
 # coding=utf-8
-
-"""
-Provide a global registery of:
+""" Global registery of:
 - metamodels,
 - models,
 - metamodel dependencies
@@ -27,37 +25,31 @@ __all__=(
     'MegamodelElement',
 )
 
-Metamodel= 'Metamodel'
-MetamodelDependency='MetamodelDependency'
+Metamodel = 'Metamodel'
+MetamodelDependency = 'MetamodelDependency'
 
-# Model='Model'
-ModelDependency='ModelDependency'
-
-ModelSourceFile='ModelOldSourceFile'
-SourceFileDependency='SourceFileDependency'
+ModelDependency = 'ModelDependency'
+ModelSourceFile ='ModelOldSourceFile'
+SourceFileDependency = 'SourceFileDependency'
 OptSource=Optional[ModelSourceFile]
 
 
 class MegamodelElement(object, metaclass=ABCMeta):
     @property
     @abstractmethod
-    def outgoingDependencies(self):
-        #type: () -> List[Dependency]
+    def outgoingDependencies(self) -> List[Dependency]:
         raise MethodToBeDefined( #raise:OK
             'outgoingDependencies() is not defined.')
 
     @property
     @abstractmethod
-    def incomingDependencies(self):
-        #type: () -> List[Dependency]
+    def incomingDependencies(self) -> List[Dependency]:
         raise MethodToBeDefined( #raise:OK
             'incomingDependencies() is not defined.')
 
-    def targets(self):
-        #type: () -> List[MegamodelElement]
+    def targets(self) -> List['MegamodelElement'] :
         return [d.target for d in self.outgoingDependencies]
 
-    def sources(self):
-        #type: () -> List[MegamodelElement]
+    def sources(self) -> List['MegamodelElement']:
         return [d.source for d in self.incomingDependencies]
 
