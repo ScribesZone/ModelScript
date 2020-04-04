@@ -1,5 +1,5 @@
 # coding=utf-8
-"""Source registery.
+"""Source registry.
 This module provides a unique mixin _SourceFileRegistry to be
 included in the Megamodel class.
 """
