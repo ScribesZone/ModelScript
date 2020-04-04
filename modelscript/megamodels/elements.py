@@ -6,6 +6,8 @@ from collections import OrderedDict
 from typing import Optional, Any, Dict, Text
 
 __all__=(
+    'SourceElement',
+    'Descriptor',
     'ModelElement',
     'SourceModelElement'
 )

@@ -48,9 +48,22 @@ class Model(
     """
 
     name: str
+    """Name of the model"""
+
     source: Optional[ModelSourceFile]
+    """Source file from where the model originates or None
+    if the model has been created in some other ways
+    """
+
     kind: str
+    """A keyword like "conceptual", "preliminary', ...
+    Could be '' if no kind specified
+    """
+
     status: str
+    """a keyword like "draft" | "" | "consolidated"""
+
+
 
     def __init__(self) -> None:
 
@@ -74,15 +87,12 @@ class Model(
 
         self.kind = ''
         # Set later.
-        # A keyword like "conceptual", "preliminary', ...
         # If the model is from a sourceFile then
         # this attribute
         # is set by parseToFillImportBox
-        # Could be '' if no kind specified
 
         self.status = ''
         # Set later
-        # a keyword like "draft" | "" | "consolidated"
 
         # FIXME:3 add model dependencies.
         # First check the code below (outDep, etc.)
@@ -95,14 +105,14 @@ class Model(
         # Makes it sure that subclasses define metamodel()
         # This should never happened if all model classes
         # are properly defined.
-        raise NotImplementedError( #raise:OK
+        raise NotImplementedError( # raise:OK
             'INTERNAL ERROR: The model class "%s"'
-            ' does not redefine metamodel()' % self.name
+            ' does not redefine the method metamodel()' % self.name
         )
 
     @property
     def label(self):
-        name='_' if self.name=='' else self.name
+        name = '_' if self.name == '' else self.name
         if self.source is None:
             return '%s:%s()' % (
                 name,
@@ -118,9 +128,8 @@ class Model(
     #     return self.label
 
     @property
-    def metrics(self):
-        #type: ()->Metrics
-        ms=Metrics()
+    def metrics(self) -> Metrics:
+        ms = Metrics()
         ms.add(
             Metric('model descriptor', len(self.descriptors))
         )
@@ -128,9 +137,8 @@ class Model(
         return ms
 
     @property
-    def fullMetrics(self):
-        #type: () -> Metrics
-        ms=self.metrics
+    def fullMetrics(self) -> Metrics:
+        ms = self.metrics
         if self.source is not None:
             ms.addMetrics(self.source.metrics)
         return ms
@@ -146,23 +154,22 @@ class Model(
         method do is metamodel dependent. All sub methods have to call
         this method. This method solve references in text blocks.
         """
-        if DEBUG>=1:
-            _=(' RESOLVE MODEL'+self.label+' ').center(70, '.')
+        if DEBUG >= 1:
+            _ = (' RESOLVE MODEL'+self.label+' ').center(70, '.')
             print(('MOD: '+_))
         self.resolveTextBlocks()
 
     def finalize(self):
         if DEBUG>=1:
-            _=(' FINALIZE MODEL'+self.label+' ').center(70, '.')
+            _ = (' FINALIZE MODEL'+self.label+' ').center(70, '.')
             print(('MOD: '+_))
         self.check()
 
-    def str( self,
+    def str(self,
              method='do',
-             config=None
-            ):
-        printer_class=self.metamodel.modelPrinterClass
-        printer=printer_class(
+             config=None):
+        printer_class = self.metamodel.modelPrinterClass
+        printer = printer_class(
             theModel=self,
             config=config
         )
@@ -177,16 +184,16 @@ class Model(
                     method))
 
     def theModel(self, targetMetamodel, acceptNone=False):
-        lm=self.usedModels(targetMetamodel=targetMetamodel)
-        if len(lm)==0:
+        lm = self.usedModels(targetMetamodel=targetMetamodel)
+        if len(lm) == 0:
             if acceptNone:
                 return None
             else:
-                raise ValueError( #raise:TODO:2
+                raise ValueError(  # raise:TODO:2
                     'No %s model found. Expected one.'
                     % targetMetamodel.label)
-        elif len(lm)>=2:
-            raise ValueError(   #raise:TODO:2
+        elif len(lm) >= 2:
+            raise ValueError(    # raise:TODO:2
                 '%i %s models found. Expected one.'
                 % (len(lm), targetMetamodel.label))
         else:
@@ -200,45 +207,44 @@ class Model(
             metamodelDependency=metamodelDependency)
         return [dep.targetModel for dep in outdeps]
 
-
-
     def clientModels(self,
                      targetMetamodel=None,
                      metamodelDependency=None):
-        indeps=self.outDependencies(
+        indeps = self.outDependencies(
             targetMetamodel=targetMetamodel,
             metamodelDependency=metamodelDependency)
         return [ dep.targetModel for dep in indeps]
 
-    def outDependencies(self, targetMetamodel=None, metamodelDependency=None):
-        #type: (Optional[Metamodel]) -> List[ModelDependency]
-        """
-        Returns the dependencies starting from this
+    def outDependencies(self,
+                        targetMetamodel: Optional[Metamodel] = None,
+                        metamodelDependency=None)\
+            -> List[ModelDependency]:
+        """Returns the dependencies starting from this
         dependency filtered either by targetMetamodel,
         or by metamodelDependency.
         """
 
         # select all out dependencies from self
         from modelscript.megamodels import Megamodel
-        all_deps=Megamodel.modelDependencies(source=self)
+        all_deps = Megamodel.modelDependencies(source=self)
         if targetMetamodel is None:
-            deps=all_deps
+            deps = all_deps
         else:
-            deps=[
+            deps = [
                 dep for dep in all_deps
-                    if (
-                        dep.targetModel.metamodel
-                        == targetMetamodel)
+                if (
+                    dep.targetModel.metamodel
+                    == targetMetamodel)
             ]
         if metamodelDependency is None:
             return deps
         else:
             return [
                 dep for dep in deps
-                    # could raise ValueError, but should not
-                    # raise:except:TODO:2
-                    if (dep.metamodelDependency
-                        == metamodelDependency)
+                # could raise ValueError, but should not
+                # raise:except:TODO:2
+                if (dep.metamodelDependency
+                    == metamodelDependency)
             ]
 
     @property
@@ -246,21 +252,21 @@ class Model(
         return self.outDependencies()
 
 
-    def inDependencies(self, sourceMetamodel=None):
-        #type: (Optional[Metamodel]) -> List[ModelDependency]
-        """
-        Returns the dependencies towards from this
+    def inDependencies(self,
+                       sourceMetamodel: Optional[Metamodel] = None)\
+            -> List[ModelDependency]:
+        """Returns the dependencies towards from this
         dependency filtered either by targetMetamodel,
         or by metamodelDependency.
         """
         from modelscript.megamodels import Megamodel
-        deps=Megamodel.modelDependencies(target=self)
+        deps = Megamodel.modelDependencies(target=self)
         if sourceMetamodel is None:
             return deps
         return [
             dep for dep in deps
-                if (dep.sourceModel.metamodel
-                    == sourceMetamodel)
+            if (dep.sourceModel.metamodel
+                == sourceMetamodel)
         ]
 
     @property
@@ -268,10 +274,11 @@ class Model(
         return self.inDependencies()
 
 
-    def checkDependencies(self, metamodelDependencies=None):
-        #type: (List[MetamodelDependency])->None
-        """
-        Check if this model has not problems with
+    def checkDependencies(self,
+                          metamodelDependencies:
+                          List[MetamodelDependency] = None) \
+            -> None:
+        """ Check if this model has not problems with
         dependencies.
         Do nothing if this is not the case. Otherwise
         raise a ValueError.
@@ -282,27 +289,27 @@ class Model(
         This could be because of missing dependency.
         """
 
-        #-- metamodels dependencies to be check against
+        # -- metamodels dependencies to be check against
         from modelscript.megamodels import Megamodel
         if metamodelDependencies is None:
-            mm_deps=Megamodel.metamodelDependencies(
+            mm_deps = Megamodel.metamodelDependencies(
                 source=self.metamodel)
         else:
-            mm_deps=metamodelDependencies
+            mm_deps = metamodelDependencies
 
-        #-- perform check for all metamodels dependencies
+        # -- perform check for all metamodels dependencies
         for mm_dep in mm_deps:
             # all model dependencies of type mm_dep
             # starting from here
-            m_deps=self.outDependencies(
+            m_deps = self.outDependencies(
                 metamodelDependency=mm_dep)
-            if len(m_deps)==0 and not mm_dep.optional:
-                raise ValueError( #raise:TODO:2
+            if len(m_deps) == 0 and not mm_dep.optional:
+                raise ValueError(  # raise:TODO:2
                     'Reference to a %s model'
                     ' is model is missing'
                     % mm_dep.targetMetamodel)
-            elif len(m_deps)>=0 and not mm_dep.multiple:
-                raise ValueError( #raise:TODO:2
+            elif len(m_deps) >= 0 and not mm_dep.multiple:
+                raise ValueError(  # raise:TODO:2
                     'Too many %s models associated'
                     ' with this model'
                     % mm_dep.targetMetamodel)
@@ -317,14 +324,14 @@ class Model(
 
 
 class Placeholder(object):
-    """
+    """Placeholder waiting to be substituted with a later value.
     Used just to put some symbol value in some model
     waiting for some kind of symbol resolution. This will be
     replaced by an actual reference to a model element.
     """
     def __init__(self, placeholderValue, type=None):
-        self.placeholderValue=placeholderValue
-        self.type=type
+        self.placeholderValue = placeholderValue
+        self.type = type
 
     def __str__(self):
         return ('***%s(%s)***' %(

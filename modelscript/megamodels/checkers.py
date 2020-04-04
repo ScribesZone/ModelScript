@@ -1,6 +1,7 @@
 # coding=utf-8
+"""Library to define model checkers of various kind."""
 
-from typing import Dict, List
+from typing import Dict, List, ClassVar
 import collections
 from abc import ABCMeta, abstractmethod
 
@@ -13,18 +14,49 @@ from modelscript.base.exceptions import (
     MethodToBeDefined,
     UnexpectedCase)
 
-DEBUG=0
+__all__ = (
+    'CheckOutput',
+    'CheckList',
+    'Checker',
+    'PassChecker',
+    'NamingChecker',
+    'LimitsChecker'
+)
+
+DEBUG = 0
+
+
+class Checker(object, metaclass=ABCMeta):
+    def __init__(self, **params):
+        # type : (List['MetaClass'], Text, Level, Optional[Dict[Text, Any]]) -> None
+        self.params = params
+        self.name = type(self).__name__
+        if 'metaclasses' not in params:
+            raise ValueError(  # raise;TODO:3
+                '%s do not define metaclasses' % self.name)
+        self.metaclasses = params.get('metaclasses')
+        self.level = params.get('level', Levels.Error)
+        CheckList.registerChecker(self)
+
+
+    def doCheck(self, e):
+        raise MethodToBeDefined(  # raise:TODO:3
+            'CKK: Checker %s on %s is not implemented ' % (
+                self.name,
+                type(e).__name__
+            ))
+
 
 class CheckOutput(object):
     def __init__(self, message, locationElement=None):
         self.message=message
-        self.locationElement=locationElement
+        self.locationElement = locationElement
 
 
 class CheckList(object):
 
-    checkersForClass=collections.OrderedDict()
-    #type: Dict['MetaClass', List[Checker]]
+    checkersForClass: ClassVar[Dict['MetaClass', List[Checker]]] \
+        = collections.OrderedDict()
 
     @classmethod
     def registerChecker(cls, checker):
@@ -44,18 +76,18 @@ class CheckList(object):
     @classmethod
     def check(cls, element):
         c=type(element)
-        if DEBUG>=3:
+        if DEBUG >= 3:
             print('CKK: CHECKING %25s' % c.__name__, end='')
         if c in CheckList.checkersForClass:
-            checkers=CheckList.checkersForClass[c]
-            if DEBUG>=3:
+            checkers = CheckList.checkersForClass[c]
+            if DEBUG >= 3:
                 print('-> [%s]' % (
                     ','.join([c.name for c in checkers])))
             for checker in checkers:
                 check_output=checker.doCheck(element)
                 metaclasses_part='_'.join(
                     [mc.__name__ for mc in checker.metaclasses])
-                code='cck.%s.%s' % (
+                code = 'cck.%s.%s' % (
                     metaclasses_part,
                     checker.__class__.__name__)
                 if check_output is not None:
@@ -68,29 +100,8 @@ class CheckList(object):
                             check_output.locationElement
                     )
         else:
-            if DEBUG>=3:
+            if DEBUG >= 3:
                 print('-> []')
-
-
-class Checker(object, metaclass=ABCMeta):
-    def __init__(self, **params):
-        # type : (List['MetaClass'], Text, Level, Optional[Dict[Text, Any]]) -> None
-        self.params=params
-        self.name=type(self).__name__
-        if 'metaclasses' not in params:
-            raise ValueError( #raise;TODO:3
-                '%s do not define metaclasses' % self.name)
-        self.metaclasses=params.get('metaclasses')
-        self.level=params.get('level', Levels.Error)
-        CheckList.registerChecker(self)
-
-
-    def doCheck(self, e):
-        raise MethodToBeDefined( #raise:TODO:3
-            'CKK: Checker %s on %s is not implemented ' % (
-                self.name,
-                type(e).__name__
-            ))
 
 
 class PassChecker(Checker):
@@ -104,8 +115,8 @@ class PassChecker(Checker):
 class NamingChecker(Checker, metaclass=ABCMeta):
     def __init__(self, fun, namingName, **params):
         Checker.__init__(self, **params)
-        self.fun=fun
-        self.namingName=namingName
+        self.fun = fun
+        self.namingName = namingName
 
     def doCheck(self, e):
         if not self.fun(e.name):
@@ -127,8 +138,8 @@ class LimitsChecker(Checker, metaclass=ABCMeta):
     def __init__(self, label, **params):
         Checker.__init__(self, label=label, **params)
         self.label=label
-        self.min=self.params['min']
-        self.max=self.params['max']
+        self.min = self.params['min']
+        self.max = self.params['max']
 
     @abstractmethod
     def size(self, e):
@@ -138,7 +149,7 @@ class LimitsChecker(Checker, metaclass=ABCMeta):
     def doCheck(self, e):
         l=self.size(e)
         if l<self.min:
-            msg=('At least %s %s(s) must be defined. Got %s.' % (
+            msg = ('At least %s %s(s) must be defined. Got %s.' % (
                     self.min,
                     self.label,
                     l))
@@ -147,7 +158,7 @@ class LimitsChecker(Checker, metaclass=ABCMeta):
                 locationElement=self.locationElement(e)
             )
         if l>self.max:
-            msg=('At most %s %s(s) must be defined. Got %s.' %(
+            msg = ('At most %s %s(s) must be defined. Got %s.' %(
                     self.max,
                     self.label,
                     l))
