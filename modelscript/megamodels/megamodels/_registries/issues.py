@@ -1,16 +1,15 @@
 # coding=utf-8
-"""Facet of Megamodel class. """
-
-from collections import OrderedDict
-
-from typing import Dict,  List, Optional
+"""issue box registry.
+This module provides a unique mixin _IssueBoxRegistry to be
+included in the Megamodel class.
+"""
 
 __all__=(
     '_IssueBoxRegistry'
 )
 
 class _IssueBoxRegistry(object):
-    """ Part of the megamodel dealing with issueBoxes """
+    """Part of the megamodel dealing with issueBoxes """
 
     _issueBoxes = []
 
