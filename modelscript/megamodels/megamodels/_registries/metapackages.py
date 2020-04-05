@@ -1,24 +1,26 @@
 # coding=utf-8
+"""issue box registry.
+This module provides a unique mixin _MetaPackageRegistry to be
+included in the Megamodel class.
+"""
+
 from collections import OrderedDict
 
-from typing import Dict,  List, Optional
-
-__all__=(
+__all__ = (
     '_MetaPackageRegistry'
 )
 
+
 class _MetaPackageRegistry(object):
-    """
-    Part of the megamodel dealing with metapackages
+    """Part of the megamodel dealing with metapackages
     """
 
-    _metaPackageNamed=OrderedDict()
+    _metaPackageNamed = OrderedDict()
 
     @classmethod
     def registerMetaPackage(cls, metaPackage):
-        cls._metaPackageNamed[metaPackage.qname]=metaPackage
+        cls._metaPackageNamed[metaPackage.qname] = metaPackage
 
     @classmethod
     def metaPackages(cls):
-        #TODO:4 2to3 was cls._metaPackageNamed.values()
         return list(cls._metaPackageNamed.values())

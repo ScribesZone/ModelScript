@@ -1,49 +1,51 @@
 # coding=utf-8
-"""
-Define dependencies between model.
+"""Define dependencies between model.
 """
 
 from typing import Optional
 from modelscript.megamodels.models import Model
-# from modelscript.megamodels import Megamodel
 from modelscript.megamodels.dependencies.metamodels import (
-    MetamodelDependency
-)
+    MetamodelDependency)
 from modelscript.megamodels.dependencies import Dependency
 
+__all__ = (
+    'ModelDependency'
+)
 
 class ModelDependency(Dependency):
+    """Dependency between models.
+    A model dependency is:
+    * a source model,
+    * a target model,
+    * an optional "SourceElement",
+    * a metamodel dependency, the one that this dependency conforms to.
     """
-    Model dependency is:
-    - a source model
-    - a target model
-    - an optional "SourceElement"
-    - a metamodel dependency
-    """
+    sourceModel: Model
+    targetModel: Model
+    sourceElement: Optional['SourceElement']
+
     def __init__(self,
-                 sourceModel,
-                 targetModel,
-                 sourceElement=None):
-        #type: (Model, Model, Optional['SourceElement']) -> None
-        self.sourceModel=sourceModel
-        self.targetModel=targetModel
-        self.sourceElement=sourceElement
+                 sourceModel: Model,
+                 targetModel: Model,
+                 sourceElement: Optional['SourceElement'] = None)\
+            -> None:
+        self.sourceModel = sourceModel
+        self.targetModel = targetModel
+        self.sourceElement = sourceElement
         from modelscript.megamodels import Megamodel
         Megamodel.registerModelDependency(self)
 
     @property
     def source(self):
-        return  self.sourceModel
+        return self.sourceModel
 
     @property
     def target(self):
         return self.targetModel
 
     @property
-    def metamodelDependency(self):
-        #type: (ModelDependency) -> MetamodelDependency
-        """
-        Return the metamodel dependency this model dependency
+    def metamodelDependency(self) -> MetamodelDependency:
+        """Return the metamodel dependency this model dependency
         conforms to.
         This could raise a ValueError if there are more
         than one or no metamodel dependency.This should not

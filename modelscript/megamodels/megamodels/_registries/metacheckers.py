@@ -1,4 +1,9 @@
 # coding=utf-8
+"""issue box registry.
+This module provides a unique mixin _MetaCheckerPackageRegistry to be
+included in the Megamodel class.
+"""
+
 from collections import OrderedDict
 
 from typing import Dict,  List, Optional
@@ -16,7 +21,7 @@ class _MetaCheckerPackageRegistry(object):
 
     @classmethod
     def registerMetaCheckerPackage(cls, metaPackage):
-        cls._metaCheckerPackageNamed[metaPackage.qname]=metaPackage
+        cls._metaCheckerPackageNamed[metaPackage.qname] = metaPackage
 
     @classmethod
     def metaCheckerPackages(cls):
