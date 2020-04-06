@@ -1,6 +1,7 @@
 # coding=utf-8
 
 import logging
+from nose.plugins.attrib import attr
 
 from modelscript.interfaces.environment import Environment
 from modelscript.test.framework import TEST_CASES_DIRECTORY
@@ -16,6 +17,7 @@ from modelscript.tools.use.checkparser import (
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
 
+@attr('slow')
 def testGenerator_obs_useprinter():
     test_dir=os.path.join(
         TEST_CASES_DIRECTORY,'obs')

@@ -1,4 +1,9 @@
+# coding=utf-8
+"""Command line argument management.
+"""
+
 import argparse
+from typing import List
 
 from modelscript.config import Config
 
@@ -6,12 +11,12 @@ __all__=(
     'getOptions',
 )
 
-FULL_INTERFACE=False
+FULL_INTERFACE = False
 
 OPTIONS=[
-    ('Dimp','realtimeImportPrint'),
-    ('Diss','realtimeIssuePrint'),
-    ('Dckk','realtimeCheckers'),
+    ('Dimp', 'realtimeImportPrint'),
+    ('Diss', 'realtimeIssuePrint'),
+    ('Dckk', 'realtimeCheckers'),
 ]
 
 
@@ -51,7 +56,7 @@ def _argParser():
             const='top',
             default='inline',
             help='choose location of issues wrt to the listing.',
-            choices=['top','inline','bottom'],
+            choices=['top', 'inline', 'bottom'],
             type=str,
             nargs='?')
         parser.add_argument(
@@ -106,7 +111,8 @@ def _argParser():
         help='A model source file or a directory.')
     return parser
 
-def _updateConfig(options):
+
+def _updateConfig(options: argparse.Namespace) -> None:
     for (parameter, configOption) in OPTIONS:
         val = getattr(options, parameter)
         if val is not None:
@@ -114,7 +120,8 @@ def _updateConfig(options):
             print(('%s(%s)=%s' % (configOption, parameter, val)))
             setattr(Config, configOption, val)
 
-def getOptions(args):
+
+def getOptions(args: List[str]) -> argparse.Namespace:
     parser = _argParser()
     options = parser.parse_args(args)
     if FULL_INTERFACE:

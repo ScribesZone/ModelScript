@@ -13,28 +13,27 @@ class TestClassModel(object):
             cls_File = getTestFile('cls/cl-main-cybercompany-a.cls')
             source_file = ClassModelSource(cls_File)
             assert source_file.isValid
-            TestClassModel.THE_MODEL=source_file.classModel
+            TestClassModel.THE_MODEL = source_file.classModel
         self.model=TestClassModel.THE_MODEL
 
     def testClasses(self):
-        r={'Employee', 'Department', 'Project'}
+        r = {'Employee', 'Department', 'Project'}
         class_names = [c.name for c in self.model.classes]
         assert set(class_names)==r
         assert set(self.model.classNames)==r
 
 
     def testAssocs(self):
-        r={'WorksIn','WorksOn','Controls', 'Supervise'}
+        r = {'WorksIn', 'WorksOn', 'Controls', 'Supervise'}
         assoc_names = {c.name for c in self.model.associations}
-        assert assoc_names==r
-        assert set(self.model.associationNames)==r
-
-        assert set(self.model.plainAssociationNames)==r
+        assert assoc_names == r
+        assert set(self.model.associationNames) == r
+        assert set(self.model.plainAssociationNames) == r
 
     def testDataTypes(self):
-        r={'Integer', 'Real', 'Boolean', 'String',
+        r = {'Integer', 'Real', 'Boolean', 'String',
            'Date', 'Time', 'DateTime', 'NullType'}
-        assert set(self.model.dataTypeNames)==r
+        assert set(self.model.dataTypeNames) == r
 
     def testRolesShapes(self):
         ac = self.model.association('Controls')
@@ -56,7 +55,7 @@ class TestClassModel(object):
         assert ac.roles[0].cardinalityMin == 1
         assert ac.roles[0].cardinalityMax == 1
         assert ac.roles[1].cardinalityMin == 0
-        assert ac.roles[1].cardinalityMax == None
+        assert ac.roles[1].cardinalityMax is None
         assert ac.sourceRole.isOne
         assert ac.targetRole.isMany
         assert ac.isOneToMany
@@ -75,7 +74,7 @@ class TestClassModel(object):
         ro={'departments', 'projects', 'supervisor', 'subordinates'}
         assert {r.name for r in c.ownedOppositeRoles} == ro
         # ownedPlayedRoles
-        rp={'employees','employees','supervisor', 'subordinates'}
+        rp={'employees', 'employees', 'supervisor', 'subordinates'}
         assert {r.name for r in c.ownedPlayedRoles} == rp
 
         c = self.model.class_('Department')
@@ -87,5 +86,5 @@ class TestClassModel(object):
         assert {r.name for r in c.ownedPlayedRoles} == rp
 
     def testEnumeration(self):
-        assert len(self.model.enumerations)==0
+        assert len(self.model.enumerations) == 0
 

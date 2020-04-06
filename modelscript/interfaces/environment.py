@@ -1,24 +1,28 @@
 # coding=utf-8
+"""Access to the execution environment including specific directories.
+"""
 import os
 import tempfile
+from typing import ClassVar, Optional
+from typing_extensions import Literal
+
 from modelscript.base.files import (
     ensureDir,
-    extension,
     writeFileLines,
-    writeFile
-)
+    replaceExtension,
+    writeFile)
 from modelscript.base.exceptions import (
     FileSystemError,
     UnexpectedCase)
 
+__all__ = (
+    'Environment'
+)
 
-def replaceExtension(filename, extension):
-    return os.path.splitext(filename)[0] + extension
 
 class Environment(object):
-    """
-    Given access to various directories. These
-    directories can serve for user preferences and configuration
+    """Access to specific environment directories.
+    These directories can serve for user preferences and configuration
     files (~/.mdl directory), but also for the "worker" to
     save final and intermediate files.
 
@@ -31,16 +35,29 @@ class Environment(object):
     *   "home". the directory ~/.mdl/tmp
     """
 
-    workerDirName='.mdl'
-    workerSpace='inline' # inline | tmp | home | self
-    _userHomeDir=os.path.expanduser("~")
-    _userModelDir=None  # ~/.mdl
-    _workerDir=None     # ~/.mdl/tmp
+    workerDirName: \
+        ClassVar[str] \
+        = '.mdl'
+
+    workerSpace: \
+        ClassVar[Literal['inline', 'tmp', 'home', 'self']] \
+        = 'inline'
+
+    _userHomeDir: \
+        ClassVar[str] \
+        = os.path.expanduser("~")
+
+    _userModelDir: \
+        ClassVar[Optional[str]] \
+        = None  # ~/.mdl
+
+    _workerDir: \
+        ClassVar[Optional[str]] \
+        = None  # ~/.mdl/tmp
 
     @classmethod
     def getUserModelDir(cls):
-        """
-        The user .mdl directory, "~/.mdl", created on demand
+        """The user .mdl directory, "~/.mdl", created on demand
         """
         if cls._userModelDir is not None:
             return cls._userModelDir
@@ -53,8 +70,7 @@ class Environment(object):
 
     @classmethod
     def _getHomeWorkerDir(cls):
-        """
-        The worker directory with "home" option: ~/.mdl/tmp
+        """The worker directory with "home" option: ~/.mdl/tmp
         """
         if cls._workerDir is not None:
             return cls._workerDir
@@ -71,11 +87,16 @@ class Environment(object):
                           extension=None,
                           workerSpace=None):
         """
-        Return
-        :param basicFileName: The original filename.
-        :param workerSpace: the work space choosen ('inline', 'home', etc.)
-            If not given, select the environment wide default.
-        :return: The full file name for the worker.
+        Name of work file.
+
+        Args:
+            basicFileName: The original filename.
+            extension:  the work space choosen ('inline', 'home', etc.)
+                If not given, select the environment wide default.
+            workerSpace:
+
+        Returns:
+            The full file name for the worker.
         """
 
         def _getInlineWorkerDir(filename):
@@ -90,23 +111,23 @@ class Environment(object):
             return dir
 
         if extension is None:
-            filename=basicFileName
+            filename = basicFileName
         else:
-            filename=replaceExtension(basicFileName, extension)
+            filename = replaceExtension(basicFileName, extension)
 
-        space=cls.workerSpace if workerSpace is None else workerSpace
+        space = cls.workerSpace if workerSpace is None else workerSpace
 
-        if space=='self':
+        if space == 'self':
             # do not change anything
             return filename
-        elif space=='inline':
+        elif space == 'inline':
             # filename will go in .mdl/tmp/base
             return os.path.join(
                 _getInlineWorkerDir(filename),
                 os.path.basename(filename)
             )
 
-        elif space=='tmp':
+        elif space == 'tmp':
             # filename will go in temp directory with
             # arbitrary name
             # the extension if kept though from
@@ -121,7 +142,7 @@ class Environment(object):
                 raise FileSystemError( #raise:OK
                     'Cannot create file in'
                     ' system temporary directory.')
-        elif space=='home':
+        elif space == 'home':
             # TODO:4 could be use if need to flatten names
             # @classmethod
             # def pathToLabel(cls, path, last=1):
@@ -133,7 +154,7 @@ class Environment(object):
             worker_home=cls._getHomeWorkerDir()
             # do not use os.path.join as it remove the first
             # dir if the second is absolute
-            dir=os.path.normpath(os.path.sep.join(
+            dir = os.path.normpath(os.path.sep.join(
                 [os.path.sep]
                 + worker_home.split(os.path.sep)
                 + os.path.dirname(filename).split(os.path.sep)))
@@ -181,8 +202,12 @@ class Environment(object):
         return filename
 
     @classmethod
-    def writeWorkerFileLines(cls, lines, basicFileName, workerSpace=None,
-                        issueOrigin=None):
+    def writeWorkerFileLines(
+            cls,
+            lines,
+            basicFileName,
+            workerSpace=None,
+            issueOrigin=None):
         filename=cls.getWorkerFileName(
             basicFileName=basicFileName,
             workerSpace=workerSpace)
@@ -191,13 +216,3 @@ class Environment(object):
             filename=filename,
             issueOrigin=issueOrigin)
         return filename
-
-
-
-
-
-
-
-
-
-

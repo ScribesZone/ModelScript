@@ -379,7 +379,7 @@ class LocalizedSourceIssue(Issue):
 
 class IssueBox(object):
     """ A collection of issues for a 'WithIssueList'
-    container (so far a Model, a SourceFile or a BuildContext).
+    container (so far a Model, a SourceFile or a ExecutionContext).
     Issue boxes can be nested following the import graphs.
     Issue boxes also provide some query mechanisms.
     """
@@ -623,11 +623,11 @@ class IssueBox(object):
 class OrderedIssueBoxList(object):
     #TODO:4  refactor to reuse code from IssueBox
     # This class originates from the need to have issues in issue boxes
-    # displayed in a topological order (see BuildContext)
+    # displayed in a topological order (see ExecutionContext)
     # The code for the number of issues and so on should come from
     # the issue box class with a composite pattern or so.
     # In the meantime the code is added here in a ad hoc manner for
-    # the profit of BuildContext.
+    # the profit of ExecutionContext.
 
     def __init__(self, containerList):
         self.containerList=containerList
@@ -648,7 +648,7 @@ class OrderedIssueBoxList(object):
                         pattern=pattern)))
             else:
                 issue_box_kind=issue_box.origin.__class__.__name__
-                if issue_box_kind!='BuildContext':
+                if issue_box_kind!='ExecutionContext':
                     outputs.append(
                         Styles.smallIssue.do(
                             issue_box.origin.label + ':' + 'OK',
@@ -665,7 +665,7 @@ class WithIssueList(object, metaclass=ABCMeta):
     This is a mixin for classes with a _issueBox attribute.
     Current subclasses includes:
     * WithIssueModel
-    * BuildContext
+    * ExecutionContext
     * SourceFile
     * Model
     """

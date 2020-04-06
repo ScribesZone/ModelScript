@@ -1,8 +1,8 @@
 #!/D2/ScribesZone/ModelScript/.venv/bin/python
 """
 This script can be called either
-- from a shell, with the filename to annotate as a parameter
-- from gedit external tool interface, with the file name as env variables.
+* from a shell, with the filename to annotate as a parameter
+* from gedit external tool interface, with the file name as env variables.
 It first remove the annotations from the file given, then process
 the file.
 """

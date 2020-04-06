@@ -21,6 +21,7 @@ from modelscript.base.grammars import (
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
 
+@attr('slow')
 def testGenerator_cls_obsprinter():
     test_dir=os.path.join(
         TEST_CASES_DIRECTORY,'obs')

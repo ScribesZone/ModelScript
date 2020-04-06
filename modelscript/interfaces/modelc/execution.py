@@ -2,36 +2,32 @@
 """"""
 
 __all__ = (
-    'BuildContext'
+    'ExecutionContext'
 )
 
-import argparse
 import os
-import sys
-import traceback
-from typing import List, Any, Dict, Optional
+from typing import List, Any, Dict, Optional, ClassVar
 from collections import OrderedDict
+import argparse
 
 # initialize the megamodel with metamodels and scripts
 
 from modelscript.base.files import filesInTree
-from modelscript.libs.termcolor import cprint
-from modelscript.base.modelprinters import ModelPrinterConfig
 from modelscript.interfaces.modelc.options import getOptions
 from modelscript.megamodels import Megamodel
 from modelscript.base.issues import WithIssueList, OrderedIssueBoxList
 
 
-class BuildContext(WithIssueList):
-    """"""
+class ExecutionContext(WithIssueList):
+    """Execution context of modelscript session."""
 
-    args: List[str]
+    args: ClassVar[List[str]]
     """The list of command line arguments"""
 
-    options: Any  # TODO:4 check type
-    """The options derived from args"""
+    options: argparse.Namespace
+    """The options derived from args."""
 
-    sourceMap: Dict[str, Optional['SourceFile']]
+    sourceMap: ClassVar[Dict[str, Optional['SourceFile']]]
     """For each source file name, the corresponding SourceFile
     or None if there was an error
     """
@@ -39,23 +35,28 @@ class BuildContext(WithIssueList):
     issueBoxList: OrderedIssueBoxList
 
     def __init__(self, args):
-        super(BuildContext, self).__init__()
+        super(ExecutionContext, self).__init__()
 
         assert args is not None
+        # extract the command options from the command line arguments
         self.args = args
         self.options = getOptions(args)
         # self.hasManySourceFiles=len(self.options.sources)>=2
         self.sourceMap = OrderedDict()
-        self._build()
+        self._execute()
         self.issueBoxList = OrderedIssueBoxList(
             self.allSourceFileList
-            +[self])
+            + [self])
 
     def _displayVersion(self):
         print(('ModelScript - version %s' % Megamodel.model.version))
 
     def _processSource(self, path):
+        """Process a given source file or a given directory.
+        If a directory is given, then get all source files in
+        this directory recursively."""
         if os.path.isdir(path):
+            # A directory is given: process all nested source files.
             extensions = Megamodel.model.metamodelExtensions()
             filenames = filesInTree(path, suffix=extensions)
             if self.options.verbose:
@@ -65,10 +66,11 @@ class BuildContext(WithIssueList):
             for filename in filenames:
                 self._processSource(filename)
         else:
+            # Load a given source file
             source = Megamodel.loadFile(path, self)
-            self.sourceMap[path]=source
+            self.sourceMap[path] = source
 
-    def _build(self):
+    def _execute(self):
 
         # --- deal with --version -----------------------------------------
         if self.options.version:
@@ -76,11 +78,11 @@ class BuildContext(WithIssueList):
 
         # --- deal with --mode --------------------------------------------
         print((
-            {'justAST':'Checking syntax',
-             'justASTDep':'Checking syntax and dependencies',
-             'full':'Checking models'}
-            [self.options.mode] ))
-        Megamodel.analysisLevel=self.options.mode
+            {'justAST': 'Checking syntax',
+             'justASTDep': 'Checking syntax and dependencies',
+             'full': 'Checking models'}
+            [self.options.mode]))
+        Megamodel.analysisLevel = self.options.mode
 
         # --- deal with source files or source dir
         for path in self.options.sources:
@@ -106,12 +108,11 @@ class BuildContext(WithIssueList):
             origins=self.validSourceFiles)
 
     def label(self):
-        return('buildContext')
-
+        return 'executionContext'
 
     def display(self, styled=True):
-        # print(self.issueBoxList.nbIssues)
         print((self.issueBoxList.str(styled=styled)))
+
         # displayIssueBoxContainers(
         #     self.allSourceFileList+[self]
         # )
@@ -136,5 +137,5 @@ class BuildContext(WithIssueList):
 #                 styled=True,
 #                 pattern='{origin}:{level}:{line}:{message}'))
 #         else:
-#             if not isinstance(container, BuildContext):
+#             if not isinstance(container, ExecutionContext):
 #                 cprint(container.label+':'+'OK', 'green')

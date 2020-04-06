@@ -23,6 +23,7 @@ from modelscript.base.grammars import (
 logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.'+__name__)
 
+@attr('slow')
 def testGenerator_cls_useprinter():
     test_dir=os.path.join(
         TEST_CASES_DIRECTORY,'cls')
@@ -36,9 +37,6 @@ def testGenerator_cls_useprinter():
 
     for filename in files:
         yield doPrintUse, filename
-
-
-
 
 
 def doPrintUse(filename):

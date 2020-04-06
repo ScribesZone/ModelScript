@@ -40,8 +40,8 @@ __all__=(
     'METAMODEL'
 )
 
-
-_ISSUES={
+# list of issue codes
+_ISSUES = {
     'NO_FILE': 'mg.FileNotFound',
     'NO_META': 'mg.NoMetamodel',
     'NO_PARSER': 'mg.NoParser',
@@ -143,47 +143,55 @@ class Megamodel(
     def loadFile(cls,
                  filename: Text,
                  withIssueList: Optional['WithIssueList'] = None)\
-            ->Optional['ModelSource'] :
+            -> Optional ['ModelSource'] :
         """Load a given file into the megamodel.
         Return a model source file. This source file can
         naturally contain some issues in its issue box.
         If it not possible at all to create such a source file
         then return None. In this case the issue that cause
         and the corresponding issue is stored in the issue box
-        of the givenparameter. If withIssueList is none then
+        of the given parameter. If withIssueList is none then
         then the issue goes to issue box of the global megamodel.
         """
         origin = cls.model if withIssueList is None else withIssueList
         try:
             if not os.path.exists(filename):
-                message='File not found:  %s' % filename
+                # The file to load does not exist
+                # Raise a fatal error.
+                message = 'File not found:  %s' % filename
                 Issue(
                     origin=origin,
-                    level=Levels.Fatal,  # see below
-                    # The lovel should be Fatal but except Fatal
-                    # is within the context of the source.
-                    # Here it will necessary to catch the Fatal
-                    # again. A much simpler way to
+                    level=Levels.Fatal,
                     message=message,
                     code=_icode('NO_FILE'))
             try:
+                # Check if the file to be loaded  has been already
+                # registered. In this case just return it.
                 path = os.path.realpath(filename)
-                # check if already registered
                 return cls.sourceFile(path=path)
             except NotFound:
-                # source not registered, so builf it
+                # The file has not been loaded yet.
+                # Build the sourcefile according to its metamodel.
                 mm = cls.fileMetamodel(filename)
                 if mm is None:
+                    # The metamodel is not registered :
+                    # create a Fatal issue.
                     b = os.path.basename(filename)
-                    message='No metamodel available for %s' % b
+                    message = 'No metamodel available for %s' % b
                     Issue(
                         origin=origin,
                         level=Levels.Fatal,
                         message=message,
                         code=_icode('NO_META'))
                 try:
+                    # Get the python factory class for the given metamodel.
+                    # This is a subclass of ASTBasedModelSourceFile.
+                    # For instance UsecaseModelSource, a parser of a
+                    # script.
                     factory = mm.sourceClass
                 except NoSuchFeature:
+                    # No such factory class has been registered. This
+                    # is an odd situation.
                     Issue(  # TODO:3 check why it is not caught
                         origin=cls.model,  # the megamodel itself,
                         level=Levels.Fatal,
@@ -193,6 +201,8 @@ class Megamodel(
                         code=_icode('NO_PARSER')
                     )
                 else:
+                    # Create a source file using the factory.
+                    # This launch the parser and create the source file.
                     return factory(filename)
         except FatalError:
             return None

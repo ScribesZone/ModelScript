@@ -1,7 +1,5 @@
 # coding=utf-8
-
-"""
-Generate a usecase model from a usecase script.
+"""Generate a usecase model from a usecase script.
 """
 
 from __future__ import (
@@ -35,8 +33,8 @@ __all__=(
 DEBUG=0
 
 ISSUES={
-    'ACTOR_TWICE':'us.syn.Actor.Twice',
-    'ACTOR_NO_SUPER':'us.syn.Actor.NoSuper',
+    'ACTOR_TWICE': 'us.syn.Actor.Twice',
+    'ACTOR_NO_SUPER': 'us.syn.Actor.NoSuper',
     'USECASE_TWICE': 'us.syn.Usecase.Twice'
 }
 

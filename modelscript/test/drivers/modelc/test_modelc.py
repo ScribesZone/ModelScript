@@ -5,8 +5,8 @@ import contextlib
 import modelscript
 from modelscript.scripts.megamodels.printer.megamodels import (
     MegamodelPrinter)
-from modelscript.interfaces.modelc.build import (
-    BuildContext)
+from modelscript.interfaces.modelc.execution import (
+    ExecutionContext)
 
 from modelscript.test.framework import TEST_CASES_DIRECTORY
 
@@ -26,15 +26,15 @@ def pushDirectory(new_dir):
 class T(object):
 
     def __init__(self, cmd, issueNb, sourceList):
-        self.cmd=cmd
+        self.cmd = cmd
         # arguments of the command separated by spaces
 
-        self.issueNb=issueNb
+        self.issueNb = issueNb
         # expected nb of issues
 
-        self.sourceListStr=sourceList
+        self.sourceListStr = sourceList
 
-        self.buildContext=None
+        self.executionContext = None
         # set by check
 
     @property
@@ -45,26 +45,27 @@ class T(object):
         return self.sourceListStr.split()
 
     def checkIssues(self):
-        if self.buildContext.nbIssues != self.issueNb:
+        if self.executionContext.nbIssues != self.issueNb:
             print('Nb of issues differs:')
-            print(('Found:    %s' % self.buildContext.nbIssues))
+            print(('Found:    %s' % self.executionContext.nbIssues))
             print(('Expected: %s' % self.issueNb))
             assert False
 
     def checkSourceList(self):
         basenames=[
             f.basename
-            for f in self.buildContext.allSourceFileList ]
+            for f in self.executionContext.allSourceFileList ]
         if basenames != self.sourceFileList() :
             print('Source list differs :')
             print(('Found:    %s' % basenames))
             print(('Expected: %s' % self.sourceFileList()))
             assert False
 
-    def check(self, buildContext):
-        self.buildContext=buildContext
+    def check(self, executionContext):
+        self.executionContext = executionContext
         self.checkSourceList()
         self.checkIssues()
+
 
 TEST_CASES=[
     T('nothing', 1, ''),
@@ -158,7 +159,7 @@ def doModelc(cmd, testCase):
 
     # enter the testcases directory and perform the test
     with pushDirectory(TEST_CASES_DIRECTORY):
-        title=' modelc %s ' % cmd
+        title = ' modelc %s ' % cmd
         print(('='*80))
         print(('='*80))
         if len(title)<=60:
@@ -168,11 +169,11 @@ def doModelc(cmd, testCase):
         print(('='*80))
         print(('='*80))
         print('')
-        bc=BuildContext(testCase.args)
+        bc = ExecutionContext(testCase.args)
         bc.display()
         testCase.check(bc)
         from modelscript.megamodels import Megamodel
-        m=Megamodel.model
+        m = Megamodel.model
         print(('\n'*4))
 
 

@@ -45,7 +45,7 @@ def extension(path: str) -> str:
 
 def withoutExtension(path: str) -> str:
     """ Filename without the extension """
-    filename, file_extension =os.path.splitext(path)
+    filename, file_extension = os.path.splitext(path)
     return filename
 
 
@@ -58,7 +58,8 @@ def filesInTree(
         directory: str,
         suffix: Union[str, Iterable[str]]) \
         -> List[str]:
-    """Search for all filenames ending with the suffix(es).
+    """Search for all filenames ending with the suffix(es)
+    for a given directory traversed recursively.
 
     Args:
         directory: the directory where to search.

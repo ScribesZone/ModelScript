@@ -20,7 +20,8 @@ META_CLASSES=(
     'UsecaseModel',
     'Usecase',
     'System',
-    'Actor'
+    'Actor',
+    'METAMODEL'
 )
 
 __all__= META_CLASSES
