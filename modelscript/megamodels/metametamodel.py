@@ -40,6 +40,7 @@ class MetaModelElement(object):
         self.name = qname.split('.')[-1:]
         self.qualifier = qname.split('.')[:-1]
 
+
 class MetaFeature(MetaModelElement, metaclass=abc.ABCMeta):
     
     pyMethod: Any   # check types

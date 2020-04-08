@@ -2,12 +2,11 @@
 """Generate a usecase model from a usecase script.
 """
 
-from __future__ import (
-    unicode_literals, print_function, absolute_import, division)
+# from __future__ import (
+#     unicode_literals, print_function, absolute_import)
 
 import os
-
-from typing import Text
+from typing import cast
 
 from modelscript.base.exceptions import (
     UnexpectedCase)
@@ -30,13 +29,14 @@ __all__=(
     'UsecaseModelSource'
 )
 
-DEBUG=0
+DEBUG = 0
 
-ISSUES={
+ISSUES = {
     'ACTOR_TWICE': 'us.syn.Actor.Twice',
     'ACTOR_NO_SUPER': 'us.syn.Actor.NoSuper',
     'USECASE_TWICE': 'us.syn.Usecase.Twice'
 }
+
 
 def icode(ilabel):
     return ISSUES[ilabel]
@@ -44,33 +44,28 @@ def icode(ilabel):
 
 class UsecaseModelSource(ASTBasedModelSourceFile):
 
-    def __init__(self, usecaseFileName):
-        #type: (Text) -> None
-        this_dir=os.path.dirname(os.path.realpath(__file__))
+    def __init__(self, usecaseFileName: str) -> None:
+        this_dir = os.path.dirname(os.path.realpath(__file__))
         super(UsecaseModelSource, self).__init__(
             fileName=usecaseFileName,
             grammarFile=os.path.join(this_dir, 'grammar.tx')
         )
 
-
     @property
-    def usecaseModel(self):
-        #type: () -> UsecaseModel
-        m=self.model #type: UsecaseModel
+    def usecaseModel(self) -> UsecaseModel:
+        m = cast(UsecaseModel, self.model)
         return m
 
 
     @property
-    def metamodel(self):
-        #type: () -> Metamodel
+    def metamodel(self) -> Metamodel:
         return METAMODEL
-
 
     def fillModel(self):
 
         def _ensureActor(name, astnode, implicit):
             if name in self.usecaseModel.actorNamed:
-                existing_actor=self.usecaseModel.actorNamed[name]
+                existing_actor = self.usecaseModel.actorNamed[name]
                 if  (         not existing_actor.implicitDeclaration
                           and not implicit ):
                     ASTNodeSourceIssue(
@@ -86,7 +81,7 @@ class UsecaseModelSource(ASTBasedModelSourceFile):
                 else:
                     return existing_actor
             else:
-                new_actor=Actor(
+                new_actor = Actor(
                             self.usecaseModel,
                             name=name,
                             astNode=astnode,
@@ -95,7 +90,7 @@ class UsecaseModelSource(ASTBasedModelSourceFile):
 
         def _ensureUsecase(name, astnode, implicit):
             if name in (self.usecaseModel.system.usecaseNamed):
-                existing_usecase=\
+                existing_usecase = \
                     self.usecaseModel.system.usecaseNamed[name]
                 if  (         not existing_usecase.implicitDeclaration
                           and not implicit ):
@@ -119,21 +114,15 @@ class UsecaseModelSource(ASTBasedModelSourceFile):
                     implicitDeclaration=implicit)
                 return new_usecase
 
-
-        if DEBUG>=1:
+        if DEBUG >= 1:
             print(('\nParsing %s\n' % self.fileName))
 
-
-        # self.usecaseModel.system.setInfo(
-          #                  name=name   #,
-                            # lineNo=line_no,
-                       # )
         for declaration in self.ast.model.declarations:
-            type_=declaration.__class__.__name__
+            type_ = declaration.__class__.__name__
 
-            if type_=='Actor':
+            if type_ == 'Actor':
                 actor_decl=declaration
-                a=_ensureActor(
+                a = _ensureActor(
                     name=actor_decl.name,
                     astnode=actor_decl,
                     implicit=False)
@@ -141,38 +130,38 @@ class UsecaseModelSource(ASTBasedModelSourceFile):
                     'human' if actor_decl.kind is None
                     else actor_decl.kind)
 
-                a.superActors=actor_decl.superActors
-                a.description=astTextBlockToTextBlock(
+                a.superActors = actor_decl.superActors
+                a.description = astTextBlockToTextBlock(
                     container=a,
                     astTextBlock=actor_decl.textBlock)
 
-
-            elif type_=='Usecase':
+            elif type_ == 'Usecase':
                 usecase_decl=declaration
-                u=_ensureUsecase(
+                u = _ensureUsecase(
                     name=usecase_decl.name,
                     astnode=usecase_decl,
                     implicit=False)
-                u.description=astTextBlockToTextBlock(
+                u.description = astTextBlockToTextBlock(
                     container=u,
                     astTextBlock=usecase_decl.textBlock)
 
-            elif type_=='Interactions':
+            elif type_ == 'Interactions':
                 for interaction in declaration.interactions:
-                    a=_ensureActor(
+                    a = _ensureActor(
                         interaction.actor,
                         astnode=interaction,
                         implicit=True)
-                    u=_ensureUsecase(
+                    u = _ensureUsecase(
                         interaction.usecase,
                         astnode=interaction,
                         implicit=True)
                     a.addUsecase(u)
             else:
-                raise UnexpectedCase( #raise:OK
-                    'Unexpected type %s' % type_)
+                raise UnexpectedCase(  # raise:OK
+                    'Unexpected type %s' % type)
 
     def resolve(self):
+
         def resolve_super_actors():
             names_defined = self.usecaseModel.actorNamed
             for actor in self.usecaseModel.actors:
@@ -197,10 +186,6 @@ class UsecaseModelSource(ASTBasedModelSourceFile):
 
         super(UsecaseModelSource, self).resolve()
         resolve_super_actors()
-
-
-
-
 
 
 METAMODEL.registerSource(UsecaseModelSource)

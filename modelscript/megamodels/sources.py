@@ -59,6 +59,7 @@ class ASTBasedModelSourceFile(SourceFile, metaclass=ABCMeta):
     def __init__(self,
                  fileName: str,
                  grammarFile: str) -> None:
+
         """Creates a ASTBasedModelSourceFile.
 
         An empty model is created automatically.
@@ -79,12 +80,12 @@ class ASTBasedModelSourceFile(SourceFile, metaclass=ABCMeta):
         Link the source issueBox as a parent of the model' issueBox
         """
 
-        # ----- (0) create an empty model -------------------------------
+        # ----- (0) Create an empty model -------------------------------
 
-        # Create an empty model
-        # Not to be moved after super(...)
+        # Create an empty model.
+        # The code must not be moved after super(...)
         # This should be done in all cases so that
-        # the model attribute always exist even if there
+        # the "model" attribute always exist even if there
         # are some errors in reading the file.
         self.model = self.emptyModel()
 

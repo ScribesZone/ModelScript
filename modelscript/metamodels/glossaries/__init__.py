@@ -1,28 +1,31 @@
 # coding=utf-8
-
-"""
-Glossary metamodel.
+"""Glossary metamodel.
 
     GlossaryModel
         <>--* Package
             <>--* Entry (indexed by name)
 """
 
-
 import collections
-
 from typing import Dict, Text, Optional, List
 
 from modelscript.base.metrics import (
     Metrics,
-    Metric
-)
+    Metric)
 from modelscript.megamodels.dependencies.metamodels import (
     MetamodelDependency
 )
 from modelscript.megamodels.elements import SourceModelElement
 from modelscript.megamodels.metamodels import Metamodel
 from modelscript.megamodels.models import Model
+
+__all__ = (
+    'GlossaryModel',
+    'Package',
+    'Entry',
+    'METAMODEL'
+)
+
 # class WithTextBlockModel(object):
 #
 #     def __init__(self):
@@ -34,25 +37,25 @@ from modelscript.megamodels.models import Model
 
 
 # GlossaryDependent must be first !
+
+
 class GlossaryModel(Model):
-    """
-    Collection of named packages.
-    Glossaries allows to seach entry by name.
-    Package are namespace, that is terms with the same name may exists
+    """Collection of named packages.
+    Glossaries allows to search entry by name.
+    Package are namespaces, that is terms with the same name may exists
     in different packages.
     """
 
+    packageNamed: Dict[Text, 'Package']
+
     def __init__(self):
         super(GlossaryModel, self).__init__()
-
-        self.packageNamed=collections.OrderedDict()
-        # type: Dict[Text, Package]
-
+        self.packageNamed = collections.OrderedDict()
 
     @property
     def glossaryList(self):
-        #TODO:4 should be momoized. It is call for each occurrence.
-        _=[self]+super(GlossaryModel, self).glossaryList
+        #TODO:4 should be memoized. It is call for each occurrence.
+        _ = [self]+super(GlossaryModel, self).glossaryList
         return _
 
     @property
@@ -60,17 +63,12 @@ class GlossaryModel(Model):
         return list(self.packageNamed.values())
 
     @property
-    def metamodel(self):
-        #type: () -> Metamodel
+    def metamodel(self) -> Metamodel:
         return METAMODEL
 
-
-    def findEntry(self, term):
+    def findEntry(self, term: str)-> Optional['Entry']:
+        """Find an entry given a string (the term to be found)/
         """
-        Find an entry given a string (the term to be found)/
-        """
-        #type: (Text) -> Optional[Entry]
-
         # search first as the main term
         for packages in list(self.packageNamed.values()):
             if term in packages.entryNamed:
@@ -91,9 +89,8 @@ class GlossaryModel(Model):
         return None
 
     @property
-    def metrics(self):
-        #type: () -> Metrics
-        ms=super(GlossaryModel, self).metrics
+    def metrics(self) -> Metrics:
+        ms = super(GlossaryModel, self).metrics
         ms.add(Metric('package', len(self.packages)))
         ms.add(Metric(
             label='entry',
@@ -103,10 +100,15 @@ class GlossaryModel(Model):
 
 
 class Package(SourceModelElement):
-    """
-    A collection of entry indexed by the (main) term.
+    """A collection of entry indexed by the (main) term.
     A package is named and is a part of a glossary.
     """
+
+    isResolved: bool
+    glossaryModel: GlossaryModel
+    description: Optional[str]
+    entryNamed: Dict[Text, 'Entry']
+    """Entries indexed by main term name"""
 
     def __init__(self,
                  glossaryModel,
@@ -118,17 +120,11 @@ class Package(SourceModelElement):
             name=name,
             astNode=astNode
         )
-        self.isResolved=False
-
-        self.glossaryModel=glossaryModel
-
-        self.glossaryModel.packageNamed[name]=self
-
-        self.description=description
-
-        self.entryNamed=collections.OrderedDict()
-        # type: Dict[Text, Entry]
-        # Entries indexed by main term name
+        self.isResolved = False
+        self.glossaryModel = glossaryModel
+        self.glossaryModel.packageNamed[name] = self
+        self.description = description
+        self.entryNamed = collections.OrderedDict()
 
     @property
     def entries(self):
@@ -136,10 +132,18 @@ class Package(SourceModelElement):
 
 
 class Entry(SourceModelElement):
-    """
-    A main term with alternative terms, description
+    """A main term with alternative terms, description
     and references
     """
+
+    package: Package
+    term: str
+    synonyms: List[str]
+    inflections: List[str]
+    label: Optional[str]
+    translations: Dict[str, str]
+    occurrences: List['TextReference']
+    isResolved: bool
 
     def __init__(self,
                  package,
@@ -155,33 +159,17 @@ class Entry(SourceModelElement):
             astNode=astNode
         )
         # TODO:3 check, unique main/alternative(?) term
-        self.package=package
-        #type: Package
-
-        self.package.entryNamed[term]=self
-
-        self.term=term
-        #type: Text
-
-        self.synonyms=list(synonyms)
-        #type: List[Text]
-
-        self.inflections=list(inflections)
-        #type: List[Text]
-
-        self.label=label
-        #type: Optional[Text]
-
-        self.translations=(
+        self.package = package
+        self.package.entryNamed[term] = self
+        self.term = term
+        self.synonyms = list(synonyms)
+        self.inflections = list(inflections)
+        self.label = label
+        self.translations = (
             {} if translations is None
             else translations )
-        #type: Dict[Text, Text]
-
-        self.occurrences=[]
-        #type: List['TextReference']
-        """ Occurrences that refer to this entry """
-
-        self.isResolved=False
+        self.occurrences = []
+        self.isResolved = False
 
 
 METAMODEL = Metamodel(

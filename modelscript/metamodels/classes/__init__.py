@@ -1,7 +1,5 @@
 # coding=utf-8
-
-"""
-Class metamodel.
+"""Class metamodel.
 
 The structure of this package is::
 
@@ -34,48 +32,36 @@ The structure of this package is::
 
 """
 
-
 import abc
 import collections
 import logging
-
-from typing import Text, Dict
+from typing import Text, Dict, List, Optional
 
 from modelscript.base.graphs import (
-    genPaths
-)
+    genPaths)
 from modelscript.base.grammars import (
     # ModelSourceAST, \
     # ASTBasedModelSourceFile,
-    ASTNodeSourceIssue
-)
+    ASTNodeSourceIssue)
 from modelscript.base.issues import (
-    Levels
-)
-
-
-
-
+    Levels)
 # TODO:3 metastuff to be continued
 from modelscript.megamodels.py import (
     MComposition,
-    MAttribute
-)
+    MAttribute)
 from modelscript.megamodels.elements import SourceModelElement
 from modelscript.base.metrics import Metrics
 from modelscript.megamodels.metamodels import Metamodel
 from modelscript.megamodels.dependencies.metamodels import (
-    MetamodelDependency
-)
+    MetamodelDependency)
 from modelscript.megamodels.models import Model
 # from modelscript.metamodels.classes.associations import Association
 # from modelscript.metamodels.classes.classes import Class
 # from modelscript.metamodels.classes.types import (
 #     Enumeration )
-
 from modelscript.metamodels.permissions.sar import Resource
 
-META_CLASSES=( # could be in __all__ (not used by PyParse)
+META_CLASSES=(  # could be in __all__ (not used by PyParse)
     'ClassModel',
     'PackagableElement',
     'Entity',
@@ -94,10 +80,10 @@ META_CLASSES=( # could be in __all__ (not used by PyParse)
     'AssociationClass',
 )
 
-__all__= META_CLASSES
+__all__ = META_CLASSES
 
 
-ISSUES={
+ISSUES = {
     'SUPER_CYCLES_MSG': 'cl.fin.Cycle.One',
     'SUPER_CYCLES_STOP': 'cl.fin.Cycle.Final',
     'SUPER_ATT_INH_HORIZ': 'cl.fin.Attribute.InhHorizontal',
@@ -106,11 +92,13 @@ ISSUES={
     'SUPER_OROLE_INH_HORIZ': 'cl.fin.Attribute.InhHorizontal',
 }
 
+
 def icode(ilabel):
     return ISSUES[ilabel]
 
 #TODO:1 check if cardinality handling is ok
 # It seems that there is a bug with * ou 1..*
+
 
 # logging.basicConfig(level=logging.DEBUG)
 log = logging.getLogger('test.' + __name__)
@@ -132,86 +120,95 @@ class ClassModel(Model):
     #TODO:4 convert this to MComposition when ready
     META_COMPOSITIONS=[
         'enumerations',
+        'dataTypes',
         'plainClasses',
         'plainAssociations',
         'associationClasses',
-        'dataTypes',
-        'invariants',
         'packages',
+        'invariants',
     ]
-    def __init__(self):
-        #type: () -> None
+
+    _isResolved: bool
+    _isClassModelFinalized: bool
+
+    _enumerationNamed: Dict[str, 'Enumeration']
+    """Map of enumerations, indexed by name."""
+
+    _dataTypeNamed: Dict[str, 'DataType']
+    """Map of data types. Indexed by type names."""
+
+    _plainClassNamed: Dict[str, 'PlainClass']
+    """Only plain classes. 
+    Use method classes to get all the class (plain class + 
+    association class)
+    """
+
+    _plainAssociationNamed:  Dict[str, 'PlainAssociation']
+    """Only plain associations. 
+    Use method associations to get all associations (association 
+    class + plain associations)
+    """
+
+    _associationClassNamed: Dict[str, 'AssociationClass']
+    """Map of association classes, indexed by name."""
+
+    operationWithFullSignature: Dict[str, 'Operation']
+    """Map of operations, indexed by operation full signatures.
+    e.g. 'Person::raiseSalary(rate : Real) : Real
+    """
+
+    _packageNamed: Dict[str, 'Package']
+    """ALL packages, not only the top level ones."""
+
+    _invariantNamed: Dict[str, 'Invariant']
+
+    classOCLChecker: 'ClassOCLChecker'
+
+    def __init__(self) -> None:
         super(ClassModel, self).__init__()
 
-        self._isResolved=False
-        self._isClassModelFinalized=False
+        self._isResolved = False
+        self._isClassModelFinalized = False
+        self._enumerationNamed = collections.OrderedDict()
 
-        self._enumerationNamed=collections.OrderedDict()
-        #type: Dict[Text, 'Enumeration']
-        #: Map of enumerations, indexed by name.
-
-        #: Map of data types. Indexed by type names/
         #: populated during the resolution phase
-        self._dataTypeNamed=collections.OrderedDict()
-        #type: Dict[Text, 'DataType']
+        self._dataTypeNamed = collections.OrderedDict()
 
         self._plainClassNamed = collections.OrderedDict()
-        #type: Dict[Text, 'PlainClass']
-        #: Only plain classes. Use method classes to get
-        #: all the class (plain class + association class)
-
         self._plainAssociationNamed = collections.OrderedDict()
-        #type: Dict[Text, 'PlainAssociation']
-        #: Only plain associations. Use method associations to get
-        #: all associations (association class + plain associations)
-
         self._associationClassNamed = collections.OrderedDict()
-        #type: Dict[Text, 'AssociationClass']
-        #: Map of association classes, indexed by name.
-
         self.operationWithFullSignature = collections.OrderedDict()
-        #type: Dict[Text, 'Operation']
-        #: Map of operations, indexed by operation full signatures.
-        #: e.g. 'Person::raiseSalary(rate : Real) : Real
-
-        self._packageNamed=collections.OrderedDict()
-        #type: Dict[Text, Package]
-        # ALL packages, not only the top level ones
-
+        self._packageNamed = collections.OrderedDict()
         self._invariantNamed = collections.OrderedDict()
-        #type: Dict[Text, 'Invariant']
-
 
         from modelscript.metamodels.classes.core import \
             registerDataTypes
         registerDataTypes(self)
-        # Register core datatypes
+        # Register core data types
 
         from modelscript.metamodels.classes.oclchecker import \
             ClassOCLChecker
-        self.classOCLChecker=ClassOCLChecker(self)
+        self.classOCLChecker = ClassOCLChecker(self)
 
     @property
     def metamodel(self):
         return METAMODEL
 
-    #--------------------------------------------------------------
-    #   packages
-    #--------------------------------------------------------------
+    # --------------------------------------------------------------
+    #   enumerations
+    # --------------------------------------------------------------
 
     @property
-    def packages(self):
-        #TODO:4 2to3 add list
-        return list(self._packageNamed.values())
+    def enumerations(self) -> List['Enumerations']:
+        return list(self._enumerationNamed.values())
 
     @property
-    def packageNames(self):
-        #TODO:4 2to3 add list
-        return list(self._packageNamed.keys())
+    def enumerationNames(self) -> List[str]:
+        return list(self._enumerationNamed.keys())
 
-    def package(self, name):
-        if name in self._packageNamed:
-            return self._packageNamed[name]
+    def enumeration(self, name: str) -> Optional['Enumerations']:
+        if name in self._enumerationNamed:
+            return self._enumerationNamed[name]
         else:
             return None
 
@@ -226,23 +223,29 @@ class ClassModel(Model):
         return _
 
     @property
-    def simpleTypes(self):
-        #TODO:4 2to3 add list
+    def simpleTypes(self) -> List['SimpleType']:
         return list(self.simpleTypeNamed.values())
 
     @property
-    def simpleTypeNames(self):
-        #TODO:4 2to3 add list
+    def simpleTypeNames(self) -> List[str]:
         return list(self.simpleTypeNamed.keys())
+
+    def simpleType(self, name: str) -> Optional['SimpleType']:
+        if name in self.simpleTypeNamed:
+            return self.simpleTypeNamed[name]
+        else:
+            return None
+
+    # --------------------------------------------------------------
+    #   data types
+    # --------------------------------------------------------------
 
     @MComposition('DataType[*] inv model')
     def dataTypes(self):
-        #TODO:4 2to3 add list
         return list(self._dataTypeNamed.values())
 
     @property
     def dataTypeNames(self):
-        #TODO:4 2to3 add list
         return list(self._dataTypeNamed.keys())
 
     def dataType(self, name):
@@ -251,29 +254,31 @@ class ClassModel(Model):
         else:
             return None
 
-    @property
-    def enumerations(self):
-        #TODO:4 2to3 add list
-        return list(self._enumerationNamed.values())
+    # --------------------------------------------------------------
+    #   packages
+    # --------------------------------------------------------------
 
     @property
-    def enumerationNames(self):
-        #TODO:4 2to3 add list
-        return list(self._enumerationNamed.keys())
+    def packages(self) -> List['Package']:
+        return list(self._packageNamed.values())
 
-    def enumeration(self, name):
-        if name in self._enumerationNamed:
-            return self._enumerationNamed[name]
+    @property
+    def packageNames(self) -> List[str]:
+        return list(self._packageNamed.keys())
+
+    def package(self, name: str) -> Optional['Package']:
+        if name in self._packageNamed:
+            return self._packageNamed[name]
         else:
             return None
 
     # --------------------------------------------------------------
-    #   classes
+    #   plain classes
     # --------------------------------------------------------------
+
 
     @property
     def plainClasses(self):
-        #TODO:4 2to3 add list
         return list(self._plainClassNamed.values())
 
     @property
@@ -286,6 +291,10 @@ class ClassModel(Model):
             return self._plainClassNamed[name]
         else:
             return None
+
+    # --------------------------------------------------------------
+    #   classes
+    # --------------------------------------------------------------
 
     @property
     def classes(self):
@@ -306,17 +315,15 @@ class ClassModel(Model):
             return self.associationClass(name)
 
     # --------------------------------------------------------------
-    #   associations
+    #   plain associations
     # --------------------------------------------------------------
 
     @property
     def plainAssociations(self):
-        #TODO:4 2to3 add list
         return list(self._plainAssociationNamed.values())
 
     @property
     def plainAssociationNames(self):
-        #TODO:4 2to3 add list
         return list(self._plainAssociationNamed.keys())
 
     def plainAssociation(self, name):
@@ -324,6 +331,10 @@ class ClassModel(Model):
             return self._plainAssociationNamed[name]
         else:
             return None
+
+    # --------------------------------------------------------------
+    #   associations
+    # --------------------------------------------------------------
 
     @property
     def associations(self):
@@ -349,12 +360,10 @@ class ClassModel(Model):
 
     @property
     def associationClasses(self):
-        #TODO:4 2to3 add list
         return list(self._associationClassNamed.values())
 
     @property
     def associationClassNames(self):
-        #TODO:4 2to3 add list
         return list(self._associationClassNamed.keys())
 
     def associationClass(self, name):
@@ -369,12 +378,10 @@ class ClassModel(Model):
 
     @property
     def invariants(self):
-        #TODO:4 2to3 add list
         return list(self._invariantNamed.values())
 
     @property
     def invariantNames(self):
-        #TODO:4 2to3 add list
         return list(self._invariantNamed.keys())
 
     def invariant(self, name):

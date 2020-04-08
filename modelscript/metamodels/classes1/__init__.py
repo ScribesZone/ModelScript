@@ -1,8 +1,8 @@
 # coding=utf-8
+"""Metamodel of USE OCL class1 models.
+This metamodel is obsolete."""
 
-from collections import OrderedDict
 from typing import List, Optional, Dict, Text, Union
-from abc import ABCMeta, abstractmethod
 
 from modelscript.megamodels.models import Model
 from modelscript.megamodels.metamodels import Metamodel
@@ -10,7 +10,10 @@ from modelscript.megamodels.dependencies.metamodels import (
     MetamodelDependency)
 from modelscript.metamodels.glossaries import (
     GlossaryModel,
-    METAMODEL as GLOSSARY_METAMODEL
+    METAMODEL as GLOSSARY_METAMODEL)
+
+__all__= (
+    'Class1Model',
 )
 
 class Class1Model(Model):

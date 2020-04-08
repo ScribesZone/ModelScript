@@ -1,5 +1,23 @@
+# coding=utf-8
+"""Core elements of the class metamodel.
+This includes class to represent integer, real, datetime values and so on.
+"""
 from modelscript.metamodels.classes.types import DataType, DataValue
 from datetime import datetime
+
+__all__ = (
+    "registerDataTypes",
+    'dataTypeFromDataValueName',
+    'CoreDataValue',
+    'NullTypeValue',
+    'StringValue',
+    'IntegerValue',
+    'RealValue',
+    'BooleanValue',
+    'DateValue',
+    'DateTimeValue',
+    'TimeValue',
+)
 
 
 def registerDataTypes(model):
@@ -36,9 +54,10 @@ def registerDataTypes(model):
              implementationClass=NullTypeValue,
              isCore=True)
 
+
 def dataTypeFromDataValueName(model, datavalue_name):
     assert datavalue_name.endswith('Value')
-    datatype_name=datavalue_name[:-len('Value')]
+    datatype_name = datavalue_name[:-len('Value')]
     return model.dataType(datatype_name)
 
 
@@ -81,7 +100,7 @@ class IntegerValue(CoreDataValue):
 
     def __init__(self, stringRepr, type):
         try:
-            value=int(stringRepr)
+            value = int(stringRepr)
         except ValueError:
             raise ValueError(
                 'Invalid integer value: "%s"' % stringRepr)
@@ -111,7 +130,7 @@ class BooleanValue(CoreDataValue):
 
     def __init__(self, stringRepr, type):
         try:
-            value={
+            value = {
                 'true': True,
                 'vrai': True,
                 'false': False,
@@ -119,7 +138,7 @@ class BooleanValue(CoreDataValue):
             }[stringRepr]
             self.stringRepr = stringRepr
         except KeyError:
-            raise ValueError(  #raise:TODO:2
+            raise ValueError(  # raise:TODO:2
                 'Invalid boolean value: "%s"' % stringRepr)
         super(BooleanValue, self).__init__(
             stringRepr=stringRepr,
@@ -134,7 +153,7 @@ class DateValue(CoreDataValue):
         try:
             value = datetime.strptime(stringRepr, '%d/%m/%Y')
         except ValueError:
-            raise ValueError(  #raise:TODO:2
+            raise ValueError(  # raise:TODO:2
                 'Invalid date value: "%s"' % stringRepr)
         super(DateValue, self).__init__(
             stringRepr=stringRepr,

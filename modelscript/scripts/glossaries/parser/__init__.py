@@ -1,42 +1,34 @@
 # coding=utf-8
 
-from typing import Text, Union, Optional, Dict, List
-import re
+from typing import Text, Union, Optional, Dict, List, cast
 import os
-# from modelscript.scripts.megamodels.parser import (
-#     isMegamodelStatement
-# )
+
 from modelscript.base.exceptions import (
     UnexpectedCase)
 from modelscript.metamodels.glossaries import (
     GlossaryModel,
     Package,
     Entry,
-    METAMODEL,
-)
+    METAMODEL,)
 from modelscript.megamodels.sources import (
-    ASTBasedModelSourceFile
-)
+    ASTBasedModelSourceFile)
 from modelscript.base.grammars import (
-    ASTNodeSourceIssue
-)
+    ASTNodeSourceIssue)
 from modelscript.base.issues import (
-    Levels,
-)
+    Levels,)
 from modelscript.megamodels.metamodels import Metamodel
 from modelscript.scripts.textblocks.parser import (
-    astTextBlockToTextBlock
-)
+    astTextBlockToTextBlock)
 
-__all__=(
+__all__ = (
     'GlossaryModelSource'
 )
 
-DEBUG=0
+DEBUG = 0
 
-ISSUES={
-    'ENTRY_TWICE':'gl.syn.entry.twice',
-    'PACKAGE_DOC_TWICE':'gl.syn.packageDoc.twice'
+ISSUES = {
+    'ENTRY_TWICE': 'gl.syn.entry.twice',
+    'PACKAGE_DOC_TWICE': 'gl.syn.packageDoc.twice'
 }
 
 def icode(ilabel):
@@ -44,35 +36,29 @@ def icode(ilabel):
 
 
 class GlossaryModelSource(ASTBasedModelSourceFile):
-    def __init__(self, glossaryFileName):
-        #type: (Text) -> None
-        this_dir=os.path.dirname(os.path.realpath(__file__))
 
-        self.currentTopLevelPackage=None
-        #type: Optional[Package]
-        # Temporary variable to store current package
-        # Will be used by fillModel
+    _currentTopLevelPackage: Optional[Package]
+    # Temporary variable to store current package
+    # Will be used by fillModel
 
+    def __init__(self, glossaryFileName: str) -> None:
+        this_dir = os.path.dirname(os.path.realpath(__file__))
+        self._currentTopLevelPackage = None
         super(GlossaryModelSource, self).__init__(
             fileName=glossaryFileName,
             grammarFile=os.path.join(this_dir, 'grammar.tx')
         )
-        # although this is not specified the glossary model
-        # depends on itelf
-        self.model.glossaryModelUsed=self.model
-
-
+        # Although this is not specified the glossary model
+        # depends on itself.
+        self.model.glossaryModelUsed = self.model
 
     @property
-    def metamodel(self):
-        #type: () -> Metamodel
+    def metamodel(self) -> Metamodel:
         return METAMODEL
 
     @property
-    def glossaryModel(self):
-        #type: () -> GlossaryModel
-        m=self.model #type: GlossaryModel
-        return m
+    def glossaryModel(self) -> GlossaryModel:
+        return cast(GlossaryModel, self.model)
 
     def fillModel(self):
 
@@ -97,20 +83,20 @@ class GlossaryModelSource(ASTBasedModelSourceFile):
             package.description=astTextBlockToTextBlock(
                 container=package,
                 astTextBlock=ast_package.textBlock)
-            self.currentTopLevelPackage=package
+            self._currentTopLevelPackage=package
             return
 
         def _processEntry(ast_entry):
 
-            # if no inline 'package:' is defined for the current entry
-            # then the package is defined use the top level one
+            # If no inline 'package:' is defined for the current entry
+            # then the package is defined at the top level one.
             if ast_entry.inlinePackage is None:
-                if self.currentTopLevelPackage is None:
-                    package=_ensure_package('')
+                if self._currentTopLevelPackage is None:
+                    package = _ensure_package('')
                 else:
-                    package=self.currentTopLevelPackage
+                    package = self._currentTopLevelPackage
             else:
-                package=_ensure_package(ast_entry.inlinePackage.name)
+                package = _ensure_package(ast_entry.inlinePackage.name)
 
             if ast_entry.term in package.entryNamed:
                 existing_entry = package.entryNamed[ast_entry.term]
@@ -120,8 +106,8 @@ class GlossaryModelSource(ASTBasedModelSourceFile):
                     level=Levels.Error,
                     message=(
                             'Entry "%s" already declared at line %s' % (
-                        ast_entry.term,
-                        self.ast.line(existing_entry.astNode))))
+                                ast_entry.term,
+                                self.ast.line(existing_entry.astNode))))
             else:
                 entry = Entry(
                     package=package,
@@ -150,19 +136,15 @@ class GlossaryModelSource(ASTBasedModelSourceFile):
                     container=entry,
                     astTextBlock=ast_entry.textBlock)
 
-
         for ast_declaration in self.ast.model.declarations:
-            type_=ast_declaration.__class__.__name__
-            if type_=='TopLevelPackageDeclaration':
+            type_ = ast_declaration.__class__.__name__
+            if type_ == 'TopLevelPackageDeclaration':
                 _process_top_level_package_declaration(ast_declaration)
-            elif  type_=='Entry':
+            elif type_ == 'Entry':
                 _processEntry(ast_declaration)
             else:
-                raise UnexpectedCase( #raise:OK
+                raise UnexpectedCase(  # raise:OK
                     'Unexpected type %s' % type_)
-
-
-
 
 
 METAMODEL.registerSource(GlossaryModelSource)

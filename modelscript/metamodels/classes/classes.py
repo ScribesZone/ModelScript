@@ -1,5 +1,12 @@
+# coding=utf-8
+"""Class related metaclasses.
+This module defines:
+* Class,
+* PlainClass,
+* Attribute,
+* Operation. """
 
-from typing import List, Optional, Dict, Text
+from typing import List, Optional, Dict, Union, Any
 import abc
 import collections
 
@@ -14,18 +21,82 @@ from modelscript.metamodels.classes.associations import (
 from modelscript.base.exceptions import (
     MethodToBeDefined)
 
+Later = Optional
+
+__all__ = (
+    'Class',
+    'PlainClass',
+    'Attribute',
+    'Operation')
+
 
 class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
-    """
-    Classes.
+    """ Classes.
     """
 
     META_COMPOSITIONS = [
     #    'attributes', TODO:3 restore, raise an exception
     ]
 
-    def __init__(self, name, model,
-                 isAbstract=False, superclasses=(),
+    isAbstract: bool
+
+    superclasses: List[Union[str, 'Class']]  # later: List['Class']
+    """Names of superclasses later resolved as classes."""
+
+    _ownedAttributeNamed: List['Attribute']
+    """List of attributes directly declared by the class.
+    No inherited attributes.
+    """
+
+    operationNamed: Dict[str, Any]         # checktypes
+    # TODO:3 deal with operation and operation names
+    # Signature looks like op(p1:X):Z
+
+    invariantNamed: Dict[str, Any]     # checktypes
+    # Anonymous invariants are indexed with id like _inv2
+    # but their name (in Invariant) is always ''
+    # This id is just used internally
+    # after resolution.
+
+    _ownedOppositeRoleNamed: Dict[str, Role]
+    # defined by finalize.add_attached_roles_to_classes
+    # The opposite role a index by their name.
+    # This is possible because all opposite roles
+    # have a different name, which is not the case for
+    # played roles.
+
+    _ownedPlayedRoles: List[Role]
+    # Defined by finalize.add_attached_roles_to_classes.
+    # A list because various played role can have the same name.
+
+    # -------- inherited part ----------------------------------
+
+    inheritanceCycles: Later[List['Class']]
+    """The list of cycles starting and going to the current class.
+    """
+
+    _inheritedAttributeNamed: Later[Dict[str, 'Attribute']]
+    """Dict of inherited attributes from all super classes.
+    Inherited attributes are stored by names.
+    """
+
+    _inheritedOppositeRoleNamed: Optional[Dict[str, Role]]
+    """Dict of inherited opposite roles from all super classes.
+    Inherited role are stored by names.
+    This is ok since all opposite roles must have a
+    different name. This contrasts with played role
+    that can have arbitrary (duplicated) names."""
+
+    _inheritedPlayedRoles: Optional[List[Role]]
+    """List of inherited played roles from all super classes.
+    This is a list rather that a dict since various
+    played role can have the same name."""
+
+    def __init__(self,
+                 name: str,
+                 model,
+                 isAbstract: bool = False,
+                 superclasses: List[str] = (),
                  package=None,
                  lineNo=None, description=None, astNode=None):
         super(Class, self).__init__(
@@ -37,77 +108,41 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
             description=description)
         self.isAbstract = isAbstract
         self.superclasses = superclasses
-        # strings resolved as classes
 
         self._ownedAttributeNamed = collections.OrderedDict()
-        #type: List[Attribute]
-        # List of attributes directly declared by the class.
-        # No inherited attributes.
-        # Will be filled by the parser fillModel
+        # Will be filled by the parser fillModel"""
 
-
-        # TODO:3 deal with operation and operation names
-        # Signature looks like op(p1:X):Z
         self.operationNamed = collections.OrderedDict()
-
-        # Anonymous invariants are indexed with id like _inv2
-        # but their name (in Invariant) is always ''
-        # This id is just used internaly
-        self.invariantNamed = collections.OrderedDict()   # after resolution
-
+        self.invariantNamed = collections.OrderedDict()
         self._ownedOppositeRoleNamed = collections.OrderedDict()
-        #type: Dict[Text, Role]
-        # defined by finalize.add_attached_roles_to_classes
-        # The opposite role a index by their name.
-        # This is possible because all opposite roles
-        # have a different name, which is not the case for
-        # played roles.
-
         self._ownedPlayedRoles = []
-        #type: List[Role]
-        # Defined by finalize.add_attached_roles_to_classes.
-        # A list because various played role can have the same name.
 
-        #-------- inherited part ----------------------------------
+        # -------- inherited part ----------------------------------
 
-        self.inheritanceCycles=None
-        #type Optional[List[Class]]
-        # The list of cycles starting and going to the current class.
+        self.inheritanceCycles = None
         # This attribute is set during finalize
 
         self._inheritedAttributeNamed = None
-        #type: Optional[Dict[Text, Attribute]]
-        # Dict of inherited attributes from all super classes.
-        # Inherited attributes are stored by names.
         # Computed by finalize.add_inherited_attributes
         # Before this it is set to None. This serves as
         # a marker to indicates whether add_inherited_attributes
         # has been run or not on this class.
 
         self._inheritedOppositeRoleNamed = None
-        #type: Optional[Dict[Text, Role]]
-        # Dict of inherited opposite roles from all super classes.
-        # Inherited attributes are stored by names.
-        # This is ok since all opposite roles must have a
-        # different name. This contrasts with played role
-        # that can have arbitrary (duplicated) names.
         # This attribute is Computed by finalize.add_inherited_roles
         # Before this it is set to None. This serves as
         # a marker to indicates whether add_inherited_roles
         # has been run or not on this class.
 
         self._inheritedPlayedRoles = None
-        #type: Optional[List[Role]]
-        # List of inherited played roles from all super classes.
-        # This is a list rather that a dict since various
-        # played role can have the same name.
         # Computed by finalize.add_inherited_roles
         # Before this it is set to None. This serves as
         # a marker to indicates whether add_inherited_roles
         # has been run or not on this class.
 
-
-    #----- attributes -----------------------------------------------
+    # -----------------------------------------------------------------
+    #   ownedAttributes
+    # -----------------------------------------------------------------
 
     @property
     def ownedAttributes(self):
@@ -125,14 +160,18 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
         # TODO:4 2to3 add list
         return list(self._ownedAttributeNamed.keys())
 
+    # -----------------------------------------------------------------
+    #   inheritedAttributes
+    # -----------------------------------------------------------------
+
     @property
     def inheritedAttributes(self):
         if self._inheritedAttributeNamed is None:
-            # This should happend just when a cycle has been detected.
+            # This should happened just when a cycle has been detected.
             # In this case a fatal issue has been raised, which is ok,
             # but the rest of finalize code didn't execute properly.
             # The [] value here is to ensure that the model is still
-            # usable and that the cycle detection fail gacefully.
+            # usable and that the cycle detection fail gracefully.
             # Instead of raising an exception in this method it is best
             # to ignore inherited attributes. This prevent a new
             # exception when using the model.
@@ -140,7 +179,6 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
             # nice to require client to check which attributes
             # are defined or not.
             return []
-        # TODO:4 2to3 add list
         return list(self._inheritedAttributeNamed.values())
 
     def inheritedAttribute(self, name):
@@ -157,15 +195,18 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
         if self._inheritedAttributeNamed is None:
             # see inheritedAttributes
             return []
-        # TODO:4 2to3 add list
         return list(self._inheritedAttributeNamed.keys())
+
+    # -----------------------------------------------------------------
+    #   attributes
+    # -----------------------------------------------------------------
 
     @property
     def attributes(self):
         return self.ownedAttributes+self.inheritedAttributes
 
     def attribute(self, name):
-        oa=self.ownedAttribute(name)
+        oa = self.ownedAttribute(name)
         if oa is not None:
             return oa
         else:
@@ -175,7 +216,9 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
     def attributeNames(self):
         return self.ownedAttributeNames+self.inheritedAttributeNames
 
-    #----- opposite roles ---------------------------------------------
+    # -----------------------------------------------------------------
+    #   ownedOppositeRoles
+    # -----------------------------------------------------------------
 
     @property
     def ownedOppositeRoles(self):
@@ -193,6 +236,10 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
         # TODO:4 2to3 add list
         return list(self._ownedOppositeRoleNamed.keys())
 
+    # -----------------------------------------------------------------
+    #   inheritedOppositeRoles
+    # -----------------------------------------------------------------
+
     @property
     def inheritedOppositeRoles(self):
         if self._inheritedOppositeRoleNamed is None:
@@ -201,7 +248,7 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
             # If a cycle is detected a fatal issue is raised, which is ok,
             # but the rest of finalize code didn't execute properly.
             # The [] value here is to ensure that the model is still
-            # usable and that the cycle detection fail gacefully.
+            # usable and that the cycle detection fail gracefully.
             # Instead of raising an exception in this method it is best
             # to ignore inherited attributes. This prevent a new
             # exception when using the model.
@@ -209,13 +256,12 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
             # nice to require client to check which attributes
             # are defined or not.
             return []
-        # TODO:4 2to3 add list
         return list(self._inheritedAttributeNamed.values())
 
     def inheritedOppositeRole(self, name):
         if self._inheritedOppositeRoleNamed is None:
             # see inheritedOppositeRoles
-            return []
+            return None
         if name in self._inheritedOppositeRoleNamed:
             return self._inheritedOppositeRoleNamed[name]
         else:
@@ -228,12 +274,16 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
             return []
         return list(self._inheritedOppositeRoleNamed.keys())
 
+    # -----------------------------------------------------------------
+    #   oppositeRoles
+    # -----------------------------------------------------------------
+
     @property
     def oppositeRoles(self):
         return self.ownedOppositeRoles+self.inheritedOppositeRoles
 
     def oppositeRole(self, name):
-        oor=self.ownedOppositeRole(name)
+        oor = self.ownedOppositeRole(name)
         if oor is not None:
             return oor
         else:
@@ -242,21 +292,28 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
     @property
     def oppositeRoleNames(self):
         return self.ownedOppositeRoleNames\
-               +self.inheritedOppositeRoleNames
+               + self.inheritedOppositeRoleNames
 
-
-    #----- played roles ---------------------------------------------
+    # -----------------------------------------------------------------
+    #   ownedPlayedRoles
+    # -----------------------------------------------------------------
 
     @property
     def ownedPlayedRoles(self):
         return list(self._ownedPlayedRoles)
+
+    # There is no method ownedPlayedRole(self, name) because the
+    # ownedPlayedRoles are not indexed by name since various roles
+    # may have the same name.
 
     @property
     def ownedPlayedRoleNames(self):
         return [
             r.name for r in self._ownedPlayedRoles]
 
-
+    # -----------------------------------------------------------------
+    #   inheritedPlayedRoles
+    # -----------------------------------------------------------------
 
     @property
     def inheritedPlayedRoles(self):
@@ -266,7 +323,7 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
             # If a cycle is detected a fatal issue is raised, which is ok,
             # but the rest of finalize code didn't execute properly.
             # The [] value here is to ensure that the model is still
-            # usable and that the cycle detection fail gacefully.
+            # usable and that the cycle detection fail gracefully.
             # Instead of raising an exception in this method it is best
             # to ignore inherited attributes. This prevent a new
             # exception when using the model.
@@ -283,6 +340,10 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
             return []
         return list(self._inheritedPlayedRoles)
 
+    # -----------------------------------------------------------------
+    #   playedRoles
+    # -----------------------------------------------------------------
+
     @property
     def playedRoles(self):
         return self.ownedPlayedRoles+self.inheritedPlayedRoles
@@ -290,7 +351,8 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
     @property
     def playedRoleNames(self):
         return self.ownedPlayedRoleNames\
-               +self.inheritedPlayedRoles
+               + self.inheritedPlayedRoles
+
 
     #------- misc ------------------------------------------------------
 
@@ -298,17 +360,16 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
     def names(self):
         return (
             self.attributeNames
-            +self.invariantNames)
+            + self.invariantNames)
 
     @property
     def idPrint(self):
         #type: () -> List[Attribute]
-        """
-        List of all {id} attributes.
+        """List of all {id} attributes.
         """
         return [
             a for a in self.attributes
-                if a.isId ]
+            if a.isId]
 
     @abc.abstractmethod
     def isPlainClass(self):

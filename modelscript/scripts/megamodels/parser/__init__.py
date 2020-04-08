@@ -208,8 +208,7 @@ def getModelImportStatement(modelSourceFile, astModelImport):
 
 
 def fillDependencies(modelSource):
-    """
-    Parse all the lines from the model source and fill
+    """Parse all the lines from the model source and fill
     modelsource.importBox with the information found.
 
     When a model definition is found call
