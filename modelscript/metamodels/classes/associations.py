@@ -1,8 +1,15 @@
+# coding=utf-8
+"""Definition of associations.
+Defines the following metaclasses:
+* Association,
+* PlainAssociation,
+* Role.
+"""
 
 import abc
 import collections
-
-from typing import Union, Optional, Text
+from typing import Optional, Text, Dict, Union, List
+from typing_extensions import Literal
 
 from modelscript.megamodels.elements import (
     SourceModelElement)
@@ -15,35 +22,62 @@ from modelscript.metamodels.classes import (
     Member)
 from modelscript.base.exceptions import (
     UnexpectedCase,
-    UnexpectedValue,
     NoSuchFeature,
     MethodToBeDefined)
 
-RolePosition=Union['source','target']
+RolePosition = Literal['source', 'target']
+
+__all__ = (
+    'opposite',
+    'Association',
+    'PlainAssociation',
+    'Role'
+)
+
 
 def opposite(rolePosition):
-    if rolePosition=='source':
+    if rolePosition == 'source':
         return 'target'
-    elif rolePosition=='target':
+    elif rolePosition == 'target':
         return 'source'
     else:
-        raise UnexpectedCase( #raise:OK
+        raise UnexpectedCase(  # raise:OK
             "Role position '%s' doesn't exists." % rolePosition)
 
+AssociationKind = Literal[
+    'association',
+    'composition',
+    'aggregation',
+    'associationclass']
 
 class Association(PackagableElement, Entity, metaclass=abc.ABCMeta):
-    """
-    Associations.
+    """ Associations.
     """
 
     META_COMPOSITIONS = [
         'roles',
     ]
 
+    kind: AssociationKind
+    """Association kind.
+    association, composition, aggregation or associationclass
+    """
+
+    roleNamed: Dict[str, 'Role']
+    """Roles of the association indexed by names. An association
+    can't have twice the same name. Moreover the roles are ordered,
+    which is the basis to make the difference between the source
+    and the target for binary association."""
+
     def __init__(self,
-                 name, model, kind=None, package=None,
-                 lineNo=None, description=None, astNode=None):
-        # type: (Text, 'ClassModel',Optional[Text], Optional['Package'] ,Optional[int],Optional[Text],Optional[Text]) -> None
+                 name: str,
+                 model: 'ClassModel',
+                 kind: AssociationKind = 'association',
+                 package: Optional['Package'] = None,
+                 lineNo: Optional[int] = None,
+                 description: Optional[str] = None,
+                 astNode: Optional['extXNode'] = None)\
+            -> None:
         super(Association, self).__init__(
             name=name,
             model=model,
@@ -51,19 +85,15 @@ class Association(PackagableElement, Entity, metaclass=abc.ABCMeta):
             astNode=astNode,
             lineNo=lineNo, description=description)
         self.kind = kind
-        #type: Text
-        # association|composition|aggregation|associationclass
-        # TODO:3 check if 'associationclass' is ok there
-        self.roleNamed = collections.OrderedDict() # indexed by name
+        self.roleNamed = collections.OrderedDict()  # indexed by name
 
     @property
     def roles(self):
-        # TODO:4 2to3 add list
+        """The list of roles in their definition order. """
         return list(self.roleNamed.values())
 
     @property
     def roleNames(self):
-        # TODO:4 2to3 add list
         return list(self.roleNamed.keys())
 
     @MAttribute('Integer')
@@ -80,8 +110,9 @@ class Association(PackagableElement, Entity, metaclass=abc.ABCMeta):
 
     @MReference('Role')
     def sourceRole(self):
+        """For binary association only, the first role that was defined."""
         if not self.isBinary:
-            raise NoSuchFeature( #raise:OK
+            raise NoSuchFeature(  # raise:OK
                 '"sourceRole" is not defined on "%s" n-ary association' % (
                     self.name
                 ))
@@ -89,21 +120,22 @@ class Association(PackagableElement, Entity, metaclass=abc.ABCMeta):
 
     @MReference('Role')
     def targetRole(self):
+        """For binary association only, the second role that was
+        defined."""
         if not self.isBinary:
-            raise NoSuchFeature( #raise:OK
+            raise NoSuchFeature(  # raise:OK
                 '"targetRole" is not defined on "%s" n-ary association' % (
                     self.name
                 ))
         return self.roles[1]
 
-    def role(self, position):
-        #type: (RolePosition) -> Role
-        if position=='source':
+    def role(self, position: RolePosition) -> 'Role':
+        if position == 'source':
             return self.roles[0]
-        elif position=='target':
+        elif position == 'target':
             return self.roles[1]
         else:
-            raise UnexpectedCase( #raise:OK
+            raise UnexpectedCase(  # raise:OK
                 'role position "%s" is not implemented' % position)
 
     @MAttribute('Boolean')
@@ -145,33 +177,25 @@ class Association(PackagableElement, Entity, metaclass=abc.ABCMeta):
     @property
     def navigability(self):
         return {
-            (True, True) : 'both',
-            (True, False) : 'backward',
-            (False, True) : 'forward',
-            (False, False) : 'none'
+            (True, True): 'both',
+            (True, False): 'backward',
+            (False, True): 'forward',
+            (False, False): 'none'
         }[(self.roles[0].isNavigable, self.roles[1].isNavigable)]
 
     @property
     def isComposition(self):
-        return self.kind=='composition'
+        return self.kind == 'composition'
 
     @property
     def isAggregation(self):
-        return self.kind=='aggregation'
-
-    @abc.abstractmethod
-    def isPlainAssociation(self):
-        # This method is not really useful as isinstance can be used.
-        # It is just used to prevent creating object of this class
-        # (using ABCMeta is not enough to prevent this).
-        raise MethodToBeDefined( #raise:OK
-            'isPlainAssociation() must be defined.')
+        return self.kind == 'aggregation'
 
 
 class PlainAssociation(Association):
 
     def __init__(self,
-                 name, model, kind=None, package=None,
+                 name: str, model, kind=None, package=None,
                  lineNo=None, description=None, astNode=None):
         # type: (Text,ClassModel,Optional[Text], Optional[Package] ,Optional[int],Optional[Text],Optional[Text]) -> None
         super(PlainAssociation, self).__init__(
@@ -190,23 +214,53 @@ class PlainAssociation(Association):
 
 
 class Role(SourceModelElement, Member):
-    """
-    Roles.
+    """Roles.
     """
 
-    def __init__(self, name, association, astNode=None,
-                 cardMin=None, cardMax=None, type=None,
-                 navigability=None,
-                 qualifiers=None, subsets=None, isUnion=False,
-                 expression=None,
-                 tags=(),
-                 stereotypes=(),
+    association: Association
+    """Association containing the role."""
+
+    cardinalityMin: Optional[int]
+    """Cardinality minimal or None if the cardinality is not defined."""
+
+    cardinalityMax: Optional[int]
+    """Cardinality max as an integer or None for '*' or if neither 
+    cardinalities are defined. """
+
+    type: Union[str, 'Class']
+    """Class to which the role is attached."""
+    # checktype: str would be the expected type but it is not. Why ?
+
+    navigability: bool
+    """Navigability of the role."""
+
+    tags: List[str]
+    """Tags associated with the role"""
+
+    stereotypes: List[str]
+    """Stereotypes associated with the role"""
+
+    def __init__(self,
+                 name: str,
+                 association: Association,
+                 type,  # checktype
+                 cardMin: Optional[int] = None,
+                 cardMax: Optional[int] = None,
+                 navigability: bool = False,
+                 tags: List[str] = (),
+                 stereotypes: List[str] = (),
+                 astNode=None,
                  lineNo=None, description=None):
 
-        # unamed role get the name of the class with lowercase for the first letter
-        if name == '' or name is None:
-            if type is not None:
-                name = type[:1].lower() + type[1:]
+        assert isinstance(name, str)
+        assert isinstance(association, Association)
+        # assert navigability is not None
+
+        # Unamed role get the name of the class with lowercase
+        # for the first letter
+        assert name is not None
+        if name == '':
+            name = type[:1].lower() + type[1:]
         SourceModelElement.__init__(
             self,
             model=association.model,
@@ -218,34 +272,28 @@ class Role(SourceModelElement, Member):
         self.cardinalityMin = cardMin
         self.cardinalityMax = cardMax
         self.type = type  # string to be resolved in Class
-
-        # (str,str) to be resolved in (str,SimpleType)
-        self.qualifiers = qualifiers
-        self.subsets = subsets
-        self.isUnion = isUnion
-        self.expression = expression
-        self.tags=tags
-        self.navigability=navigability
-        self.stereotypes=stereotypes
+        self.navigability = navigability
+        self.tags = tags
+        self.stereotypes = stereotypes
 
     @property
-    def isOrdered(self):
+    def isOrdered(self) -> bool:
         return 'ordered' in self.tags
 
     @property
-    def isNavigable(self):
+    def isNavigable(self) -> bool:
         return self.navigability != 'x'
 
     @property
-    def isNavigabilitySpecified(self):
+    def isNavigabilitySpecified(self) -> bool:
         return self.navigability is not None
 
     @property
-    def label(self):
+    def label(self) -> str:
         return '%s.%s' % (self.association.label, self.name)
 
     @property
-    def cardinalityLabel(self):
+    def cardinalityLabel(self) -> Optional[str]:
         if self.cardinalityMin is None and self.cardinalityMax is None:
             return None
         if self.cardinalityMin == self.cardinalityMax:
@@ -254,15 +302,14 @@ class Role(SourceModelElement, Member):
             return '*'
         return ('%s..%s' % (
             str(self.cardinalityMin),
-            '*' if self.cardinalityMax is None else str(
-                self.cardinalityMax)
-
+            '*' if self.cardinalityMax is None
+            else str(self.cardinalityMax)
         ))
 
     @property
-    def opposite(self):
+    def opposite(self) -> 'Role':
         if self.association.isNAry:
-            raise NoSuchFeature( #raise:OK
+            raise NoSuchFeature(  #r aise:OK
                 '%s "opposite" is not available for %s n-ary association. '
                 'Try "opposites"' % (
                     self.name,
@@ -272,43 +319,42 @@ class Role(SourceModelElement, Member):
         return rs[1] if self is rs[0] else rs[0]
 
     @property
-    def opposites(self):
+    def opposites(self) -> List['Role']:
         rs = list(self.association.roles)
         rs.remove(self)
         return rs
 
     @property
-    def isOne(self):
+    def isOne(self) -> bool:
         return self.cardinalityMax == 1
 
     @property
-    def isMany(self):
+    def isMany(self) -> bool:
         return self.cardinalityMax is None or self.cardinalityMax >= 2
 
     @property
-    def isTarget(self):
-        return (
-            self.association.isBinary
-            and self.association.roles[1] == self
-        )
-
-    @property
-    def isSource(self):
+    def isSource(self) -> bool:
         return (
             self.association.isBinary
             and self.association.roles[0] == self
         )
 
     @property
-    def position(self):
-        # type: () -> RolePosition
+    def isTarget(self) -> bool:
+        return (
+            self.association.isBinary
+            and self.association.roles[1] == self
+        )
+
+    @property
+    def position(self) -> RolePosition:
         if self.association.isBinary:
             if self.association.roles[0] == self:
                 return 'source'
             else:
                 return 'target'
         else:
-            raise NoSuchFeature( #raise:OK
+            raise NoSuchFeature(  # raise:OK
                 'role.position() not implemented'
                 ' for n-ary association')
 
