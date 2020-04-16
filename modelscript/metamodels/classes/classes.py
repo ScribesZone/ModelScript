@@ -6,6 +6,7 @@ This module defines:
 * Attribute,
 * Operation. """
 
+from typing_extensions import Literal
 from typing import List, Optional, Dict, Union, Any
 import abc
 import collections
@@ -43,16 +44,16 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
     superclasses: List[Union[str, 'Class']]  # later: List['Class']
     """Names of superclasses later resolved as classes."""
 
-    _ownedAttributeNamed: List['Attribute']
-    """List of attributes directly declared by the class.
-    No inherited attributes.
+    _ownedAttributeNamed: Dict[str, 'Attribute']
+    """ Attributes directly declared by the class.
+    No inherited attributes. Attributed indexed by namee.
     """
 
-    operationNamed: Dict[str, Any]         # checktypes
+    operationNamed: Dict[str, Any]         # checktypes  # opdel
     # TODO:3 deal with operation and operation names
     # Signature looks like op(p1:X):Z
 
-    invariantNamed: Dict[str, Any]     # checktypes
+    invariantNamed: Dict[str, Any]     # checktypes     # invdel
     # Anonymous invariants are indexed with id like _inv2
     # but their name (in Invariant) is always ''
     # This id is just used internally
@@ -146,7 +147,6 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
 
     @property
     def ownedAttributes(self):
-        # TODO:4 2to3 add list
         return list(self._ownedAttributeNamed.values())
 
     def ownedAttribute(self, name):
@@ -157,7 +157,6 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
 
     @property
     def ownedAttributeNames(self):
-        # TODO:4 2to3 add list
         return list(self._ownedAttributeNamed.keys())
 
     # -----------------------------------------------------------------
@@ -222,7 +221,6 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
 
     @property
     def ownedOppositeRoles(self):
-        # TODO:4 2to3 add list
         return list(self._ownedOppositeRoleNamed.values())
 
     def ownedOppositeRole(self, name):
@@ -233,7 +231,6 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
 
     @property
     def ownedOppositeRoleNames(self):
-        # TODO:4 2to3 add list
         return list(self._ownedOppositeRoleNamed.keys())
 
     # -----------------------------------------------------------------
@@ -371,15 +368,6 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
             a for a in self.attributes
             if a.isId]
 
-    @abc.abstractmethod
-    def isPlainClass(self):
-        # This method is not really useful as isinstance can be used.
-        # It is just used to prevent creating object of this class
-        # (using ABCMeta is not enough to prevent this).
-        raise MethodToBeDefined( #raise:OK
-            'method isPlainClass() must be defined.'
-        )
-
     def __str__(self):
         return self.name
 
@@ -412,9 +400,18 @@ class PlainClass(Class):
 
 
 class Attribute(SourceModelElement, Member):
+    """ Attributes.
     """
-    Attributes.
-    """
+
+    class_: 'Class'
+    type: Union[str, 'SimpleType']
+    _isDerived: bool
+    visibility: Literal['public', 'private', 'protected', 'package']
+    isOptional: bool
+    isInit: bool
+    expression: Optional[str]
+    tags: List[str]
+    stereotypes: List[str]
 
     def __init__(self, name, class_, type=None,
                  description=None,
@@ -423,7 +420,6 @@ class Attribute(SourceModelElement, Member):
                  isOptional=False,
                  tags=(),
                  stereotypes=(),
-                 isInit=False, expression=None,
                  lineNo=None, astNode=None):
         SourceModelElement.__init__(
             self,
@@ -433,14 +429,12 @@ class Attribute(SourceModelElement, Member):
             lineNo=lineNo, description=description)
         self.class_ = class_
         self.class_._ownedAttributeNamed[name] = self
-        self.type = type # string later resolved as SimpleType
+        self.type = type  # string later resolved as SimpleType
         self._isDerived = isDerived
-        self.visibility=visibility
+        self.visibility = visibility
         self.isOptional = isOptional
-        self.isInit = isInit  # ?
-        self.expression = expression
-        self.tags=tags
-        self.stereotypes=stereotypes
+        self.tags = tags
+        self.stereotypes = stereotypes
 
     @MAttribute('Boolean')
     def isDerived(self):
@@ -448,7 +442,7 @@ class Attribute(SourceModelElement, Member):
 
     @isDerived.setter
     def isDerived(self,isDerived):
-        self._isDerived=isDerived
+        self._isDerived = isDerived
 
     @property
     def label(self):
@@ -467,9 +461,8 @@ class Attribute(SourceModelElement, Member):
         return 'isClass' in self.tags
 
 
-class Operation(SourceModelElement, Member):
-    """
-    Operations.
+class Operation(SourceModelElement, Member):   # delop
+    """ Operations.
     """
     META_COMPOSITIONS = [
         'conditions',
