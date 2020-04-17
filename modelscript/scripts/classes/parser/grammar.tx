@@ -77,14 +77,14 @@ Class:  // common
     (o_
         (textBlock = TextBlock)?
         attributeCompartment=AttributesCompartment ?
-        operationCompartment=OperationsCompartment ?
-        invariantCompartment=InvariantsCompartment ?
+        operationCompartment=OperationsCompartment ?  //opdel
+        invariantCompartment=InvariantsCompartment ?    //invdel
         permissionCompartment=PermissionsCompartment ?
     _o)?
     X
 ;
 
-AttributesCompartment:  // common, also use for association class
+AttributesCompartment:  // common, also used for association class
     'attributes'
     (o_
         attributes *= Attribute
@@ -111,7 +111,7 @@ AttributeDecorations:
     ) #
 ;
 
-OperationsCompartment:
+OperationsCompartment:  // opdel
     'operations'
     (o_
         operations *= Operation
@@ -143,7 +143,7 @@ Argument:
     name=ID ':' type=ID
 ;
 
-InvariantsCompartment:
+InvariantsCompartment:  //invdel
     'invariants'
     X
 ;

@@ -1,12 +1,10 @@
 # coding=utf-8
+"""Parser for ClassScript"""
 
-
-from typing import Text, Union
+from typing import cast
 import os
 
 from modelscript.base.grammars import (
-    # ModelSourceAST, \
-    # ASTBasedModelSourceFile,
     ASTNodeSourceIssue)
 from modelscript.base.issues import (
     Levels)
@@ -40,7 +38,6 @@ from modelscript.megamodels.sources import (
 from modelscript.scripts.textblocks.parser import (
     astTextBlockToTextBlock)
 from modelscript.megamodels.models import (
-    Model,
     Placeholder)
 
 
@@ -49,9 +46,10 @@ __all__=(
 )
 
 
-DEBUG=0
+DEBUG = 0
 
-ISSUES={
+
+ISSUES = {
     'GNAME_TWICE': 'cl.syn.GlobalName.Twice',
     'ENUMLIT_TWICE': 'cl.syn.EnumLit.Twice',
     'ATT_DEFINED': 'cl.syn.Attribute.Defined',
@@ -70,40 +68,34 @@ ISSUES={
     'ROLE_NO_CLASS':'cl.res.Role.NoClass',
 }
 
+
 def icode(ilabel):
     return ISSUES[ilabel]
 
 
 class ClassModelSource(ASTBasedModelSourceFile):
 
-    def __init__(self, fileName):
-        #type: (Text) -> None
-        this_dir=os.path.dirname(os.path.realpath(__file__))
-
-        # used just during parsing to have a class level access to
-        # the current package.
-
-
+    def __init__(self, fileName: str) -> None:
+        this_dir = os.path.dirname(os.path.realpath(__file__))
         super(ClassModelSource, self).__init__(
             fileName=fileName,
             grammarFile=os.path.join(this_dir, 'grammar.tx')
         )
 
-        # used just during parsing to have a class level access to
-        # the current package.
+        # Current package for parser, if any.
+        # Used just during parsing to have a class-level access to
+        # the current "package". Used to deal with "package" statement.
         self.__current_package = None
 
-
     @property
-    def classModel(self):
-        #type: () -> ClassModel
-        # usefull for typing checking
-        m=self.model #type: ClassModel
+    def classModel(self) -> ClassModel:
+        # This method is useful for type checking. The return value
+        # il a ClassModel not just a Model
+        m = cast(ClassModel, self.model)
         return m
 
     @property
-    def metamodel(self):
-        #type: () -> Metamodel
+    def metamodel(self) -> Metamodel:
         return METAMODEL
 
     def fillModel(self):
@@ -531,9 +523,9 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 raise UnexpectedCase( #raise:OK
                     'declaration of %s not implemented' % type_)
 
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
     #                          Resolution
-    #----------------------------------------------------------------
+    # ----------------------------------------------------------------
 
     def resolve(self):
 
@@ -618,5 +610,6 @@ class ClassModelSource(ASTBasedModelSourceFile):
 
         for i in self.classModel.invariants:
             resolve_invariant_content(i)
+
 
 METAMODEL.registerSource(ClassModelSource)

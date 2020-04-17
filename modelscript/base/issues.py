@@ -433,11 +433,11 @@ class IssueBox(object):
         """
         self._issueList.append(issue)
         if isinstance(issue, LocalizedSourceIssue):
-            index=issue.line
+            index = issue.line
         else:
-            index=0
+            index = 0
         if index not in self._issuesAtLine:
-            self._issuesAtLine[index]=[]
+            self._issuesAtLine[index] = []
         self._issuesAtLine[index].append(issue)
 
     def addParent(self, issueBox: 'IssueBox') -> None:
@@ -587,8 +587,6 @@ class IssueBox(object):
                 )
         return Annotations.fullLine(text)
 
-
-
     def str(self,
             level=None,
             op='=',
@@ -598,7 +596,7 @@ class IssueBox(object):
             annotations=False):
         if not self.hasIssues:
             return ''
-        header=(
+        header = (
             (Annotations.full if annotations else '')+'\n'
             + self.summaryLine+'\n'
             + (Annotations.full if annotations else '')
@@ -630,15 +628,15 @@ class OrderedIssueBoxList(object):
     # the profit of ExecutionContext.
 
     def __init__(self, containerList):
-        self.containerList=containerList
-        self.issueBoxes=[
+        self.containerList = containerList
+        self.issueBoxes = [
             container.issues for container in containerList]
 
     def str(self,
             withOK=False,
             pattern='{origin}:{level}:{line}:{message}',
             styled=True):
-        outputs=[]
+        outputs = []
         for issue_box in self.issueBoxes:
             if issue_box.hasIssues:
                 outputs.append((
@@ -647,8 +645,8 @@ class OrderedIssueBoxList(object):
                         styled=styled,
                         pattern=pattern)))
             else:
-                issue_box_kind=issue_box.origin.__class__.__name__
-                if issue_box_kind!='ExecutionContext':
+                issue_box_kind = issue_box.origin.__class__.__name__
+                if issue_box_kind != 'ExecutionContext':
                     outputs.append(
                         Styles.smallIssue.do(
                             issue_box.origin.label + ':' + 'OK',
@@ -664,10 +662,10 @@ class WithIssueList(object, metaclass=ABCMeta):
     """Container of a IssueBox, that is something that can generate issues.
     This is a mixin for classes with a _issueBox attribute.
     Current subclasses includes:
-    * WithIssueModel
     * ExecutionContext
-    * SourceFile
-    * Model
+    * WithIssueModel
+    *     SourceFile
+    *     Model
     """
 
     _issueBox: IssueBox

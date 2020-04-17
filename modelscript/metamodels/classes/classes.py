@@ -46,7 +46,7 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
 
     _ownedAttributeNamed: Dict[str, 'Attribute']
     """ Attributes directly declared by the class.
-    No inherited attributes. Attributed indexed by namee.
+    No inherited attributes. Attributed indexed by name.
     """
 
     operationNamed: Dict[str, Any]         # checktypes  # opdel
@@ -404,7 +404,7 @@ class Attribute(SourceModelElement, Member):
     """
 
     class_: 'Class'
-    type: Union[str, 'SimpleType']
+    type: Union[str, 'AttributeType']
     _isDerived: bool
     visibility: Literal['public', 'private', 'protected', 'package']
     isOptional: bool
@@ -413,7 +413,8 @@ class Attribute(SourceModelElement, Member):
     tags: List[str]
     stereotypes: List[str]
 
-    def __init__(self, name, class_, type=None,
+    def __init__(self, name, class_,
+                 type=None,
                  description=None,
                  visibility='public',
                  isDerived=False,

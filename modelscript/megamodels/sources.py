@@ -75,7 +75,7 @@ class ASTBasedModelSourceFile(SourceFile, metaclass=ABCMeta):
         well as import statements. All this information is
         stored in the importBox.
 
-        Register the model and the source file.
+        Register the model and the source file into the megamodel.
 
         Link the source issueBox as a parent of the model' issueBox
         """
@@ -140,13 +140,6 @@ class ASTBasedModelSourceFile(SourceFile, metaclass=ABCMeta):
         except FatalError:
             pass  # nothing to do, the issue has been registered
 
-    def resolve(self):
-        """Resolves the model."""
-        self.model.resolve()
-
-    def finalize(self):
-        """Finalize the model."""
-        self.model.finalize()
 
     def _addSourceModelElement(self, sme: SourceModelElement) -> None:
         self._modelMapping.add(sme)
@@ -178,7 +171,7 @@ class ASTBasedModelSourceFile(SourceFile, metaclass=ABCMeta):
     def modelName(self):
         return self.importBox.modelName
 
-    def fillAST(self):
+    def fillAST(self)  -> None :
         """Parse the source file and create the AST.
         Bracket and syntax error are converted to LocalizedSourceIssue"""
         from modelscript.base.grammars import (
@@ -209,6 +202,14 @@ class ASTBasedModelSourceFile(SourceFile, metaclass=ABCMeta):
     def fillModel(self) -> None:
         raise MethodToBeDefined(  # raise:OK
             'fillModel() must be implemented')
+
+    def resolve(self):
+        """Resolves the model."""
+        self.model.resolve()
+
+    def finalize(self):
+        """Finalize the model."""
+        self.model.finalize()
 
     @property
     @abstractmethod

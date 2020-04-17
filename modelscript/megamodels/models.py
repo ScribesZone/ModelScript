@@ -177,7 +177,7 @@ class Model(
             the_method = getattr(printer_class, method)
             return the_method(printer)
         except AttributeError:
-            raise NotImplementedError(  #raise:OK
+            raise NotImplementedError(  # raise:OK
                 "INTERNAL ERROR: "
                 "Class `{}` does not implement `{}`".format(
                     printer_class.__class__.__name__,

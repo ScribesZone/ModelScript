@@ -1,3 +1,6 @@
+# coding=utf-8
+"""Simple types: data types or enumerations. """
+
 from abc import abstractmethod, ABCMeta
 
 from modelscript.megamodels.elements import SourceModelElement
@@ -7,6 +10,20 @@ from modelscript.metamodels.classes import (
     Item)
 from modelscript.base.exceptions import (
     MethodToBeDefined)
+
+__all__ = (
+    'SimpleType',
+    'DataType',
+    'AttributeType',
+    'UnspecifiedValue',
+    'SimpleValue',
+    'EnumerationValue',
+    'DataValue',
+    'UserDefinedDataValue',
+    'Enumeration',
+    'EnumerationLiteral'
+)
+
 
 class SimpleType(PackagableElement, Item, metaclass=ABCMeta):
     """
@@ -108,7 +125,7 @@ class UnspecifiedValue(object):
         return '?'
 
 
-UNSPECIFIED=UnspecifiedValue()
+UNSPECIFIED = UnspecifiedValue()
 
 
 class SimpleValue(object, metaclass=ABCMeta):
@@ -168,8 +185,7 @@ class DataValue(SimpleValue, metaclass=ABCMeta):
 
 
 class UserDefinedDataValue(DataValue):
-    """
-    Not used in practice so far.
+    """ Not used in practice so far.
     """
 
     def __init__(self, stringRepr, value, type):
@@ -181,8 +197,7 @@ class UserDefinedDataValue(DataValue):
 
 
 class Enumeration(SimpleType):
-    """
-    Enumerations.
+    """ Enumerations.
     """
     META_COMPOSITIONS = [
         'literals',

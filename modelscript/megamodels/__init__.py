@@ -143,7 +143,7 @@ class Megamodel(
     def loadFile(cls,
                  filename: Text,
                  withIssueList: Optional['WithIssueList'] = None)\
-            -> Optional ['ModelSource'] :
+            -> Optional['ModelSource'] :
         """Load a given file into the megamodel.
         Return a model source file. This source file can
         naturally contain some issues in its issue box.

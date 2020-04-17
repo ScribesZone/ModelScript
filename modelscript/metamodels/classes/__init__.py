@@ -1,30 +1,35 @@
 # coding=utf-8
 """Class metamodel.
 
-The structure of this package is::
+The composition view is the backbone of the class model.
+It shows containment relationships ::
 
     ClassModel
-    <>--* Package
+        <>--* Package
+        <>--* DataType
         <>--* Enumeration
-        <>--* Class
+              <>--* EnumerationLiteral
+        <>--* PlainClass
               <>--* Attribute
-              <>--* Operation
+              <>--* Operation           opdel
                     <>--* OperationCondition
-              <>--* Invariant
-        <>--* Association
+              <>--* Invariant           invdel
+        <>--* PlainAssociation
               <>--2 Role
         <>--* AssociationClass
               <>--2 Role
               <>--* Attribute
-              <>--* Operation
+              <>--* Operation           opdel
                     <>--* OperationCondition
-        <>--* DataType
-
     Association, Class
     <|--  AssociationClass
 
-    PackagableElement
-    <|-- Enumeration
+    Class
+    </-- PlainClass
+
+    Association
+    </-- PlainAssociation
+
 
     SimpleType
     <|--  DataType
@@ -61,26 +66,16 @@ from modelscript.megamodels.models import Model
 #     Enumeration )
 from modelscript.metamodels.permissions.sar import Resource
 
-META_CLASSES=(  # could be in __all__ (not used by PyParse)
+__all__ = (
     'ClassModel',
     'PackagableElement',
+    'Item',
     'Entity',
     'Member',
-    'SimpleType',
-    'DataType',
-    'Enumeration',
-    'EnumerationLiteral',
-    'Class',
-    'Attribute',
-    'Operation',
-    'Association',
-    'Role',
-    'RolePosition',
-    'opposite',
-    'AssociationClass',
+    'Package',
+    'METAMODEL',
+    'MetamodelDependency'
 )
-
-__all__ = META_CLASSES
 
 
 ISSUES = {
@@ -105,8 +100,7 @@ log = logging.getLogger('test.' + __name__)
 
 
 class ClassModel(Model):
-    """
-    Class model.
+    """Class model.
     """
     # metaMembers = [
     #       MComposition('enumerations : Enumeration[*] inv model'),
@@ -118,7 +112,7 @@ class ClassModel(Model):
 
 
     #TODO:4 convert this to MComposition when ready
-    META_COMPOSITIONS=[
+    META_COMPOSITIONS = [
         'enumerations',
         'dataTypes',
         'plainClasses',
@@ -152,6 +146,7 @@ class ClassModel(Model):
     _associationClassNamed: Dict[str, 'AssociationClass']
     """Map of association classes, indexed by name."""
 
+    # opdel
     operationWithFullSignature: Dict[str, 'Operation']
     """Map of operations, indexed by operation full signatures.
     e.g. 'Person::raiseSalary(rate : Real) : Real
@@ -161,6 +156,7 @@ class ClassModel(Model):
     """ALL packages, not only the top level ones."""
 
     _invariantNamed: Dict[str, 'Invariant']
+    """Map of invariants indexed by name/   """
 
     classOCLChecker: 'ClassOCLChecker'
 
@@ -177,7 +173,7 @@ class ClassModel(Model):
         self._plainClassNamed = collections.OrderedDict()
         self._plainAssociationNamed = collections.OrderedDict()
         self._associationClassNamed = collections.OrderedDict()
-        self.operationWithFullSignature = collections.OrderedDict()
+        self.operationWithFullSignature = collections.OrderedDict() #opdel
         self._packageNamed = collections.OrderedDict()
         self._invariantNamed = collections.OrderedDict()
 
@@ -453,7 +449,7 @@ class ClassModel(Model):
 
     def __str__(self):
         # TODO:4 move this to printer
-        def category_line(label,elems):
+        def category_line(label, elems):
             print(label)
             print(elems)
             n = len(list(elems))
@@ -484,11 +480,11 @@ class ClassModel(Model):
 
         def add_owned_attached_roles():
             for a in self.associations:
-                source_class=a.sourceRole.type
-                target_class=a.targetRole.type
+                source_class = a.sourceRole.type
+                target_class = a.targetRole.type
 
                 source_class._ownedOppositeRoleNamed \
-                    [a.targetRole.name]=a.targetRole
+                    [a.targetRole.name] = a.targetRole
                 source_class._ownedPlayedRoles.append(a.sourceRole)
 
                 target_class._ownedOppositeRoleNamed \
@@ -496,15 +492,15 @@ class ClassModel(Model):
                 target_class._ownedPlayedRoles.append(a.targetRole)
 
         def check_inheritance_cycles():
-            cycles_nb=0
-            last_class=None
+            cycles_nb = 0
+            last_class = None
             for class_ in self.classes:
-                cycles=list(
+                cycles = list(
                     genPaths(
                         lambda x: x.superclasses,
                         class_,
                         class_))
-                if len(cycles)>=1:
+                if len(cycles) >= 1:
                     ASTNodeSourceIssue(
                         code=icode('SUPER_CYCLES_MSG'),
                         astNode=class_.astNode,
@@ -517,7 +513,7 @@ class ClassModel(Model):
                     # just for (more or less) localized error message
                     last_class = class_
                 class_.inheritanceCycles=cycles
-            if cycles_nb>=1:
+            if cycles_nb >= 1:
                 ASTNodeSourceIssue(
                     code=icode('SUPER_CYCLES_STOP'),
                     astNode=last_class.astNode,
@@ -532,7 +528,7 @@ class ClassModel(Model):
 
             def _ensure_inherited_attribute(class_):
                 # Fill the attribute inheritedAttributeNamed
-                # The "horizontal' name confilcts are reported. That is
+                # The "horizontal' name conflicts are reported. That is
                 # the situation where an attribute let's say "x" is
                 # inherited from one side, and another attribute with
                 # the same name is inherited from the another side.
@@ -546,10 +542,8 @@ class ClassModel(Model):
                         # if the attribute was already inherited
                         # do not care.
                         # Otherwise prepare to add it
-                        # TODO:4 2to3 add list
                         if sc_att not in list(inh_att_named.values()):
-                            name=sc_att.name
-                            # TODO:4 2to3 add list
+                            name = sc_att.name
                             if name in list(inh_att_named.keys()):
                                 # two inherited attribute have the same
                                 # name.
@@ -562,8 +556,8 @@ class ClassModel(Model):
                                         ' named "%s"'
                                         ' Attribute ignored.' % name))
                             else:
-                                inh_att_named[name]=sc_att
-                class_._inheritedAttributeNamed=inh_att_named
+                                inh_att_named[name] = sc_att
+                class_._inheritedAttributeNamed = inh_att_named
                 print('WW'*10, 'class %s inherits' % class_.name)
                 for a in inh_att_named:
                     print('WW' * 10, '    %s' % a)
@@ -666,18 +660,13 @@ class ClassModel(Model):
         add_owned_attached_roles()
         check_inheritance_cycles()  # #### ORDER IS IMPORTANT ####
         add_inherited_attributes()  # After check
-        add_inherited_attached_roles() # After check
-
+        add_inherited_attached_roles()  # After check
         self.classOCLChecker.check()
-
-        self._isClassModelFinalized=True
-
-
+        self._isClassModelFinalized = True
 
 
 class PackagableElement(SourceModelElement, metaclass=abc.ABCMeta):
-    """
-    Top level element.
+    """Top level element.
     """
 
     def __init__(self,
@@ -692,7 +681,7 @@ class PackagableElement(SourceModelElement, metaclass=abc.ABCMeta):
             name=name,
             astNode=astNode,
             lineNo=lineNo, description=description)
-        self.package=package
+        self.package = package
         if self.package is not None:
             self.package.addElement(self)
 
@@ -706,9 +695,8 @@ class PackagableElement(SourceModelElement, metaclass=abc.ABCMeta):
             return self.name
 
 
-class Item(object, metaclass=abc.ABCMeta):
-    """
-    Either an entity or a member.
+class Item(object, metaclass=abc.ABCMeta):   # invdel ?
+    """Either an entity or a member.
     Useful for instance to define "scope" of invariants.
     Is is named either like X or X.Y
     X can be a
@@ -731,9 +719,7 @@ class Member(Resource, Item, metaclass=abc.ABCMeta):
 
 
 class Package(PackagableElement, Entity):
-    """
-    Packages.
-    """
+    """Packages. """
     def __init__(self,
                  name,
                  model,
@@ -746,18 +732,18 @@ class Package(PackagableElement, Entity):
             astNode=astNode,
             package=package,
             lineNo=lineNo, description=description,)
-        self._elememts=[]
-        model._packageNamed[name]=self
+        self._elements = []
+        model._packageNamed[name] = self
 
 
     @property
     def elements(self):
-        return self._elememts
+        return self._elements
 
     def addElement(self, element):
         assert element is not None
-        if element not in self._elememts:
-            self._elememts.append(element)
+        if element not in self._elements:
+            self._elements.append(element)
             element.package=self
 
 
