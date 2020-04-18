@@ -1,4 +1,5 @@
 # coding=utf-8
+import modelscript.scripts.demo.all
 import modelscript.scripts.accesses.all
 import modelscript.scripts.aui.all
 import modelscript.scripts.classes.all

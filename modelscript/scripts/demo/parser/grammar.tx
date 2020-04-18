@@ -1,0 +1,28 @@
+DemoModel:
+    megamodelPart = MegamodelPart
+    declarations *= Declaration
+;
+
+Declaration:
+      Class
+;
+
+
+Class:  // common
+    (isAbstract ?= 'abstract')
+    'class' name=ID
+    (o_
+        references *= Reference
+    _o)?
+    X
+;
+
+Reference:
+    name=ID ':' multiplicity=Multiplicity target=ID
+    X
+;
+
+Multiplicity:
+      'one'
+    | 'many'
+;

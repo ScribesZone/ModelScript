@@ -5,6 +5,7 @@ from modelscript.megamodels.metametamodel import MetaCheckerPackage
 from modelscript.scripts.metamodels.parser import PyMetamodelParser
 META_PACKAGES=(
     # accesses ?
+    'demo',
     'aui',
     'classes',
     'classes.assocclasses',

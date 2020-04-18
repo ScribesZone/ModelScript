@@ -161,6 +161,8 @@ class TokenBasedSyntaxError(SyntaxError):
                 self.column,
                 ', '.join(self.tokens)))
 
+    def __str__(self):
+        return self.message
 
 class AST(object):
     """An abstract syntax tree representing a script.

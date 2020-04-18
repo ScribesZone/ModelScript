@@ -1,0 +1,15 @@
+demo model de_main01
+
+class Person
+    parents : many Person
+    children : many Person
+    consort : one Person
+    cars : many Car
+
+class Car
+    driver : one Person
+
+class Dog
+    owner : one Person
+
+class Store

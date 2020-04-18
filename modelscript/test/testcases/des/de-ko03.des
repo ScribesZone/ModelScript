@@ -1,0 +1,13 @@
+    //@Issue src.syn 1
+    //@Issue else *
+
+    //@Issue S 0
+    //@Issue F 1
+    //@Issue E 0
+    //@Issue W 0
+    //@Issue I 0
+    //@Issue H 0
+
+demo model de_ko03
+
+class ;
