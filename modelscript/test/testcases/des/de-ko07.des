@@ -1,0 +1,18 @@
+    //@Issue src.syn 1
+    //@Issue else *
+    
+demo model de_main01
+
+class Person
+    parents : many Person
+    children : many Person
+    : many Person
+    cars : many Car
+
+class Car
+    driver : one Person
+
+class Dog
+    owner : one Person
+
+class Store
