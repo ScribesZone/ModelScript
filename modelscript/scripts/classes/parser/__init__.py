@@ -237,7 +237,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     'Class ignored.' ):
                 pass
             else:
-                c=PlainClass(
+                c = PlainClass(
                     name=ast_class.name,
                     model=self.model,
                     astNode=ast_class,
@@ -246,12 +246,12 @@ class ClassModelSource(ASTBasedModelSourceFile):
                         Placeholder(s, 'Classifier')
                         for s in ast_class.superclasses],
                     package=self.__current_package)
-                c.description=astTextBlockToTextBlock(
+                c.description = astTextBlockToTextBlock(
                     container=c,
                     astTextBlock=ast_class.textBlock)
 
                 # attributes
-                ast_ac=ast_class.attributeCompartment
+                ast_ac = ast_class.attributeCompartment
                 if ast_ac is not None:
                     for ast_att in ast_ac.attributes:
                         define_attribute(c, ast_att)
