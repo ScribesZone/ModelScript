@@ -328,9 +328,12 @@ class Placeholder(object):
     Used just to put some symbol value in some model
     waiting for some kind of symbol resolution. This will be
     replaced by an actual reference to a model element.
+    Placerholder are created during the "fillModel" phase and
+    are replaced by actual values during the "resolve" phase.
     """
-    def __init__(self, placeholderValue, type=None):
+    def __init__(self, placeholderValue, astNode=None, type=None):
         self.placeholderValue = placeholderValue
+        self.astNode = astNode
         self.type = type
 
     def __str__(self):

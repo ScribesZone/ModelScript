@@ -12,6 +12,7 @@ import abc
 import collections
 
 from modelscript.megamodels.elements import SourceModelElement
+from modelscript.megamodels.models import Placeholder
 from modelscript.megamodels.py import MAttribute, MComposition
 from modelscript.metamodels.classes import (
     PackagableElement,
@@ -41,7 +42,7 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
 
     isAbstract: bool
 
-    superclasses: List[Union[str, 'Class']]  # later: List['Class']
+    superclasses: List[Union[Placeholder, 'Class']]  # later: List['Class']
     """Names of superclasses later resolved as classes."""
 
     _ownedAttributeNamed: Dict[str, 'Attribute']
@@ -97,7 +98,7 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
                  name: str,
                  model,
                  isAbstract: bool = False,
-                 superclasses: List[str] = (),
+                 superclasses: List[Placeholder] = (),
                  package=None,
                  lineNo=None, description=None, astNode=None):
         super(Class, self).__init__(

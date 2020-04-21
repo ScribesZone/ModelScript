@@ -70,7 +70,6 @@ class ModelElement(object, metaclass=ABCMeta):
 
     @property
     def descriptors(self):
-        #TODO:4 2to3 was return self.descriptorNamed.values()
         return list(self.descriptorNamed.values())
 
     @model.setter

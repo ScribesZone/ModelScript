@@ -20,6 +20,7 @@ from modelscript.megamodels.metamodels import Metamodel
 from modelscript.megamodels.dependencies.metamodels import (
     MetamodelDependency)
 from modelscript.megamodels.models import Model
+from modelscript.megamodels.models import Placeholder
 
 __all__ = (
     'DemoModel',
@@ -28,6 +29,7 @@ __all__ = (
     'METAMODEL',
     'MetamodelDependency'
 )
+
 
 
 ISSUES = {
@@ -81,7 +83,14 @@ class DemoModel(Model):
     @property
     def metrics(self) -> Metrics:
         ms = super(DemoModel, self).metrics
-        ms.addList([('class', len(self.classes))])
+        ms.addList([
+            ('class', len(self.classes)),
+            ('references', len(
+                [r
+                 for c in self.classes
+                 for r in c.references]
+            ))
+        ])
         return ms
 
     def finalize(self):
@@ -116,6 +125,8 @@ class Class(SourceModelElement):
         self.isAbstract = isAbstract
         self._referenceNamed = collections.OrderedDict()
 
+        self.model._classNamed[name] = self
+
     # -----------------------------------------------------------------
     #   references
     # -----------------------------------------------------------------
@@ -142,15 +153,11 @@ class Reference(SourceModelElement):
     isMultiple: bool
     target: Union[str, Class]
 
-    META_COMPOSITIONS = [
-        'references'
-    ]
-
     def __init__(self,
                  name: str,
                  class_: Class,
                  isMultiple: bool,
-                 target: Union[str, Class],
+                 target: Union[Placeholder, Class],
                  astNode: 'TextXNode' = None,
                  lineNo=None,
                  description=None):
@@ -164,6 +171,9 @@ class Reference(SourceModelElement):
 
         # The target can be just a name that will be resolved later.
         self.target = target
+
+        # register the reference into the class
+        class_._referenceNamed[name] = self
 
 
 METAMODEL = Metamodel(

@@ -1,22 +1,49 @@
 # coding=utf-8
-"""
-Metamodel a TextBlocks made of TextLines possibly some References
-to Entries in Glossaries.
+"""Metamodel component for TextBlocks made of TextLines possibly
+making references to entries in glossaries.
+
+This metamodel component is used to store the documentation all kinds
+of entities, of models, classes, usecases, and so on.
+
+TextBlock does not constitute a language per itself. TextBlock
+is made of (1) a metamodel component and (2) a script component.
+These components are to be embedded in all other languages.
+
+Note that the TextBlock metamodel component is separated from the
+glossary metamodel (which is a full-fledge language). The TextBlock
+component can appear anywhere, in any metamodels. As
+a particular case TextBlocks can appear in glossary models as well.
+On the other way around TextBlocks use references to glossaries.
+
+This TextBlock metamodel and the corresponding syntax play a unique role
+in the modelscript framework in the sense that TextBlocks are made
+available in all other languages.
+By contrast to other metamodels, such as the glossary metamodel for
+instance, the TextBlocks defined here are embedded in the languages
+themselves. With regular imports a symbol is just referenced in
+the importing language. Here the TextBlock syntactic definitions are parts
+of target grammar and the metamodel.
 
 The structure of the meta elements ::
 
-    TextBlock
-        <>--* TextLine
-                <>--* TextToken
-                        <|-- PlainText
-                        <|-- Reference
+    Model (WithTextBlocks)
+      <>--* TextBlock
+            <>--* TextLine
+                    <>--* TextToken
+                            <|-- PlainText
+                            <|-- Reference
 
+Note that in this diagram TextBlock are stored all together at the top
+level directly under the model. This global registry of TextBlocks allows
+operations such as glossary-based resolution, all at once. From
+a syntactic point of view TextBlock are under all kinds of model elements
+for instance attribute, association, etc. This hierarchy is not the
+one used here.
 """
 
-from abc import ABCMeta
-from typing import (
-    Text, Optional, List, Any)
+from typing import Text, Optional, List, Any, Union, cast
 from abc import ABCMeta, abstractmethod
+
 from modelscript.base.metrics import Metrics
 from modelscript.megamodels.elements import (
     SourceModelElement,
@@ -40,19 +67,29 @@ ISSUES={
 def icode(ilabel):
     return ISSUES[ilabel]
 
+
 class WithTextBlocks(object):
-    """
-    Mixin for Models. Used to extend the "Model" class.
-    As a result all models can contain some texte block.
+    """ Facet (mixin) for the class Model.
+    Each model store at the top level, flat level, the set of all
+    TextBlock that it contains, whatever the model element it is
+    attached to. That means that the documentation of the model itself,
+    will stored with the documentation of a class, the documentation
+    of an attribute, etc. All TextBlock are gathered in the same place.
+    The nesting documentation inside of nested model elements is
+    ignored. The availability of all TextBlocks, irrespective of their
+    position inside the model, is enough to deal with TextBlock/Glossary
+    resolution.
     """
 
+    _textBlocks: List['TextBlock']
+    """List of all text blocks in the model."""
+
     def __init__(self):
-        self._textBlocks=[]
+        self._textBlocks = []
 
     @property
     def glossaryList(self):
-        """
-        The list of glossaries contected to the model.
+        """The list of glossaries connected to the model.
         """
         # TODO:- improve the framework to simplify the code below
         #   When using an importBox one can write this
@@ -65,46 +102,82 @@ class WithTextBlocks(object):
             targetMetamodel=GLOSSARY_METAMODEL)
 
     @property
-    def textBlocksMetrics(self):
-        #type: () -> Metrics
-        ms=Metrics()
+    def textBlocksMetrics(self) -> Metrics:
+        """Metrics for all text blocks in the model"""
+        ms = Metrics()
         for tb in self.textBlocks:
             ms.addMetrics(tb.metrics)
         return ms
 
     @property
     def textBlocks(self):
-        """
-        The list of all text blocks in the model.
+        """The list of all TextBlocks in the model.
         """
         return self._textBlocks
 
     def addTextBlock(self, textBlock):
-        """
-        called by the TextBlock constructor to add
+        """Add a TextBlock to the list
+        Called by the TextBlock constructor to add
         each text block to the model it is contained in.
         """
         self._textBlocks.append(textBlock)
 
     def resolveTextBlocks(self):
-        if len(self.glossaryList)!=0:
+        """Resolve all TextBlocks"""
+        if len(self.glossaryList) != 0:
             for block in self.textBlocks:
                 block.resolve()
 
-GlossaryModel='GlossaryModel'
-Entry='Entry'
+
+GlossaryModel = 'GlossaryModel'
+Entry = 'Entry'
 
 
 class TextBlock(SourceModelElement):
+    """A TextBlock included in a ModelElement.
+    A TextBlock is made of a list of TextLines.
     """
-    A TextBlock included into a SourceModelElement.
-    A TextBlock is made of a list of TextLine
+
+    container: ModelElement
+    """Model element containing directly the TextBlock.
+    For instance if an attribute contains a documentation,
+    then the attribute will contain the TextBlock.
+    """
+
+    textLines: List['TextLine']
+    """List of TextLines that make the TextBlock.
+    """
+
+    isResolved: bool
+    """Whether the TextBlock has been resolved with the glossary 
+    or not.
     """
 
     def __init__(self,
-                 container,
-                 astTextBlock=None):
-        #type: (SourceModelElement, Optional['grammar.TextBlock'] ) -> None
+                 container: ModelElement,
+                 astTextBlock: 'grammar.TextBlock')\
+            -> None:
+        """
+        Create a new TextBlock and register it to list of TextBlock
+        in the model. The TextBlock is registered at the top level
+        but there is no back link for the container.
+
+        About the container back link.
+        ------------------------------
+        Note that there is no back link set from the container
+        to the TextBlock. There is no definitive
+        rule that say in which attribute the TextBlock is stored.
+        Additionally a ModelElement can contain various TextBlock.
+        That said, in practice most of the time the TextBlock is
+        stored in the "description" field of the ModelElement.
+
+        Args:
+            container: the syntactic container of the TextBlock.
+                For instance this could be an attribute if the TextBlock
+                is the attribute documentation.
+            astTextBlock:  an AST Node. The syntactic representation
+                of the TextBlock.
+        """
 
         SourceModelElement.__init__(
             self,
@@ -112,32 +185,36 @@ class TextBlock(SourceModelElement):
             name=None,
             astNode=astTextBlock)
 
-        self.container=container
-        # Could be for instance a Usecase, Actor, but also
-        # a model, etc.
-        assert(self.container is not None)
-        if self.container is not None:
-            assert isinstance(container, ModelElement)
-            self.container.model.addTextBlock(self)
+        assert(container is not None)
+        assert(astTextBlock is not None)
+        assert(isinstance(container, ModelElement))
 
-        self.textLines=[]
-        # type: List[TextLine]
+        # The container of the TextBlock can be any SourceModelElement,
+        # such as for instance a Usecase, Actor, but can also be a Model
+        # for those TextBlock at the model top level.
+        self.container = container
 
-        self.isResolved=False
+        # Register the TextBlock to the model top level list
+        self.container.model.addTextBlock(self)
 
-    def addTextLine(self, textLine):
-        #type: (TextLine) -> None
+        # Text lines will be added later
+        self.textLines = []
+
+        # TextBlock is not yet resolved.
+        self.isResolved = False
+
+    def addTextLine(self, textLine: 'TextLine') -> None:
         self.textLines.append(textLine)
 
     def resolve(self):
+        """Resolve the TextBlock."""
         for l in self.textLines:
             l.resolve()
-        self.isResolved=True
+        self.isResolved = True
 
     @property
-    def metrics(self):
-        #type: () -> Metrics
-        ms=Metrics()
+    def metrics(self) -> Metrics:
+        ms = Metrics()
         ms.addList((
             ('text block', 1),
             ('text line', len(self.textLines)),
@@ -156,29 +233,28 @@ class TextBlock(SourceModelElement):
 
 
 class TextLine(SourceModelElement):
-    """
-    TextLine containing TextTokens. Each textLines is part
+    """TextLine containing TextTokens. Each textLines is part
     of a TextBlock.
     """
 
-    def __init__(self,
-                 textBlock,
-                 astTextLine=None
-                 ):
-        #type: (TextBlock, Optional['grammar.TextLine'] ) -> None
+    isResolved: bool
+    textBlock: TextBlock
+    textTokens: List['TextToken']
 
+    def __init__(self,
+                 textBlock: TextBlock,
+                 astTextLine: Optional['grammar.TextLine'] = None
+                 ) -> None:
         super(TextLine, self).__init__(
             model=textBlock.model,
             name=None,
             astNode=astTextLine
         )
-        self.isResolved=False
+        self.isResolved = False
 
         self.textBlock = textBlock
-        #type: TextBlock
 
-        self.textTokens=[]
-        # type: List[TextToken]
+        self.textTokens = []
         # Value will be set below
 
         self.textBlock.addTextLine(self)
@@ -186,7 +262,7 @@ class TextLine(SourceModelElement):
     def resolve(self):
         for textToken in self.textTokens:
             textToken.resolve()
-        self.isResolved=True
+        self.isResolved = True
 
     def _selectByType(self, t):
         return [
@@ -195,65 +271,58 @@ class TextLine(SourceModelElement):
         ]
 
     @property
-    def plainTexts(self):
-        #type: () -> List[TextReference]
-        # noinspection PyTypeChecker
-        return self._selectByType(PlainText)
+    def plainTexts(self) -> List['PlainText']:
+        return cast(List['PlainText'], self._selectByType(PlainText))
 
     @property
-    def textReferences(self):
-        #type: () -> List[TextReference]
-        # noinspection PyTypeChecker
-        return self._selectByType(TextReference)
+    def textReferences(self) -> List['TextReference']:
+        return cast(List['TextReference'],
+                    self._selectByType(TextReference))
 
     @property
-    def brokenReferences(self):
-        #type: () -> List[TextReference]
-        # noinspection PyTypeChecker
+    def brokenReferences(self) -> List['TextReference']:
         return [
             r for r in self.textReferences
             if r.isBroken
         ]
 
     @property
-    def occurrences(self):
-        #type: () -> List[TextReference]
-        # noinspection PyTypeChecker
+    def occurrences(self) -> List['TextReference']:
         return [
             r for r in self.textReferences
             if r.isOccurrence
         ]
 
-    def addTextToken(self, token):
-        #type: (TextToken) -> None
+    def addTextToken(self, token: 'TextToken') -> None:
         return self.textTokens.append(token)
 
 
 class TextToken(SourceModelElement, metaclass=ABCMeta):
-    """
-    A TextToken is part of a TextLine. Either
+    """A TextToken is part of a TextLine. Either
     a PlainText or a Reference.
     """
 
+    text: str
+    """The text represenation of the token."""
+
+    textLine: TextLine
+    isResolved: bool
+
+
     def __init__(self,
-                 textLine,
-                 text,
-                 astTextToken=None):
-        #type: (TextLine, Text, Optional['grammar.TextToken'] ) -> None
+                 textLine: TextLine,
+                 text: str,
+                 astTextToken: Optional['grammar.TextToken'] = None) \
+            -> None:
 
         super(TextToken, self).__init__(
             model=textLine.model,
             name=None,
             astNode=astTextToken
         )
-        self.isResolved=False
-
-        self.text=text
-        #type: Text
-
-        self.textLine=textLine
-        #type: TextLine
-
+        self.isResolved = False
+        self.text = text
+        self.textLine = textLine
         self.textLine.addTextToken(self)
 
     @abstractmethod
@@ -261,36 +330,37 @@ class TextToken(SourceModelElement, metaclass=ABCMeta):
         pass
 
 
-
 class PlainText(TextToken):
 
     def __init__(self,
-                 textLine,
-                 text,
-                 astPlainText=None):
-        #type: (TextLine, Text, Optional['grammar.PlainText'] ) -> None
+                 textLine: TextLine,
+                 text: str,
+                 astPlainText: Optional['grammar.PlainText'] = None)\
+            -> None:
+
         super(PlainText, self).__init__(
             textLine, text, astPlainText)
 
     def resolve(self):
-        self.isResolved=True
+        self.isResolved = True
 
 
-class TextReference(TextToken, metaclass=ABCMeta):
+class TextReference(TextToken):
+
+    _isBroken: Optional[bool]
+    entry: Optional[Entry]
+
     def __init__(self,
-                 textLine,
-                 text,
-                 astTextReference=None):
-        #type: (TextLine, Text, Optional['grammar.TextReference']) -> None
+                 textLine: TextLine,
+                 text: str,
+                 astTextReference:
+                    Optional['grammar.TextReference'] = None) \
+            -> None:
         super(TextReference, self).__init__(
             textLine, text, astTextReference)
 
-        self._isBroken=None
-        #type: Optional['Boolean']
-
-        self.entry=None
-        #type: Optional[Entry]
-        # Add the occurrence to the reference to the entry
+        self._isBroken = None
+        self.entry = None
 
     @property
     def isOccurrence(self):
@@ -301,19 +371,19 @@ class TextReference(TextToken, metaclass=ABCMeta):
         return self.isResolved and self._isBroken
 
     def resolve(self):
-        if DEBUG>=2:
+        if DEBUG >= 2:
             print('TXT: Searching term "%s"' % self.text)
         for glossary in self.model.glossaryList:
             if DEBUG >= 2:
                 print('TXT: Searching in %s' % glossary)
-            entry_or_none=glossary.findEntry(self.text)
+            entry_or_none = glossary.findEntry(self.text)
             if entry_or_none is not None:
                 if DEBUG >= 2:
                     print('TXT: found in %s' % glossary)
-                self._isBroken=False
-                self.entry=entry_or_none
+                self._isBroken = False
+                self.entry = entry_or_none
                 self.entry.occurrences.append(self)
-                self.isResolved=True
+                self.isResolved = True
                 break
         else:
             if DEBUG >= 2:
@@ -331,8 +401,3 @@ class TextReference(TextToken, metaclass=ABCMeta):
                         'Undefined term `%s`.' % self.text))
 
         self.isResolved = True
-
-
-
-
-
