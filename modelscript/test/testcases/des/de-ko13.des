@@ -1,0 +1,8 @@
+    //@Issue cl.res.Reference.NoClass 1
+    //@Issue else *
+
+demo model de_ko10
+
+class Person
+    father : one Person
+    error : one Nothing

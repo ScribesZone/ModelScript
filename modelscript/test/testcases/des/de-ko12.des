@@ -1,0 +1,15 @@
+    //@Issue cl.syn.ReferenceName.Twice 2
+    //@Issue else *
+
+demo model de_ko10
+
+class Person
+    father : one Person
+
+class Book
+
+class Dog
+    father : one Dog
+    brother : one Dog
+    father : one Dog
+    brother : one Dog

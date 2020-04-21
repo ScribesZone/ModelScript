@@ -1,0 +1,9 @@
+    //@Issue cl.syn.ClassName.Twice 1
+    //@Issue else *
+
+demo model de_ko10
+
+class Person
+class Car
+class Person
+class Book
