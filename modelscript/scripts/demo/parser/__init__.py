@@ -1,7 +1,7 @@
 # coding=utf-8
 """Parser for ClassScript"""
 
-from typing import cast
+from typing import cast, Union
 import os
 
 from modelscript.base.grammars import (
@@ -33,7 +33,10 @@ DEBUG = 0
 
 
 ISSUES = {
-#    'GNAME_TWICE': 'cl.syn.GlobalName.Twice',
+    'CLASS_NAME_TWICE': 'cl.syn.ClassName.Twice',
+    'REFERENCE_NAME_TWICE': 'cl.syn.ReferenceName.Twice',
+    'REFERENCE_NO_CLASS': 'cl.res.Reference.NoClass'
+
 }
 
 
@@ -63,151 +66,150 @@ class DemoModelSource(ASTBasedModelSourceFile):
     def metamodel(self) -> Metamodel:
         return METAMODEL
 
+    # ----------------------------------------------------------------
+    #                          fillModel
+    # ----------------------------------------------------------------
+
     def fillModel(self):
+        """Convert syntactical elements (TextXNodes) into semantical ones,
+        that is model elements. This method, "fillModel" is the first pass
+        of the process. During this pass some elements may be left be
+        unresolved. These elements are typically store as string in place
+        of model elements). The second pass ("resolve") will eventually
+        replace these string by the corresponding model elements."""
 
-        # def define_class(ast_class):
-        #     if check_if_global_name(
-        #             ast_class.name,
-        #             ast_class,
-        #             'Class ignored.' ):
-        #         pass
-        #     else:
-        #         c = Class(
-        #             name=ast_class.name,
-        #             model=self.model,
-        #             astNode=ast_class,
-        #             isAbstract=ast_class.isAbstract,
-        #             superclasses=[
-        #                 Placeholder(s, 'Classifier')
-        #                 for s in ast_class.superclasses],
-        #             package=self.__current_package)
-        #         c.description=astTextBlockToTextBlock(
-        #             container=c,
-        #             astTextBlock=ast_class.textBlock)
-        #
-        #         # attributes
-        #         ast_ac=ast_class.attributeCompartment
-        #         if ast_ac is not None:
-        #             for ast_att in ast_ac.attributes:
-        #                 define_attribute(c, ast_att)
+        def define_class(ast_class: 'TextXNode') -> bool:
+            """A a new class to the model.
 
-        # def define_reference(class_, ast_attribute):
-        #     owned_names=class_.ownedAttributeNames
-        #     if ast_attribute.name in owned_names:
-        #         ASTNodeSourceIssue(
-        #             code=icode('ATT_DEFINED'),
-        #             astNode=ast_attribute,
-        #             level=Levels.Error,
-        #             message=(
-        #                 '"%s" already defined in class "%s".'
-        #                 ' Attribute ignored.'
-        #                 % (ast_attribute.name, class_.name)))
-        #     else:
-        #         deco=ast_attribute.decorations
-        #         if deco is None:
-        #             visibility='public'
-        #             is_derived=False
-        #         else:
-        #             visibility={
-        #                 None:'public',
-        #                 '+':'public',
-        #                 '-':'private',
-        #                 '#':'protected',
-        #                 '~':'package' } [deco.visibility]
-        #             is_derived=deco.isDerived is not None
-        #         if ast_attribute.metaPart is None:
-        #             tags=[]
-        #             stereotypes=[]
-        #         else:
-        #             tags=ast_attribute.metaPart.tags
-        #             stereotypes=ast_attribute.metaPart.stereotypes
-        #         is_optional=ast_attribute.isOptional is not None
-        #         # The fact that the type is optional will come
-        #         # later at resolution time.
-        #         a=Attribute(
-        #             name=ast_attribute.name,
-        #             class_=class_,
-        #             astNode=ast_attribute,
-        #             visibility=visibility,
-        #             isDerived=is_derived,
-        #             type=Placeholder((ast_attribute.type),'Classifier'),
-        #             tags=tags,
-        #             stereotypes=stereotypes,
-        #             isOptional=is_optional
-        #         )
-        #         a.description=astTextBlockToTextBlock(
-        #             container=class_,
-        #             astTextBlock=ast_attribute.textBlock)
-        #
-        # for declaration in self.ast.model.declarations:
-        #     type_ = declaration.__class__.__name__
-        #     if type_ == 'Class':
-        #         define_class(declaration)
-        #     else:
-        #         raise UnexpectedCase(  # raise:OK
-        #             'declaration of %s not implemented' % type_)
+            This can raise some errors (e.g. class already defined)
+            Otherwise the class is created. Embedded components (here
+            references) are defined as well by calling the corresponding
+            methods (here define_references).
+
+            Args:
+                ast_class: the node in the AST corresponding to the class.
+            """
+
+            class_name = ast_class.name
+            if class_name in self.demoModel.classNames:
+                # ---- class already defined ------------------
+                ASTNodeSourceIssue(
+                    code=icode('CLASS_NAME_TWICE'),
+                    astNode=ast_class,
+                    level=Levels.Error,
+                    message=(
+                            'Class "%s" is already defined' % (
+                                class_name,
+                            )))
+            else:
+                # ---- create class class ------------------
+                c = Class(
+                    name=ast_class.name,
+                    model=self.demoModel,
+                    astNode=ast_class,
+                    isAbstract=ast_class.isAbstract)
+
+                # ---- Process the class documentation -----
+                # c.description=astTextBlockToTextBlock(
+                #     container=c,
+                #     astTextBlock=ast_class.textBlock)
+
+                # ---- Process the component. Here references -----
+                for ast_ref in ast_class.references:
+                    define_reference(c, ast_ref)
+
+        def define_reference(class_: Class, ast_ref: 'TextXNode') -> None:
+            """ Add a reference to a given class.
+            The reference is not fully resolved. The target of the
+            reference may be unknown in this pass. Just store a string
+            in place of the target class. This string will be replaced
+            by the actual Class in the "resolve" pass.
+
+            Args:
+                class_: The class containing the reference. This is
+                    a model element ; a semantical element, not syntactical
+                    one.
+                ast_ref: The AST element corresponding to the reference.
+                    This is a syntactical element.
+            """
+            ref_name = ast_ref.name
+            if ref_name in class_.referenceNames:
+                # ---- Raise a error if the reference name is already used
+                ASTNodeSourceIssue(
+                    code=icode('REFERENCE_NAME_TWICE'),
+                    astNode=ast_ref,
+                    level=Levels.Error,
+                    message=(
+                            'Reference "%s" is already '
+                            'defined in class %s.'
+                            % (ref_name, class_.name
+                               )))
+            else:
+                # ---- Create the reference ----
+                r = Reference(
+                    name=ref_name,
+                    class_=class_,
+                    isMultiple=ast_ref.multiplicity == 'many',
+                    target=Placeholder(
+                        placeholderValue=ast_ref.target,
+                        astNode=ast_ref,
+                        type='ClassRef'),
+                    astNode=ast_ref
+                )
+
+                # ---- Process the reference documentation ----
+                #         a.description=astTextBlockToTextBlock(
+                #             container=class_,
+                #             astTextBlock=ast_attribute.textBlock)
+
+
+        for declaration in self.ast.model.declarations:
+            type_ = declaration.__class__.__name__
+            if type_ == 'Class':
+                define_class(declaration)
+            else:
+                raise UnexpectedCase(  # raise:OK
+                    'declaration of %s not implemented' % type_)
         pass
 
     # ----------------------------------------------------------------
     #                          Resolution
     # ----------------------------------------------------------------
 
-    def resolve(self):
+    def resolve(self) -> None:
+        """This method corresponds to the second phase of the process
+        of model creation.
+        During this process the symbol resolution is performed, that is
+        all strings that stands for a model element are replaced by
+        a reference to this element."""
 
+        def resolve_class_content(class_):
+            """Resolve all symbols left in the class.
+            In practice this means the target of each references
+            contained in the class."""
 
-        # def resolve_class_content(classifier):
-        #     # Works both for plainClass and associationClass
-        #
-        #     def resolve_superclasses():
-        #         actual_super_classes=[]
-        #         for class_placeholder in classifier.superclasses:
-        #             name=class_placeholder.placeholderValue
-        #             c=self.classModel.class_(name)
-        #             if c is not None:
-        #                 actual_super_classes.append(c)
-        #             else:
-        #                 ASTNodeSourceIssue(
-        #                     code=icode('CLASS_NO_SUPER'),
-        #                     astNode=classifier.astNode,
-        #                     level=Levels.Error,
-        #                     message=(
-        #                         'Class "%s" does not exist. '
-        #                         "'Can't be the superclass of %s."
-        #                         % (name, classifier.name)))
-        #         classifier.superclasses=actual_super_classes
-        #
-        #     def resolve_owned_attribute(attribute):
-        #         type_name=attribute.type.placeholderValue
-        #         if type_name in self.classModel.simpleTypeNamed:
-        #             simple_type=(
-        #                 self.classModel.simpleTypeNamed[type_name])
-        #             att_type=AttributeType(
-        #                 simpleType=simple_type,
-        #                 isOptional=attribute.isOptional
-        #             )
-        #             attribute.type=att_type
-        #         else:
-        #             ASTNodeSourceIssue(
-        #                 code=icode('ATTRIBUTE_NO_TYPE'),
-        #                 astNode=classifier.astNode,
-        #                 level=Levels.Fatal,
-        #                 message=(
-        #                     'Datatype "%s" does not exist.'
-        #                     % (type_name)))
-        #     resolve_superclasses()
-        #     for a in classifier.ownedAttributes:
-        #         resolve_owned_attribute(a)
-        #
-        #
-        # super(DemoModelSource, self).resolve()
-        #
-        # def resolve_invariant_content(invariant):
-        #     pass # TODO:2 Resolve invariant part of class
-        #
-        # for c in self.classModel.classes:
-        #     resolve_class_content(c)
+            def resolve_reference(reference):
+                target_class_name = reference.target.placeholderValue
+                if target_class_name not in self.demoModel.classNames:
+                    ASTNodeSourceIssue(
+                        code=icode('REFERENCE_NO_CLASS'),
+                        astNode=reference.target.astNode,
+                        level=Levels.Fatal,
+                        message=(
+                            'The class "%s" mentioned in reference "%s"'
+                            ' does not exist.'
+                            % (target_class_name, reference.name)))
+                else:
+                    target_class = class_.reference(target_class_name)
+                    reference.target = target_class
 
-        pass
+            for r in class_.references:
+                resolve_reference(r)
+
+        super(DemoModelSource, self).resolve()
+
+        for c in self.demoModel.classes:
+            resolve_class_content(c)
 
 
 METAMODEL.registerSource(DemoModelSource)

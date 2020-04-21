@@ -38,10 +38,10 @@ __all__ = [
 
 
 class DemoModelPrinter(ModelPrinter):
+
     def __init__(self,
-                 theModel,
-                 config=None):
-        #type: (DemoModel, Optional[ModelPrinterConfig]) -> None
+                 theModel: DemoModel,
+                 config: Optional[ModelPrinterConfig] = None) -> None:
         assert theModel is not None
         assert isinstance(theModel, DemoModel)
         super(DemoModelPrinter, self).__init__(
@@ -55,10 +55,10 @@ class DemoModelPrinter(ModelPrinter):
         return self.output
 
     def doDemoModel(self, model):
-        self.doModelTextBlock(model.description)
+        # self.doModelTextBlock(model.description)
 
-        for c in model.classes:
-            self.doPlainClass(c)
+        # for c in model.classes:
+        #     self.doPlainClass(c)
 
         return self.output
 

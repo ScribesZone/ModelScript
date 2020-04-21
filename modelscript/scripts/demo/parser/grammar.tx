@@ -12,6 +12,7 @@ Class:  // common
     (isAbstract ?= 'abstract')
     'class' name=ID
     (o_
+        (textBlock = TextBlock)?
         references *= Reference
     _o)?
     X
@@ -19,6 +20,9 @@ Class:  // common
 
 Reference:
     name=ID ':' multiplicity=Multiplicity target=ID
+    (o_
+        textBlock=TextBlock
+    _o)?
     X
 ;
 
