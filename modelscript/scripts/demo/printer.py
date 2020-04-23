@@ -41,7 +41,8 @@ class DemoModelPrinter(ModelPrinter):
 
     def __init__(self,
                  theModel: DemoModel,
-                 config: Optional[ModelPrinterConfig] = None) -> None:
+                 config: Optional[ModelPrinterConfig] = None) \
+            -> None:
         assert theModel is not None
         assert isinstance(theModel, DemoModel)
         super(DemoModelPrinter, self).__init__(
@@ -57,36 +58,45 @@ class DemoModelPrinter(ModelPrinter):
     def doDemoModel(self, model):
         # self.doModelTextBlock(model.description)
 
-        # for c in model.classes:
-        #     self.doPlainClass(c)
-
+        for c in model.classes:
+            self.doClass(c)
         return self.output
 
     def doClass(self, class_):
-        # self.doModelTextBlock(class_.description)
-
-        # if class_.superclasses:
-        #     sc = (self.kwd('extends ')
-        #           +self.kwd(',').join([s.name for s in class_.superclasses]))
-        # else:
-        #     sc = ''
-        # if class_.isAbstract:
-        #     abstract='abstract '
-        # abstract='abstract' if class_.isAbstract else None
-        # self.outLine(' '.join([_f for _f in [
-        #     (self.kwd('abstract') if class_.isAbstract else ''),
-        #     self.kwd('class'),
-        #     self.qualified(class_),
-        #     sc] if _f]))
-        #
-        # # self.doModelTextBlock(class_.description)
-        # if class_.attributes:
-        #     self.outLine(self.kwd('attributes'), indent=1)
-        #     for attribute in class_.attributes:
-        #         self.doAttribute(attribute)
-
+        if class_.superclasses:
+            superc = (self.kwd('is based on ')
+                  + self.kwd(',').join( [
+                        s.name for s in class_.superclasses
+                    ]))
+        else:
+            superc = ''
+        self.outLine(' '.join(_f  for _f in [
+            (self.kwd('abstract') if class_.isAbstract else ''),
+            self.kwd('class'),
+            class_.name,
+            superc
+        ] if _f))
+        if class_.subclasses:
+            self.outLine(
+                self.kwd('helps to define ')
+                + ', '.join(
+                    sub.name for sub in class_.subclasses),
+                indent=1)
+        self.doModelTextBlock(class_.description, indent=1)
+        for ref in class_.references:
+            self.doReference(ref)
+        self.outLine('')
         return self.output
 
+    def doReference(self, reference):
+        multiplicity = 'many' if reference.isMultiple else 'one'
+        self.outLine(
+            reference.name+' '
+            + self.kwd(':') + ' '
+            + self.kwd(multiplicity) + ' '
+            + reference.target.name
+            , indent=1)
+        self.doModelTextBlock(reference.description, indent=2)
 
 
 METAMODEL.registerModelPrinter(DemoModelPrinter)

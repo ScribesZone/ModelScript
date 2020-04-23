@@ -11,6 +11,7 @@ Declaration:
 Class:  // common
     (isAbstract ?= 'abstract')
     'class' name=ID
+    ('is' 'based' 'on' superclasses += ID [','])?
     (o_
         (textBlock = TextBlock)?
         references *= Reference
