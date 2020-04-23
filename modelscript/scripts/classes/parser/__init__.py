@@ -243,7 +243,10 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     astNode=ast_class,
                     isAbstract=ast_class.isAbstract,
                     superclasses=[
-                        Placeholder(s, 'Classifier')
+                        Placeholder(
+                            placeholderValue=s,
+                            astNode=ast_class,
+                            category='Classifier')
                         for s in ast_class.superclasses],
                     package=self.__current_package)
                 c.description = astTextBlockToTextBlock(
@@ -295,7 +298,10 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     astNode=ast_attribute,
                     visibility=visibility,
                     isDerived=is_derived,
-                    type=Placeholder((ast_attribute.type),'Classifier'),
+                    type=Placeholder(
+                        placeholderValue=ast_attribute.type,
+                        astNode=ast_attribute,
+                        category='Classifier'),
                     tags=tags,
                     stereotypes=stereotypes,
                     isOptional=is_optional
@@ -388,7 +394,10 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     model=self.classModel,
                     isAbstract=ast_association.isAbstract,
                     superclasses=[
-                        Placeholder(s, 'Classifier')
+                        Placeholder(
+                            placeholderValue=s,
+                            astNode=ast_association,
+                            category='Classifier')
                         for s in ast_association.superclasses],
                     package=self.__current_package,
                     astNode=ast_association
@@ -438,7 +447,10 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     astNode=ast_role,
                     association=association,
                     name=ast_role.name,
-                    type=Placeholder(ast_role.type,'Classifier'),
+                    type=Placeholder(
+                        placeholderValue=ast_role.type,
+                        astNode=ast_role,
+                        category='Classifier'),
                     cardMin=min,
                     cardMax=max,
                     navigability=ast_role.navigability,
@@ -502,25 +514,25 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 model=self.classModel)
 
         for declaration in self.ast.model.declarations:
-            type_=declaration.__class__.__name__
-            if type_=='Package':
+            type_ = declaration.__class__.__name__
+            if type_ == 'Package':
                 define_package(declaration)
-            elif type_=='DataType':
+            elif type_ == 'DataType':
                 define_datatype(declaration)
-            elif type_=='Enumeration':
+            elif type_ == 'Enumeration':
                 define_enumeration(declaration)
-            elif type_=='Class':
+            elif type_ == 'Class':
                 define_class(declaration)
-            elif (type_=='Association'
-                  and declaration.kind!='associationclass'):
+            elif (type_ == 'Association'
+                  and declaration.kind != 'associationclass'):
                 define_association(declaration)
-            elif (type_=='Association'
+            elif (type_ == 'Association'
                   and declaration.kind=='associationclass'):
                 define_association_class(declaration)
-            elif type_=='Invariant':
+            elif type_ == 'Invariant':
                 define_invariant(declaration)
             else:
-                raise UnexpectedCase( #raise:OK
+                raise UnexpectedCase(  # raise:OK
                     'declaration of %s not implemented' % type_)
 
     # ----------------------------------------------------------------
@@ -534,10 +546,10 @@ class ClassModelSource(ASTBasedModelSourceFile):
             # Works both for plainClass and associationClass
 
             def resolve_superclasses():
-                actual_super_classes=[]
+                actual_super_classes = []
                 for class_placeholder in classifier.superclasses:
-                    name=class_placeholder.placeholderValue
-                    c=self.classModel.class_(name)
+                    name = class_placeholder.placeholderValue
+                    c = self.classModel.class_(name)
                     if c is not None:
                         actual_super_classes.append(c)
                     else:
@@ -549,18 +561,18 @@ class ClassModelSource(ASTBasedModelSourceFile):
                                 'Class "%s" does not exist. '
                                 "'Can't be the superclass of %s."
                                 % (name, classifier.name)))
-                classifier.superclasses=actual_super_classes
+                classifier.superclasses = actual_super_classes
 
             def resolve_owned_attribute(attribute):
-                type_name=attribute.type.placeholderValue
+                type_name = attribute.type.placeholderValue
                 if type_name in self.classModel.simpleTypeNamed:
-                    simple_type=(
+                    simple_type = (
                         self.classModel.simpleTypeNamed[type_name])
-                    att_type=AttributeType(
+                    att_type = AttributeType(
                         simpleType=simple_type,
                         isOptional=attribute.isOptional
                     )
-                    attribute.type=att_type
+                    attribute.type = att_type
                 else:
                     ASTNodeSourceIssue(
                         code=icode('ATTRIBUTE_NO_TYPE'),

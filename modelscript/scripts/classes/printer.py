@@ -38,9 +38,9 @@ __all__ = [
 
 class ClassModelPrinter(ModelPrinter):
     def __init__(self,
-                 theModel,
-                 config=None):
-        #type: (ClassModel, Optional[ModelPrinterConfig]) -> None
+                 theModel: ClassModel,
+                 config: Optional[ModelPrinterConfig] = None)\
+            -> None:
         assert theModel is not None
         assert isinstance(theModel, ClassModel)
         super(ClassModelPrinter, self).__init__(
@@ -82,10 +82,10 @@ class ClassModelPrinter(ModelPrinter):
     def qualified(self, element):
         if element.package is None:
             return element.name
-        elif element.package.name=='':
+        elif element.package.name == '':
             return element.name
         else:
-            return '%s.%s'% (
+            return '%s.%s' % (
                 element.package.name,
                 element.name
             )
@@ -96,6 +96,7 @@ class ClassModelPrinter(ModelPrinter):
             package.name))
         for element in package.elements:
             self.outLine(element.name, indent=1)
+        self.outLine('')
 
     def doDataType(self, datatype):
 
@@ -109,7 +110,7 @@ class ClassModelPrinter(ModelPrinter):
             self.kwd('enumeration'),
             self.qualified(enumeration)))
         self.doModelTextBlock(enumeration.description, indent=1)
-        for (i,el) in enumerate(enumeration.literals):
+        for (i, el) in enumerate(enumeration.literals):
             self.doEnumerationLiteral(el)
         self.outLine('')
         return self.output
@@ -124,12 +125,9 @@ class ClassModelPrinter(ModelPrinter):
         self.doModelTextBlock(class_.description)
         if class_.superclasses:
             sc = (self.kwd('extends ')
-                  +self.kwd(',').join([s.name for s in class_.superclasses]))
+                  + self.kwd(',').join([s.name for s in class_.superclasses]))
         else:
             sc = ''
-        if class_.isAbstract:
-            abstract='abstract '
-        abstract='abstract' if class_.isAbstract else None
         self.outLine(' '.join([_f for _f in [
             (self.kwd('abstract') if class_.isAbstract else ''),
             self.kwd('class'),
@@ -150,7 +148,7 @@ class ClassModelPrinter(ModelPrinter):
         # if class_.invariants:
         #     for invariant in class_.invariants:
         #         self.doInvariant(invariant)
-
+        self.outLine('')
         return self.output
 
     def doPlainAssociation(self, association):
@@ -162,6 +160,7 @@ class ClassModelPrinter(ModelPrinter):
         self.outLine(self.kwd('roles'), indent=1)
         for role in association.roles:
             self.doRole(role)
+        self.outLine('')
         return self.output
 
     def doAssociationClass(self, associationClass):
@@ -192,6 +191,7 @@ class ClassModelPrinter(ModelPrinter):
         #         self.doOperation(operation)
 
         self.outLine(self.kwd('end'), linesAfter=1)
+        self.outLine('')
         return self.output
 
     def doAttribute(self, attribute):
@@ -201,21 +201,21 @@ class ClassModelPrinter(ModelPrinter):
             'protected':'%',
             'package':'~'
         }[attribute.visibility])
-        derived=self.kwd('/') if attribute.isDerived else None
-        id=self.kwd('{id}') if attribute.isId else None
+        derived = self.kwd('/') if attribute.isDerived else None
+        id = self.kwd('{id}') if attribute.isId else None
 
         read_only=\
             self.kwd('{readOnly}') if attribute.isReadOnly else None
         optional=self.kwd('[0..1]') if attribute.isOptional \
                 else None
         #TODO:- extract this to a method (see role)
-        stereotypes='<<%s>>' % ','.join(attribute.stereotypes) \
+        stereotypes = '<<%s>>' % ','.join(attribute.stereotypes) \
                 if attribute.stereotypes \
                 else ''
-        tags='{%s}' % ','.join(attribute.tags) \
+        tags = '{%s}' % ','.join(attribute.tags) \
                 if attribute.tags \
                 else ''
-        _=' '.join([_f for _f in [
+        _ = ' '.join([_f for _f in [
                 id,
                 read_only,
                 derived,
@@ -263,6 +263,7 @@ class ClassModelPrinter(ModelPrinter):
             self.outLine(s, indent=3)
         for ocl_inv in invariant.oclInvariants:
             self.doOCLInvariant(ocl_inv)
+        self.outLine('')
         return self.output
 
     def doOCLInvariant(self, oclInvariant):
