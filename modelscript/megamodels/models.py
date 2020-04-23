@@ -3,7 +3,7 @@
 """
 
 from abc import abstractmethod, ABCMeta
-from typing import Optional, List
+from typing import Optional, List, Any, Union
 
 from modelscript.megamodels.issues import WithIssueModel
 from modelscript.base.metrics import (
@@ -24,7 +24,7 @@ __all__ = (
     'Placeholder',
 )
 
-DEBUG = 2
+DEBUG = 0
 
 
 class Model(
@@ -328,15 +328,29 @@ class Placeholder(object):
     Used just to put some symbol value in some model
     waiting for some kind of symbol resolution. This will be
     replaced by an actual reference to a model element.
-    Placerholder are created during the "fillModel" phase and
+    Placerholders are created during the "fillModel" phase and
     are replaced by actual values during the "resolve" phase.
     """
-    def __init__(self, placeholderValue, astNode=None, type=None):
+
+    placeholderValue: str
+    """The value to be replaced later. """
+
+    astNode: Optional['TextXNode']
+    """An AST node containing the placeholder. 
+    The node can be an approximate to the exact location.
+    Coud be none for non located Placeholders.
+    """
+
+    category: Optional[str]
+    """A category for the placeholder. For example "Class" for
+    placeholder to be replaced by "Class". Note really used. """
+
+    def __init__(self, placeholderValue, astNode=None, category=None):
         self.placeholderValue = placeholderValue
         self.astNode = astNode
-        self.type = type
+        self.category = category
 
     def __str__(self):
         return ('***%s(%s)***' %(
             self.placeholderValue,
-            self.type))
+            self.category))
