@@ -1,3 +1,4 @@
+from typing import Union, List
 import glob
 import os
 import re
@@ -6,72 +7,63 @@ from distutils.dir_util import mkpath
 
 TEST_CASES_DIRECTORY = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), '..', 'testcases')
-BUILD_DIRECTORY = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), 'build')
+
+
+VERIFIED_OUTPUT_DIRECTORY = os.path.join(
+    TEST_CASES_DIRECTORY,
+    'out-generated')
+
+
+GENERATED_OUTPUT_DIRECTORY = os.path.join(
+    TEST_CASES_DIRECTORY,
+    'out-verified')
 
 
 def _getDir(absolutePath, relDir, ensure=True):
-    dir=os.path.join(absolutePath, relDir)
+    dir = os.path.join(absolutePath, relDir)
     if not os.path.exists(dir):
         if ensure:
             mkpath(dir)
         else:
-            raise IOError( #raise:OK
+            raise IOError(  # raise:OK
                 'TST: Directory %s does not exist.' % dir)
     return dir
 
 
-def getBuildDir(relDir, ensure=True):
-    return _getDir(BUILD_DIRECTORY, relDir, ensure)
-
-
 def getTestDir(relDir, ensure=True):
+    """Get an absolute directory from a relative one.
+    The directory can be created as necessary with the parameter ensure.
+    """
     return _getDir(TEST_CASES_DIRECTORY, relDir, ensure)
 
 
-def getFile(name, prefixes):
-    if os.path.isabs(name):
-        return name
-    else:
-        return os.path.join(*[TEST_CASES_DIRECTORY] + prefixes + [name])
-
-
 def getTestFile(relativeFileName, checkExist=True):
-    f=os.path.join(
+    f = os.path.join(
         TEST_CASES_DIRECTORY,
         relativeFileName
     )
     if checkExist:
         if not os.path.isfile(f):
-            raise IOError( #raise:OK
+            raise IOError(  # raise:OK
                 'TST: test file %s not found.' % relativeFileName)
     return f
 
 
-def patternFromArgV():
-    prefix='-e='
-    for arg in sys.argv:
-        if arg.startswith(prefix):
-            return arg[len(prefix):]
-    else:
-        return ''
-
-
 def getTestFiles(
-        relativeDirectory,
-        relative=True,
-        extension='',
-        pattern=''):
-    #type: (Text, bool, Union[Text, List[Text]]) -> List[Text]
+        relativeDirectory: str,
+        relative:  bool = True,
+        extension: Union[str, List[str]] = '',
+        pattern='') \
+        -> List[str]:
 
     def accept(filename):
         (core, ext)=os.path.splitext(filename)
-        if pattern!='':
-            m=re.search(pattern, core)
+        if pattern != '':
+            m = re.search(pattern, core)
             if not m:
                 return False
         if isinstance(extension, str):
-            return ext==extension
+            return ext == extension
         elif isinstance(extension, list):
             return ext in extension
         else:
@@ -83,7 +75,7 @@ def getTestFiles(
         TEST_CASES_DIRECTORY,
         relativeDirectory)
     if not os.path.isdir(absolute_test_dir):
-        raise ValueError( #raise:OK
+        raise ValueError(  # raise:OK
             'TST: Not a test directory : %s'
             % relativeDirectory)
 
@@ -95,36 +87,23 @@ def getTestFiles(
         if accept(simplename) ]
     return rel_files
 
+#
+# def getOutputGeneratedFile(testname):
+#     return
 
-def getUseFile(name):
-    return getFile(name,['use'])
-
-
-def getSoilFile(name):
-    return getFile(name, ['soil'])
-
-
-def getSoilFileList(nameOrList):
-    if isinstance(nameOrList, str):
-        # add the prefix if necessary
-        with_prefix = getFile(nameOrList, ['soil'])
-        return glob.glob(with_prefix)
+def patternFromArgV():
+    prefix = '-e='
+    for arg in sys.argv:
+        if arg.startswith(prefix):
+            return arg[len(prefix):]
     else:
-        return list(map(getSoilFile, nameOrList))
+        return ''
 
-
-def getZipFile(name):
-    for prefix in ['http:','https:','ftp:','ftps:']:
-        if name.startswith(prefix):
-
-            return name
-    return getFile(name, ['zip'])
 
 
 def setup():
     pass
-    # if not os.path.isdir(BUILD_DIRECTORY):
-    #     os.mkdir(BUILD_DIRECTORY)
+
 
 
 def teardown():

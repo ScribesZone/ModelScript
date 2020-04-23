@@ -418,33 +418,49 @@ def checkAllAssertionsForDirectory(
 
 
 
-def checkIssuesAndMetrics(
-        reltestfile,
-        metamodel,
-        expectedIssues=None,
-        expectedMetrics=None ):
-    #type: (Text, Metamodel, ExpectedIssueDict, ExpectedMetricDict) -> None
+def checkIssuesMetricsAndOutput(
+        reltestfile: str,
+        metamodel: Metamodel,
+        expectedIssues: ExpectedIssueDict = None,
+        expectedMetrics: ExpectedMetricDict =None)\
+        -> None:
     """
-    Check issues/metrics assertion for a given file. This function is
-    called by the simpleTestDeneratorAssertions generator.
-    :param reltestfile: the file to test
-    :param metamodel: the metamodel of the file
-    :param expectedIssues: the map of issue expected
-    :param expectedMetrics: the map of metric expected
-    :return:
+    Check issues/metrics assertion for a given file.
+    This function is called by the simpleTestDeneratorAssertions
+    generator.
+
+    Args:
+        reltestfile: The relative location of the file to test.
+        metamodel: The metamodel of the file.
+        expectedIssues: The map of expected issues.
+        expectedMetrics: The map of expected metric.
     """
-    file=' %s %s ' % (
+
+    def manage_output():
+        output_generated_file = \
+            os.path.join(
+                os.path.dirname(reltestfile),
+                'output-verified',
+                os.path.basename(reltestfile))
+        print('YY'*20, output_generated_file)
+        #
+        # metamodel.modelPrinterClass(source.model)\
+            .save(output_generated_file)
+
+    file_info = ' %s %s ' % (
         metamodel.label,
         os.path.basename(reltestfile)
     )
-    print('\nTST:'+'=='*10+' testing '+file+'='*35+'\n' )
+    print('\nTST:'+'=='*10+' testing '+file_info+'='*35+'\n' )
+    # Create a model source file from the given file.
+    # This do parsing and eventually creates the model
     source = metamodel.sourceClass(getTestFile(reltestfile))
 
-    print('\n'+'TST:'+'==' * 10 + ' printing source '+file+'='*35+'\n')
-    metamodel.sourcePrinterClass(source).display()
+    manage_output()
 
     print('\n'+'TST:'+'==' *10 + ' printing model '+'='*40+'\n')
     metamodel.modelPrinterClass(source.model).display()
+
 
     if expectedIssues is None:
         expectedIssues={F: 0, E: 0, W: 0, I: 0, H: 0}
@@ -452,9 +468,12 @@ def checkIssuesAndMetrics(
     assertIssueBox(source.fullIssueBox, expectedIssues)
     assertMetrics(source.fullMetrics, expectedMetrics)
 
+    print('\n'+'TST:'+'==' * 10 + ' printing source '+file_info+'='*35+'\n')
+    metamodel.sourcePrinterClass(source).display()
+
     print('\n'+'TST:'+'==' *10 + ' printing metrics '+'='*40+'\n')
     print(source.fullMetrics)
-    print('TST:'+'=='*10+' tested '+file+'='*35+'\n' )
+    print('TST:'+'=='*10+' tested '+file_info+'='*35+'\n' )
 
 
 
@@ -466,10 +485,10 @@ def checkIssuesAndMetrics(
 #         expectedIssues)
 
 def simpleTestDeneratorAssertions(metamodel):
-    """
-    Check issues/metrics assertions for all testcases corresponding
-    to a given metamodel. To be more precise this method returns a
-    generator used for tests. The test generator can be used as following :!
+    """Check issues/metrics assertions for all testcases corresponding
+    to a given metamodel.
+    To be more precise this method returns a generator used for tests.
+    The test generator can be used as following :
 
         from modelscript.test.framework.assertions import (
             simpleTestDeneratorAssertions)
@@ -480,13 +499,12 @@ def simpleTestDeneratorAssertions(metamodel):
                     simpleTestDeneratorAssertions(METAMODEL):
                 yield (v,f,m,eim, emm)
 
-    :param metamodel: the metamodel of interest. The metamodel is used
-        to select the testcase directory.
-    :return:
+    Args:
+        metamodel: the metamodel of interest. The metamodel is used
+            to select the testcase directory.
     """
-    extension=metamodel.extension
-    test_rel_dir=extension[1:]
-    print('RR'*10, extension)
+    extension = metamodel.extension
+    test_rel_dir = extension[1:]
     res = checkAllAssertionsForDirectory(
         relTestcaseDir=test_rel_dir,
         extension=[extension],
@@ -496,7 +514,7 @@ def simpleTestDeneratorAssertions(metamodel):
 
     for (file , expected_issue_map, expected_metrics_map) in res:
         yield (
-            checkIssuesAndMetrics,
+            checkIssuesMetricsAndOutput,
             file,
             metamodel,
             expected_issue_map,
