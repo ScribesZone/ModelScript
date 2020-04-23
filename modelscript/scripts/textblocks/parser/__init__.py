@@ -18,13 +18,21 @@ def astTextBlockToTextBlock(
         astTextBlock: Optional['grammar.TextBlock']) \
         -> Optional[TextBlock]:
     """Creates a semantic TextBlock from syntactic textBlock.
+    In other words parse some syntactic block of text and create
+    a semantic TextBlock element.
+    Register this newly created TextBlock in the model registry
+    of TextBlock. This function DO NOT create any link between
+    the embedding element and the TextBlock. That is, in the
+    case of the documentation of an attribute, the link between
+    the attribute and the TextBlock has to be created manually.
 
     Args:
         container: source element logically containing the TextBlock.
             This could be a class, an attribute or whatever.
         astTextBlock:  the part of the ast corresponding to the
-            documentation to parse or none if there is no such part.
+            documentation to parse or None if there is no such part.
             None can by due to an optional documentation grammar rule.
+            In this case the function returns None.
 
     Returns:
         The newly created TextBlock or None if astTextBlock was None.
@@ -61,10 +69,6 @@ def astTextBlockToTextBlock(
                     raise UnexpectedCase(  # raise:OK
                         'Type %s not supported' % type_)
 
-        #TODO:2 add a reference to this text block into the model
-        # here container.model is the model we need
-        # add something like:
-        #      container.model.textBlocks.append(text_block)
         return text_block
 
 GRAMMAR='''

@@ -87,7 +87,7 @@ class GlossaryModelPrinter(ModelPrinter):
         return self.output
 
     def doDescription(self, textBlock):
-        block_text=TextBlockPrinter(
+        block_text = TextBlockPrinter(
             textBlock=textBlock,
             config=self.config).do()
         self.out(block_text)

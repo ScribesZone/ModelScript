@@ -15,38 +15,40 @@ __all__=(
     'TextBlockPrinter'
 )
 
-TextBlock='TextBlock'
+TextBlock = 'TextBlock'
 
 class TextBlockPrinter(AbstractPrinter):
 
     def __init__(self,
-                 textBlock,
-                 indent=0,
-                 config=None):
-        #type: (TextBlock, int, Optional[AbstractPrinterConfig]) -> None
+                 textBlock: TextBlock,
+                 indent: int = 0,
+                 config: Optional[AbstractPrinterConfig] = None):
         super(TextBlockPrinter, self).__init__(
             config=config
         )
-        self.textBlock=textBlock
-        self.indent=indent
+        self.textBlock = textBlock
+        self.indent = indent
 
     def do(self):
-        if len(self.textBlock.textLines)>=1:
+        if len(self.textBlock.textLines) >= 1:
             self.doTextBlock(self.textBlock)
         return self.output
 
     def doTextBlock(self, textBlock):
         for line in textBlock.textLines:
+            # self.out('XX')
             self.doLine(line)
+            # self.out('YY')
+
         return self.output
 
     def doLine(self, line):
-        _= '%s' % (
+        _ = '%s' % (
             Styles.comment.do('|', self.config.styled))
         self.out(_, indent=self.indent)
         for token in line.textTokens:
             self.doTextToken(token)
-        self.outLine(_, indent=self.indent)
+        self.endLine()
         return self.output
 
     def doTextToken(self, token):
@@ -54,7 +56,7 @@ class TextBlockPrinter(AbstractPrinter):
             TextReference, PlainText
         )
         if isinstance(token, TextReference):
-            r=token
+            r = token
             if r.isOccurrence:
                 x = Styles.bold.do(
                     '`%s`!' % r.text,
@@ -72,7 +74,7 @@ class TextBlockPrinter(AbstractPrinter):
                 token.text,
                 styled=self.config.styled)
         else:
-            raise UnexpectedCase( #raise:OK
+            raise UnexpectedCase(  # raise:OK
                 'Printing %s is not implemented'
                 % type(token))
         self.out(x)
