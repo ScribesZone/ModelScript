@@ -17,7 +17,9 @@ __all__ = (
 from abc import ABCMeta, abstractmethod
 from typing import Optional
 import codecs
+import os
 
+from modelscript.base.files import ensureDir
 from modelscript.base.issues import IssueBox
 from modelscript.base.styles import Styles
 from modelscript.base.exceptions import (
@@ -35,16 +37,15 @@ def indent(prefix: str,
            firstPrefix: Optional[str] = None) \
         -> str:
     """
-    Indent a possibily multiline string (s) with a
-    given "prefix". If "firstPrefix" is specified then
-    it is used for the first line.
+    Indent a possibly multiline string (s) with a given "prefix".
+    If "firstPrefix" is specified then it is used for the first line.
     A "suffix" can also be provided.
     """
     prefix1 = prefix if firstPrefix is None else firstPrefix
     lines = s.split('\n')
-    outLines = [prefix1+lines[0]+suffix]
-    outLines.extend([prefix+l+suffix for l in lines[1:]])
-    return '\n'.join(outLines)
+    out_Lines = [prefix1+lines[0]+suffix]
+    out_Lines.extend([prefix+l+suffix for l in lines[1:]])
+    return '\n'.join(out_Lines)
 
 # TODO:4 add support for multines
 # TODO:4 improve with surronding lines with padding
@@ -53,7 +54,7 @@ def indent(prefix: str,
 def box(s,
         length=80, hline='N',
         fill='*', padding='', around=' ',
-        align='C',):
+        align='C'):
     """
     Add a box or a line around a given string.
     """
@@ -88,7 +89,7 @@ class AbstractPrinterConfig(object):
                  styled=True,
                  width=120,
                  baseIndent=0,
-                 displayLineNos=True,
+                 displayLineNos=False,
                  lineNoPadding=' ',
                  verbose=0,
                  quiet=True,
@@ -108,7 +109,8 @@ class AbstractPrinterConfigs(object):
 
 class AbstractPrinter(object, metaclass=ABCMeta):
     def __init__(self,
-                 config: Optional[AbstractPrinterConfig] = None) -> None:
+                 config: Optional[AbstractPrinterConfig] = None) \
+            -> None:
         if config is None:
             config = AbstractPrinterConfigs.default
         self.config = config
@@ -122,7 +124,8 @@ class AbstractPrinter(object, metaclass=ABCMeta):
         return self.output.count('\n')+1
 
     def kwd(self, text):
-        if text == '':  # necessary, otherwise style go to next string
+        if text == '':
+            # this is necessary, otherwise the style go to next string
             return ''
         else:
             return Styles.keyword.do(
@@ -131,7 +134,8 @@ class AbstractPrinter(object, metaclass=ABCMeta):
             )
 
     def cmt(self, text):
-        if text == '':  # necessary, otherwise style go to next string
+        if text == '':
+            # necessary, otherwise style go to next string
             return ''
         else:
             return Styles.comment.do(
@@ -140,7 +144,8 @@ class AbstractPrinter(object, metaclass=ABCMeta):
             )
 
     def ann(self, text):
-        if text == '':  # necessary, otherwise style go to next string
+        if text == '':
+            # necessary, otherwise style go to next string
             return ''
         else:
             return Styles.annotate.do(
@@ -156,6 +161,10 @@ class AbstractPrinter(object, metaclass=ABCMeta):
             s = style.do(s)
         self.output += '%s%s' % (self._indentPrefix(indent), s)
         return self.output
+
+    def endLine(self,
+                suffix='\n'):
+        self.out(suffix)
 
     def outLine(self,
                 s,
@@ -219,15 +228,17 @@ class AbstractPrinter(object, metaclass=ABCMeta):
         raise MethodToBeDefined() #raise:OK
 
     def display(self, removeLastEOL=False, addLastEOL=True):
-        text=self.do()
-        endsWithEOL=text.endswith('\n')
-        if removeLastEOL and endsWithEOL:
-            text=text[:-1]
-        if addLastEOL and not endsWithEOL:
-            text=text+'\n'
+        text = self.do()
+        ends_with_eol=text.endswith('\n')
+        if removeLastEOL and ends_with_eol:
+            text = text[:-1]
+        if addLastEOL and not ends_with_eol:
+            text = text+'\n'
         print(text, end='')
 
-    def save(self, output):
+    def save(self, output, ensureDirectory=True):
+        if ensureDirectory:
+            ensureDir(os.path.dirname(output))
         with codecs.open(output, "w", "utf-8") as f:
             f.write(self.output)
 
@@ -241,7 +252,7 @@ class StructuredPrinterConfig(AbstractPrinterConfig):
                  lineNoPadding=' ',
                  verbose=0,
                  quiet=False,
-                 #------------------------
+                 # ------------------------
                  title=None,
                  issuesMode='top'
                 ):
@@ -477,7 +488,7 @@ class ContentPrinter(StructuredPrinter, metaclass=ABCMeta):
         self.currentLineNoDisplay = False
         sep_line = Styles.comment.do(
                     # '---- Summary '+'-'*67,
-                    '-'*80,
+                    '--'*40,
                     styled=self.config.styled)
         if self.config.summaryMode == 'bottom' \
                 and self.config.contentMode != 'no':

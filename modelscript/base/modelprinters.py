@@ -30,7 +30,7 @@ class ModelPrinterConfig(ContentPrinterConfig):
                  styled=True,
                  width=120,
                  baseIndent=0,
-                 displayLineNos=True,
+                 displayLineNos=False,
                  lineNoPadding=' ',
                  verbose=0,
                  quiet=False,
@@ -59,13 +59,16 @@ class ModelPrinterConfig(ContentPrinterConfig):
 class ModelPrinter(ContentPrinter, metaclass=ABCMeta):
     def __init__(self,
                  theModel: 'Model',
-                 config: Optional[ModelPrinterConfig] = None) -> None:
+                 config: Optional[ModelPrinterConfig] = None) \
+            -> None:
         assert theModel is not None
+
         # don't move this line after as getIssueBox
         # is used in __init__
         self.theModel = theModel
+
         if config is None:
-            config=ModelPrinterConfig()
+            config = ModelPrinterConfig()
         # TODO:4 use abstractView parameter
         super(ModelPrinter, self).__init__(
             config=config,
@@ -74,11 +77,10 @@ class ModelPrinter(ContentPrinter, metaclass=ABCMeta):
     def getIssueBox(self):
         return self.theModel.issues
 
-
     def doContent(self):
 
-        if (self.config.contentMode=='source'
-            and self.theModel.source is not None):
+        if (self.config.contentMode == 'source'
+                and self.theModel.source is not None):
             self.doSourceContent()
         else:
             self.doModelContent()
@@ -109,13 +111,13 @@ class ModelPrinter(ContentPrinter, metaclass=ABCMeta):
         )
 
         if self.theModel.source is not None:
-            ib=self.theModel.source.importBox
-            p=ImportBoxPrinter(
+            ib = self.theModel.source.importBox
+            p = ImportBoxPrinter(
                 importBox=ib,
                 config=self.config
             )
             self.out(p.do())
-
+            self.outLine('')
         return self.output
 
     def doModelTextBlock(self, textBlock, indent=0):
@@ -123,7 +125,7 @@ class ModelPrinter(ContentPrinter, metaclass=ABCMeta):
         if textBlock is not None:
             assert isinstance(textBlock, TextBlock)
             s = TextBlockPrinter(textBlock, indent=indent).do()
-            self.outLine(s, indent)
+            self.out(s)
             return self.output
 
 
@@ -136,10 +138,10 @@ class ModelSourcePrinterConfig(ContentPrinterConfig):
                  lineNoPadding=' ',
                  verbose=0,
                  quiet=False,
-                 #------------------------
+                 # ------------------------
                  title=None,
                  issuesMode='top',
-                 #------------------------
+                 # ------------------------
                  contentMode='self', #self|source|model|no
                  summaryMode='top', # top | down | no
                 ):
