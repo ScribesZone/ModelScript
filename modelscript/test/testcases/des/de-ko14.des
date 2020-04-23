@@ -1,0 +1,13 @@
+    //@Issue cl.res.Superclass.NoClass 1
+    //@Issue else *
+
+demo model de_ko14
+
+class Person
+    father : one Person
+
+class Animal
+
+class Elephant is based on Animal
+
+class Worker is based on Person, Nothing

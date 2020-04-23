@@ -1,7 +1,34 @@
-    //@Metric "class" 4
-    //@Metric "references" 6
+    //@Issue txt.TermNotFound 1
+    //@Issue else *
+
+    //@Metric "class" 8
+    //@Metric "references" 8
+
+    //@Metric "text block" 3
+    //@Metric "text line" 5
+    //@Metric "text token" 19
+    //@Metric "text reference" 7
+    //@Metric "broken text reference" 1
+    //@Metric "text occurrences" 6
 
 demo model de_main01
+    | This model describes how a `Company` is organized
+    | around the concept of `Division`.
+
+import glossary model from 'gl01.gls'
+
+class Organization is based on Something
+
+class Company is based on Organization
+    | A `Company` is an organization with `Workers`.
+    | The `Company` can be small (up to 5 workers) or big.
+    workers: many Person
+        | `Workers` are people paid by the `Company`.
+    cars: many Car
+
+class Association is based on Organization
+
+class Something
 
 class Person
     parents : many Person
@@ -16,3 +43,4 @@ class Dog
     owner : one Person
 
 class Store
+
