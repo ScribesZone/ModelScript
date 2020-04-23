@@ -94,8 +94,16 @@ class DemoModel(Model):
         return ms
 
     def finalize(self):
+
+        def add_subclasses():
+            """Create the subclasses back link based on superclasses."""
+            for class_ in self.classes:
+                for superclass in class_.superclasses:
+                    superclass.subclasses.append(class_)
+
+
         super(DemoModel, self).finalize()
-        pass  # demo: TODO
+        add_subclasses()
 
 
 class Class(SourceModelElement):
@@ -103,7 +111,19 @@ class Class(SourceModelElement):
     """
 
     isAbstract: bool
+    """Is the class abstract ?"""
+
     references: List['Reference']
+    """List of references declared in the class."""
+
+    superclasses: List[Union[Placeholder, 'Class']]
+    """List of super class. During the "fillModel" phase this
+    will just be a list of Placeholder (the name of the classes).
+    After the "resolve" phase this will be a list of Class."""
+
+    subclasses: List['Class']
+    """The subclasses of the current class. This list is left empty
+    until the end of "finalize" phase. """
 
     META_COMPOSITIONS = [
         'references'
@@ -123,8 +143,17 @@ class Class(SourceModelElement):
             lineNo=lineNo, description=description)
 
         self.isAbstract = isAbstract
+
+        # References are added later during fillModel()
         self._referenceNamed = collections.OrderedDict()
 
+        # Superclasses are added later during resolve()
+        self.superclasses = []
+
+        # Subclasses are added later during finalize()
+        self.subclasses = []
+
+        # Register the class to the model
         self.model._classNamed[name] = self
 
     # -----------------------------------------------------------------
@@ -184,10 +213,11 @@ METAMODEL = Metamodel(
     uniqueness=True
 )
 
-# MetamodelDependency(
-#     sourceId='cl',
-#     targetId='gl',
-#     optional=True,
-#     multiple=True,
-# )
+# Indicates that a demo model can import a glossary model
+MetamodelDependency(
+    sourceId='de',
+    targetId='gl',
+    optional=True,
+    multiple=True,
+)
 
