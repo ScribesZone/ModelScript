@@ -558,7 +558,6 @@ class ClassModel(Model):
                             else:
                                 inh_att_named[name] = sc_att
                 class_._inheritedAttributeNamed = inh_att_named
-                print('WW'*10, 'class %s inherits' % class_.name)
                 for a in inh_att_named:
                     print('WW' * 10, '    %s' % a)
 
