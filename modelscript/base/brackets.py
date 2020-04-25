@@ -8,6 +8,37 @@ like { and } so that a parser can find these block markers.
 The preprocessor is aware of comments (//) and documentation
 lines (starting with |).
 
+Consider for instance the following text ::
+
+    class model Cl_association01
+
+    class Elephant
+    class Banana
+    class Tree
+
+    abstract association class Meal
+        | Take record of the bananas eaten by elephants.
+        roles
+            eater : Elephant[0..1]
+            bananas : Banana[*]
+
+The text above is bracketed as following. The character separator
+are prefixed with special character to avoid confusion with the text
+itself. ::
+
+    class model Cl_association01 ;
+
+    class Elephant ;
+    class Banana ;
+    class Tree ;
+
+    abstract association class Meal {
+        | Take record of the bananas eaten by elephants. | ;
+        roles {
+            eater : Elephant[0..1] ;
+            bananas : Banana[*] ; } ; } ;
+
+For more examples see for instance testcases/cls/.mdl/*.clsb
 """
 
 __all__ = (
