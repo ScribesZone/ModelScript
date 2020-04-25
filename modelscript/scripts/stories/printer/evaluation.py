@@ -82,11 +82,11 @@ class StoryEvaluationPrinter(AbstractPrinter):
             indent=indent,
             recursive=False)
         self.out(text, indent)
-        if len(stepEval.issues)>=1:
+        if len(stepEval.issues) >= 1:
             self.outLine(self.kwd('%s issues')
                          % len(stepEval.issues))
         for a in stepEval.accesses:
-            self.outLine(self.kwd(a), indent+1)
+            self.outLine(self.kwd(str(a)), indent+1)
 
         return self.output
 
