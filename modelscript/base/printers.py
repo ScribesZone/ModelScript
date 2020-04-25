@@ -86,7 +86,7 @@ def box(s,
 
 class AbstractPrinterConfig(object):
     def __init__(self,
-                 styled=True,
+                 styled=False,
                  width=120,
                  baseIndent=0,
                  displayLineNos=False,
@@ -227,25 +227,43 @@ class AbstractPrinter(object, metaclass=ABCMeta):
     def do(self):
         raise MethodToBeDefined() #raise:OK
 
-    def display(self, removeLastEOL=False, addLastEOL=True):
+    def doFull(self, removeLastEOL=False, addLastEOL=True):
         text = self.do()
-        ends_with_eol=text.endswith('\n')
+        ends_with_eol = text.endswith('\n')
         if removeLastEOL and ends_with_eol:
             text = text[:-1]
         if addLastEOL and not ends_with_eol:
             text = text+'\n'
+        return text
+
+    def display(self, removeLastEOL=False, addLastEOL=True):
+        text = self.doFull(
+            removeLastEOL=removeLastEOL,
+            addLastEOL=addLastEOL)
         print(text, end='')
 
-    def save(self, output, ensureDirectory=True):
+    def string(self, removeLastEOL=False, addLastEOL=True):
+        return self.doFull(
+            removeLastEOL=removeLastEOL,
+            addLastEOL=addLastEOL)
+
+    def save(self,
+             outputFile,
+             removeLastEOL=False,
+             addLastEOL=True,
+             ensureDirectory=True):
         if ensureDirectory:
-            ensureDir(os.path.dirname(output))
-        with codecs.open(output, "w", "utf-8") as f:
-            f.write(self.output)
+            ensureDir(os.path.dirname(outputFile))
+        text = self.doFull(
+            removeLastEOL=removeLastEOL,
+            addLastEOL=addLastEOL)
+        with codecs.open(outputFile, "w", "utf-8") as f:
+            f.write(text)
 
 
 class StructuredPrinterConfig(AbstractPrinterConfig):
     def __init__(self,
-                 styled=True,
+                 styled=False,
                  width=120,
                  baseIndent=0,
                  displayLineNos=True,
@@ -269,7 +287,7 @@ class StructuredPrinterConfig(AbstractPrinterConfig):
 
 
 class StructuredPrinterConfigs(object):
-    default=StructuredPrinterConfig()
+    default = StructuredPrinterConfig()
 
 
 class StructuredPrinter(AbstractPrinter, metaclass=ABCMeta):
