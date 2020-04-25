@@ -131,7 +131,7 @@ class ModelPrinter(ContentPrinter, metaclass=ABCMeta):
 
 class ModelSourcePrinterConfig(ContentPrinterConfig):
     def __init__(self,
-                 styled=True,
+                 styled=False,
                  width=120,
                  baseIndent=0,
                  displayLineNos=True,

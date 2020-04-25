@@ -15,6 +15,7 @@ from textx.export import (
     model_export)
 from textx.model import get_model
 from textx.metamodel import TextXMetaModel
+from textx.exceptions import TextXSyntaxError
 
 from modelscript.base.brackets import (
     BracketedScript)
@@ -144,6 +145,8 @@ class TokenBasedSyntaxError(SyntaxError):
         def cleaned_tokens(tokens):
             # eliminate duplicates
             ts = list(set(tokens))
+            # order the tokens to make it replicable
+            ts.sort()
             # replace key tokens
             for i, t in enumerate(ts):
                 if t in token_map:
@@ -163,6 +166,7 @@ class TokenBasedSyntaxError(SyntaxError):
 
     def __str__(self):
         return self.message
+
 
 class AST(object):
     """An abstract syntax tree representing a script.
@@ -207,19 +211,19 @@ class AST(object):
             astNode._tx_position_end)
 
     def line(self, astNode: TextXNode) -> int:
-        (l,c) = self.pos(astNode)
+        (l, c) = self.pos(astNode)
         return l
 
     def column(self, astNode: TextXNode) -> int:
-        (l,c) = self.pos(astNode)
+        (l, c) = self.pos(astNode)
         return c
 
     def lineEnd(self, astNode: TextXNode) -> int:
-        (l,c) = self.posEnd(astNode)
+        (l, c) = self.posEnd(astNode)
         return l
 
     def columnEnd(self, astNode: TextXNode) -> int:
-        (l,c) = self.posEnd(astNode)
+        (l, c) = self.posEnd(astNode)
         return l
 
     def visualize(self) -> None:
@@ -244,7 +248,11 @@ class AST(object):
         return AST.ast(astNode).lineEnd(astNode)
 
     @classmethod
-    def extractErrorFields(cls, e) -> SyntaxError:
+    def convertSyntaxError(cls, e: TextXSyntaxError) -> SyntaxError:
+        """Convert a TextX syntax error into a SyntaxError.
+        Do some pattern matching to extract the elements.
+        The list of tokens should be sorted to make the output
+        message predictable """
 
         RE = r'^Expected (?P<tokens>.*) ' \
              r'at position (.*):\(\d+, \d+\)'\
@@ -268,8 +276,7 @@ class AST(object):
 
 
 class ModelSourceAST(AST):
-    """
-    An AST but with "modelSourceFile" as an extra attribute.
+    """An AST but with "modelSourceFile" as an extra attribute.
     This attribute contains a model source file instead of
     just a plain filename.
     """
@@ -283,8 +290,7 @@ class ModelSourceAST(AST):
 
 
 class ASTNodeSourceIssue(LocalizedSourceIssue):
-    """
-    An issue based on a ASTNode.
+    """An issue based on a ASTNode.
     """
     def __init__(self,
                  astNode: TextXNode,

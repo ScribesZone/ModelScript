@@ -78,7 +78,7 @@ class DemoModelPrinter(ModelPrinter):
         ] if _f))
         if class_.subclasses:
             self.outLine(
-                self.kwd('helps to define ')
+                self.kwd('// subclasses: ')
                 + ', '.join(
                     sub.name for sub in class_.subclasses),
                 indent=1)

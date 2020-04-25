@@ -182,7 +182,7 @@ class ASTBasedModelSourceFile(SourceFile, metaclass=ABCMeta):
             self.ast = ModelSourceAST(self.grammar, self, self.fileName)
         except TextXSyntaxError as e:
             from modelscript.base.grammars import AST
-            err = AST.extractErrorFields(e)
+            err = AST.convertSyntaxError(e)
             LocalizedSourceIssue(
                 code='src.syn',
                 sourceFile=self,
@@ -322,8 +322,7 @@ class _ModelSourceMapping(object):
                unique: bool = True) \
             -> Union[Optional[SourceModelElement],
                      List[SourceModelElement]]:
-        """
-        Return the source model element(s) at line S.
+        """Returns the source model element(s) at line S.
         Because most of the time 1 element at most is
         expected the parameter unique return only one
         element or None with an exception otherwise.
