@@ -57,7 +57,7 @@ def getTestFiles(
         -> List[str]:
 
     def accept(filename):
-        (core, ext)=os.path.splitext(filename)
+        (core, ext) = os.path.splitext(filename)
         if pattern != '':
             m = re.search(pattern, core)
             if not m:
@@ -67,11 +67,11 @@ def getTestFiles(
         elif isinstance(extension, list):
             return ext in extension
         else:
-            raise NotImplementedError( #raise:OK
+            raise NotImplementedError(  # raise:OK
                 'TST: unexpected extension type: %s'
                 % type(extension))
 
-    absolute_test_dir=os.path.join(
+    absolute_test_dir = os.path.join(
         TEST_CASES_DIRECTORY,
         relativeDirectory)
     if not os.path.isdir(absolute_test_dir):
@@ -79,7 +79,7 @@ def getTestFiles(
             'TST: Not a test directory : %s'
             % relativeDirectory)
 
-    rel_files=[
+    rel_files = [
         (os.path.join(
             relativeDirectory if relative else absolute_test_dir,
             simplename))
