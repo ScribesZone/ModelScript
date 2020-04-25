@@ -1,5 +1,4 @@
 # coding=utf-8
-
 """Assertions checking testcases against expected issues and metrics.
 
 Issuebox can be tested with a set of pairs like
@@ -79,6 +78,7 @@ __all__=(
     "simpleTestDeneratorAssertions"
 )
 
+from typing_extensions import Literal
 from typing import Text, Dict, Optional
 import os
 import re
@@ -91,6 +91,7 @@ from modelscript.base.issues import (
 
 from modelscript.test.framework import getTestFile, patternFromArgV, \
     getTestFiles
+from modelscript.test.framework.output import ManageAndCompareOutput
 from modelscript.megamodels import Megamodel
 
 
@@ -422,7 +423,7 @@ def checkIssuesMetricsAndOutput(
         reltestfile: str,
         metamodel: Metamodel,
         expectedIssues: ExpectedIssueDict = None,
-        expectedMetrics: ExpectedMetricDict =None)\
+        expectedMetrics: ExpectedMetricDict = None)\
         -> None:
     """
     Check issues/metrics assertion for a given file.
@@ -431,35 +432,33 @@ def checkIssuesMetricsAndOutput(
 
     Args:
         reltestfile: The relative location of the file to test.
+            Something like "des/de-ko01.des"
         metamodel: The metamodel of the file.
         expectedIssues: The map of expected issues.
         expectedMetrics: The map of expected metric.
     """
 
-    def manage_output():
-        output_generated_file = \
-            os.path.join(
-                os.path.dirname(reltestfile),
-                'output-verified',
-                os.path.basename(reltestfile))
-        print('YY'*20, output_generated_file)
-        #
-        # metamodel.modelPrinterClass(source.model)\
-            .save(output_generated_file)
-
     file_info = ' %s %s ' % (
         metamodel.label,
         os.path.basename(reltestfile)
     )
+    print(reltestfile)
     print('\nTST:'+'=='*10+' testing '+file_info+'='*35+'\n' )
     # Create a model source file from the given file.
     # This do parsing and eventually creates the model
     source = metamodel.sourceClass(getTestFile(reltestfile))
 
-    manage_output()
+    # Get access tp the model
+    model = source.model
 
     print('\n'+'TST:'+'==' *10 + ' printing model '+'='*40+'\n')
-    metamodel.modelPrinterClass(source.model).display()
+    printer = metamodel.modelPrinterClass
+    printer(source.model).display()
+
+    actual_ouput = printer(source.model).string()
+    ManageAndCompareOutput(
+        reltestfile=reltestfile,
+        actualOutput=actual_ouput)
 
 
     if expectedIssues is None:
