@@ -86,9 +86,9 @@ class AttributeType(object):
                  simpleType,
                  isOptional=False,
                  isMultiple=False):
-        self.simpleType=simpleType
-        self.isOptional=isOptional
-        self.isMultiple=isMultiple
+        self.simpleType = simpleType
+        self.isOptional = isOptional
+        self.isMultiple = isMultiple
 
     def accept(self, simpleValue):
         null_type=self.simpleType.model.dataType('NullType')
