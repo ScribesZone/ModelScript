@@ -27,7 +27,7 @@ from modelscript.scripts.textblocks.printer import (
 
 class ModelPrinterConfig(ContentPrinterConfig):
     def __init__(self,
-                 styled=True,
+                 styled=False,
                  width=120,
                  baseIndent=0,
                  displayLineNos=False,
