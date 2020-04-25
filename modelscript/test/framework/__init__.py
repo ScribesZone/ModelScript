@@ -1,3 +1,9 @@
+# coding=utf-8
+"""Testing framework.
+Helper functions giving access to files in the testcases/ directory.
+The elements of the framework are available in submodules.
+"""
+
 from typing import Union, List
 import glob
 import os
@@ -19,7 +25,7 @@ GENERATED_OUTPUT_DIRECTORY = os.path.join(
     'out-verified')
 
 
-def _getDir(absolutePath, relDir, ensure=True):
+def _getDir(absolutePath: str, relDir: str, ensure=True) -> str:
     dir = os.path.join(absolutePath, relDir)
     if not os.path.exists(dir):
         if ensure:
@@ -30,14 +36,14 @@ def _getDir(absolutePath, relDir, ensure=True):
     return dir
 
 
-def getTestDir(relDir, ensure=True):
+def getTestDir(relDir: str, ensure: bool=True) -> str:
     """Get an absolute directory from a relative one.
     The directory can be created as necessary with the parameter ensure.
     """
     return _getDir(TEST_CASES_DIRECTORY, relDir, ensure)
 
 
-def getTestFile(relativeFileName, checkExist=True):
+def getTestFile(relativeFileName: str, checkExist: bool = True) -> str:
     f = os.path.join(
         TEST_CASES_DIRECTORY,
         relativeFileName
@@ -55,6 +61,7 @@ def getTestFiles(
         extension: Union[str, List[str]] = '',
         pattern='') \
         -> List[str]:
+    """Return a list of files with some criteria."""
 
     def accept(filename):
         (core, ext) = os.path.splitext(filename)
@@ -87,9 +94,6 @@ def getTestFiles(
         if accept(simplename) ]
     return rel_files
 
-#
-# def getOutputGeneratedFile(testname):
-#     return
 
 def patternFromArgV():
     prefix = '-e='

@@ -1,21 +1,14 @@
 # coding=utf-8
-"""Assertions checking testcases against expected issues and metrics.
+"""Assertions checking testcases against issues, metrics and content.
+This module allows to compare the result of a test <ith
+* issues expected,
+* metrics expected,
+* output expected.
 
-Issuebox can be tested with a set of pairs like
-* (1) cl.syn.Association.AttRole 3
-* (2) else *
-* (3) level *
-
-The first line checks that there a 3 issues for the given issue code.
-The second line means that there can be any other issues.
-The third line means that any issues of any levels can exist.
-
-NOTE: the usage of "level" is not clear. This documentation should be
-improved.
-
-If not specified the "else" value is 0 meaning that no others issues
-could exist. Otherwise the "else" value must be "*" meaning that some
-other issues may exist.
+The expected issues and metrics can be specified as special comments
+in the source file. Expected output can be specified as a file in
+a "output-generated" and "output-verified" directories. See the
+modules issues, metrics, and output for more detail.
 
 The specification of expected issues/metrics can be either :
 
@@ -71,6 +64,8 @@ Tests can be written as following ::
                 expected_issue_map,
                 expected_metrics_map)
 
+                Issuebox can be tested with a set of pairs like
+
 """
 
 __all__=(
@@ -78,280 +73,36 @@ __all__=(
     "simpleTestDeneratorAssertions"
 )
 
-from typing_extensions import Literal
-from typing import Text, Dict, Optional
+from typing import Dict, Optional
 import os
 import re
 
 from modelscript.base.issues import (
-    IssueBox,
     Level,
-    Levels,
-)
+    Levels)
 
-from modelscript.test.framework import getTestFile, patternFromArgV, \
-    getTestFiles
-from modelscript.test.framework.output import ManageAndCompareOutput
-from modelscript.megamodels import Megamodel
-
-
-F=Levels.Fatal
-E=Levels.Error
-W=Levels.Warning
-I=Levels.Info
-H=Levels.Hint
-
-ExpectedIssueDict=Optional[Dict[Level, int]]
-ExpectedMetricDict=Optional[Dict[Level, int]]
-
+from modelscript.test.framework import (
+    getTestFile,
+    patternFromArgV,
+    getTestFiles)
+from modelscript.test.framework.issues import (
+    assertIssueBox,
+    extractExpectedIssuesMapFromFile)
+from modelscript.test.framework.metrics import (
+    assertMetrics,
+    extractExpectedMetricsMapFromFile)
+from modelscript.test.framework.output import manageAndAssertOutput
 from modelscript.megamodels.metamodels import Metamodel
+from modelscript.base.modelprinters import ModelPrinterConfig
 
-def assertIssueBox(
-        issueBox,
-        expectedSummaryMap=None):
-    #type: (IssueBox, ExpectedIssueDict) -> None
-    """Assert that an issuebox match an expected map.
-    A map is as following::
-        {F: 0, E:1, 'mgm.sem.Import.Allowed':1 'else': 0},
-        {F: 0, E:1, 'mgm.sem.Import.Allowed':2 'else': '*'},
-    :param issueBox:
-    :param expectedSummaryMap:
-    """
-
-    def printError(nbFound, label, nbExpected):
-        print(
-            'TST: ' + '####' + \
-            ' ISSUE ASSERTION FAILED #### %i %s found. %i expected ' % (
-                nbFound,
-                label,
-                nbExpected))
-
-    def printActualSummaries():
-        if issueBox.hasIssues:
-            print('TST: ACTUAL ISSUE SUMMARY:')
-            for code in issueBox.summaryCodeMap:
-                print('    //@Issue %s %i' % (
-                    code, issueBox.summaryCodeMap[code]))
-            print('    //@Issue else *')
-            print('')
-            for level in issueBox.summaryLevelMap:
-                print('    //@Issue %s %i' % (
-                    level.code, issueBox.summaryLevelMap[level]))
-
-    # if not specified the "else" value is 0
-    # otherwise it must be "*"
-    if 'else' in expectedSummaryMap:
-        else_value=expectedSummaryMap['else']
-        if else_value!='*':
-            raise ValueError( #raise:OK
-                'TST: In issue specification "else" parameter must be "*".'
-                '%s found. Mapping is %s' %
-                (else_value, expectedSummaryMap))
-        del expectedSummaryMap['else']
-    else:
-        else_value=0
-
-    if 'level' in expectedSummaryMap:
-        lval=expectedSummaryMap['level']
-        if lval!='*':
-            raise ValueError(  #raise:OK
-                'In metrics specification "level" parameter must be "*".'
-                '%s found. Mapping is %s' %
-                (lval, expectedSummaryMap))
-        del expectedSummaryMap['level']
-        ignore_unspecified_level=True
-    else:
-        ignore_unspecified_level=False
-
-
-    levels_checked=[]
-
-
-    unexpected=False
-    if expectedSummaryMap is not None:
-        actualLevelMap=issueBox.summaryLevelMap
-        actualCodeMap=issueBox.summaryCodeMap
-        for key in expectedSummaryMap:
-
-            # check that what is expected is realized
-            if isinstance(key, Level):
-                levels_checked.append(key)
-                # Check Level assertions
-                if actualLevelMap[key] != expectedSummaryMap[key]:
-                    printError(
-                        actualLevelMap[key],
-                        key.label,
-                        expectedSummaryMap[key])
-                    unexpected = True
-            else:
-
-                # Check code assertions
-                if key not in actualCodeMap:
-                    # expected code, no code at all
-                    printError(
-                        0,
-                        key,
-                        expectedSummaryMap[key])
-                    unexpected = True
-                else:
-                    # expected code, check counts
-                    if actualCodeMap[key] != expectedSummaryMap[key]:
-                        printError(
-                            actualCodeMap[key],
-                            key,
-                            expectedSummaryMap[key])
-                        unexpected = True
-
-
-        if else_value==0:
-            # Check that what was not specified is 0
-            if not ignore_unspecified_level:
-                for level in Levels.Levels:
-                    if level not in levels_checked:
-                        if level in actualLevelMap:
-                            if actualLevelMap[level] != 0:
-                                printError(
-                                    actualLevelMap[level],
-                                    level.label,
-                                    0)
-                                unexpected = True
-            # Produce an error for all actual code not expected
-            for code in actualCodeMap:
-                if code not in expectedSummaryMap:
-                    printError(
-                        actualCodeMap[code],
-                        code,
-                        0)
-                    unexpected = True
-
-
-        if unexpected:
-            printActualSummaries()
-
-        assert not unexpected, \
-            'Unexpected number of issues. See above message for details'
-
-
-def assertMetrics(
-        metrics,
-        expectedMetricsMap=None):
-    """Assert that an set of metrics match an expected map.
-    :param metrics: modelscript.base.metrics.Metrics
-    :param expectedMetricsMap:
-    :return:
-    """
-
-
-    def printError(nbFound, label, nbExpected):
-        print(
-            'TST: ' + '####' + \
-            ' TEST FAILED #### %i %s found. %i expected ' % (
-                nbFound,
-                label,
-                nbExpected))
-
-    def printActualSummary():
-        print('TST: ACTUAL METRICS:')
-        for metric in metrics.all:
-            print('    //@Metric "%s" %i' %(
-                metric.label,
-                metric.n
-            ))
-
-
-    unexpected=False
-    if expectedMetricsMap is not None:
-        for label in expectedMetricsMap:
-            found=metrics.metricNamed[label].n
-            expected=expectedMetricsMap[label]
-            if found!=expected:
-                printError(found, label, expected)
-                unexpected=True
-
-    printActualSummary()
-
-    assert not unexpected, \
-        'Unexpected metrics. Check message above for moore details'
-
-RE_ISSUE_HEADER=r'^ *// *@ *Issue'
-RE_ISSUE_LABEL=r'(?P<label>[\w.]+)'
-RE_ISSUE_COUNT=r'(?P<count>([\d]+|\*))'
-RE_ISSUE_SPEC='%s +%s +%s' % (
-    RE_ISSUE_HEADER, RE_ISSUE_LABEL, RE_ISSUE_COUNT)
-
-RE_METRIC_HEADER=r'^ *// *@ *Metric'
-RE_METRIC_LABEL=r'"(?P<label>[^"]+)"'
-RE_METRIC_COUNT=r'(?P<count>([\d]+|\*))'
-RE_METRIC_SPEC='%s +%s +%s' % (
-    RE_METRIC_HEADER, RE_METRIC_LABEL, RE_METRIC_COUNT)
-
-
-def _extractExpectedIssuesMapFromFile(fileName):
-    """Parse a source file and extract the issue specification.
-    """
-
-    def error(lineNo, message):
-        text='%s:%i. Error: %s' % (fileName, lineNo, message)
-        print('TST: '+text)
-        raise SyntaxError( #raise:OK
-            text)
-
-    expectedIssuesMap={}
-    with open(fileName) as f:
-        lines = f.readlines()
-    lines = [x.strip() for x in lines]
-    for line_index, line in enumerate(lines):
-        m=re.match(RE_ISSUE_HEADER, line)
-        if m:
-            m=re.match(RE_ISSUE_SPEC, line)
-            if m:
-                label=m.group('label')
-                if m.group('count')!='*':
-                    count=int(m.group('count'))
-                else:
-                    count='*'
-                if label in expectedIssuesMap:
-                    error(line_index+1, '%s defined again.'%label)
-                else:
-                    issueLevel=Levels.fromCode(label)
-                    if issueLevel is not None:
-                        expectedIssuesMap[issueLevel]=count
-                    else:
-                        expectedIssuesMap[label]=count
-            else:
-                error(line_index+1,'Pattern do not match')
-    return expectedIssuesMap
-
-def _extractExpectedMetricsMapFromFile(fileName):
-
-    def error(lineNo, message):
-        print('TST: %s:%i. Error: %s' % (fileName, lineNo, message))
-
-    expectedMetricsMap={}
-    with open(fileName) as f:
-        lines = f.readlines()
-    lines = [x.strip() for x in lines]
-    for line_no, line in enumerate(lines):
-        m=re.match(RE_METRIC_HEADER, line)
-        if m:
-            m=re.match(RE_METRIC_SPEC, line)
-            if m:
-                label=m.group('label')
-                count=int(m.group('count'))
-                if label in expectedMetricsMap:
-                    error(line_no, '%s defined again.'%label)
-                else:
-                    expectedMetricsMap[label]=count
-    return expectedMetricsMap
 
 def checkAllAssertionsForDirectory(
-        relTestcaseDir,
+        relTestcaseDir: str,
         extension,
-        pattern='',
+        pattern: str = '',
         expectedIssuesFileMap={},
         expectedMetricsFileMap={}):
-    """
-    Check assertions for all files in a given directory.
+    """Check assertions for all files in a given directory.
     If the expected map are given, search first in this
     map for assertion otherwise the assertion will be extracted
     from each file.
@@ -365,58 +116,36 @@ def checkAllAssertionsForDirectory(
     """
     # For some reason this function is called twice
     # Does not matter too much.
-    test_files=getTestFiles(
+    test_files = getTestFiles(
         relTestcaseDir,
         relative=True,
         extension=extension,
         pattern=pattern,
         )
 
-    l=[]
+    l = []
     for test_file in test_files:
         basename = os.path.basename(test_file)
         if basename in expectedIssuesFileMap:
             # first look in the map provided as code
-            issuemap=expectedIssuesFileMap[basename]
-        else:
-            full_filename=getTestFile(test_file)
-            # extract issues map from file, could be None
-            issuemap=_extractExpectedIssuesMapFromFile(full_filename)
-        if basename in expectedMetricsFileMap:
-            # first look in the map provided as code
-            metricsmap = expectedMetricsFileMap[basename]
+            issue_map = expectedIssuesFileMap[basename]
         else:
             full_filename = getTestFile(test_file)
             # extract issues map from file, could be None
-            metricsmap = _extractExpectedMetricsMapFromFile(full_filename)
-        l.append((test_file, issuemap, metricsmap))
+            issue_map = extractExpectedIssuesMapFromFile(full_filename)
+        if basename in expectedMetricsFileMap:
+            # first look in the map provided as code
+            metrics_map = expectedMetricsFileMap[basename]
+        else:
+            full_filename = getTestFile(test_file)
+            # extract issues map from file, could be None
+            metrics_map = extractExpectedMetricsMapFromFile(full_filename)
+        l.append((test_file, issue_map, metrics_map))
     return l
-#
-# def checkAllAssertionsForDirectory(relTestcaseDir, extension, expectedIssuesMap):
-#     """
-#     :param relTestcaseDir: directory relative to testcases
-#     :param extension: the extension of the files to check
-#     :param expectedIssuesMap: see examples in test files
-#     :return: a pair (file,issue map) for all file in directory
-#     """
-#     # For some reason this function is called twice
-#     # Does not matter too much.
-#     test_files=getTestFiles(
-#         relTestcaseDir,
-#         relative=True,
-#         extension=extension)
-#
-#     l=[]
-#     for test_file in test_files:
-#         basename = os.path.basename(test_file)
-#         expected_issues=(
-#             None if basename not in expectedIssuesMap
-#             else expectedIssuesMap[basename])
-#         l.append((test_file, expected_issues))
-#     return l
 
-# def exractExpectedIssueMapFromFile(fileName):
 
+ExpectedIssueDict = Optional[Dict[Level, int]]
+ExpectedMetricDict = Optional[Dict[Level, int]]
 
 
 def checkIssuesMetricsAndOutput(
@@ -425,8 +154,7 @@ def checkIssuesMetricsAndOutput(
         expectedIssues: ExpectedIssueDict = None,
         expectedMetrics: ExpectedMetricDict = None)\
         -> None:
-    """
-    Check issues/metrics assertion for a given file.
+    """Check issues/metrics/content assertions for a given test file.
     This function is called by the simpleTestDeneratorAssertions
     generator.
 
@@ -442,8 +170,7 @@ def checkIssuesMetricsAndOutput(
         metamodel.label,
         os.path.basename(reltestfile)
     )
-    print(reltestfile)
-    print('\nTST:'+'=='*10+' testing '+file_info+'='*35+'\n' )
+    print('\nTST:'+'=='*10 + ' testing '+file_info+'='*35+'\n' )
     # Create a model source file from the given file.
     # This do parsing and eventually creates the model
     source = metamodel.sourceClass(getTestFile(reltestfile))
@@ -451,14 +178,15 @@ def checkIssuesMetricsAndOutput(
     # Get access tp the model
     model = source.model
 
-    print('\n'+'TST:'+'==' *10 + ' printing model '+'='*40+'\n')
+    print('\n'+'TST:'+'=='*10 + ' printing model '+'='*40+'\n')
     printer = metamodel.modelPrinterClass
-    printer(source.model).display()
+    styled_config = ModelPrinterConfig(styled=True)
+    printer(source.model, config=styled_config).display()
 
-    actual_ouput = printer(source.model).string()
-    ManageAndCompareOutput(
+    actual_output = printer(source.model).string()
+    manageAndAssertOutput(
         reltestfile=reltestfile,
-        actualOutput=actual_ouput)
+        actualOutput=actual_output)
 
 
     if expectedIssues is None:
@@ -475,16 +203,8 @@ def checkIssuesMetricsAndOutput(
     print('TST:'+'=='*10+' tested '+file_info+'='*35+'\n' )
 
 
-
-# def scriptsIterator(m2id, expectedIssues):
-#     metamodel=Megamodel.theMetamodel(id=m2id)
-#     res = checkAllAssertionsForDirectory(
-#         metamodel.extension[1:],
-#         [metamodel.extension],
-#         expectedIssues)
-
 def simpleTestDeneratorAssertions(metamodel):
-    """Check issues/metrics assertions for all testcases corresponding
+    """Check issues/metrics/output assertions for all testcases corresponding
     to a given metamodel.
     To be more precise this method returns a generator used for tests.
     The test generator can be used as following :

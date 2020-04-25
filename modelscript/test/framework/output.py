@@ -1,5 +1,6 @@
 # coding=utf-8
-"""Comparator of the actual output with the reference one."""
+"""Comparator of the actual output with the reference one.
+The functions in this file is used by the assertions module."""
 
 from typing import Optional, List
 from typing_extensions import Literal
@@ -9,10 +10,46 @@ import codecs
 from modelscript.test.framework import getTestFile
 from modelscript.base.files import ensureDir
 
-DEBUG = 2
+__all__ = (
+    'manageAndAssertOutput'
+)
+DEBUG = 0
 
-def ManageAndCompareOutput(reltestfile, actualOutput):
-    # reltestfile looks like "des/de-ko01.des"
+def manageAndAssertOutput(
+        reltestfile: str,
+        actualOutput: str) -> None:
+    """Compare the given output to existing output and raise an
+    assertion error if the output has changed.
+
+    The following directories are involved :
+
+    *   output-actual/ This content of this directory is update
+        at each execution. It contains the last output, the
+        one given as parameter. Having this output available is
+        useful for file comparaison using an diff tool for instance.
+
+    *   output-generated/ The content of this directory is updated
+        only if the file is not existing. This directory serves
+        at a generated reference, if the verified output is not
+        available. Using the generated output is useful to check
+        if the actual output has changed since the last update of
+        the generated output.
+
+    *   output-verified/ By contrast to the other directories the
+        content of this directory is updated by hand. If a file
+        is present in this directory in takes precedence over
+        the generated one. In other words the comparison is made
+        with the verified output, if any, or with the generated
+        output.
+
+    Args:
+        reltestfile: The name of the file being tested. This name
+            is relative to the testcases directory.
+            It could be something like "des/de-ko01.des".
+        actualOutput: The output to be compared.
+
+    """
+    # reltestfile looks like
 
     DIR_KIND = Literal['generated', 'verified', 'actual']
 
