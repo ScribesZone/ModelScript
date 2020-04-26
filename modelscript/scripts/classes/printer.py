@@ -36,6 +36,7 @@ __all__ = [
     'ClassModelPrinter',
 ]
 
+
 class ClassModelPrinter(ModelPrinter):
     def __init__(self,
                  theModel: ClassModel,
@@ -99,7 +100,6 @@ class ClassModelPrinter(ModelPrinter):
         self.outLine('')
 
     def doDataType(self, datatype):
-
         self.outLine('%s %s' % (
             self.kwd('datatype'),
             self.qualified(datatype)))
@@ -134,11 +134,67 @@ class ClassModelPrinter(ModelPrinter):
             self.qualified(class_),
             sc] if _f]))
 
-        # self.doModelTextBlock(class_.description)
+        if class_.subclasses:
+            subs = ', '.join(sub.name for sub in class_.subclasses)
+            self.outLine(
+                self.cmt('// subclasses: "%s"' % subs),
+                indent=1)
+
+        if class_.inheritedAttributes:
+            atts = ', '.join(att.name
+                              for att in class_.inheritedAttributes)
+            self.outLine(
+                self.cmt('// inheritedAttributes: "%s"' % atts),
+                indent=1)
+
         if class_.attributes:
-            self.outLine(self.kwd('attributes'), indent=1)
-            for attribute in class_.attributes:
-                self.doAttribute(attribute)
+            atts = ', '.join(att.name
+                              for att in class_.attributes)
+            self.outLine(
+                self.cmt('// attributes: "%s"' % atts),
+                indent=1)
+
+        if class_.ownedOppositeRoles:
+            roles = ', '.join(role.name
+                              for role in class_.ownedOppositeRoles)
+            self.outLine(
+                self.cmt('// oppositeRoles: "%s"' % roles),
+                indent=1)
+
+        if class_.inheritedOppositeRoles:
+            roles = ', '.join(role.name
+                              for role in class_.inheritedOppositeRoles)
+            self.outLine(
+                self.cmt('// inheritedOppositeRoles: "%s"' % roles),
+                indent=1)
+
+        if class_.oppositeRoles:
+            roles = ', '.join(role.name
+                              for role in class_.oppositeRoles)
+            self.outLine(
+                self.cmt('// oppositeRoles: "%s"' % roles),
+                indent=1)
+
+        if class_.ownedPlayedRoles:
+            roles = ', '.join(role.name
+                              for role in class_.ownedPlayedRoles)
+            self.outLine(
+                self.cmt('// ownedPlayedRoles: "%s"' % roles),
+                indent=1)
+
+        if class_.inheritedPlayedRoles:
+            roles = ', '.join(role.name
+                              for role in class_.inheritedPlayedRoles)
+            self.outLine(
+                self.cmt('// inheritedPlayedRoles: "%s"' % roles),
+                indent=1)
+
+        if class_.playedRoles:
+            roles = ', '.join(role.name
+                              for role in class_.playedRoles)
+            self.outLine(
+                self.cmt('// inheritedPlayedRoles: "%s"' % roles),
+                indent=1)
 
         # if class_.operations:
         #     self.outLine(self.kwd('operations'), indent=1)
@@ -196,17 +252,18 @@ class ClassModelPrinter(ModelPrinter):
 
     def doAttribute(self, attribute):
         visibility=self.kwd({
-            'public':'+',
-            'private':'-',
-            'protected':'%',
-            'package':'~'
+            None: '',
+            'public': '+',
+            'private': '-',
+            'protected': '%',
+            'package': '~'
         }[attribute.visibility])
         derived = self.kwd('/') if attribute.isDerived else None
         id = self.kwd('{id}') if attribute.isId else None
 
-        read_only=\
+        read_only = \
             self.kwd('{readOnly}') if attribute.isReadOnly else None
-        optional=self.kwd('[0..1]') if attribute.isOptional \
+        optional = self.kwd('[0..1]') if attribute.isOptional \
                 else None
         #TODO:- extract this to a method (see role)
         stereotypes = '<<%s>>' % ','.join(attribute.stereotypes) \
