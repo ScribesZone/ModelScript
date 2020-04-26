@@ -4,7 +4,7 @@ This module defines:
 * Class,
 * PlainClass,
 * Attribute,
-* Operation. """
+"""
 
 from typing_extensions import Literal
 from typing import List, Optional, Dict, Union, Any
@@ -28,8 +28,7 @@ Later = Optional
 __all__ = (
     'Class',
     'PlainClass',
-    'Attribute',
-    'Operation')
+    'Attribute')
 
 
 class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
@@ -45,20 +44,13 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
     superclasses: List[Union[Placeholder, 'Class']]  # later: List['Class']
     """Names of superclasses later resolved as classes."""
 
+    subclassed: List['Class']
+    """Subclasses"""
+
     _ownedAttributeNamed: Dict[str, 'Attribute']
     """ Attributes directly declared by the class.
     No inherited attributes. Attributed indexed by name.
     """
-
-    operationNamed: Dict[str, Any]         # checktypes  # opdel
-    # TODO:3 deal with operation and operation names
-    # Signature looks like op(p1:X):Z
-
-    invariantNamed: Dict[str, Any]     # checktypes     # invdel
-    # Anonymous invariants are indexed with id like _inv2
-    # but their name (in Invariant) is always ''
-    # This id is just used internally
-    # after resolution.
 
     _ownedOppositeRoleNamed: Dict[str, Role]
     # defined by finalize.add_attached_roles_to_classes
@@ -111,11 +103,12 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
         self.isAbstract = isAbstract
         self.superclasses = superclasses
 
+        self.subclasses = []
+        # Subclasses are [] during fillModel then set during resolve()
+
         self._ownedAttributeNamed = collections.OrderedDict()
         # Will be filled by the parser fillModel"""
 
-        self.operationNamed = collections.OrderedDict()
-        self.invariantNamed = collections.OrderedDict()
         self._ownedOppositeRoleNamed = collections.OrderedDict()
         self._ownedPlayedRoles = []
 
@@ -407,7 +400,8 @@ class Attribute(SourceModelElement, Member):
     class_: 'Class'
     type: Union[str, 'AttributeType']
     _isDerived: bool
-    visibility: Literal['public', 'private', 'protected', 'package']
+    visibility: Optional[
+        Literal['public', 'private', 'protected', 'package']]
     isOptional: bool
     isInit: bool
     expression: Optional[str]
@@ -417,7 +411,7 @@ class Attribute(SourceModelElement, Member):
     def __init__(self, name, class_,
                  type=None,
                  description=None,
-                 visibility='public',
+                 visibility=None,
                  isDerived=False,
                  isOptional=False,
                  tags=(),
@@ -461,51 +455,3 @@ class Attribute(SourceModelElement, Member):
     @property
     def isClass(self):
         return 'isClass' in self.tags
-
-
-class Operation(SourceModelElement, Member):   # delop
-    """ Operations.
-    """
-    META_COMPOSITIONS = [
-        'conditions',
-    ]
-
-    def __init__(self, name,  class_, signature, code=None,
-                 expression=None, astNode=None,
-                 lineNo=None, description=None):
-        SourceModelElement.__init__(
-            self,
-            model=class_.model,
-            name=name,
-            astNode=astNode,
-            lineNo=lineNo, description=description)
-        self.class_ = class_
-        self.signature = signature
-        self.class_.operationWithSignature[signature] = self
-        self.full_signature = '%s::%s' % (class_.name, self.signature)
-        self.class_.model.operationWithFullSignature[self.full_signature] = self
-        # self.parameters = parameters
-        # self.return_type = return_type
-        self.expression = expression
-        # Anonymous pre/post are indexed with id like _pre2/_post6
-        # but their name (in PreCondition/PostCondition) is always ''
-        # This id is just used internaly
-        self.conditionNamed = collections.OrderedDict() #type: Dict[Text, 'Condition']
-
-    @property
-    def label(self):
-        return '%s.%s' % (self.class_.label, self.name)
-
-    @MComposition('Condition[*]')
-    def conditions(self):
-        # TODO:4 2to3 add list
-        return list(self.conditionNamed.values())
-
-    def conditionNames(self):
-        # TODO:4 2to3 add list
-        return list(self.conditionNamed.keys())
-
-
-    @MAttribute('Boolean')
-    def hasImplementation(self):
-        return self.expression is not None
