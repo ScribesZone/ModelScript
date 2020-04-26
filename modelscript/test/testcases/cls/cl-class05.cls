@@ -8,14 +8,14 @@
 
 class model Cl_class01
 
-class A extends A
+class A < A
 
-class B extends C
+class B < C
 
-class C extends B
+class C < B
 
-class D extends C
+class D < C
 
-class F extends D
+class F < D
 
-class G extends A, B, C
+class G < A, B, C
