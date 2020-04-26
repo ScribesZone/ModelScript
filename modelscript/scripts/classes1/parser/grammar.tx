@@ -1,6 +1,0 @@
-Class1Model:
-    megamodelPart = MegamodelPart
-    declarations *= Declaration
-;
-
-// TODO:1 add syntax for classes1 script
