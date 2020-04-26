@@ -59,7 +59,6 @@ ISSUES = {
     'NO_AGGREG': 'cl.syn.Association.NotAggreg',
     'NO_ABSTRACT': 'cl.syn.Association.NoAbstract',
     'NO_ATT': 'cl.syn.Association.NoAttribute',
-    'NO_OP': 'cl.syn.Association.NoOperation',
     'NO_SUPER': 'cl.syn.Association.NoSuper',
     'NO_ATT_ROLE': 'cl.syn.Association.AttRole',
 
@@ -101,18 +100,16 @@ class ClassModelSource(ASTBasedModelSourceFile):
     def fillModel(self):
 
         def define_package(ast_package):
-            full_name='.'.join(ast_package.names)
-            p=self.classModel.package(full_name)
+            full_name = '.'.join(ast_package.names)
+            p = self.classModel.package(full_name)
             if p is not None:
                 # package already exists : reuse it
-                print('AA'*10,'reuse')
-                self.__current_package=p
+                self.__current_package = p
             else:
-                if len(ast_package.names)==0:
+                if len(ast_package.names) == 0:
                     # this case must not exist anyway since
                     # the default package is create at the beginning.
                     pass
-                    print('BB'*10,'!!!')
 
                 else:
                     if check_if_global_name(
@@ -122,17 +119,17 @@ class ClassModelSource(ASTBasedModelSourceFile):
                         # the first name of the package is already
                         # defined in the model. Just ignore the package
                         pass
-                        print('CC'*10,'!!!')
+                        print('CC'*10, '!!!')
 
                     else:
                         # define the new package
 
-                        self.__current_package=\
+                        self.__current_package = \
                             Package(
                                 name=full_name,
                                 model=self.classModel)
 
-        def check_if_global_name(name, ast_node, message):
+        def check_if_global_name(name, ast_node, message: str):
             if name in self.classModel.globalNames():
                 ASTNodeSourceIssue(
                     code=icode('GNAME_TWICE'),
@@ -149,20 +146,19 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 return False
 
         def cardinality_min_max(ast_cardinality):
-
-            min=ast_cardinality.min
-            max=ast_cardinality.max
-            if max is None:
+            min_ = ast_cardinality.min
+            max_ = ast_cardinality.max
+            if max_ is None:
                 # [*] -> [0..*]
-                if min=='*':
-                    min=0
-                    max='*'
+                if min_ == '*':
+                    min_ = 0
+                    max_ = '*'
                 # [x] -> [x..x]
                 else:
-                    max=min
-            if (min=='*'
-                or min < 0
-                or (max != '*' and (max < min))):
+                    max_ = min_
+            if (min_ == '*'
+                    or min_ < 0
+                    or (max_ != '*' and (max_ < min_))):
                 ASTNodeSourceIssue(
                     code=icode('CARDINALITY_ERROR'),
                     astNode=ast_cardinality,
@@ -172,23 +168,22 @@ class ClassModelSource(ASTBasedModelSourceFile):
                         % (ast_cardinality.min,
                            ast_cardinality.max)))
             return (
-                min,
-                max if max!='*' else None)
+                min_,
+                max_ if max_ != '*' else None)
 
         def define_datatype(ast_datatype):
             if check_if_global_name(
                     ast_datatype.name,
                     ast_datatype,
-                    'Datatype ignored.' ):
+                    'Datatype ignored.'):
                 pass
             else:
-                d=DataType(
+                d = DataType(
                     name=ast_datatype.name,
                     model=self.model,
                     package=self.__current_package,
-                    astNode=ast_datatype
-                )
-                d.description=astTextBlockToTextBlock(
+                    astNode=ast_datatype)
+                d.description = astTextBlockToTextBlock(
                     container=d,
                     astTextBlock=ast_datatype.textBlock)
 
@@ -196,45 +191,45 @@ class ClassModelSource(ASTBasedModelSourceFile):
             if check_if_global_name(
                     ast_enumeration.name,
                     ast_enumeration,
-                    'Enumeration ignored.' ):
+                    'Enumeration ignored.'):
                 pass
             else:
-                e=Enumeration(
+                e = Enumeration(
                     name=ast_enumeration.name,
                     model=self.model,
                     package=self.__current_package,
                     astNode=ast_enumeration)
-                e.description=astTextBlockToTextBlock(
+                e.description = astTextBlockToTextBlock(
                     container=e,
                     astTextBlock=ast_enumeration.textBlock)
                 for ast_el in ast_enumeration.literals:
                     define_enumeration_literal(e, ast_el)
 
         def define_enumeration_literal(enumeration, ast_literal):
-                if ast_literal.name in enumeration.literalNames:
-                    ASTNodeSourceIssue(
-                        code=icode('ENUMLIT_TWICE'),
-                        astNode=ast_literal,
-                        level=Levels.Warning,
-                        message=(
-                            'Enumeration literal "%s" already defined.'
-                            ' Ignored.'
-                            % (ast_literal.name)))
-                else:
-                    el=EnumerationLiteral(
-                        name=ast_literal.name,
-                        enumeration=enumeration,
-                        astNode=ast_literal
-                    )
-                    el.description=astTextBlockToTextBlock(
-                        container=el,
-                        astTextBlock=ast_literal.textBlock)
+            if ast_literal.name in enumeration.literalNames:
+                ASTNodeSourceIssue(
+                    code=icode('ENUMLIT_TWICE'),
+                    astNode=ast_literal,
+                    level=Levels.Warning,
+                    message=(
+                        'Enumeration literal "%s" already defined.'
+                        ' Ignored.'
+                        % ast_literal.name))
+            else:
+                el = EnumerationLiteral(
+                    name=ast_literal.name,
+                    enumeration=enumeration,
+                    astNode=ast_literal
+                )
+                el.description = astTextBlockToTextBlock(
+                    container=el,
+                    astTextBlock=ast_literal.textBlock)
 
         def define_class(ast_class):
             if check_if_global_name(
                     ast_class.name,
                     ast_class,
-                    'Class ignored.' ):
+                    'Class ignored.'):
                 pass
             else:
                 c = PlainClass(
@@ -260,7 +255,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                         define_attribute(c, ast_att)
 
         def define_attribute(class_, ast_attribute):
-            owned_names=class_.ownedAttributeNames
+            owned_names = class_.ownedAttributeNames
             if ast_attribute.name in owned_names:
                 ASTNodeSourceIssue(
                     code=icode('ATT_DEFINED'),
@@ -271,28 +266,28 @@ class ClassModelSource(ASTBasedModelSourceFile):
                         ' Attribute ignored.'
                         % (ast_attribute.name, class_.name)))
             else:
-                deco=ast_attribute.decorations
+                deco = ast_attribute.decorations
                 if deco is None:
-                    visibility='public'
-                    is_derived=False
+                    visibility = 'public'
+                    is_derived = False
                 else:
-                    visibility={
-                        None:'public',
-                        '+':'public',
-                        '-':'private',
-                        '#':'protected',
-                        '~':'package' } [deco.visibility]
-                    is_derived=deco.isDerived is not None
+                    visibility = {
+                        None: None,
+                        '+': 'public',
+                        '-': 'private',
+                        '#': 'protected',
+                        '~': 'package'}[deco.visibility]
+                    is_derived = deco.isDerived is not None
                 if ast_attribute.metaPart is None:
-                    tags=[]
-                    stereotypes=[]
+                    tags = []
+                    stereotypes = []
                 else:
-                    tags=ast_attribute.metaPart.tags
-                    stereotypes=ast_attribute.metaPart.stereotypes
-                is_optional=ast_attribute.isOptional is not None
+                    tags = ast_attribute.metaPart.tags
+                    stereotypes = ast_attribute.metaPart.stereotypes
+                is_optional = ast_attribute.isOptional is not None
                 # The fact that the type is optional will come
                 # later at resolution time.
-                a=Attribute(
+                a = Attribute(
                     name=ast_attribute.name,
                     class_=class_,
                     astNode=ast_attribute,
@@ -306,7 +301,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     stereotypes=stereotypes,
                     isOptional=is_optional
                 )
-                a.description=astTextBlockToTextBlock(
+                a.description = astTextBlockToTextBlock(
                     container=class_,
                     astTextBlock=ast_attribute.textBlock)
 
@@ -314,13 +309,13 @@ class ClassModelSource(ASTBasedModelSourceFile):
             if check_if_global_name(
                     ast_association.name,
                     ast_association,
-                    'Association ignored.' ):
+                    'Association ignored.'):
                 pass
             else:
-                kind=ast_association.kind
+                kind = ast_association.kind
                 # could be 'association', 'composition',
                 #          'aggregation' but not 'associationclass'
-                a=PlainAssociation(
+                a = PlainAssociation(
                     name=ast_association.name,
                     model=self.classModel,
                     astNode=ast_association,
@@ -357,15 +352,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                             'A %s cannot be have superclasses.'
                             ' Ignored.' %
                             kind))
-                if ast_association.operationCompartment:
-                    ASTNodeSourceIssue(
-                        code=icode('NO_OP'),
-                        astNode=ast_association,
-                        level=Levels.Error,
-                        message=(
-                            'A %s cannot be have operations. Ignored.' %
-                            kind))
-                if kind=='composition':
+                if kind == 'composition':
                     ASTNodeSourceIssue(
                         code=icode('NO_COMPO'),
                         astNode=ast_association,
@@ -373,7 +360,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                         message=(
                             'Composition not implemented yet. '
                             'Replaced by "association".'))
-                if kind=='aggregation':
+                if kind == 'aggregation':
                     ASTNodeSourceIssue(
                         code=icode('NO_AGGREG'),
                         astNode=ast_association,
@@ -389,7 +376,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                     'Association class ignored.' ):
                 pass
             else:
-                a=AssociationClass(
+                a = AssociationClass(
                     name=ast_association.name,
                     model=self.classModel,
                     isAbstract=ast_association.isAbstract,
@@ -409,7 +396,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 define_role(a, ast_association.roleCompartment.target)
 
                 # attributes
-                ast_ac=ast_association.attributeCompartment
+                ast_ac = ast_association.attributeCompartment
                 if ast_ac is not None:
                     for ast_att in ast_ac.attributes:
                         # check that attributes have diffrent
@@ -436,14 +423,14 @@ class ClassModelSource(ASTBasedModelSourceFile):
                         ' Role names must be different.'
                         % (ast_role.name)))
             else:
-                (min, max)=cardinality_min_max(ast_role.cardinality)
+                (min, max) = cardinality_min_max(ast_role.cardinality)
                 if ast_role.metaPart is None:
-                    tags=[]
-                    stereotypes=[]
+                    tags = []
+                    stereotypes = []
                 else:
-                    tags=ast_role.metaPart.tags
-                    stereotypes=ast_role.metaPart.stereotypes
-                r=Role(
+                    tags = ast_role.metaPart.tags
+                    stereotypes = ast_role.metaPart.stereotypes
+                r = Role(
                     astNode=ast_role,
                     association=association,
                     name=ast_role.name,
@@ -475,27 +462,27 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 for ast_sublines in ast_ocl_line.oclLines:
                     recursive_add_ocl_lines(ocl_inv, ast_sublines)
 
-            #-- fill scopeItems
+            # -- fill scopeItems
             if ast_invariant.scope is None:
-                scopeItems=[]
+                scopeItems = []
             else:
-                scopeItems=[]
+                scopeItems = []
                 #TODO:3 deal with item.derived to support derived
                 for item in ast_invariant.scope.items:
                     scopeItems.append(
                         (item.entity, item.member))
 
-            #-- fill invariant
-            inv=Invariant(
+            # -- fill invariant
+            inv = Invariant(
                 name=ast_invariant.name,
                 model=self.classModel,
-                derivedItem=None, #TODO:3 fill with proper values
+                derivedItem=None,  # TODO:3 fill with proper values
                 scopeItems=scopeItems,
                 astNode=ast_invariant)
             inv.description = astTextBlockToTextBlock(
                 container=inv,
                 astTextBlock=ast_invariant.textBlock)
-            #-- fill invariant lines
+            # -- fill invariant lines
             for ast_ocl_inv in ast_invariant.oclInvariants:
                 ocl_inv=OCLInvariant(
                     invariant=inv,
@@ -508,7 +495,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                 for ast_ocl_line in ast_ocl_inv.oclLines:
                     recursive_add_ocl_lines(ocl_inv, ast_ocl_line)
 
-        self.__current_package=\
+        self.__current_package = \
             Package(
                 name='',
                 model=self.classModel)
@@ -527,7 +514,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
                   and declaration.kind != 'associationclass'):
                 define_association(declaration)
             elif (type_ == 'Association'
-                  and declaration.kind=='associationclass'):
+                  and declaration.kind == 'associationclass'):
                 define_association_class(declaration)
             elif type_ == 'Invariant':
                 define_invariant(declaration)
@@ -540,7 +527,6 @@ class ClassModelSource(ASTBasedModelSourceFile):
     # ----------------------------------------------------------------
 
     def resolve(self):
-
 
         def resolve_class_content(classifier):
             # Works both for plainClass and associationClass
@@ -562,6 +548,10 @@ class ClassModelSource(ASTBasedModelSourceFile):
                                 "'Can't be the superclass of %s."
                                 % (name, classifier.name)))
                 classifier.superclasses = actual_super_classes
+
+                # define the subclasses
+                for super in actual_super_classes:
+                    super.subclasses.append(classifier)
 
             def resolve_owned_attribute(attribute):
                 type_name = attribute.type.placeholderValue
