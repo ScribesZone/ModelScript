@@ -77,8 +77,6 @@ Class:  // common
     (o_
         (textBlock = TextBlock)?
         attributeCompartment=AttributesCompartment ?
-        operationCompartment=OperationsCompartment ?  //opdel
-        invariantCompartment=InvariantsCompartment ?    //invdel
         permissionCompartment=PermissionsCompartment ?
     _o)?
     X
@@ -111,43 +109,6 @@ AttributeDecorations:
     ) #
 ;
 
-OperationsCompartment:  // opdel
-    'operations'
-    (o_
-        operations *= Operation
-    _o)?
-    X
-;
-
-Operation:
-    name=ID
-    '('
-        arguments*=Argument[',']
-    ')'
-    (':' returnType=ID)?
-    metaPart = MetaPart ?
-
-    (o_
-        textBlock=TextBlock
-    _o)?
-    X
-
-;
-
-Arguments:
-    arguments *= Argument[',']
-;
-
-
-Argument:
-    name=ID ':' type=ID
-;
-
-InvariantsCompartment:  //invdel
-    'invariants'
-    X
-;
-
 PermissionsCompartment:
     'permissions'
     X
@@ -168,7 +129,6 @@ Association:
         (textBlock=TextBlock) ?
         roleCompartment=RoleCompartment
         attributeCompartment=AttributesCompartment ?
-        operationCompartment=OperationsCompartment ?
     _o
     X
 ;
