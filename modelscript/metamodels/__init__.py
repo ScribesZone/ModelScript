@@ -13,7 +13,6 @@ META_PACKAGES=(
     'classes.core',
     'classes.invariants',
     'classes.types',
-    'classes1',
     'glossaries',
     'megamodels',
     'objects',
@@ -48,13 +47,12 @@ META_CHECKER_PACKAGES=(
 
 def loadMetaPackages():
     for name in META_PACKAGES:
-        mp=MetaPackage(name)
+        mp = MetaPackage(name)
         # PyMetamodelParser().parsePyModule(mp.pyModule)
 
 def loadMetaCheckerPackages():
     for name in META_CHECKER_PACKAGES:
-        mp=MetaCheckerPackage(name)
-
+        mp = MetaCheckerPackage(name)
 
 
 loadMetaPackages()
