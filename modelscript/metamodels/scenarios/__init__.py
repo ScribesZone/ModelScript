@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-Metamodel representing scenarios.
+"""Metamodel representing scenarios.
 
 The structure of is the following::
 
@@ -70,78 +69,70 @@ META_CLASSES=(
     'ActorInstance',
 )
 
-__all__=META_CLASSES
+__all__ = META_CLASSES
 
-DEBUG=3
+DEBUG = 3
 
 class ScenarioModel(Model, Subject):
     """
 
     """
+
+    _classModel: Optional[ClassModel]
+    _usecaseModel: Optional[UsecaseModel]
+    _permissionModel: Optional[UCPermissionModel]
+    _objectModel: Optional[ObjectModel]
+    actorInstanceNamed:  Dict[Text, 'ActorInstance']
+
+    containerCollection: 'StoryContainerCollection'
+    """The collection of all story containers."""
+
     META_COMPOSITIONS=[
         'actorInstances',
         # 'stories',
     ]
 
-    def __init__(self):
-        #type: () -> None
-
+    def __init__(self) -> None:
         super(ScenarioModel, self).__init__()
 
-        self._classModel='*not yet*'
-        #type: Optional[ClassModel]
+        self._classModel = '*not yet*'
         # Will be none or class model
-        # see property
+        # Computed on demand, see the property with the same name
 
-        self._usecaseModel='*not yet*'
-        #type: Optional[UsecaseModel]
-        # see property
+        self._usecaseModel = '*not yet*'
+        # Computed on demand, see the property with the same name
 
-        self._permissionModel='*not yet*'
-        #type: Optional[UCPermissionModel]
-        # see property
+        self._permissionModel = '*not yet*'
+        # Computed on demand, see the property with the same name
 
-        self._objectModel='*not yet*'
-        #type: Optional[ObjectModel]
-        # see property
+        self._objectModel = '*not yet*'
+        # Computed on demand, see the property with the same name
 
-        self.actorInstanceNamed=OrderedDict()
-        #type: Dict[Text, ActorInstance]
-        # set later
-
-        self.containerCollection=StoryContainerCollection(self)
-        #type: StoryContainerCollection
-        # The collection of all story container.
-
-
-
+        self.actorInstanceNamed = OrderedDict()
+        self.containerCollection = StoryContainerCollection(self)
 
     @property
-    def metamodel(self):
-        #type: () -> Metamodel
+    def metamodel(self) -> Metamodel:
         return METAMODEL
 
     @property
-    def classModel(self):
-        #type: ()-> Optional[ClassModel]
+    def classModel(self) -> Optional[ClassModel]:
         if self._classModel == '*not yet*':
-            self._classModel=self.theModel(
+            self._classModel = self.theModel(
                 CLASS_METAMODEL,
                 acceptNone=True)
         return self._classModel
 
     @property
-    def objectModel(self):
-        #type: ()-> Optional[ObjectModel]
+    def objectModel(self) -> Optional[ObjectModel]:
         if self._objectModel == '*not yet*':
-            self._objectModel=self.theModel(
+            self._objectModel = self.theModel(
                 OBJECT_METAMODEL,
                 acceptNone=True)
         return self._objectModel
 
     @property
-    def usecaseModel(self):
-        #type: ()-> Optional[UsecaseModel]
+    def usecaseModel(self) -> Optional[UsecaseModel]:
         if self._usecaseModel == '*not yet*':
             self._usecaseModel=self.theModel(
                 USECASE_METAMODEL,
@@ -149,10 +140,9 @@ class ScenarioModel(Model, Subject):
         return self._usecaseModel
 
     @property
-    def permissionModel(self):
-        #type: ()-> Optional[ClassModel]
+    def permissionModel(self) -> Optional[ClassModel]:
         if self._permissionModel == '*not yet*':
-            self._permissionModel=self.theModel(
+            self._permissionModel = self.theModel(
                 UCPERMISSION_METAMODEL,
                 acceptNone=True)
         return self._permissionModel
@@ -220,9 +210,8 @@ class ScenarioModel(Model, Subject):
         self.containerCollection.add(kind, name, container)
 
     @property
-    def metrics(self):
-        #type: () -> Metrics
-        ms=super(ScenarioModel, self).metrics
+    def metrics(self) -> Metrics:
+        ms = super(ScenarioModel, self).metrics
         ms.addList((
             ('actor instance', len(self.actorInstances)),
             ('context', len(self.contexts)),
@@ -238,6 +227,9 @@ class ScenarioModel(Model, Subject):
 
 
 class ActorInstance(SourceModelElement, Subject):
+
+    actor: Actor
+
     def __init__(self, model, name, actor,
                  astNode=None, lineNo=None, description=None):
         super(ActorInstance, self).__init__(
@@ -247,24 +239,26 @@ class ActorInstance(SourceModelElement, Subject):
             lineNo=lineNo,
             description=description)
 
-        self.actor=actor
-        # type: Actor
-        model.actorInstanceNamed[self.name]=self
+        self.actor = actor
+        model.actorInstanceNamed[self.name] = self
 
     @property
     def superSubjects(self):
         return [self.actor]
 
 
-STORY_KIND=['objectModel', 'context', 'scenario', 'fragment']
+STORY_KIND = ['objectModel', 'context', 'scenario', 'fragment']
 
 
 class StoryContainer(SourceModelElement, Subject, metaclass=ABCMeta):
-    """
-    Container of a story. This abstract class is useful to
+    """Container of a story.
+    This abstract class is useful to
     deal with common characteristics of Context, Fragment and
     Scenario at the same time. These are basically just story block.
     """
+
+    story: Story
+    storyEvaluation: Optional[StoryEvaluation]
 
     def __init__(self,
                  model, name,
@@ -278,29 +272,23 @@ class StoryContainer(SourceModelElement, Subject, metaclass=ABCMeta):
             lineNo=lineNo,
             description=description)
 
-        self.story=story
-        #type: Story
-
-        self.storyEvaluation=storyEvaluation
-        #type: Optional[StoryEvaluation]
+        self.story = story
+        self.storyEvaluation = storyEvaluation
 
     @property
-    def superSubjects(self):
-        """ Direct parents """
-        # type: () -> List[Subject]
+    def superSubjects(self) -> List[Subject]:
+        """Direct parents """
         return [self.model]
 
     @property
     def subjectLabel(self):
-        """
-        Label of story.
-        """
+        """Label of story. """
         return self.name
 
+
 class Context(StoryContainer):
-    """
-    A named context. Part of a scenario model.
-    """
+    """A named context. Part of a scenario model. """
+
     def __init__(self,
                  model, name,
                  story,
@@ -317,8 +305,8 @@ class Context(StoryContainer):
 
 
 class Fragment(StoryContainer):
-    """
-    A named fragment. Part of a scenario model.
+    """A named fragment.
+    Part of a scenario model.
     Note that 'fragment" are called "story" in the concrete syntax.
     """
 
@@ -338,9 +326,7 @@ class Fragment(StoryContainer):
 
 
 class Scenario(StoryContainer):
-    """
-    A named scenario. Part of a scenario model.
-    """
+    """A named scenario. Part of a scenario model. """
 
     def __init__(self,
                  model,
@@ -358,16 +344,17 @@ class Scenario(StoryContainer):
 
 
 class ObjectModelStoryContainer(StoryContainer):
-    """
-    A reference to the object model, seen as a story reference.
+    """A reference to the object model, seen as a story reference.
     This class does not comes from a AST element.
     (in fact it could be the import statement itself, but this
     requires a bit of investigation).
     """
+
+    objectModel: ObjectModel
+
     def __init__(self,
-                 scenarioModel,
-                 objectModel):
-        #type: (ScenarioModel, ObjectModel) -> None
+                 scenarioModel: ScenarioModel,
+                 objectModel: ObjectModel) -> None:
         # Not sure if this initialization is ok
         super(ObjectModelStoryContainer, self).__init__(
             model=scenarioModel,
@@ -377,26 +364,28 @@ class ObjectModelStoryContainer(StoryContainer):
             astNode=None,
             lineNo=None,
             description=None)
-        self.objectModel=objectModel
-        #type: ObjectModel
 
-
+        self.objectModel = objectModel
 
 
 class StoryId(AbstractStoryId):
 
+    kind: str
+    name: str
+    """Name of the story.
+    '' for object model. The name of the story container otherwise"""
+
     def __init__(self, kind, name):
         assert(kind in STORY_KIND)
-        self.kind=kind
-        #type: Text
+        self.kind = kind
 
-        self.name=name
-        #type: Text
+        self.name = name
         # '' for object model.
         # The name of the story container otherwise
 
     def __str__(self):
         return 'StoryId(%s,%s)' % (self.kind, self.name)
+
 
 class StoryContainerCollection(AbstractStoryCollection):
     """
@@ -411,28 +400,32 @@ class StoryContainerCollection(AbstractStoryCollection):
     by implementing story(storyId).
     """
 
+    storyContainerByKindName: Dict[Text, Dict[Text, StoryContainer]]
+    """Story containers indexed by story kind and then
+    by story name (the name of the story is the name of the container.
+    """
+
+    model: ScenarioModel
+
     def __init__(self, model):
-        self.model=model
-        #type: ScenarioModel
+        self.model = model
+        self.storyContainerByKindName = OrderedDict()
 
-        self.storyContainerByKindName=OrderedDict()
-        #type: Dict[Text, Dict[Text, StoryContainer]]
-        # Story containers indexed by story kind and then
-        # by story name (the name of the story is the name
-        # of the container.
 
-    def add(self, kind, name, container):
-        #type: (Text, Text, StoryContainer) -> None
+    def add(self,
+            kind: str,
+            name: str,
+            container: StoryContainer) -> None:
         if kind not in self.storyContainerByKindName:
             self.storyContainerByKindName[kind]=OrderedDict()
         self.storyContainerByKindName[kind][name]=container
 
-    def storyContainer(self, kind, name):
-        #type: (Text, Text) -> Optional[StoryContainer]
+    def storyContainer(self, kind: str, name: str)\
+            -> Optional[StoryContainer]:
         if kind not in self.storyContainerByKindName:
             return None
         else:
-            story_by_name=self.storyContainerByKindName[kind]
+            story_by_name = self.storyContainerByKindName[kind]
             if name not in story_by_name:
                 return None
             else:
@@ -450,13 +443,12 @@ class StoryContainerCollection(AbstractStoryCollection):
         else:
             return list(self.storyContainerByKindName[kind].values())
 
-    def story(self, storyId):
-        #type: (StoryId) -> Optional[Story]
+    def story(self, storyId: 'StoryId') -> Optional[Story]:
         """
         Implement the 'story(storyId) method so that this
         "container" collection behaves like a "story" collection.
         """
-        container=self.storyContainer(
+        container = self.storyContainer(
             storyId.kind,
             storyId.name)
         if container is None:

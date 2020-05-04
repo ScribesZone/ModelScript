@@ -268,7 +268,7 @@ class ClassModelSource(ASTBasedModelSourceFile):
             else:
                 deco = ast_attribute.decorations
                 if deco is None:
-                    visibility = 'public'
+                    visibility = None
                     is_derived = False
                 else:
                     visibility = {

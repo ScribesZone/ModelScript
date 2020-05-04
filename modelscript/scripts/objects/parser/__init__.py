@@ -93,11 +93,11 @@ class ObjectModelSource(ASTBasedModelSourceFile):
         # First fill the story model  with StoryFiller
         # then evaluate the story model leading to the object model
 
-        filler=StoryFiller(
+        filler = StoryFiller(
             model=self.objectModel,     # use this actual object model
             storyKind='object model',
             ensureCheckAfter=True,
-            infoIfCheckAdded=False, # only one check
+            infoIfCheckAdded=False,  # only one check
             allowDefinition=True,
             allowAction=False,
             allowVerb=False,

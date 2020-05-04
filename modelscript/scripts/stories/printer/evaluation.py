@@ -24,14 +24,13 @@ __all__=(
 class StoryEvaluationPrinter(AbstractPrinter):
 
     def __init__(self,
-                 storyEvaluation,
-                 indent=0,
-                 config=None):
-        #type: (StoryEvaluation, int, Optional[AbstractPrinterConfig]) -> None
+                 storyEvaluation: StoryEvaluation,
+                 indent: int = 0,
+                 config: Optional[AbstractPrinterConfig] = None):
         super(StoryEvaluationPrinter, self).__init__(
             config=config
         )
-        self.storyEvaluation=storyEvaluation
+        self.storyEvaluation = storyEvaluation
         self.story=self.storyEvaluation.step
         self.indent=indent
 
@@ -51,7 +50,7 @@ class StoryEvaluationPrinter(AbstractPrinter):
         elif isinstance(stepEval, OperationStepEvaluation):
             self.doOperationStepEvaluation(stepEval, indent)
         else:
-            raise UnexpectedCase( #raise:OK
+            raise UnexpectedCase(  # raise:OK
                 'Unexpected type: %s' % type(stepEval))
 
     def doStoryEvaluation(self, stepEval, indent):
@@ -59,10 +58,9 @@ class StoryEvaluationPrinter(AbstractPrinter):
         return self.output
 
     def doCompositeStepEvaluation(self, stepEval, indent):
-        p=StoryPrinter(
+        p = StoryPrinter(
             story=self.story,
-            indent=indent
-        )
+            indent=indent)
         text=p.doStep(
             step=stepEval.step,
             indent=indent,

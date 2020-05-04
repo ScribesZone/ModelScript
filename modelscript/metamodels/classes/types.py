@@ -71,16 +71,20 @@ class DataType(SimpleType):
             astNode=astNode,
             package=package
         )
-        self.superDataType=superDataType
-        self.implementationClass=implementationClass
-        self.model._dataTypeNamed[name]=self
-        self.isCore=isCore
+        self.superDataType = superDataType
+        self.implementationClass = implementationClass
+        self.model._dataTypeNamed[name] = self
+        self.isCore = isCore
 
     def __repr__(self):
         return self.name
 
 
 class AttributeType(object):
+
+    simpleType: SimpleType
+    isOptional: bool
+    isMultiple: bool
 
     def __init__(self,
                  simpleType,
@@ -91,17 +95,17 @@ class AttributeType(object):
         self.isMultiple = isMultiple
 
     def accept(self, simpleValue):
-        null_type=self.simpleType.model.dataType('NullType')
-        valueType=simpleValue.type
+        null_type = self.simpleType.model.dataType('NullType')
+        value_type = simpleValue.type
         # print('KK'*10,
-        #       str(simpleValue)+':'+ str(valueType),
+        #       str(simpleValue)+':'+ str(value_type),
         #       'with var',
         #       id(self.simpleType),
         #       self.simpleType.name,
         #       self.isOptional)
         return (
-            (valueType==null_type and self.isOptional)
-            or valueType==self.simpleType
+            (value_type == null_type and self.isOptional)
+            or value_type == self.simpleType
         )
 
     @property

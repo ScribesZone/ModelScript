@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-Code of the Scenario metamodel.
+"""Code of the Scenario metamodel.
 
 The global structure of this metamodel is as following::
 
@@ -49,13 +48,12 @@ META_CLASSES=(
 
 __all__=META_CLASSES
 
-DEBUG=3
+DEBUG = 3
 
 
 class Step(SourceModelElement, Subject, metaclass=ABCMeta):
-    """
-    Abstract class for all steps.
-    This class deal with
+    """Abstract class for all steps.
+    This class deals with
     (1) the hierarchy through "parent" management.
     (2) accesses with "superSubjects" / "subjectLabel"
     (3) hasOperations to indicates if (a) the step is an
@@ -63,6 +61,7 @@ class Step(SourceModelElement, Subject, metaclass=ABCMeta):
         substeps (if any).
     """
 
+    parent: Optional['CompositeStep']
     def __init__(self,
                  model,
                  parent,
@@ -75,28 +74,25 @@ class Step(SourceModelElement, Subject, metaclass=ABCMeta):
             astNode=astNode,
             lineNo=lineNo,
             description=description)
-
-        self.parent=parent
-        #type: Optional[Step]
-
+        self.parent = parent
+        assert parent is None or isinstance(parent, CompositeStep)
         if parent is not None:
             self.parent.steps.append(self)
 
     @property
-    def superSubjects(self):
-        """ Direct parents """
-        # type: () -> List[Subject]
+    def superSubjects(self) -> List[Subject]:
+        """Direct parents."""
         return [self.parent]
 
     @property
-    def subjectLabel(self):
-        """
-        Label of step. Using something like
+    def subjectLabel(self) -> str:
+        """Label of step.
+        Using something like
         * "story.3.2.5" if a story is unamed (no container)
         * or "A.2.1" if the story is in a container named A
         """
-        parent_label=self.parent.subjectLabel
-        nth_label=self.parent.steps.index(self)+1
+        parent_label = self.parent.subjectLabel
+        nth_label = self.parent.steps.index(self)+1
         return '%s.%s' % (parent_label, nth_label)
 
     @property
@@ -108,13 +104,14 @@ class Step(SourceModelElement, Subject, metaclass=ABCMeta):
 
 
 class CompositeStep(Step, metaclass=ABCMeta):
-    """
-    Composite steps have substeps and therefore a "steps"
+    """Composite steps have substeps and therefore a "steps"
     attribute.
     Only composites have (nested) steps but all steps have
     a parent (see Steps).
     The parent of step is None for Stories.
     """
+
+    steps: List[Step]
 
     def __init__(self,
                  model,
@@ -129,15 +126,13 @@ class CompositeStep(Step, metaclass=ABCMeta):
             lineNo=lineNo,
             description=description)
 
-        self.steps=[]
-        #type: List[Step]
+        self.steps = []
 
 
 class Story(CompositeStep):
-    """
-    A story, that is, a root of a Step hierarchy.
+    """A story, that is, a root of a Step hierarchy.
     Note that multiple stories can exists in the
-    context of AbstractStoryCollection.
+    context of an AbstractStoryCollection.
     Since they are root, all stories have None parent.
 
     NOTE: while a Story is a root, this is not
@@ -146,14 +141,27 @@ class Story(CompositeStep):
     details.
     """
 
+    storyContainer: Optional['StoryContainer']
+    """ This attribute has a value only for stories created from
+    a scenarios.StoryContainer. The StoryContainer type
+    is left implicit above because the whole module have been
+    designed to be independent from 'scenarios'.
+    Here the variable is just used to improve labels.
+    """
+
+    checkSteps : List['CheckStep']
+    """ List of all CheckStep of the story, including implicit
+    (before/after) checks.
+    Filled by StoryFiller.story()
+    """
+
     def __init__(self,
                  model,
                  storyContainer=None,
                  astNode=None,
                  lineNo=None,
                  description=None):
-        """
-        Create a Story. A StoryContainer can be associated to
+        """Create a Story. A StoryContainer can be associated to
         the Story if the story has been created from the scenario.
 
         The "model" might be unknown at this time, but it can
@@ -170,15 +178,8 @@ class Story(CompositeStep):
             lineNo=lineNo,
             description=description)
 
-        self.storyContainer=storyContainer
-        #type: Optional['StoryContainer']
-        # This attribute has a value only for stories created from
-        # a scenarios.StoryContainer. The StoryContainer type
-        # is left implicit above because the whole module have been
-        # designed to be independent from 'scenarios'.
-        # Here the variable is just used to improve labels.
-
-        self.checkSteps=[]
+        self.storyContainer = storyContainer
+        self.checkSteps = []
         #type: List['CheckStep']
         # List of all CheckStep of the story, including implicit
         # (before/after) checks.
@@ -240,9 +241,10 @@ class Story(CompositeStep):
 
 
 class TextStep(CompositeStep):
+    """Annotated text block. That is, a text block with some steps.
     """
-    Annotated text block. That is, a text block with some steps.
-    """
+
+    textBlock: 'TextBlock'
 
     def __init__(self,
                  parent,
@@ -257,13 +259,17 @@ class TextStep(CompositeStep):
             lineNo=lineNo,
             description=description)
 
-        self.textBlock=textBlock
+        self.textBlock = textBlock
 
 
 class VerbStep(CompositeStep):
     """
     A step with a subject and verb, plus steps in the block.
     """
+
+    subjectName: str
+    verbName: str
+
     def __init__(self,
                  parent,
                  subjectName,
@@ -278,8 +284,10 @@ class VerbStep(CompositeStep):
             lineNo=lineNo,
             description=description)
 
-        self.subjectName=subjectName
-        self.verbName=verbName
+        assert isinstance(subjectName, str)
+        assert isinstance(verbName, str)
+        self.subjectName = subjectName
+        self.verbName = verbName
 
 
 class AbstractStoryId(object, metaclass=ABCMeta):
@@ -295,20 +303,29 @@ class AbstractStoryId(object, metaclass=ABCMeta):
 
 
 class IncludeStep(Step):
-    """
-    A step corresponding to the inclusion of a story.
+    """A step corresponding to the inclusion of a story.
     Only the kind/name of the story is stored. That story
     associated with this name depends on the environment
     given to the evaluator.
     """
+
+    storyId: AbstractStoryId
+    """The story id. 
+    This corresponds to the logical/internal representation.
+    """
+
+    words: List[Text]
+    """The external, concrete syntax.
+    This could be used for printing or error message.
+    """
+
     def __init__(self,
-                 parent,
-                 storyId,
+                 parent: Step,
+                 storyId: AbstractStoryId,
                  words=(),
                  astNode=None,
-                 lineNo=None,
-                 description=None):
-        #type: (Step, AbstractStoryId, Optional['ASTIncludeStep'], Optional[int], Optional['TextBlock']) -> None
+                 lineNo: Optional[int] = None,
+                 description: Optional['TextBlock'] = None):
         super(IncludeStep, self).__init__(
             model=parent.model,
             parent=parent,
@@ -316,20 +333,13 @@ class IncludeStep(Step):
             lineNo=lineNo,
             description=description)
 
-        self.storyId=storyId
-        #type: AbstractStoryId
-        # The story id. This corresponds to the logical/internal
-        # representation.
+        self.storyId = storyId
+        self.words = words
 
-        self.words=words
-        #type: List[Text]
-        # The external, concrete syntax.
-        # This could be used for printing or error message.
 
 
 class AbstractStoryCollection(object):
-    """
-    Abstract class describing collections of stories indexed
+    """Abstract class describing collections of stories indexed
     by AbstractStoryId.
     In practice and currently there is only one AbstractStoryCollection.
     The "stories" package does not provided any concrete implementation.

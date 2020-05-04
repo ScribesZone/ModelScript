@@ -122,6 +122,14 @@ class ClassModelPrinter(ModelPrinter):
         return self.output
 
     def doPlainClass(self, class_):
+
+        def outLineAttribute(attr):
+            if getattr(class_, attr):
+                vals = ', '.join(val.name for val in getattr(class_, attr))
+                self.outLine(
+                    self.cmt('// %s: "%s"' % (attr, vals)),
+                    indent=1)
+
         self.doModelTextBlock(class_.description)
         if class_.superclasses:
             sc = (self.kwd('extends ')
@@ -134,76 +142,28 @@ class ClassModelPrinter(ModelPrinter):
             self.qualified(class_),
             sc] if _f]))
 
-        if class_.subclasses:
-            subs = ', '.join(sub.name for sub in class_.subclasses)
+        outLineAttribute("subclasses")
+        if class_.cycles is not None:
             self.outLine(
-                self.cmt('// subclasses: "%s"' % subs),
+                self.cmt('// inheritanceCycles: "%s"'
+                         % class_.cycles),
                 indent=1)
 
-        if class_.inheritedAttributes:
-            atts = ', '.join(att.name
-                              for att in class_.inheritedAttributes)
-            self.outLine(
-                self.cmt('// inheritedAttributes: "%s"' % atts),
-                indent=1)
+        outLineAttribute("inheritedAttributes")
+        outLineAttribute("attributes")
+
+        outLineAttribute("ownedOppositeRoles")
+        outLineAttribute("inheritedOppositeRoles")
+        outLineAttribute("oppositeRoles")
+
+        outLineAttribute("ownedPlayedRoles")
+        outLineAttribute("playedRoles")
 
         if class_.attributes:
-            atts = ', '.join(att.name
-                              for att in class_.attributes)
-            self.outLine(
-                self.cmt('// attributes: "%s"' % atts),
-                indent=1)
+            self.outLine(self.kwd('attributes'), indent=1)
+            for attribute in class_.attributes:
+                self.doAttribute(attribute)
 
-        if class_.ownedOppositeRoles:
-            roles = ', '.join(role.name
-                              for role in class_.ownedOppositeRoles)
-            self.outLine(
-                self.cmt('// oppositeRoles: "%s"' % roles),
-                indent=1)
-
-        if class_.inheritedOppositeRoles:
-            roles = ', '.join(role.name
-                              for role in class_.inheritedOppositeRoles)
-            self.outLine(
-                self.cmt('// inheritedOppositeRoles: "%s"' % roles),
-                indent=1)
-
-        if class_.oppositeRoles:
-            roles = ', '.join(role.name
-                              for role in class_.oppositeRoles)
-            self.outLine(
-                self.cmt('// oppositeRoles: "%s"' % roles),
-                indent=1)
-
-        if class_.ownedPlayedRoles:
-            roles = ', '.join(role.name
-                              for role in class_.ownedPlayedRoles)
-            self.outLine(
-                self.cmt('// ownedPlayedRoles: "%s"' % roles),
-                indent=1)
-
-        if class_.inheritedPlayedRoles:
-            roles = ', '.join(role.name
-                              for role in class_.inheritedPlayedRoles)
-            self.outLine(
-                self.cmt('// inheritedPlayedRoles: "%s"' % roles),
-                indent=1)
-
-        if class_.playedRoles:
-            roles = ', '.join(role.name
-                              for role in class_.playedRoles)
-            self.outLine(
-                self.cmt('// inheritedPlayedRoles: "%s"' % roles),
-                indent=1)
-
-        # if class_.operations:
-        #     self.outLine(self.kwd('operations'), indent=1)
-        #     for operation in class_.operations:
-        #         self.doOperation(operation)
-
-        # if class_.invariants:
-        #     for invariant in class_.invariants:
-        #         self.doInvariant(invariant)
         self.outLine('')
         return self.output
 
@@ -220,7 +180,7 @@ class ClassModelPrinter(ModelPrinter):
         return self.output
 
     def doAssociationClass(self, associationClass):
-        self.doModelTextBlock(associationClass.description)
+        # self.doModelTextBlock(associationClass.description)
         if associationClass.superclasses:
             superclass_names = [c.name for c in associationClass.superclasses]
             sc = self.kwd(' < ') + self.kwd(',').join(superclass_names)
@@ -230,7 +190,7 @@ class ClassModelPrinter(ModelPrinter):
             self.kwd('association class'),
             self.qualified(associationClass),
             sc))
-        self.doModelTextBlock(associationClass.description)
+        self.doModelTextBlock(associationClass.description, indent=1)
 
         self.outLine(self.kwd('roles'), indent=1)
         for role in associationClass.roles:
@@ -259,12 +219,6 @@ class ClassModelPrinter(ModelPrinter):
             'package': '~'
         }[attribute.visibility])
         derived = self.kwd('/') if attribute.isDerived else None
-        id = self.kwd('{id}') if attribute.isId else None
-
-        read_only = \
-            self.kwd('{readOnly}') if attribute.isReadOnly else None
-        optional = self.kwd('[0..1]') if attribute.isOptional \
-                else None
         #TODO:- extract this to a method (see role)
         stereotypes = '<<%s>>' % ','.join(attribute.stereotypes) \
                 if attribute.stereotypes \
@@ -273,50 +227,31 @@ class ClassModelPrinter(ModelPrinter):
                 if attribute.tags \
                 else ''
         _ = ' '.join([_f for _f in [
-                id,
-                read_only,
                 derived,
                 visibility,
                 attribute.name,
                 self.kwd(':'),
                 str(attribute.type),
-                optional,
                 stereotypes,
                 tags] if _f])
         self.outLine(_, indent=2)
         self.doModelTextBlock(attribute.description, indent=3)
-        # if attribute.isDerived:
-        #     self.outLine('%s %s' % (
-        #             self.kwd('derive ='),
-        #             attribute.expression),
-        #         indent=2
-        #     )
-        return self.output
 
+        # id = self.kwd('{id}') if attribute.isId else None
+        #
+        # read_only = \
+        #     self.kwd('{readOnly}') if attribute.isReadOnly else None
+        # optional = self.kwd('[0..1]') if attribute.isOptional \
+        #        else None
 
-    # def doOperation(self, operation):
-    #     self.doModelTextBlock(operation.description)
-    #     self.outLine('%s%s' % (
-    #             operation.signature,
-    #             ' =' if operation.hasImplementation
-    #                 else ''),
-    #         indent=1
-    #     )
-    #     if operation.hasImplementation:
-    #         self.outLine(indent('        ',operation.expression)+'\n')
-    #     self.doModelTextBlock(operation.description)
-
-        # for condition in operation.conditions:
-        #     self.doOperationCondition(condition)
         return self.output
 
     def doInvariant(self, invariant):
-
         self.outLine(self.kwd('invariant'+' '+invariant.name))
         self.doModelTextBlock(invariant.description)
         self.outLine(self.kwd('scope'), indent=1)
-        for (entity, member) in invariant.scopeItems: #TODO:3 true object
-            s=entity+('' if member is None else '.'+member)
+        for (entity, member) in invariant.scopeItems:  # TODO:3 true object
+            s = entity+('' if member is None else '.'+member)
             self.outLine(s, indent=3)
         for ocl_inv in invariant.oclInvariants:
             self.doOCLInvariant(ocl_inv)

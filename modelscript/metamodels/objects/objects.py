@@ -1,7 +1,7 @@
 # coding=utf-8
-
+"""Metamodel for object models.
+"""
 from typing import Dict, Text, Optional, Union, List
-
 from abc import ABCMeta, abstractmethod
 from collections import OrderedDict
 
@@ -89,16 +89,37 @@ class _ClassPrint(object):
 
 
 class Object(PackagableElement, Entity, metaclass=ABCMeta):
-    """
-    An object. Either a plain object or a link object.
-    Link object
+    """ An object. Either a plain object or a link object.
     """
 
-    def __init__(self, model, name, class_,
-                 package=None,
-                 step=None,
-                 lineNo=None, description=None, astNode=None):
-        #type: (ObjectModel, Text, Union['Class', Placeholder], Optional[package], Optional['Step'], Optional[int], Optional[TextBlock], Optional['ASTNode'] )-> None
+    class_: Union[Placeholder, 'Class']
+    """The class of the object."""
+
+    _slotNamed: Dict[str, 'Slot']
+    """Dictionay of the slots.
+    Slots of the object indexed by attribute name (not attribute)"""
+
+    _link_roles_per_role: Dict['Role', 'LinkRole']
+    """links roles "opposite" to the objects,
+    The links at the opposite side of the link.
+    The collection is indexed by 
+    the "owned" roles. Note that the direction of the
+    association is not taken into account. Only owned
+    roles count to group links. Only valid linked roles are 
+    in this list. This variable is set by the object
+    analyzer by the method _analyze_link_role_types.
+    """
+
+    def __init__(self,
+                 model: ObjectModel,
+                 name: str,
+                 class_: Union[Placeholder, 'Class'],
+                 package: Optional['Package'] = None,
+                 step: Optional['Step'] = None,
+                 lineNo: Optional[int] = None,
+                 description: Optional[TextBlock] = None,
+                 astNode: Optional['TextXNode'] = None)\
+            -> None:
         PackagableElement.__init__(
             self,
             model=model,
@@ -111,30 +132,16 @@ class Object(PackagableElement, Entity, metaclass=ABCMeta):
         )
         Entity.__init__(self)
 
-        self.class_ = class_
-        #type: Union[Placeholder, 'Class']
-
+        self.class_ = class_  # Placerholder then Class
         self._slotNamed = OrderedDict()
-        #type: Dict[Text, Slot]
-        # Slots of the object indexed by attribute name (not attribute)
 
-        self._link_roles_per_role=OrderedDict()
-        #type: Dict['Role', 'LinkRole']
-        """
-        The links roles "opposite" to the objects, that is, at the
-        opposite side of the link. The collection is indexed by 
-        the "owned" roles. Note that the direction of the
-        association is not taken into account. Only owned
-        roles count to group links. Only valid linked roles are 
-        in this list. This variable is set by the object
-        analyzer by the method _analyze_link_role_types.
-        """
+        self._link_roles_per_role = OrderedDict()
 
     def cardinality(self, role):
         if role in self._link_roles_per_role:
             return len(self._link_roles_per_role[role])
         else:
-            raise NoSuchFeature( #raise:OK
+            raise NoSuchFeature(  # raise:OK
                 'Unexpected role "%s" for an object of class "%s"' % (
                     role.name,
                     self.class_.name))
@@ -153,12 +160,10 @@ class Object(PackagableElement, Entity, metaclass=ABCMeta):
         else:
             return None
 
-    def links(role):
-        #type: ('Role') -> List['Link']
-        """
-        The list of links that are connected to the object and
-        that are owned by the role.
-        """
+    # def links(role: 'Role') -> List['Link']:
+    #     """The list of links that are connected to the object and
+    #     that are owned by the role.
+    #     """
 
     @abstractmethod
     def isPlainObject(self):
@@ -215,7 +220,7 @@ class PlainObject(Object):
             lineNo=lineNo,
             description=description
         )
-        model._plainObjectNamed[name]=self
+        model._plainObjectNamed[name] = self
 
 
     def isPlainObject(self):
@@ -224,15 +229,25 @@ class PlainObject(Object):
 
 class Slot(ElementFromOptionalStep, Member):
 
-    def __init__(self, object, attribute, simpleValue,
-                 step=None,
-                 description=None, lineNo=None, astNode=None):
-        #type: (Object, Union['Attribute', Placeholder], 'DataValue',  Optional['Step'], Optional[TextBlock], Optional[int], 'ASTNode') -> None
-        attribute_name=(
+    object: 'Object'
+    """The object containing the slot."""
+
+    attribute: Union[Placeholder, 'Attribute']
+
+    simpleValue: 'DataValue'
+
+    def __init__(self,
+                 object: Object,
+                 attribute: Union[Placeholder, 'Attribute'],
+                 simpleValue: 'DataValue',
+                 step: Optional['Step'] = None,
+                 description: Optional[TextBlock] = None,
+                 lineNo: Optional[int] = None,
+                 astNode: 'TextXNode' = None):
+        attribute_name = (
             attribute.placeholderValue
-                if isinstance(attribute, Placeholder)
-            else attribute.name
-        )
+            if isinstance(attribute, Placeholder)
+            else attribute.name)
         ElementFromOptionalStep.__init__(
             self,
             model=object.model,
@@ -242,11 +257,10 @@ class Slot(ElementFromOptionalStep, Member):
             lineNo=lineNo,
             description=description)
         Member.__init__(self)
-        self.object=object
-
-        self.attribute=attribute
-        self.simpleValue=simpleValue
-        object._slotNamed[attribute_name]=self
+        self.object = object
+        self.attribute = attribute
+        self.simpleValue = simpleValue
+        object._slotNamed[attribute_name] = self
 
     def __str__(self):
         return '%s.%s=%s' % (

@@ -29,15 +29,12 @@ from modelscript.scripts.stories.printer.evaluation import (
 class ObjectModelPrinter(ModelPrinter):
 
     def __init__(self,
-                 theModel,
-                 config=None):
-        #type: (ObjectModel, Optional[ModelPrinterConfig]) -> None
+                 theModel: ObjectModel,
+                 config: Optional[ModelPrinterConfig] = None) -> None:
         super(ObjectModelPrinter, self).__init__(
             theModel=theModel,
             config=config
         )
-
-
 
     def doModelContent(self):
         super(ObjectModelPrinter, self).doModelContent()
@@ -56,7 +53,9 @@ class ObjectModelPrinter(ModelPrinter):
             # It can still be printed, using the code below
             #TODO:4 reimplement the raw object model printer
             print(('^^'*40+'\n')*20)
-            print( """*** NO STORY TO PRINT. See TODO""" )
+            print('^^^^ At the moment being only models coming '
+                  'can be printed.')
+            print(('^^'*40+'\n')*20)
 
     #-------------------------------------------------------------------
     #                The code below is not used anymore.

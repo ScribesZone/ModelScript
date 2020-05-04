@@ -44,66 +44,72 @@ __all__=(
     'ObjectModel',
     'ShadowObjectModel',
     'ElementFromOptionalStep',
+
+    'Package',
     'PackagableElement',
+
     'ResourceInstance',
 
     'Entity',
     'Member',
-
-    'Package',
 )
 
 
 class ObjectModel(Model):
-
-    """
-    Object model, either create "manually" or via a story evaluation.
+    """Object model, either created "manually" or via a story evaluation.
     See ShadowObjectModel for story evaluation.
     """
+
+    packageNamed: Dict[str, 'Package']
+    """ALL packages, not only the top level ones"""
+
+    _plainObjectNamed: Dict[str, 'PlainObject']
+    """Dictionary of plain objects. 
+    No link objects.
+    """
+
+    _plainLinks: List['PlainLink']
+    """Plain links. 
+    No link objects. By contrast to other properties 
+    such as plainObjectNamed, this is not a dictionary since
+    links are not named.
+    """
+
+    _linkObjectNamed: Dict[str, 'LinkObject']
+    """Link objects. """
+
+    _classModel: Optional[ClassModel]
+    """Class model on which the object model is based on."""
+
+    storyEvaluation: Optional['StoryEvaluation']
+    """Story evaluation if this model is the result of a
+    story evaluation. Otherwise this is most probably a handmade model
+    illed by object parser.
+    """
+
+    checkStepEvaluation: Optional['CheckStepEvaluation']
+    """Filled only if this model is the result of a Check
+    evaluation in a story.
+    """
+
+    stateCheck:  Optional['StateCheck']
+    """Filled by finalize')"""
 
     def __init__(self):
         super(ObjectModel, self).__init__()
 
-        # ALL packages, not only the top level ones
-        self.packageNamed=OrderedDict() #type: Dict[Text, Package]
-
+        self.packageNamed = OrderedDict()
         self._plainObjectNamed = OrderedDict()
-        # type: Dict[Text, 'PlainObject']
-        """
-        Plain objects. No link objects.
-        """
-
-        self._plainLinks=[]
-        # type: List['PlainLink']
-        """
-        Plain links (no link object).
-        """
-
+        self._plainLinks = []
         self._linkObjectNamed = OrderedDict()
-        # type: Dict[Text, 'LinkObject']
-        """
-        Link objects.
-        """
 
-        self._classModel=None
-        #type: Optional[ClassModel]
-        # filled by property classModel
+        # Class model. filled by property classModel
+        self._classModel = None
 
-        self.storyEvaluation=None
-        #type: Optional['StoryEvaluation']
-        # Filled only if this model is the result of a
-        # story evaluation.
-        # Otherwise this is most probably a handmade model.
-        # Filled by object parser.
+        self.storyEvaluation = None
+        self.checkStepEvaluation = None
+        self.stateCheck = None
 
-        self.checkStepEvaluation=None
-        #type: Optional['CheckStepEvaluation']
-        # Filled only if this model is the result of a Check
-        # evaluation in a story.
-
-        self.stateCheck=None
-        #type: Optional['StateCheck']
-        # Filled by finalize()
 
     def copy(self):
         """
@@ -115,20 +121,22 @@ class ObjectModel(Model):
         return ObjectModelCopier(self).copy()
 
     @property
-    def classModel(self):
-        #type: ()-> ClassModel
+    def classModel(self) -> ClassModel:
         if self._classModel is None:
-            self._classModel=self.theModel(CLASS_METAMODEL)
+            self._classModel = self.theModel(CLASS_METAMODEL)
         return self._classModel
 
     @property
-    def hasClassModel(self):
-        #type: () -> bool
+    def hasClassModel(self) -> bool :
         try:
             self.classModel
             return True
         except ValueError:
             return False
+
+    # -------------------------------------------------------------------
+    #    plainObjects
+    # -------------------------------------------------------------------
 
     @property
     def plainObjects(self):
@@ -171,7 +179,7 @@ class ObjectModel(Model):
         return self.plainObjectNames+self.linkObjectNames
 
     def object(self, name):
-        po=self.plainObject(name)
+        po = self.plainObject(name)
         if po is not None:
             return po
         else:
@@ -181,17 +189,14 @@ class ObjectModel(Model):
     def links(self):
         return self.plainLinks+self.linkObjects
 
-    def classExtension(self, class_):
-        #type: ('Class')-> List['Object']
+    def classExtension(self, class_: 'Class') -> List['Object']:
         # TODO:2 add inheritance in classExtension
         return [
             o for o in self.objects if o.class_==class_]
 
     @property
-    def story(self):
-        #type: () -> Optional['Story']
-        """
-        Return None if the ObjectModel does not results from
+    def story(self) -> Optional['Story']:
+        """ Return None if the ObjectModel does not result from
         a story evaluation. Otherwise return the corresponding
         story.
         """
@@ -217,21 +222,20 @@ class ObjectModel(Model):
         return ms
 
     @property
-    def metamodel(self):
-        #type: () -> Metamodel
+    def metamodel(self) -> Metamodel:
         return METAMODEL
 
     def finalize(self):
         from modelscript.metamodels.objects.statechecker import (
             StateCheck
         )
-        print('.'*30,'>>>> ObjectModel.FINALIZE()')
-        print('.'*30,'    >>>> ANALYZING OBJECT MODEL')
+        print('.'*30, '>>>> ObjectModel.FINALIZE()')
+        print('.'*30, '    >>>> ANALYZING OBJECT MODEL')
         self.stateCheck=StateCheck(self)
         self.stateCheck.check()
-        print('.'*30,'    <<<< OBJECT MODEL ANALYZED')
+        print('.'*30, '    <<<< OBJECT MODEL ANALYZED')
         super(ObjectModel, self).finalize()
-        print('.'*30,'<<<< ObjectModel.FINALIZE()')
+        print('.'*30, '<<<< ObjectModel.FINALIZE()')
 
 
 class ShadowObjectModel(ObjectModel):
@@ -352,6 +356,7 @@ class Member(ResourceInstance, metaclass=ABCMeta):
 # TODO:3 generalize and improve "package" management over languages
 #       This class comes from metamodels.class
 #       It would make sense to move this to a upper level
+
 
 class Package(PackagableElement):
     """

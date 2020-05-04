@@ -77,7 +77,6 @@ Class:  // common
     (o_
         (textBlock = TextBlock)?
         attributeCompartment=AttributesCompartment ?
-        permissionCompartment=PermissionsCompartment ?
     _o)?
     X
 ;
@@ -107,11 +106,6 @@ AttributeDecorations:
         (isDerived = '/') ?
         (visibility = Visibility) ?
     ) #
-;
-
-PermissionsCompartment:
-    'permissions'
-    X
 ;
 
 

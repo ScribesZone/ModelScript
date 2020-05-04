@@ -118,9 +118,6 @@ class ObjectModelCopier(object):
                 lineNo=link_object.lineNo,
                 description=link_object.description)
 
-
-
-
     def _copy_slot(self, old_slot, new_object):
         new_slot=\
             Slot(

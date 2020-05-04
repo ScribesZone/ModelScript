@@ -65,8 +65,9 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
 
     # -------- inherited part ----------------------------------
 
-    inheritanceCycles: Later[List['Class']]
+    inheritanceCycles: Later[List[List['Class']]]
     """The list of cycles starting and going to the current class.
+    For instance [[A,B,A], [A,A]]
     """
 
     _inheritedAttributeNamed: Later[Dict[str, 'Attribute']]
@@ -344,8 +345,21 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
         return self.ownedPlayedRoleNames\
                + self.inheritedPlayedRoles
 
+    # ------- misc ------------------------------------------------------
 
-    #------- misc ------------------------------------------------------
+    @property
+    def cycles(self) -> str:
+        """
+        A string describing the inheritance cycles starting from this
+        class if any or None if there is no cycle.
+        """
+        if self.inheritanceCycles:
+            return (
+                ', '.join(
+                    ('<'.join(c.name for c in cycle))
+                    for cycle in self.inheritanceCycles))
+        else:
+            return None
 
     @property
     def names(self):
@@ -354,8 +368,7 @@ class Class(PackagableElement, Entity, metaclass=abc.ABCMeta):
             + self.invariantNames)
 
     @property
-    def idPrint(self):
-        #type: () -> List[Attribute]
+    def idPrint(self) -> List['Attribute']:
         """List of all {id} attributes.
         """
         return [
@@ -398,15 +411,29 @@ class Attribute(SourceModelElement, Member):
     """
 
     class_: 'Class'
+    """Class of the attribute."""
+
     type: Union[str, 'AttributeType']
-    _isDerived: bool
+    """Type of the attribute (AttributeType). An AttributeType is
+    a simple type plus optionality and multiplicity. 
+    Something that could be like String[0..1] or String[*]."""
+
+    isDerived: bool
+    """Whether the attribute is derived or not."""
+
     visibility: Optional[
         Literal['public', 'private', 'protected', 'package']]
+    """The visibility of the attribute."""
+
     isOptional: bool
-    isInit: bool
-    expression: Optional[str]
+    """Whether the attribute is optional or not.
+    For instance x : String[0..1] is optional."""
+
     tags: List[str]
+    """The list of tags associated with the attribute."""
+
     stereotypes: List[str]
+    """The list of stereotypes associated with the attribute."""
 
     def __init__(self, name, class_,
                  type=None,
@@ -426,19 +453,19 @@ class Attribute(SourceModelElement, Member):
         self.class_ = class_
         self.class_._ownedAttributeNamed[name] = self
         self.type = type  # string later resolved as SimpleType
-        self._isDerived = isDerived
+        self.isDerived = isDerived
         self.visibility = visibility
         self.isOptional = isOptional
         self.tags = tags
         self.stereotypes = stereotypes
 
-    @MAttribute('Boolean')
-    def isDerived(self):
-        return self._isDerived
-
-    @isDerived.setter
-    def isDerived(self,isDerived):
-        self._isDerived = isDerived
+    # @MAttribute('Boolean')
+    # def isDerived(self):
+    #     return self._isDerived
+    #
+    # @isDerived.setter
+    # def isDerived(self,isDerived):
+    #     self._isDerived = isDerived
 
     @property
     def label(self):

@@ -500,19 +500,19 @@ class ClassModel(Model):
                         lambda x: x.superclasses,
                         class_,
                         class_))
+                class_.inheritanceCycles = cycles
                 if len(cycles) >= 1:
                     ASTNodeSourceIssue(
                         code=icode('SUPER_CYCLES_MSG'),
                         astNode=class_.astNode,
                         level=Levels.Error,
                         message=(
-                            'Class inheritance is cyclic for "%s"'
-                             % class_.name))
+                            'Class inheritance is cyclic for "%s" : %s'
+                             % (class_.name, class_.cycles)))
                     # TODO:4 add detailed message with cycles var
                     cycles_nb += len(cycles)
                     # just for (more or less) localized error message
                     last_class = class_
-                class_.inheritanceCycles=cycles
             if cycles_nb >= 1:
                 ASTNodeSourceIssue(
                     code=icode('SUPER_CYCLES_STOP'),
