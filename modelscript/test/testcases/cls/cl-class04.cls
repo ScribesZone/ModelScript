@@ -1,6 +1,7 @@
-        //@Metric "plain class" 3
-        //@Metric "class" 3
-        //@Metric "association class" 0
+    //@Metric "plain class" 3
+    //@Metric "class" 3
+    //@Metric "association class" 0
+
     //@Issue cl.res.Class.NoSuper 2
     //@Issue level *
 

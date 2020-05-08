@@ -615,18 +615,22 @@ class StateCheck(object):
         # This check is performed by USE tool
         # It creates OCLInvariantViolation
         # print(('@@'*40+'\n')*5)
-        print('@@'*10, 'ocl invariant to be checked with use ocl')
+        if False:
+            print('@@'*10, 'ocl invariant to be checked with use ocl')
         # print(('@@'*40+'\n')*5)
 
     def XXX(self):
+        debug = False
         for object in self.objectModel.objects:
             for role in list(object._link_roles_per_role.keys()):
-                print('GG'*20, '%s.%s=%s' % (
-                    object.name,
-                    role.name,
-                    object.cardinality(role)))
+                if debug:
+                    print('GG'*20, '%s.%s=%s' % (
+                        object.name,
+                        role.name,
+                        object.cardinality(role)))
                 for link_role in object._link_roles_per_role[role]:
-                    print('GG'*20,' '*10, str(link_role), link_role.object)
+                    if debug:
+                        print('GG'*20,' '*10, str(link_role), link_role.object)
 
 
     @property

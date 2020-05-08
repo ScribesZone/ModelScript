@@ -17,26 +17,37 @@ DEBUG = 0
 
 def manageAndAssertOutput(
         reltestfile: str,
+        stream: str,
         actualOutput: str) -> None:
-    """Compare the given output to existing output and raise an
-    assertion error if the output has changed.
+    """Compare the given "output" to existing "output" and raise an
+    assertion error if the "output" has changed. This comparison is
+    performed for a given "stream", the most common being the "output".
+    The notion of "stream" is in fact just a string to differentate
+    in which directories the content used for the comparison is saved.
+    This makes it possible to compare not only the regular output
+    but also other kind of textual output. In the description below
+    examples are taken assuming that we consider output comparison.
 
     The following directories are involved :
 
-    *   output-actual/ This content of this directory is update
-        at each execution. It contains the last output, the
-        one given as parameter. Having this output available is
-        useful for file comparaison using an diff tool for instance.
+    *   cmp-<stream>-actual/ (for instance cmp-output-actual).
+        This content of this directory is update at each execution.
+        This directory contains the last "output" for the stream
+        <stream>, the one given as parameter. Having this "output"
+        available is useful for file comparaison using an diff tool
+        for instance.
 
-    *   output-generated/ The content of this directory is updated
+    *   cmp-<stream>-generated/ (for instance cmp-output-generated).
+        The content of this directory is updated
         only if the file is not existing. This directory serves
-        at a generated reference, if the verified output is not
-        available. Using the generated output is useful to check
-        if the actual output has changed since the last update of
-        the generated output.
+        at a generated reference, if the verified "output" is not
+        available. Using the generated "output" is useful to check
+        if the actual "output" has changed since the last update of
+        the generated "output".
 
-    *   output-verified/ By contrast to the other directories the
-        content of this directory is updated by hand. If a file
+    *   cmp-<stream>-verified/ (for instance cmp-output-verified).
+        By contrast to the other directories the content of this
+        directory is updated by hand. If a file
         is present in this directory in takes precedence over
         the generated one. In other words the comparison is made
         with the verified output, if any, or with the generated
@@ -54,15 +65,15 @@ def manageAndAssertOutput(
     DIR_KIND = Literal['generated', 'verified', 'actual']
 
     def _output_dir(kind: DIR_KIND):
-        """Something like des/output-generated """
+        """Something like des/cmp-output-generated """
         return getTestFile(
             os.path.join(
                 os.path.dirname(reltestfile),
-                'output-%s' % kind),
+                'cmp-%s-%s' % (stream, kind)),
             checkExist=False)
 
     def _output_file(kind: DIR_KIND):
-        """Something like des/output-generated/de-ko01.des """
+        """Something like des/cmp-output-generated/de-ko01.des """
         return os.path.join(
             _output_dir(kind),
             os.path.basename(reltestfile))

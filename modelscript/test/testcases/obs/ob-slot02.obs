@@ -1,6 +1,8 @@
     // attribute that does not exist
 
     //@Issue st.eval.Slot.NoAtt 1
+    //@Issue ob.ana.Slot.Missing 1
+    //@Issue ob.ana.Link.BadCardinality 2
     //@Issue else *
 
 object model Ob_slot02

@@ -1,2 +1,2 @@
-output-actual/
-output-generated/
+cmp-output-actual/
+cmp-output-generated/

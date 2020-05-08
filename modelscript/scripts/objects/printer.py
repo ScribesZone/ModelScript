@@ -40,22 +40,21 @@ class ObjectModelPrinter(ModelPrinter):
         super(ObjectModelPrinter, self).doModelContent()
 
         if self.theModel.storyEvaluation is not None:
-            text=StoryBestPrinter(
+            text = StoryBestPrinter(
                 story=self.theModel.storyEvaluation.step,
                 storyEvaluation=self.theModel.storyEvaluation,
                 # TODO:4 add selection to configuraiton
-                # useStory=XXX
+                useStory=True
             ).do()
             self.outLine(text)
             return self.output
         else:
-            # the model does not come from a story
+            # The model does not come from a (valid) evaluated story.
+            # This could be because of an error.
             # It can still be printed, using the code below
             #TODO:4 reimplement the raw object model printer
-            print(('^^'*40+'\n')*20)
-            print('^^^^ At the moment being only models coming '
-                  'can be printed.')
-            print(('^^'*40+'\n')*20)
+            self.outLine('        <<< This model cannot be printed >>>')
+            self.outLine('')
 
     #-------------------------------------------------------------------
     #                The code below is not used anymore.

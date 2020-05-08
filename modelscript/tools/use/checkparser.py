@@ -132,7 +132,7 @@ class UseCheckOutputsParser(object):
         #type: Optional[CheckPointOutput]
         current_invariant_failure=None
         for line in self.lines:
-            print('66'*10, line)
+            # print('66'*10, line)
             r=(begin
                 +r'checked \d+ invariants in .*'
                 +end)

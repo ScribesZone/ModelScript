@@ -19,3 +19,4 @@ thing.time0=12:25:10
 thing.mode=Mode.during
 thing.mode0=Mode.during
 thing.url0=null
+thing.void=null

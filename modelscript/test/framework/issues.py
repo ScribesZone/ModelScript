@@ -151,7 +151,7 @@ def assertIssueBox(
                     unexpected = True
 
 
-        if unexpected:
+        if True:
             printActualSummaries()
 
         assert not unexpected, \

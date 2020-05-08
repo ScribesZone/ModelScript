@@ -28,3 +28,4 @@ class Something
         mode : Mode
         mode0 : Mode[0..1]
         url0 : URL[0..1]
+        void : NullType

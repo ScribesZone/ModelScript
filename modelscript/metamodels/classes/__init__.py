@@ -559,7 +559,8 @@ class ClassModel(Model):
                                 inh_att_named[name] = sc_att
                 class_._inheritedAttributeNamed = inh_att_named
                 for a in inh_att_named:
-                    print('WW' * 10, '    %s' % a)
+                    if False:
+                        print('WW' * 10, '    %s' % a)
 
             def _check_no_vertical_conflicts(class_):
                 for name in list(class_._inheritedAttributeNamed.keys()):

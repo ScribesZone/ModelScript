@@ -1,4 +1,4 @@
-    //@Issue ob.ana.Slot.BadType 8
+    //@Issue ob.ana.Slot.BadType 9
     //@Issue else *
 
 
@@ -23,3 +23,4 @@ thing.time0=12:25:10
 thing.mode=null
 thing.mode0=Mode.during
 thing.url0=null
+thing.void=false

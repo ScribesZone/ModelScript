@@ -77,6 +77,10 @@ from typing import Dict, Optional
 import os
 import re
 
+from modelscript.base.styles import (
+    Style,
+    Styles)
+
 from modelscript.base.issues import (
     Level,
     Levels)
@@ -171,36 +175,47 @@ def checkIssuesMetricsAndOutput(
         os.path.basename(reltestfile)
     )
     print('\nTST:'+'=='*10 + ' testing '+file_info+'='*35+'\n' )
-    # Create a model source file from the given file.
+
+    # ---- Create the model
+    # Create the model source file from the given file.
     # This do parsing and eventually creates the model
     source = metamodel.sourceClass(getTestFile(reltestfile))
 
-    # Get access tp the model
+    # ---- Get access tp the model
     model = source.model
 
-    print('\n'+'TST:'+'=='*10 + ' printing model '+'='*40+'\n')
+    # ---- print the model
+    print('\n'*2)
+    print(Styles.blue.do('TST: printing model'))
+    print(Styles.blue.do('TST:'+'##'*50+'\n'))
     printer = metamodel.modelPrinterClass
     styled_config = ModelPrinterConfig(styled=True)
     printer(source.model, config=styled_config).display()
+    print(Styles.blue.do('TST:'+'##'*50+'\n'))
 
+    # ---- deal with output assertion
     actual_output = printer(source.model).string()
     manageAndAssertOutput(
         reltestfile=reltestfile,
+        stream='output',
         actualOutput=actual_output)
 
-
+    # ---- deal with issue assertions
     if expectedIssues is None:
         expectedIssues={F: 0, E: 0, W: 0, I: 0, H: 0}
-
     assertIssueBox(source.fullIssueBox, expectedIssues)
+
+    # ---- deal with metrics assertions
     assertMetrics(source.fullMetrics, expectedMetrics)
 
-    print('\n'+'TST:'+'==' * 10 + ' printing source '+file_info+'='*35+'\n')
-    metamodel.sourcePrinterClass(source).display()
+    # print('\n'+'TST:'+'==' * 10 + ' printing source '+file_info+'='*35+'\n')
+    # metamodel.sourcePrinterClass(source).display()
 
-    print('\n'+'TST:'+'==' *10 + ' printing metrics '+'='*40+'\n')
-    print(source.fullMetrics)
-    print('TST:'+'=='*10+' tested '+file_info+'='*35+'\n' )
+    # ---- print metrics
+    if False:
+        print('\n'+'TST:'+'==' *10 + ' printing metrics '+'='*40+'\n')
+        print(source.fullMetrics)
+        print('TST:'+'=='*10+' tested '+file_info+'='*35+'\n' )
 
 
 def simpleTestDeneratorAssertions(metamodel):

@@ -1,11 +1,11 @@
     // Annotated text blocks
 
-        //@Metric "object" 4
-        //@Metric "link" 6
-        //@Metric "plain object" 4
-        //@Metric "plain link" 6
-        //@Metric "link object" 0
-        //@Metric "slot" 9
+    //@Metric "object" 4
+    //@Metric "link" 6
+    //@Metric "plain object" 4
+    //@Metric "plain link" 6
+    //@Metric "link object" 0
+    //@Metric "slot" 9
 
 object model Ob_slot01
 import class model from "../cls/cl-main-cybercompany-a.cls"
@@ -22,7 +22,6 @@ The budget of computing is 200000.
 bob : Employee
 The name of bob is "Robert".
 The salary of bob is 200.
-
 | Samira works at ACME, in the computing department.
 | She works with pauline, but pauline earns 8000€ per month.
     samira WorksIn computing.

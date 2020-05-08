@@ -32,18 +32,16 @@ __all__=(
 )
 class StoryPrinter(AbstractPrinter):
 
-
     def __init__(self,
-                 story,
-                 indent=0,
-                 config=None):
-        #type: (Story, int, Optional[AbstractPrinterConfig]) -> None
+                 story: Story,
+                 indent: int = 0,
+                 config: Optional[AbstractPrinterConfig] = None):
         super(StoryPrinter, self).__init__(
             config=config
         )
 
-        self.story=story
-        self.indent=indent
+        self.story = story
+        self.indent = indent
 
     def do(self):
         self.doStory(
@@ -105,9 +103,9 @@ class StoryPrinter(AbstractPrinter):
 
 
     def doTextStep(self, step, indent, recursive=True):
-        tbp=TextBlockPrinter(step.textBlock, indent=indent)
-        text=tbp.do()
-        self.outLine(text)
+        tbp = TextBlockPrinter(step.textBlock, indent=indent)
+        text = tbp.do()
+        self.out(text)
         if recursive:
             self._doSubsteps(step, indent+1, recursive=recursive)
         return self.output
@@ -171,12 +169,12 @@ class StoryPrinter(AbstractPrinter):
         action='create ' if step.isAction else ''
         self.outLine(
             # create (a,R,b)
-            '%s%s%s%s%s%s%s%s' % (
+            '%s%s%s%s %s%s %s%s' % (
                 self.kwd(action),
                 self.kwd('('),
                 step.sourceObjectName,
                 self.kwd(','),
-                step.association,
+                step.association.name,
                 self.kwd(','),
                 step.targetObjectName,
                 self.kwd(')')),
@@ -215,8 +213,6 @@ class StoryPrinter(AbstractPrinter):
                 self.kwd(')')]),
             indent=indent)
         return self.output
-
-
 
     def doCheck(self, step, indent):
         _={

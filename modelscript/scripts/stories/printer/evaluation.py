@@ -102,17 +102,16 @@ def StoryBestPrinter(
         storyEvaluation=None,
         useStory=False,
         indent=0):
-    """
-    Return the most appropriate printer among the
+    """Returns the most appropriate printer among the
     evaluation printer and regular story printer.
     If the storyEvaluation is None or useStory is True
     then select the StoryPrinter, otherwise select
     StoryEvaluationPrinter.
     """
-    choosen_story=(
+    chosen_story = (
         storyEvaluation is None
         or useStory)
-    if choosen_story:
+    if chosen_story:
         return StoryPrinter(
             story=story,
             indent=indent)
