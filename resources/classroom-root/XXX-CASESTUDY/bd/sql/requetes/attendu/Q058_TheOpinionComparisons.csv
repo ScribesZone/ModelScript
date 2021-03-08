@@ -1,0 +1,143 @@
+movie,spectator1,stars1,spectator2,stars2
+The Inbetweeners 2,Marie,0,Adrian,0
+The Inbetweeners 2,Marie,0,Alizee,4
+The Inbetweeners 2,Marie,0,Jackie,2
+The Inbetweeners 2,Marie,0,Lauranne,0
+The Inbetweeners 2,Marie,0,Phil,2
+The Inbetweeners 2,Marie,0,Tom,5
+The Inbetweeners 2,Adrian,0,Alizee,4
+The Inbetweeners 2,Adrian,0,Jackie,2
+The Inbetweeners 2,Adrian,0,Lauranne,0
+The Inbetweeners 2,Adrian,0,Marie,0
+The Inbetweeners 2,Adrian,0,Phil,2
+The Inbetweeners 2,Adrian,0,Tom,5
+The Inbetweeners 2,Phil,2,Adrian,0
+The Inbetweeners 2,Phil,2,Alizee,4
+The Inbetweeners 2,Phil,2,Jackie,2
+The Inbetweeners 2,Phil,2,Lauranne,0
+The Inbetweeners 2,Phil,2,Marie,0
+The Inbetweeners 2,Phil,2,Tom,5
+The Inbetweeners 2,Jackie,2,Adrian,0
+The Inbetweeners 2,Jackie,2,Alizee,4
+The Inbetweeners 2,Jackie,2,Lauranne,0
+The Inbetweeners 2,Jackie,2,Marie,0
+The Inbetweeners 2,Jackie,2,Phil,2
+The Inbetweeners 2,Jackie,2,Tom,5
+The Inbetweeners 2,Tom,5,Adrian,0
+The Inbetweeners 2,Tom,5,Alizee,4
+The Inbetweeners 2,Tom,5,Jackie,2
+The Inbetweeners 2,Tom,5,Lauranne,0
+The Inbetweeners 2,Tom,5,Marie,0
+The Inbetweeners 2,Tom,5,Phil,2
+The Inbetweeners 2,Alizee,4,Adrian,0
+The Inbetweeners 2,Alizee,4,Jackie,2
+The Inbetweeners 2,Alizee,4,Lauranne,0
+The Inbetweeners 2,Alizee,4,Marie,0
+The Inbetweeners 2,Alizee,4,Phil,2
+The Inbetweeners 2,Alizee,4,Tom,5
+The Inbetweeners 2,Lauranne,0,Adrian,0
+The Inbetweeners 2,Lauranne,0,Alizee,4
+The Inbetweeners 2,Lauranne,0,Jackie,2
+The Inbetweeners 2,Lauranne,0,Marie,0
+The Inbetweeners 2,Lauranne,0,Phil,2
+The Inbetweeners 2,Lauranne,0,Tom,5
+Pretty Woman,Marie,5,Adrian,4
+Pretty Woman,Marie,5,Alizee,4
+Pretty Woman,Marie,5,Jackie,3
+Pretty Woman,Marie,5,Phil,4
+Pretty Woman,Marie,5,Tom,5
+Pretty Woman,Adrian,4,Alizee,4
+Pretty Woman,Adrian,4,Jackie,3
+Pretty Woman,Adrian,4,Marie,5
+Pretty Woman,Adrian,4,Phil,4
+Pretty Woman,Adrian,4,Tom,5
+Pretty Woman,Phil,4,Adrian,4
+Pretty Woman,Phil,4,Alizee,4
+Pretty Woman,Phil,4,Jackie,3
+Pretty Woman,Phil,4,Marie,5
+Pretty Woman,Phil,4,Tom,5
+Pretty Woman,Jackie,3,Adrian,4
+Pretty Woman,Jackie,3,Alizee,4
+Pretty Woman,Jackie,3,Marie,5
+Pretty Woman,Jackie,3,Phil,4
+Pretty Woman,Jackie,3,Tom,5
+Pretty Woman,Tom,5,Adrian,4
+Pretty Woman,Tom,5,Alizee,4
+Pretty Woman,Tom,5,Jackie,3
+Pretty Woman,Tom,5,Marie,5
+Pretty Woman,Tom,5,Phil,4
+Pretty Woman,Alizee,4,Adrian,4
+Pretty Woman,Alizee,4,Jackie,3
+Pretty Woman,Alizee,4,Marie,5
+Pretty Woman,Alizee,4,Phil,4
+Pretty Woman,Alizee,4,Tom,5
+Edward Scissorhands,Marie,3,Adrian,4
+Edward Scissorhands,Marie,3,Alizee,4
+Edward Scissorhands,Marie,3,Lauranne,5
+Edward Scissorhands,Adrian,4,Alizee,4
+Edward Scissorhands,Adrian,4,Lauranne,5
+Edward Scissorhands,Adrian,4,Marie,3
+Edward Scissorhands,Alizee,4,Adrian,4
+Edward Scissorhands,Alizee,4,Lauranne,5
+Edward Scissorhands,Alizee,4,Marie,3
+Edward Scissorhands,Lauranne,5,Adrian,4
+Edward Scissorhands,Lauranne,5,Alizee,4
+Edward Scissorhands,Lauranne,5,Marie,3
+Lucy,Marie,3,Adrian,4
+Lucy,Marie,3,Alizee,5
+Lucy,Marie,3,Jackie,2
+Lucy,Marie,3,Lauranne,5
+Lucy,Marie,3,Phil,5
+Lucy,Marie,3,Tom,1
+Lucy,Adrian,4,Alizee,5
+Lucy,Adrian,4,Jackie,2
+Lucy,Adrian,4,Lauranne,5
+Lucy,Adrian,4,Marie,3
+Lucy,Adrian,4,Phil,5
+Lucy,Adrian,4,Tom,1
+Lucy,Phil,5,Adrian,4
+Lucy,Phil,5,Alizee,5
+Lucy,Phil,5,Jackie,2
+Lucy,Phil,5,Lauranne,5
+Lucy,Phil,5,Marie,3
+Lucy,Phil,5,Tom,1
+Lucy,Jackie,2,Adrian,4
+Lucy,Jackie,2,Alizee,5
+Lucy,Jackie,2,Lauranne,5
+Lucy,Jackie,2,Marie,3
+Lucy,Jackie,2,Phil,5
+Lucy,Jackie,2,Tom,1
+Lucy,Tom,1,Adrian,4
+Lucy,Tom,1,Alizee,5
+Lucy,Tom,1,Jackie,2
+Lucy,Tom,1,Lauranne,5
+Lucy,Tom,1,Marie,3
+Lucy,Tom,1,Phil,5
+Lucy,Alizee,5,Adrian,4
+Lucy,Alizee,5,Jackie,2
+Lucy,Alizee,5,Lauranne,5
+Lucy,Alizee,5,Marie,3
+Lucy,Alizee,5,Phil,5
+Lucy,Alizee,5,Tom,1
+Lucy,Lauranne,5,Adrian,4
+Lucy,Lauranne,5,Alizee,5
+Lucy,Lauranne,5,Jackie,2
+Lucy,Lauranne,5,Marie,3
+Lucy,Lauranne,5,Phil,5
+Lucy,Lauranne,5,Tom,1
+I. Robot,Marie,5,Adrian,5
+I. Robot,Adrian,5,Marie,5
+Crooks in Clover,Marie,5,Alizee,5
+Crooks in Clover,Marie,5,Lauranne,5
+Crooks in Clover,Marie,5,Tom,5
+Crooks in Clover,Tom,5,Alizee,5
+Crooks in Clover,Tom,5,Lauranne,5
+Crooks in Clover,Tom,5,Marie,5
+Crooks in Clover,Alizee,5,Lauranne,5
+Crooks in Clover,Alizee,5,Marie,5
+Crooks in Clover,Alizee,5,Tom,5
+Crooks in Clover,Lauranne,5,Alizee,5
+Crooks in Clover,Lauranne,5,Marie,5
+Crooks in Clover,Lauranne,5,Tom,5
+Australia,Marie,0,Adrian,5
+Australia,Adrian,5,Marie,0
