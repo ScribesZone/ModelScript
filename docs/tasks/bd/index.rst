@@ -11,5 +11,8 @@ tâches bd.*
     bd.relations.jdd/index
     bd.relations.jdd.negatifs/index
     bd.sql.schema/index
+    bd.sql.contraintes/index
     bd.sql.jdd/index
     bd.sql.jdd.negatifs/index
+    bd.sql.requetes/index
+
