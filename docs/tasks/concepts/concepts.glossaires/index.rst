@@ -8,8 +8,8 @@ tâche concepts.glossaires
     ceux liés aux modèles d'objets et aux scénarios.
 :langage:  :ref:`GlossaryScript`
 :artefacts:
-    * ``glossaries/glossary.gls``
-    * ``glossaries/status.md``
+    * ``concepts/glossaires/glossaires.gls``
+    * ``concepts/glossaires/status.md``
 
 (A) Glossaire
 -------------
@@ -28,12 +28,13 @@ En particulier si différents textes ont été fournis, ceux-ci devraient
 
 D'un point de vue pragmatique si tous les textes ne peuvent pas être
 réécrits se focaliser en priorité sur la réécriture des textes associés
-aux modèles d'objets et aux scénarios.
+aux modèles de classes et aux scénarios.
 
 (C) Identificateurs
 -------------------
 
-Tout au long du projet il sera nécessaire de s'assurer en permanence de 
+Les identificateurs doivent être impérativement en style "MajMin".
+Tout au long du projet il sera nécessaire de s'assurer en permanence de
 l'alignement avec le glossaire de tous les modèles mais aussi 
 du code (SQL, Java, etc.). Cela impliquera entre autre d'aligner non
 seulement les textes, mais aussi les identificateurs.
