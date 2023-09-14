@@ -55,22 +55,22 @@ class ImportBoxPrinter(AbstractPrinter):
             self.out(block_text)
         return self.output
 
-
     def doSourceImport(self, import_: SourceImport) -> str:
-        try:
-            s = ('%s %s %s %s %s' % (
-                self.kwd('import'),
-                self.kwd(import_.importStmt.metamodel.label),
-                self.kwd('model'),
-                self.kwd('from'),
-                "'%s'" %
-                    import_.importStmt.literalTargetFileName
+        # TODO: check why there was a try except
+        # try:
+        s = ('%s %s %s %s %s' % (
+            self.kwd('import'),
+            self.kwd(import_.importStmt.metamodel.label),
+            self.kwd('model'),
+            self.kwd('from'),
+            "'%s'" %
+                import_.importStmt.literalTargetFileName
             ))
-        except Exception as e:
-            s = '**Error** in doSourceImport'
-            print(e)
-        else:
-            print(s)
+        # except Exception as e:  # raise:KO
+        #     s = '**Error** in doSourceImport'
+        #     print(e)
+        # else:
+        #     print(s)
         self.outLine(
             s
         )

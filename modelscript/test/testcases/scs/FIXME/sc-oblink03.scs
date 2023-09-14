@@ -7,4 +7,8 @@ scenario
     create astra is a Project.
 
     create castra is the Control between computing and astra.
-    create the frequency of castra is 3.
+    // BUG: The attribute "frequency" is not specified for object "castra".
+    // The attribute should be defined
+    // same thing without update
+    set the frequency of castra is 3.
+    update the frequency of castra is 3.

@@ -1,0 +1,20 @@
+scenario model Sc_step30
+
+import class model from '../cls/cl-main-cybercompany-11.cls'
+
+hardware is a Department.
+computing is a Department.
+
+astra is a Project.
+turbo is a Project.
+
+castra is the Control between computing and astra.
+
+// ###################################################
+// the frequency of castra is 3.
+// It seems that there is a check after 11
+
+castra.frequence=3
+
+cturbo : Control (computing, turbo)
+cturbo.frequency=90

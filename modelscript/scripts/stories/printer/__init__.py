@@ -44,10 +44,12 @@ class StoryPrinter(AbstractPrinter):
         self.indent = indent
 
     def do(self):
+        #self.out('***')
         self.doStory(
             self.story,
             indent=self.indent,
             recursive=True)
+        #self.out('###')
         return self.output
 
 
@@ -75,7 +77,7 @@ class StoryPrinter(AbstractPrinter):
         elif isinstance(step, CheckStep):
             return self.doCheck(step, indent)
         else:
-            raise UnexpectedCase( #raise:OK
+            raise UnexpectedCase(  # raise:OK
                 'Unexpected step. type=:"%s"' % step)
 
     def doVerbStep(self, step, indent, recursive=True):
@@ -92,11 +94,12 @@ class StoryPrinter(AbstractPrinter):
         return self.output
 
     def doIncludeStep(self, step, indent):
-        # TODO:- does not display kwd properly.
+        w2 = step.words[1]
         self.outLine(
-            '%s %s' % (
+            '%s %s %s' % (
                 self.kwd('include'),
-                ' '.join(step.words)),
+                self.kwd(step.words[0]),
+                self.kwd(w2) if w2 == 'model' else w2),
             indent=indent
         )
         return self.output
@@ -116,7 +119,7 @@ class StoryPrinter(AbstractPrinter):
         if recursive:
             self._doSubsteps(
                 step,
-                indent, # no additionaly indent for story steps
+                indent, # no additionally indent for story steps
                 recursive=recursive)
         return self.output
 
@@ -126,7 +129,7 @@ class StoryPrinter(AbstractPrinter):
         return self.output
 
     def doObjectCreationStep(self, step, indent):
-        action='create ' if step.isAction else ''
+        action = 'create ' if step.isAction else ''
         self.outLine(
             '%s%s %s %s' % (
                 self.kwd(action),
@@ -149,11 +152,11 @@ class StoryPrinter(AbstractPrinter):
 
     def doSlotStep(self, step, indent):
         if step.isAction and step.isUpdate:
-            action='update '
+            action = 'update '
         elif step.isAction and not step.isUpdate:
-            action='set '
+            action = 'set '
         else:
-            action=''
+            action = ''
         self.outLine(
             '%s%s%s%s %s %s' % (
                 self.kwd(action),
@@ -166,7 +169,7 @@ class StoryPrinter(AbstractPrinter):
         return self.output
 
     def doLinkCreationStep(self, step, indent):
-        action='create ' if step.isAction else ''
+        action = 'create ' if step.isAction else ''
         self.outLine(
             # create (a,R,b)
             '%s%s%s%s %s%s %s%s' % (
@@ -215,16 +218,15 @@ class StoryPrinter(AbstractPrinter):
         return self.output
 
     def doCheck(self, step, indent):
-        _={
-            None:'',
-            'before': ' (before)',
-            'after': ' (after)'
-        }[step.position]
-        self.outLine(
-            '%s%s' % (
-                self.kwd('check'),
-                self.kwd(_)),
-            indent=indent)
+        if step.position is None:
+            # This is an explict check -> keyword
+            self.outLine(self.kwd('check'), indent=indent)
+        else:
+            # This is an implicit check -> comment
+            self.outLine(
+                self.cmt('// check %s' % step.position),
+                indent=indent)
+
         return self.output
 
 

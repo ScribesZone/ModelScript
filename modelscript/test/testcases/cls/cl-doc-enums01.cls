@@ -9,7 +9,6 @@ enumeration Jour
     | and various lines
     | and with `Nothing`
     lundi
-        | `Un` chiffre sur `Deux`
-        | and various lines
+        | `Un` autre chiffre
         | and with `Nothing`
 

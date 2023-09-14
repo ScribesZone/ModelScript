@@ -35,6 +35,11 @@ def _getDir(absolutePath: str, relDir: str, ensure=True) -> str:
                 'TST: Directory %s does not exist.' % dir)
     return dir
 
+def getAbolutePath(relPath):
+    return (
+        os.path.join(
+            TEST_CASES_DIRECTORY,
+            relPath))
 
 def getTestDir(relDir: str, ensure: bool=True) -> str:
     """Get an absolute directory from a relative one.

@@ -1,0 +1,12 @@
+scenario model Sc_step30
+
+import class model from '../cls/cl-main-cybercompany-11.cls'
+
+computing is a Department.
+astra is a Project.
+
+castra is the Control between computing and astra.
+
+// BUG: The attribute "frequency" is not specified for object "castra".
+// the error is detected after 12
+the frequency of castra is 3.

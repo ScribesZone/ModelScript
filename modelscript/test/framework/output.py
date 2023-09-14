@@ -6,8 +6,11 @@ from typing import Optional, List
 from typing_extensions import Literal
 import os
 import codecs
+import shutil
 
-from modelscript.test.framework import getTestFile
+from modelscript.test.framework import (
+    getTestFile,
+    getAbolutePath)
 from modelscript.base.files import ensureDir
 
 __all__ = (
@@ -22,7 +25,7 @@ def manageAndAssertOutput(
     """Compare the given "output" to existing "output" and raise an
     assertion error if the "output" has changed. This comparison is
     performed for a given "stream", the most common being the "output".
-    The notion of "stream" is in fact just a string to differentate
+    The notion of "stream" is in fact just a string to differentiate
     in which directories the content used for the comparison is saved.
     This makes it possible to compare not only the regular output
     but also other kind of textual output. In the description below
@@ -53,6 +56,13 @@ def manageAndAssertOutput(
         with the verified output, if any, or with the generated
         output.
 
+    DISABLING COMPARAISONS. To disable comparison a directory
+    called cmp-no must be created. In this case no comparison are
+    peformed and the directory cmp-<stream>-actual/ and
+    cmp-<stream>-generated/ and deleted. The directory "verified"
+    is never deleted.
+
+
     Args:
         reltestfile: The name of the file being tested. This name
             is relative to the testcases directory.
@@ -65,7 +75,7 @@ def manageAndAssertOutput(
     DIR_KIND = Literal['generated', 'verified', 'actual']
 
     def _output_dir(kind: DIR_KIND):
-        """Something like des/cmp-output-generated """
+        """Something like /D/joe/ ... des/cmp-output-generated """
         return getTestFile(
             os.path.join(
                 os.path.dirname(reltestfile),
@@ -77,6 +87,16 @@ def manageAndAssertOutput(
         return os.path.join(
             _output_dir(kind),
             os.path.basename(reltestfile))
+
+    def _comparisons_enabled():
+        # disabled if "cmp-no'
+        d = getAbolutePath(
+                os.path.join(
+                    os.path.dirname(reltestfile),
+                   'cmp-no'))
+        has_no_cmp_dir = os.path.isdir(d)
+        return not has_no_cmp_dir
+
 
     # ---- generation helpers -------------------
 
@@ -105,12 +125,20 @@ def manageAndAssertOutput(
     def _print_message(msg: str) -> None:
         print('<>'*10, msg)
 
+    def _clean_tmp_directories():
+        for kind in ['actual', 'generated']:
+            d = _output_dir(kind)
+            if os.path.isdir(d):
+                shutil.rmtree(d)
+
     def _compare(actual: str, kind: DIR_KIND) -> Optional[bool]:
         """Compares the actual output with the reference output.
         Display the error if any, but do not raise the exception.
         Returns None if there is no comparison to be made.
         Otherwise returns the True if the actual output and the
         generated output are the some.
+        If comparison is enabled then remove the directories
+        'actual' and 'generated'.
         """
         if kind is None:
             return None
@@ -151,6 +179,10 @@ def manageAndAssertOutput(
                     _print_message('REFERENCE:   %s' % rl)
                     same = False
             return same
+
+    if not _comparisons_enabled():
+        _clean_tmp_directories()
+        return
 
     # ---- save the actual output -----------------------------------------
     _create_output_file('actual')

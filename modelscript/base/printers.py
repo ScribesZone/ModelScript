@@ -168,15 +168,18 @@ class AbstractPrinter(object, metaclass=ABCMeta):
 
     def outLine(self,
                 s,
+                *,
                 lineNo=None,
                 suffix='\n',
                 prefix='',
                 linesBefore=0,
                 linesAfter=0,
                 indent=0,
+                removeLastEOL=False,
                 increaseLineNo=False,
                 style=Styles.no,
                 ):
+#        self.out(str(indent))
         if linesBefore >= 1:
             for i in range(linesBefore):
                 self.outLine('', style=style)
@@ -205,6 +208,10 @@ class AbstractPrinter(object, metaclass=ABCMeta):
         if linesAfter >= 1:
             for i in range(linesAfter):
                 self.outLine('')
+
+        if removeLastEOL and self.output[-1] == '\n':
+            self.output = self.output[:-1]
+
         return self.output
 
     def _indentPrefix(self, indent=0):
@@ -225,7 +232,7 @@ class AbstractPrinter(object, metaclass=ABCMeta):
     
     @abstractmethod
     def do(self):
-        raise MethodToBeDefined() #raise:OK
+        raise MethodToBeDefined()  # raise:OK
 
     def doFull(self, removeLastEOL=False, addLastEOL=True):
         text = self.do()
@@ -479,6 +486,28 @@ class ContentPrinterConfigs(object):
 
 
 class ContentPrinter(StructuredPrinter, metaclass=ABCMeta):
+    """
+    Add a "ContentZone", "SummaryZone" and "Summary"
+        doTop
+            doTopTitle
+            doIssueSummary
+            doIssues         if issueMode='top'
+            doTopInner
+
+        doBody
+            >>> doSummaryZone     if summaryMode = 'top'
+                >>> doSummary     see code
+            >>> doContent
+            >>> doSummaryZone     if summaryMode = 'bottom'
+                see above
+
+        doBottom
+            doBottomInner
+            doIssues         if issueMode='bottom'
+            doIssueSummary
+            doBottomTitle
+    """
+
     def __init__(self,
                  config: Optional[ContentPrinterConfig] = None) -> None:
         if config is None:
@@ -504,7 +533,10 @@ class ContentPrinter(StructuredPrinter, metaclass=ABCMeta):
 
     def doSummaryZone(self):
         self.currentLineNoDisplay = False
-        sep_line = Styles.comment.do(
+        if True:
+            sep_line = ''
+        else:
+            Styles.comment.do(
                     # '---- Summary '+'-'*67,
                     '--'*40,
                     styled=self.config.styled)

@@ -31,8 +31,8 @@ class StoryEvaluationPrinter(AbstractPrinter):
             config=config
         )
         self.storyEvaluation = storyEvaluation
-        self.story=self.storyEvaluation.step
-        self.indent=indent
+        self.story = self.storyEvaluation.step
+        self.indent = indent
 
     def do(self):
         self.doStepEvaluation(
@@ -61,7 +61,7 @@ class StoryEvaluationPrinter(AbstractPrinter):
         p = StoryPrinter(
             story=self.story,
             indent=indent)
-        text=p.doStep(
+        text = p.doStep(
             step=stepEval.step,
             indent=indent,
             recursive=False)
@@ -71,52 +71,67 @@ class StoryEvaluationPrinter(AbstractPrinter):
         return self.output
 
     def doOperationStepEvaluation(self, stepEval, indent):
-        p=StoryPrinter(
+        p = StoryPrinter(
             story=self.story,
-            indent=indent
+            config=self.config,
+            indent=0
         )
-        text=p.doStep(
+        text = p.doStep(
             step=stepEval.step,
-            indent=indent,
+            indent=0,
             recursive=False)
-        self.out(text, indent)
+        self.outLine(text, removeLastEOL=True)
         if len(stepEval.issues) >= 1:
             self.outLine(self.kwd('%s issues')
                          % len(stepEval.issues))
         for a in stepEval.accesses:
-            self.outLine(self.kwd(str(a)), indent+1)
+            self.outLine(self.cmt(str(a)), indent=indent)
 
         return self.output
 
     def doCheckStepEvaluation(self, stepEval, indent):
-        self.outLine('CHECK ---------------- >>>', indent)
-        self.outLine(str(stepEval.metrics), indent)
-        analysis_messages=stepEval.frozenState.stateCheck.messages
-        self.outLine('%s analysis issues' % len(analysis_messages))
-        self.outLine('\n    ->  '.join(analysis_messages))
+        pos = {
+            None: '',
+            'after': '(after)',
+            'before': '(before)'
+        }[stepEval.step.position]
+        self.outLine('%s %s' % (
+                self.kwd('check'),
+                self.cmt(pos)),
+            indent=0)
+        # self.outLine(str(stepEval.metrics), indent=indent)
+        analysis_messages = stepEval.frozenState.stateCheck.messages
+        self.outLine(
+            self.cmt('%s analysis issues' % len(analysis_messages)),
+            indent=1)
+        for am in analysis_messages:
+            self.outLine(
+                self.cmt('-> '+am),
+                indent=2)
         return self.output
 
 
 def StoryBestPrinter(
         story,
         storyEvaluation=None,
+        config=None,
         useStory=False,
-        indent=0):
+        indent=0,
+        forceStory=False):
     """Returns the most appropriate printer among the
     evaluation printer and regular story printer.
-    If the storyEvaluation is None or useStory is True
-    then select the StoryPrinter, otherwise select
-    StoryEvaluationPrinter.
     """
     chosen_story = (
         storyEvaluation is None
         or useStory)
-    if chosen_story:
+    if chosen_story or forceStory:
         return StoryPrinter(
             story=story,
-            indent=indent)
+            indent=indent,
+            config=config)
     else:
         return StoryEvaluationPrinter(
             storyEvaluation=storyEvaluation,
-            indent=indent
+            indent=indent,
+            config=config
         )

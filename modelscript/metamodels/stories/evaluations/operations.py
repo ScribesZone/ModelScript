@@ -1,9 +1,8 @@
 # coding=utf-8
-"""
-Metamodel package representing the evaluation of operations.
+"""Metamodel package representing the evaluation of operations.
 This goes with the package "stories.evaluation".
 
-The evaluation of operations is not detailled.
+The evaluation of operations is not detailed.
 That is, there is no one class for all operation evaluation.
 
 This simplification avoids repeating the hierarchy of
@@ -17,7 +16,7 @@ used instead.
 This strategy is good enough since the details
 of the evaluation of each operation is not so important.
 What is important is the evaluation of "check" operations as well
-ast the final state (stored in the StoryEvaluation).
+as the final state (stored in the StoryEvaluation).
 
     StepEvaluation
     <|-- OperationStepEvaluation
@@ -44,8 +43,8 @@ from modelscript.metamodels.stories.evaluations import (
 
 
 class OperationStepEvaluation(StepEvaluation):
-    """
-    The evaluation of an operation. Note that this class
+    """ The evaluation of an operation.
+    Note that this class
     is concrete while OperationStep is abstract. This is
     due to the fact that we make no difference between
     many operations. OperationStepEvaluation is indeed
@@ -65,15 +64,15 @@ class OperationStepEvaluation(StepEvaluation):
 
 class CheckStepEvaluation(OperationStepEvaluation):
 
+    frozenState: ObjectModel
+
+
     def __init__(self,
-                 parent,
-                 step,
-                 currentState,
-                 name=None,
-                 ):
-        #type: (Optional[StepEvaluation], Step, ObjectModel, Optional[Text]) -> None
-        """
-        Create a check evaluation by :
+                 parent: Optional[StepEvaluation],
+                 step: Step,
+                 currentState: ObjectModel,
+                 name: Optional[Text] = None) -> None:
+        """Create a check evaluation by :
         (1) creating a (frozen) copy of the current state
         (2) making an analysis of it
         """
@@ -82,10 +81,10 @@ class CheckStepEvaluation(OperationStepEvaluation):
             step=step,
             name=name)
 
-        self.frozenState=currentState.copy()
+        self.frozenState = currentState.copy()
         #assoc: FrozesState
 
-        self.frozenState.checkStepEvaluation=self
+        self.frozenState.checkStepEvaluation = self
         #assoc FrozesState~
 
         self.frozenState.finalize()

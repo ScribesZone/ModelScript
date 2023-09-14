@@ -65,6 +65,7 @@ class ObjectModelPrinter(ModelPrinter):
 
     def doStoryObjectModel(self, objectModel):
         for d in objectModel.definitions:
+            # TODO:2 Check why AnnotatedTextBlock is undefined
             if isinstance(d, AnnotatedTextBlock):
                 self.doAnnotatedTextBlocks(d)
             else:
@@ -76,7 +77,7 @@ class ObjectModelPrinter(ModelPrinter):
             self.doFullObject(o)
         for l in objectModel.links:
             self.doLinkDefinition(l)
-        #TODO:4 add doObjectLinks
+        #TODO:2 add doObjectLinks
 
 
     def doCoreDefinition(self, d, indent=0):
@@ -93,7 +94,7 @@ class ObjectModelPrinter(ModelPrinter):
 
 
     def doObjectDefinition(self, o, indent=0):
-        class_name=(
+        class_name = (
             str(o.class_)
                 if isinstance(o.class_, Placeholder)
             else o.class_.name)
@@ -111,7 +112,7 @@ class ObjectModelPrinter(ModelPrinter):
         return self.output
 
     def doNestedSlot(self, slot, indent=0):
-        attribute_name=(
+        attribute_name = (
             str(slot.attribute)
             if isinstance(slot.attribute, Placeholder)
             else slot.attribute.name)
@@ -123,7 +124,7 @@ class ObjectModelPrinter(ModelPrinter):
         return self.output
 
     def doSlotDefinition(self, slot, indent=0):
-        attribute_name=(
+        attribute_name = (
             str(slot.attribute)
             if isinstance(slot.attribute, Placeholder)
             else slot.attribute.name)
@@ -137,7 +138,7 @@ class ObjectModelPrinter(ModelPrinter):
         return self.output
 
     def doLinkDefinition(self, l, indent=0):
-        association_name=(
+        association_name = (
             str(l.association)
                 if isinstance(l.association, Placeholder)
             else l.association.name)

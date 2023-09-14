@@ -1,0 +1,21 @@
+    //@Issue ob.ana.Link.BadCardinality 1
+    //@Issue ob.ana.Link.Many 1
+    //@Issue else *
+
+scenario model Sc_step30
+
+import class model from '../cls/cl-main-cybercompany-12.cls'
+
+computing is a Department.
+astra is a Project.
+hardware is a Department.
+omega : Department
+
+castra is the Control between computing and astra.
+wrong is the Control between computing and astra.
+hardstra is the Control between hardware and astra.
+comega is the Control between computing and omega.
+
+
+// BUG: raise an exception !!! in copier ################################
+hardom : Control (castra, omega)

@@ -55,7 +55,7 @@ class ClassModelPrinter(ModelPrinter):
         return self.output
 
     def doClassModel(self, model):
-        self.doModelTextBlock(model.description)
+        # self.doModelTextBlock(model.description)
 
         for p in model.packages:
             self.doPackage(p)
@@ -130,7 +130,6 @@ class ClassModelPrinter(ModelPrinter):
                     self.cmt('// %s: "%s"' % (attr, vals)),
                     indent=1)
 
-        self.doModelTextBlock(class_.description)
         if class_.superclasses:
             sc = (self.kwd('extends ')
                   + self.kwd(',').join([s.name for s in class_.superclasses]))
@@ -141,6 +140,8 @@ class ClassModelPrinter(ModelPrinter):
             self.kwd('class'),
             self.qualified(class_),
             sc] if _f]))
+
+        self.doModelTextBlock(class_.description, indent=1)
 
         outLineAttribute("subclasses")
         if class_.cycles is not None:
@@ -270,8 +271,6 @@ class ClassModelPrinter(ModelPrinter):
         return self.output
 
     def doRole(self, role):
-        self.doModelTextBlock(role.description)
-
         # move this code to a method, refactoring
         stereotypes='<<%s>>' % ','.join(role.stereotypes) \
                 if role.stereotypes \
@@ -297,7 +296,7 @@ class ClassModelPrinter(ModelPrinter):
             stereotypes,
             tags] if _f])
         self.outLine(_, indent=2)
-        self.doModelTextBlock(role.description)
+        self.doModelTextBlock(role.description, indent=3)
         return self.output
 
 

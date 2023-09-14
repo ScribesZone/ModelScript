@@ -5,8 +5,7 @@ __all__ = (
     'ModelPrinterConfig',
     'ModelPrinter',
     'ModelSourcePrinterConfig',
-    'ModelSourcePrinter'
-)
+    'ModelSourcePrinter')
 
 from abc import ABCMeta
 from typing import Optional
@@ -109,13 +108,13 @@ class ModelPrinter(ContentPrinter, metaclass=ABCMeta):
         from modelscript.scripts.megamodels.printer.imports import (
             ImportBoxPrinter
         )
-
         if self.theModel.source is not None:
             ib = self.theModel.source.importBox
             p = ImportBoxPrinter(
                 importBox=ib,
                 config=self.config
             )
+            # p.do()
             self.out(p.do())
             self.outLine('')
         return self.output
@@ -124,7 +123,10 @@ class ModelPrinter(ContentPrinter, metaclass=ABCMeta):
         from modelscript.metamodels.textblocks import TextBlock
         if textBlock is not None:
             assert isinstance(textBlock, TextBlock)
-            s = TextBlockPrinter(textBlock, indent=indent).do()
+            s = TextBlockPrinter(
+                textBlock,
+                config=self.config,
+                indent=indent).do()
             self.out(s)
             return self.output
 

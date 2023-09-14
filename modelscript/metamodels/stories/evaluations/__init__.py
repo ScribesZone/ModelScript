@@ -1,6 +1,5 @@
 # coding=utf-8
-"""
-Model elements resulting from the evaluation of a story.
+"""Model elements resulting from the evaluation of a story.
 Each StepEvaluation is associated with the Step at its origin.
 Each StepEvaluation additionally has :
     * a list of issues that the evaluation raise for this step
@@ -11,7 +10,7 @@ unbound (e.g. ('x', A, 'y')) these elements are then bound in
 evaluation steps (e.g. x and y have been resolved).
 
 However, the result of the binding for each step is not stored
-however because:
+because:
     * this avoid to have a evaluation class for each step class
       (e.g. ObjectCreation -> ObjectCreationEvaluation),
     * the binding itself is not so important,
@@ -61,16 +60,43 @@ from modelscript.metamodels.stories import (
 
 
 class StepEvaluation(SourceModelElement, Subject, metaclass=ABCMeta):
-    """
-    The evaluation of a step.
+    """The evaluation of a step. """
+
+    step: Step
+    """Step at the origin of this evaluation.
+    The "step" is always defined as all StepEvaluations result from
+    a Step. The opposite of this reference is not stored and
+    not really useful since a Step can have various StepEvaluation.
     """
 
+    parent: Optional['CompositeStepEvaluation']
+    """The parent evaluation.
+    Not defined in the case of StoryEvaluation as this is the root.
+    This parent mimics steps' parent, but it is
+    necessary and cannot be replaced by navigation through
+    because there are potentially many StepEvaluation per step
+    so the parent may not be the same in different evaluation."""
+
+    name: Optional[Text]
+    """An optional name for the evaluation. 
+    For further usage. It could be for instance the name of a
+    scenario for a story, or a label given to a step.
+    The name is used by subjectLabel """
+    # TODO:4 this attribute should better go to Story
+    #   Not sure why this attribute got here.
+    #   Make more sense to have
+
+    issues: List[Issue]
+
+    accesses: List[Access]
+    # TODO 3 check if accesses works
+    #        Not sure if it should be on leaf steps or composite as well
+
     def __init__(self,
-                 parent,
-                 step,
-                 accesses=[],
-                 name=None):
-        #type: (Optional[CompositeStepEvaluation], Step, List[Access], Optional[Text]) -> None
+                 parent: Optional['CompositeStepEvaluation'],
+                 step: Step,
+                 accesses: List[Access] = [],
+                 name: Optional[Text] = None):
         super(StepEvaluation, self).__init__(
             model=step.model,
             name=None,
@@ -78,45 +104,11 @@ class StepEvaluation(SourceModelElement, Subject, metaclass=ABCMeta):
             lineNo=step.lineNo,
             description=step.description)
 
-        self.step=step
-        #type: Step
-        # Step at the origin of this evaluation.
-        # The "step" is always defined as all StepEvaluations result from
-        # a Step. The opposite of this reference is not stored and
-        # not really useful since a Step can have various StepEvaluation.
-
-        self.parent=parent
-        #type: Optional[CompositeStepEvaluation]
-        #assoc: HasParentEvaluation
-
-        # The parent evaluation.
-        # Not defined in the case of StoryEvaluation as this is the root.
-        # This parent mimics steps' parent, but it is
-        # necessary and cannot be replaced by navigation through
-        # because there are potentially many StepEvaluation per step
-        # so the parent may not be the same in different evaluation.
-
-        self.name=name
-        #type: Optional[Text]
-        # TODO:4 this attribute should better go to Story
-        #   Not sure why this attribute got here.
-        #   Make more sense to have
-        # An optional name for the evaluation. For further
-        # usage. It could be for instance the name of a
-        # scenario for a story, or a label given to a step.
-        # The name is used by subjectLabel
-
-        self.accesses=accesses
-        #type: List[Access]
-        #assoc: Accesses
-        # TODO:3 check accesses works
-        #   Not sure if it should be on leaf steps or composite as well.
-
-        self.issues=[]
-        #type: List[Issue]
-        #assoc: hasIssues
-        # The list of issues raised by this step evaluation
-
+        self.step = step
+        self.parent = parent
+        self.name = name
+        self.accesses = accesses
+        self.issues = []
         if self.parent is not None:
             self.parent.stepEvaluations.append(self)
 
@@ -129,8 +121,7 @@ class StepEvaluation(SourceModelElement, Subject, metaclass=ABCMeta):
             return self.parent.storyEvaluation
 
     @property
-    def superSubjects(self):
-        # type: () -> List[Subject]
+    def superSubjects(self) -> List[Subject]:
         # Wrt to access control, the evaluation is related
         # to the corresponding step. Not to the hierarchy of
         # evaluation which is not really meaningful.
@@ -147,17 +138,18 @@ class StepEvaluation(SourceModelElement, Subject, metaclass=ABCMeta):
 
 class CompositeStepEvaluation(StepEvaluation):
 
+    stepEvaluations: List[StepEvaluation]
+    """Composite evaluations have substeps "stepEvaluations".
+    On the opposite, all step evaluation have parents
+    (see stepEvaluation).
+    """
     def __init__(self, parent, step):
         super(CompositeStepEvaluation, self).__init__(
             parent=parent,
             step=step)
 
-        self.stepEvaluations=[]
-        #type: List[StepEvaluation]
-        #assoc: HasParentEvaluation
-        # Composite evaluations have substeps "stepEvaluations".
-        # On the opposite, all step evaluation have parents
-        # (see stepEvaluation).
+        self.stepEvaluations = []
+
 
 
 class StoryEvaluation(CompositeStepEvaluation):
@@ -168,36 +160,41 @@ class StoryEvaluation(CompositeStepEvaluation):
     (2) contains a reference to the object model
         created by the evaluation
     Although Story (not StoryEvaluation) are always at the top level,
-    StoryEvaluation can be nested in other some other StoryEvaluation
-    through the include mecanism. In the "parent" is not None.
+    StoryEvaluation can be nested in some other StoryEvaluation
+    through the include mechanism. In this case "parent" is not None.
+    Story evaluations have CheckEvaluations
     """
+
+    checkEvaluations: List['CheckStepEvaluation']
+
     def __init__(self, step, parent=None):
         super(StoryEvaluation, self).__init__(
             parent=parent,
             step=step)
 
-        self.checkEvaluations=[]
-        #type: List['CheckStepEvaluation']
-        #assoc: IsCheckedAt
+        self.checkEvaluations = []
 
-    @property
-    def finalState(self):
-        return self.checkEvaluations[-1].frozenState
+    # @property
+    # def finalState(self):
+    #     fs = self.checkEvaluations[-1].frozenState
+    #     return fs
 
 
 class StoryIncludeEvaluation(CompositeStepEvaluation):
-    """
-    The evaluation of an include.
+    """The evaluation of an include.
     This evaluations references a story evaluation.
-    This story evaluation is also stored as a substep
+    This story evaluation is also stored as a sub-step
     since the parent of the story evaluation is the include.
     This is why this class inherits from CompositeStepEvaluation.
     """
+
+    storyEvaluationIncluded: Optional[StoryEvaluation]
+
     def __init__(self, parent, step):
         super(StoryIncludeEvaluation, self).__init__(
             parent=parent,
             step=step)
-        self.storyEvaluationIncluded=None
-        #type: Optional[StoryEvaluation]
+
+        self.storyEvaluationIncluded = None
         # This value is not set directly by the constructor
         # but it is set just after. See _eval_include
