@@ -120,7 +120,7 @@ Une **entrée** est essentiellement :
         | peut être `Bloque` ou `Ouvert` et est identifié par
         | un `Theme` et un ensemble de `Cles`.
         synonyms: Discussion, FilDeDiscussion
-        inflections; Fils
+        inflections: Fils
         translations
             fr: "fil de discussion"
             en: "thread"
